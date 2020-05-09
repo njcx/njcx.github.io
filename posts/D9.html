@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Git简明教程 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/D9.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Git简明教程">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Git简明教程
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2017-04-14T10:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        五 14 四月 2017
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/za-xiang.html">杂项</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/git.html">#Git</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <ul>
+<li>介绍</li>
+</ul>
+<p>git是 Linus，也就是Linux kernel 的作者所写的分布式版本控制系统。下面介绍一下git是怎么使用的：</p>
+<h1>1</h1>
+<p>先安装git</p>
+<div class="highlight"><pre><span></span>sudo apt-get install git git-core
+</pre></div>
+<p>然后我们先设置Git的user name和email：</p>
+<div class="highlight"><pre><span></span>&gt;git config --global user.name <span class="s2">"nJcx"</span>
+&gt;git config --global user.email <span class="s2">"njcx86@gmail.com"</span>
+</pre></div>
+<p>然后我们再生成Git SSH Key,一直回车就行了，然后我们打开当前用户目录下即～/.ssh/id_rsa.pub这个文件，把里面的东西添加到github、码云、coding上，就可以用了</p>
+<div class="highlight"><pre><span></span>&gt;ssh-keygen -t rsa -C “njcx86@gmail.com”
+</pre></div>
+<p>我们先建个目录，并且在目录里面初始化git所需的相关文件，里面会有一个.git 的隐藏文件夹</p>
+<div class="highlight"><pre><span></span>&gt; mkdir git 
+&gt;cd git <span class="o">&amp;&amp;</span> git init
+&gt;echo <span class="s2">"# git_"</span> &gt;&gt; README.md
+</pre></div>
+<p>我们在里面加了一个README.md文件</p>
+<div class="highlight"><pre><span></span>&gt; git add .
+&gt; git commit -m <span class="s2">"add more"</span> 
+&gt;git remote add origin git@github.com:njcx/git_.git
+&gt;git push -u origin master
+
+//第一步,用命令 git add 告诉Git,把文件添加到仓库
+//用命令 git commit （-m 就是加注释的意思）告诉Git,把文件提交到仓库:
+//第三步，添加远程仓库
+//第四步，把本地文件变动提交远程仓库
+</pre></div>
+<p>查看本地是否有变动或者状态</p>
+<div class="highlight"><pre><span></span>&gt;git status
+</pre></div>
+<p>查看差异或者修改的内容</p>
+<div class="highlight"><pre><span></span>&gt;git diff
+</pre></div>
+<p>查看提交的tag</p>
+<div class="highlight"><pre><span></span>&gt;git log
+</pre></div>
+<h1>2</h1>
+<p>既然是版本控制系统，我们肯定可以回退到历史上某个文件状态，我们先用 git log 看一下有哪些历史commit tag</p>
+<div class="highlight"><pre><span></span>commit 5b42df0cfd1b5d6cdfc7d5b251ea770ca35cbec1
+Author: nJcx &lt;njcx86@gmail.com&gt;
+Date:   Thu Jun <span class="m">8</span> <span class="m">18</span>:16:57 <span class="m">2017</span> +0800
+
+    add more
+
+commit d171df385fb3af5b092c65bfea5011316de936d0
+Author: nJcx &lt;njcx86@gmail.com&gt;
+Date:   Thu Jun <span class="m">8</span> <span class="m">17</span>:53:49 <span class="m">2017</span> +0800
+
+    first commit
+</pre></div>
+<p>就像这样,前面介绍了，在工作区里面有.git目录，这个是git版本库，我们的相关操作都会在这个目录产生记录。我们在工作区里面通过 git add xxx 把相关文件的改动提交到暂存区index,我们又通过git commit 把文件状态改动提交到默认的主分支master上，也就是说，我们会经过两个状态，一个是提交到暂存区index，另一个就是提交到分支上。</p>
+<p>我们再创建一个README2.md 文件</p>
+<div class="highlight"><pre><span></span>&gt; <span class="nb">echo</span> <span class="s2">"# git_"</span> &gt;&gt; README2.md
+</pre></div>
+<p>然后 git status 一下</p>
+<div class="highlight"><pre><span></span>未跟踪的文件:
+  （使用 <span class="s2">"git add &lt;文件&gt;..."</span> 以包含要提交的内容）
+
+    README2.md
+
+提交为空，但是存在尚未跟踪的文件（使用 <span class="s2">"git add"</span> 建立跟踪）
+</pre></div>
+<p>我们先把它加入跟踪状态，</p>
+<div class="highlight"><pre><span></span>&gt; git add README2.md <span class="o">&amp;&amp;</span> git commit -m <span class="s2">"add file README2.MD</span>
+</pre></div>
+<p>现在我们编辑它</p>
+<div class="highlight"><pre><span></span>&gt; <span class="nb">echo</span> <span class="s2">"by nJcx"</span> &gt;&gt; README2.md
+</pre></div>
+<p>下面，我们就会存在3种状态：</p>
+<ul>
+<li>1，就是文件在工作区被修改了，没有git add 到暂存区</li>
+<li>2，文件被 git add 到暂存区了，但是没有提交到分支上</li>
+<li>3，文件的修改被git commit 分支上了</li>
+</ul>
+<p>第一种状态</p>
+<div class="highlight"><pre><span></span>&gt; git checkout -- README2.md
+</pre></div>
+<p>第二种</p>
+<div class="highlight"><pre><span></span>&gt; git reset HEAD README2.md
+&gt; git checkout -- README2.md
+// HEAD,表示最新的版本。
+</pre></div>
+<p>第三种</p>
+<div class="highlight"><pre><span></span>&gt; git reset --hard HEAD^ 
+//这里也可以用 commit_id,通过git log 或者 git reflog 查看
+// HEAD^表示上一个版本，上上一个版本就是 HEAD^^
+</pre></div>
+<p>第三种有一个缺点，如果一次commit 多个文件，回退版本的时候会把其他正常的文件也回退了，所以有的时候，我们可以把不想回退的文件单独commit一下</p>
+<p>如果，我们回退的时候，又后悔了，又想回到某个最新的版本，那该怎么办？</p>
+<div class="highlight"><pre><span></span>&gt; git reflog
+&gt; git reset --hard commit_id
+</pre></div>
+<h1>3</h1>
+<p>讲版本控制系统就不能不讲分支，我们用 git branch 查看当前有哪些分支以及所在分支</p>
+<div class="highlight"><pre><span></span>njcx@njcx:~/桌面/git$ git branch
+* master
+</pre></div>
+<p>我们创建一个dev 分支,并切换分支</p>
+<div class="highlight"><pre><span></span>njcx@njcx:~/桌面/git$  git checkout -b dev
+njcx@njcx:~/桌面/git$  git branch
+* dev
+  master
+//创建分支:git branch &lt;name&gt;
+//切换分支: git checkout &lt;name&gt;
+//创建+切换分支: git checkout ‐b &lt;name&gt;
+//删除分支: git branch ‐d &lt;name&gt;
+</pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

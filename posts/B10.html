@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Python面向对象编程（个人总结篇-B篇） | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/B10.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="介绍一下Python的面向对象编程，记录一下学习过程">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Python面向对象编程（个人总结篇-B篇）
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2017-03-21T10:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Tue 21 March 2017
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/python.html">Python</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/python.html">#Python</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h2>本篇记录一下Python类的成员、成员修饰符、类的特殊成员</h2>
+<h4>类的成员</h4>
+<ul>
+<li>字段</li>
+<li>方法</li>
+<li>属性</li>
+</ul>
+<p><img alt="选区_004" class="img-fluid" src="../images/选区_004.png"/></p>
+<p>普通字段保存在对象所在的内存空间中，对象拷贝静态字段到自己的内存空间，其他成员都在类的内存空间，使用时再调取。</p>
+<h4>1,字段</h4>
+<ul>
+<li>普通字段属于对象</li>
+<li>静态字段属于类，对象只是拷贝静态字段，修改不影响静态字段原来的值，和Java不同</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">fathclass</span><span class="p">:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">'njcx'</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">age</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="o">=</span><span class="n">age</span>
+    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span>
+
+<span class="k">print</span> <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span>
+
+<span class="n">day</span> <span class="o">=</span> <span class="n">fathclass</span><span class="p">(</span><span class="mi">18</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">day</span><span class="o">.</span><span class="n">name</span>
+<span class="n">day</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'oldnjcx'</span>
+<span class="c1">#修改对象name</span>
+<span class="k">print</span> <span class="n">day</span><span class="o">.</span><span class="n">name</span>
+<span class="k">print</span> <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span>
+<span class="c1">#原来的name并没有发生改变</span>
+<span class="n">fathclass</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'youngnjcx'</span>
+<span class="c1">#通过类修改静态字段并不影响对象的静态字段</span>
+<span class="k">print</span> <span class="n">day</span><span class="o">.</span><span class="n">name</span>
+<span class="k">print</span> <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+<h4>2，方法</h4>
+<ul>
+<li>普通方法 由对象调用；至少一个self参数；执行普通方法时，自动将调用该方法的对象赋值给self；</li>
+<li>静态方法 由类调用； 至少一个cls参数；执行类方法时，自动将调用该方法的类复制给cls；</li>
+<li>类方法 由类调用；无默认参数；</li>
+</ul>
+<p>其中，静态方法通过@staticmethod修饰，类方法通过@classmethod修饰, 下面列举一些</p>
+<ul>
+<li>类方法用在模拟java定义多个构造函数的情况。 由于python类中只能有一个初始化方法，不能按照不同的情况初始化类</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># coding:utf-8</span>
+
+
+<span class="k">class</span> <span class="nc">Book</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+        <span class="n">book</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">book</span>
+
+<span class="n">book1</span> <span class="o">=</span> <span class="n">Book</span><span class="p">(</span><span class="s2">"python"</span><span class="p">)</span>
+<span class="n">book2</span> <span class="o">=</span> <span class="n">Book</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">"python and django"</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">book1</span><span class="o">.</span><span class="n">title</span>
+<span class="k">print</span> <span class="n">book2</span><span class="o">.</span><span class="n">title</span>
+</pre></div>
+<ul>
+<li>静态方法调用另一个静态方法，如果改用类方法调用静态方法，可以让cls代替类，
+让代码看起来精简一些。也防止类名修改了，不用在类定义中修改原来的类名</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># coding:utf-8</span>
+
+
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">averag</span><span class="p">(</span><span class="o">*</span><span class="n">mixes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mixes</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">mixes</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_method</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">Foo</span><span class="o">.</span><span class="n">averag</span><span class="p">(</span><span class="n">Foo</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">Foo</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">class_method</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">averag</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+
+<span class="n">foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">static_method</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">class_method</span><span class="p">()</span>
+</pre></div>
+<ul>
+<li>继承类中的区别 从下面代码可以看出，如果子类继承父类的方法，子类覆盖了父类的静态方法，
+子类的实例继承了父类的static_method静态方法，调用该方法，还是调用的父类的方法和类属性。
+子类的实例继承了父类的class_method类方法，调用该方法，调用的是子类的方法和子类的类属性。</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># coding:utf-8</span>
+
+
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">averag</span><span class="p">(</span><span class="o">*</span><span class="n">mixes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mixes</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">mixes</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_method</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">Foo</span><span class="o">.</span><span class="n">averag</span><span class="p">(</span><span class="n">Foo</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">Foo</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">class_method</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">averag</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Son</span><span class="p">(</span><span class="n">Foo</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">averag</span><span class="p">(</span><span class="o">*</span><span class="n">mixes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mixes</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">Son</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">static_method</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">class_method</span><span class="p">()</span>
+</pre></div>
+<h4>3,属性</h4>
+<ul>
+<li>
+<p>Python中的属性其实是普通方法，方法当做属性访问</p>
+</li>
+<li>
+<p>基本使用和两种定义方式</p>
+</li>
+</ul>
+<p>1,属性的基本使用</p>
+<ul>
+<li>
+<p>定义时，在普通方法的基础上添加 @property 装饰器；</p>
+</li>
+<li>
+<p>定义时，属性仅有一个self参数</p>
+</li>
+<li>
+<p>调用时，无需括号</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">fathclass</span><span class="p">:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">'njcx'</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">age</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="o">=</span><span class="n">age</span>
+
+    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">grade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'six'</span>
+
+<span class="n">son</span> <span class="o">=</span> <span class="n">fathclass</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
+</pre></div>
+<p>一般 做动态属性，才用到@property</p>
+<p>2、属性的两种定义方式</p>
+<ul>
+<li>
+<p>装饰器 即：在方法上应用装饰器</p>
+</li>
+<li>
+<p>静态字段 即：在类中定义值为property对象的静态字段</p>
+</li>
+</ul>
+<h4>其中装饰器又分经典类和新式类，经典类仅仅支持@property，新式类支持@方法名.setter,@方法名.deleter</h4>
+<ul>
+<li>经典类</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">fathclass</span><span class="p">:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">'njcx'</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">age</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="o">=</span><span class="n">age</span>
+
+    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span>
+
+    <span class="k">def</span> <span class="nf">age</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">grade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'six'</span>
+    <span class="c1"># 装饰器</span>
+    <span class="n">aGe</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+    <span class="c1">#property对象</span>
+
+<span class="n">son</span> <span class="o">=</span> <span class="n">fathclass</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
+<span class="k">print</span> <span class="n">son</span><span class="o">.</span><span class="n">aGe</span>
+</pre></div>
+<ul>
+<li>新式类</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">fathclass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">'njcx'</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">age</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="o">=</span><span class="n">age</span>
+
+    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span>
+
+    <span class="k">def</span> <span class="nf">age</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">grade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'six'</span>
+    <span class="nd">@grade.setter</span>    
+    <span class="k">def</span> <span class="nf">grade</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ge</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s1">'@price.setter'</span><span class="o">+</span><span class="n">ge</span>
+
+    <span class="nd">@grade.deleter</span>    
+    <span class="k">def</span> <span class="nf">grade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s1">'@price.setter'</span>
+
+    <span class="c1"># 装饰器</span>
+    <span class="n">aGe</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+    <span class="c1">#property对象</span>
+
+<span class="n">son</span> <span class="o">=</span> <span class="n">fathclass</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
+<span class="n">son</span><span class="o">.</span><span class="n">grade</span> <span class="o">=</span> <span class="s1">'five'</span>
+<span class="k">del</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
+</pre></div>
+<h4>静态字段</h4>
+<h4>property的构造方法中有个四个参数</h4>
+<ul>
+<li>
+<p>第一个参数是方法名，调用 对象.属性 时自动触发执行方法</p>
+</li>
+<li>
+<p>第二个参数是方法名，调用 对象.属性 ＝ XXX 时自动触发执行方法</p>
+</li>
+<li>
+<p>第三个参数是方法名，调用 del 对象.属性 时自动触发执行方法</p>
+</li>
+<li>
+<p>第四个参数是字符串，调用 对象.属性.<strong>doc</strong> ，此参数是该属性的描述信息</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">get_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'njcx'</span>
+
+    <span class="k">def</span> <span class="nf">set_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="s1">'set value'</span> <span class="o">+</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">del_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'njcx'</span>
+
+    <span class="n">BAR</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">get_bar</span><span class="p">,</span> <span class="n">set_bar</span><span class="p">,</span> <span class="n">del_bar</span><span class="p">,</span> <span class="s1">'description...'</span><span class="p">)</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="n">obj</span><span class="o">.</span><span class="n">BAR</span>              
+<span class="n">obj</span><span class="o">.</span><span class="n">BAR</span> <span class="o">=</span> <span class="s2">"alex"</span>    
+<span class="k">del</span> <span class="n">Foo</span><span class="o">.</span><span class="n">BAR</span>          
+<span class="n">obj</span><span class="o">.</span><span class="n">BAR</span><span class="o">.</span><span class="vm">__doc__</span>
+</pre></div>
+<h2>以上就是个人总结B篇内容</h2>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

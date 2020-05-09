@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Go绑定yara静态编译无依赖恶意代码扫描工具 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/N10.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Go绑定yara静态编译无依赖恶意代码扫描工具~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Go绑定yara静态编译无依赖恶意代码扫描工具
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-07-24T20:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Tue 24 July 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/yara.html">#Yara</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>安装</h4>
+<p>方法1</p>
+<div class="highlight"><pre><span></span>yum install -y glibc-static libstdc++-static  autoconf automake libtool
+
+
+wget https://codeload.github.com/VirusTotal/yara/tar.gz/v3.11.0
+
+tar -zxvf v3.11.0 
+ <span class="nb">cd</span> yara-3.11.0/
+./bootstrap.sh 
+./configure --disable-shared --enable-static --without-crypto
+make <span class="o">&amp;&amp;</span> make install
+cp /usr/local/lib/pkgconfig/yara.pc   /usr/lib64/pkgconfig 
+
+<span class="nb">export</span> <span class="nv">YARA_SRC</span><span class="o">=</span>~/go/src/yara-3.11.0
+<span class="nb">export</span> <span class="nv">CGO_CFLAGS</span><span class="o">=</span><span class="s2">"-I</span><span class="si">${</span><span class="nv">YARA_SRC</span><span class="si">}</span><span class="s2">/libyara/include"</span>
+<span class="nb">export</span> <span class="nv">CGO_LDFLAGS</span><span class="o">=</span><span class="s2">"-L</span><span class="si">${</span><span class="nv">YARA_SRC</span><span class="si">}</span><span class="s2">/libyara/.libs -lyara -lm"</span>
+
+go get github.com/hillu/go-yara
+<span class="nb">cd</span> go-yara/
+git checkout v3.x
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+        <span class="s">"github.com/hillu/go-yara"</span>
+
+        <span class="s">"errors"</span>
+        <span class="s">"flag"</span>
+        <span class="s">"log"</span>
+        <span class="s">"os"</span>
+        <span class="s">"strconv"</span>
+        <span class="s">"strings"</span>
+<span class="p">)</span>
+
+<span class="kd">type</span> <span class="nx">rule</span> <span class="kd">struct</span><span class="p">{</span> <span class="nx">namespace</span><span class="p">,</span> <span class="nx">filename</span> <span class="kt">string</span> <span class="p">}</span>
+<span class="kd">type</span> <span class="nx">rules</span> <span class="p">[]</span><span class="nx">rule</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">rules</span><span class="p">)</span> <span class="nx">Set</span><span class="p">(</span><span class="nx">arg</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">"empty rule specification"</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nx">a</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">SplitN</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="s">":"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">switch</span> <span class="nb">len</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="o">*</span><span class="nx">r</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="o">*</span><span class="nx">r</span><span class="p">,</span> <span class="nx">rule</span><span class="p">{</span><span class="nx">filename</span><span class="p">:</span> <span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]})</span>
+        <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="o">*</span><span class="nx">r</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="o">*</span><span class="nx">r</span><span class="p">,</span> <span class="nx">rule</span><span class="p">{</span><span class="nx">namespace</span><span class="p">:</span> <span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">filename</span><span class="p">:</span> <span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">rules</span><span class="p">)</span> <span class="nx">String</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">s</span> <span class="kt">string</span>
+        <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">rule</span> <span class="o">:=</span> <span class="k">range</span> <span class="o">*</span><span class="nx">r</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+                        <span class="nx">s</span> <span class="o">+=</span> <span class="s">" "</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="nx">rule</span><span class="p">.</span><span class="nx">namespace</span> <span class="o">!=</span> <span class="s">""</span> <span class="p">{</span>
+                        <span class="nx">s</span> <span class="o">+=</span> <span class="nx">rule</span><span class="p">.</span><span class="nx">namespace</span> <span class="o">+</span> <span class="s">":"</span>
+                <span class="p">}</span>
+                <span class="nx">s</span> <span class="o">+=</span> <span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">s</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">printMatches</span><span class="p">(</span><span class="nx">m</span> <span class="p">[]</span><span class="nx">yara</span><span class="p">.</span><span class="nx">MatchRule</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">m</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+                        <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">match</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">m</span> <span class="p">{</span>
+                                <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"- [%s] %s "</span><span class="p">,</span> <span class="nx">match</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">,</span> <span class="nx">match</span><span class="p">.</span><span class="nx">Rule</span><span class="p">)</span>
+                        <span class="p">}</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">"no matches."</span><span class="p">)</span>
+                <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"error: %s."</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+        <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="p">(</span>
+                <span class="nx">rules</span>       <span class="nx">rules</span>
+                <span class="nx">processScan</span> <span class="kt">bool</span>
+                <span class="nx">pids</span>        <span class="p">[]</span><span class="kt">int</span>
+        <span class="p">)</span>
+        <span class="nx">flag</span><span class="p">.</span><span class="nx">BoolVar</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">processScan</span><span class="p">,</span> <span class="s">"processes"</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="s">"scan processes instead of files"</span><span class="p">)</span>
+        <span class="nx">flag</span><span class="p">.</span><span class="nx">Var</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rules</span><span class="p">,</span> <span class="s">"rule"</span><span class="p">,</span> <span class="s">"add rule"</span><span class="p">)</span>
+        <span class="nx">flag</span><span class="p">.</span><span class="nx">Parse</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">rules</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+                <span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">"no rules specified"</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="nx">args</span> <span class="o">:=</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">Args</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+                <span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">"no files or processes specified"</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="nx">processScan</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">arg</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">args</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="nx">pid</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nx">Atoi</span><span class="p">(</span><span class="nx">arg</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                                <span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Could not parse %s ad number"</span><span class="p">,</span> <span class="nx">arg</span><span class="p">)</span>
+                        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                                <span class="nx">pids</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">pids</span><span class="p">,</span> <span class="nx">pid</span><span class="p">)</span>
+                        <span class="p">}</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="nx">c</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">yara</span><span class="p">.</span><span class="nx">NewCompiler</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                <span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Failed to initialize YARA compiler: %s"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">rule</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">rules</span> <span class="p">{</span>
+                <span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                        <span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Could not open rule file %s: %s"</span><span class="p">,</span> <span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="p">}</span>
+                <span class="nx">err</span> <span class="p">=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">AddFile</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">rule</span><span class="p">.</span><span class="nx">namespace</span><span class="p">)</span>
+                <span class="nx">f</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                        <span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Could not parse rule file %s: %s"</span><span class="p">,</span> <span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nx">r</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">GetRules</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                <span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Failed to compile rules: %s"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="nx">processScan</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">pid</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">pids</span> <span class="p">{</span>
+                        <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"Scanning process %d..."</span><span class="p">,</span> <span class="nx">pid</span><span class="p">)</span>
+                        <span class="nx">m</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">ScanProc</span><span class="p">(</span><span class="nx">pid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="nx">printMatches</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">filename</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">args</span> <span class="p">{</span>
+                        <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"Scanning file %s... "</span><span class="p">,</span> <span class="nx">filename</span><span class="p">)</span>
+                        <span class="nx">m</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">ScanFile</span><span class="p">(</span><span class="nx">filename</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="nx">printMatches</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<div class="highlight"><pre><span></span>go build --ldflags <span class="s1">'-extldflags "-static -lm"'</span> test.go  
+</pre></div>
+<p>方法2 </p>
+<div class="highlight"><pre><span></span>https://github.com/Velocidex/go-yara
+该库集成了yara 的c代码
+
+go build --ldflags <span class="s1">'-extldflags "-static -lm"'</span> test.go  
+</pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

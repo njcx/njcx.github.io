@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Tornado 学习笔记 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/D7.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="tornado 学习笔记">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Tornado 学习笔记
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2017-04-12T10:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        三 12 四月 2017
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/tornado.html">Tornado</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/tornado.html">#Tornado</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>开始</h4>
+<p>Tornado全称Tornado Web Server，是一个用Python语言写成的Web服务器兼Web应用框架。作为Web框架，是一个轻量级的Web框架，其拥有异步非阻塞IO的处理方式。作为Web服务器，Tornado有较为出色的抗负载能力。得利于其非阻塞的方式和对 epoll 的运用，Tornado 每秒可以处理数以千计的连接，这意味着对于实时Web服务来说，Tornado 是一个理想的 Web 框架。无论做为一个HTTP Server 还是一个Web框架，Tornado都足够优秀。</p>
+<h4>安装</h4>
+<p>Tornado 是纯Python实现的，完美支持PyPy，在Jit 加持下性能更是如虎添翼，我个人在做Web开发的时候，就很喜欢用PyPy，性能差异可以直接感觉到，推荐大家试一试。 目前Tornado的版本是4.5.1，我们可以配置国内源，把下面内容写到 ～/.pip/pip.conf 文件中，我的系统是ubuntu16.04，其他linux发行版类似</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>global<span class="o">]</span>
+index-url <span class="o">=</span> http://pypi.douban.com/simple
+<span class="o">[</span>install<span class="o">]</span>
+trusted-host<span class="o">=</span>pypi.douban.com
+</pre></div>
+<p>安装方式：</p>
+<div class="highlight"><pre><span></span><span class="n">Python</span>
+<span class="o">&gt;</span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">pip</span> <span class="o">-</span><span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">tornado</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="n">PyPy</span>
+<span class="o">&gt;</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">wget</span> <span class="n">pypy</span> <span class="n">pypy</span><span class="o">-</span><span class="n">lib</span> <span class="n">pypy</span><span class="o">-</span><span class="n">dev</span> <span class="o">-</span><span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bootstrap</span><span class="o">.</span><span class="n">pypa</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">tornado</span>
+</pre></div>
+<div class="highlight"><pre><span></span>MySQL 数据库安装
+&gt;apt-get install mysql-server libmysqlclient-dev -y
+&gt;pypy -m pip install mysql-python
+或者
+&gt;python -m pip install mysql-python
+</pre></div>
+<h4>模块</h4>
+<p>Tornado包含以下模块，和Django、Flask 不同，Tornado没有用二级目录作为模块的名字(Django、Flask喜欢把类和方法集中到__init__.py里面)，而是直接用Py文件作为模块</p>
+<ul>
+<li>Web框架</li>
+</ul>
+<p>tornado.web - RequestHandler和Application类</p>
+<p>tornado.template - 模板</p>
+<p>tornado.routing - 路由</p>
+<p>tornado.escape - 转义和字符串模块</p>
+<p>tornado.locale - 国际化支持</p>
+<p>tornado.websocket - 提供WebSocket支持</p>
+<ul>
+<li>HTTP服务器和客户端</li>
+</ul>
+<p>tornado.httpserver - 非阻塞HTTP服务器</p>
+<p>tornado.httpclient - 异步HTTP客户端</p>
+<p>tornado.httputil - 处理HTTP头文件和URL</p>
+<p>tornado.http1connection - HTTP/1.x客户端/服务器实现</p>
+<ul>
+<li>异步</li>
+</ul>
+<p>tornado.ioloop - 主事件循环</p>
+<p>tornado.iostream - 非阻塞socket的包装</p>
+<p>tornado.netutil - 网络工具集</p>
+<p>tornado.tcpclient- IOStream 连接池（tcpclient）</p>
+<p>tornado.tcpserver- 基于 IOStream的TCP服务器</p>
+<ul>
+<li>并发</li>
+</ul>
+<p>tornado.gen - 简化异步的模块</p>
+<p>tornado.concurrent - 使用线程和futures</p>
+<p>tornado.locks - 同步原语</p>
+<p>tornado.queues - 队列</p>
+<p>tornado.process - 多进程工具集</p>
+<ul>
+<li>与其他服务集成</li>
+</ul>
+<p>tornado.auth - 使用OpenID和OAuth进行第三方登录</p>
+<p>tornado.wsgi - 与其他Python框架和服务器交互</p>
+<p>tornado.platform.asyncio- asyncio和 Tornado的交互接口</p>
+<p>tornado.platform.caresresolver - C-Ares的异步DNS解析器</p>
+<p>tornado.platform.twisted - Twisted 和 Tornado的交互接口</p>
+<ul>
+<li>工具集</li>
+</ul>
+<p>tornado.autoreload - 自动加载代码</p>
+<p>tornado.log - 日志处理</p>
+<p>tornado.options - 命令行解析</p>
+<p>tornado.stack_context - 异步回调的异常处理</p>
+<p>tornado.testing - 单元测试支持</p>
+<p>tornado.util - 实用工具集</p>
+<h4>实践</h4>
+<p>简单的抛砖引玉，通过get传递参数并显示出来，pypy untitled2.py --port=8082,http://127.0.0.1:8082/?greeting=njcx</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado.web</span> <span class="kn">import</span> <span class="n">RequestHandler</span><span class="p">,</span><span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">tornado.httpserver</span> <span class="kn">import</span> <span class="n">HTTPServer</span>
+<span class="kn">from</span> <span class="nn">tornado.ioloop</span> <span class="kn">import</span> <span class="n">IOLoop</span>
+<span class="kn">from</span> <span class="nn">tornado.options</span> <span class="kn">import</span> <span class="n">define</span><span class="p">,</span><span class="n">options</span><span class="p">,</span><span class="n">parse_command_line</span>
+
+<span class="n">define</span><span class="p">(</span><span class="s2">"port"</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mi">8081</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">"run on the given port"</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">RequestHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">welcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">'greeting'</span><span class="p">,</span> <span class="s1">'Hello'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">welcome</span> <span class="o">+</span> <span class="s1">', friendly user!'</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">parse_command_line</span><span class="p">()</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="p">[(</span><span class="sa">r</span><span class="s2">"/"</span><span class="p">,</span><span class="n">Index</span><span class="p">)])</span>
+    <span class="n">http_server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="n">http_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+    <span class="n">IOLoop</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

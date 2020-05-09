@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Python Web项目搭建实战-Django篇 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/D10.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Python Web项目搭建过程记录">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Python Web项目搭建实战-Django篇
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2017-04-15T10:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Sat 15 April 2017
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/django.html">Django</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/django.html">#Django</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <ul>
+<li>安装</li>
+</ul>
+<p>环境：Ubuntu server 16.04 amd64</p>
+<p>我用的是PyPy替代了CPython,在纯Python项目上还没有遇到幺蛾子，性能提升看得见。先把nginx和supervisor装上，这里用supervisor监控进程的状态以及开机启动下文用到的uwsgi</p>
+<div class="highlight"><pre><span></span>&gt; sudo apt-get install nginx pypy pypy-lib pypy-dev supervisor
+</pre></div>
+<p>我们可以配置pip国内源，把下面内容写到 ～/.pip/pip.conf 文件中,这样就可以用豆瓣的pip源加速了</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>global<span class="o">]</span>
+index-url <span class="o">=</span> http://pypi.douban.com/simple
+<span class="o">[</span>install<span class="o">]</span>
+trusted-host<span class="o">=</span>pypi.douban.com
+</pre></div>
+<p>下面我们为PyPy 安装pip和virtualenv、uwsgi</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libpcre3</span> <span class="n">libpcre3</span><span class="o">-</span><span class="n">dev</span> <span class="o">-</span><span class="n">y</span>
+<span class="o">&gt;</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bootstrap</span><span class="o">.</span><span class="n">pypa</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenv</span> <span class="n">uwsgi</span>
+</pre></div>
+<div class="highlight"><pre><span></span>MySQL 数据库安装<span class="o">(</span>好像在本文用不到，先安装再说<span class="o">)</span>
+&gt;apt-get install mysql-server libmysqlclient-dev -y
+&gt;pypy -m pip install mysql-python
+</pre></div>
+<p>我们先创建一个PyPy的虚拟环境,就叫env</p>
+<div class="highlight"><pre><span></span>&gt; pypy -m virtualenv env
+&gt; <span class="nb">source</span> env/bin/activate
+&gt; pip install django tornado flask mysql-python
+</pre></div>
+<p>下面，我们就要要配置这些nginx、supervisor、uwsgi,我们通过supervisor来管理uwsgi，</p>
+<p>先简单的建一个django的项目,叫blog，再创建一个blogapp</p>
+<div class="highlight"><pre><span></span>&gt; django-admin startproject blog
+&gt; <span class="nb">cd</span> blog <span class="o">&amp;&amp;</span> django-admin startapp blogapp
+</pre></div>
+<p>通过django内置的wsgi服务器测试，是正常的</p>
+<div class="highlight"><pre><span></span>&gt; pypy manage.py runserver <span class="m">0</span>.0.0.0:8080
+</pre></div>
+<p>下面我们把django和uwsgi桥接在一起,写一个桥接django_uwsgi.py 文件，放在blog目录里面</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">django</span>
+<span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">'utf8'</span><span class="p">)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"DJANGO_SETTINGS_MODULE"</span><span class="p">,</span> <span class="s2">"blog.settings"</span><span class="p">)</span>
+
+<span class="c1">#from django.core.wsgi import get_wsgi_application</span>
+<span class="c1">#application = get_wsgi_application()</span>
+<span class="n">django</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+<span class="kn">from</span> <span class="nn">django.core.handlers.wsgi</span> <span class="kn">import</span> <span class="n">WSGIHandler</span>
+<span class="n">application</span> <span class="o">=</span> <span class="n">WSGIHandler</span><span class="p">()</span>
+</pre></div>
+<p>下面我们再写一个uwsgi的配置文件（还没有优化),就叫django.xml，也放到blog文件夹里面</p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;uwsgi&gt;</span>
+    <span class="nt">&lt;socket&gt;</span>127.0.0.1:8521<span class="nt">&lt;/socket&gt;</span>
+    <span class="nt">&lt;chdir&gt;</span>/root/.pip/blog<span class="nt">&lt;/chdir&gt;</span>
+    <span class="nt">&lt;pythonpath&gt;</span>/root/.pip/env/site-packages<span class="nt">&lt;/pythonpath&gt;</span>
+    <span class="nt">&lt;module&gt;</span>django_uwsgi<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;daemonize&gt;</span>uwsgi.log<span class="nt">&lt;/daemonize&gt;</span>
+<span class="nt">&lt;/uwsgi&gt;</span>
+</pre></div>
+<p>nginx 的配置文件，不过没有做静态文件处理，django的后台显示不正常</p>
+<div class="highlight"><pre><span></span>server <span class="o">{</span>
+    listen   <span class="m">80</span><span class="p">;</span> <span class="c1">## listen for ipv4; this line is default and implied</span>
+    <span class="c1">#listen   [::]:80 default ipv6only=on; ## listen for ipv6</span>
+
+    <span class="c1">#server_name blog;</span>
+
+    access_log /var/log/nginx/blog-access.log <span class="p">;</span>
+    error_log /var/log/nginx/blog-error.log <span class="p">;</span>
+
+    location / <span class="o">{</span>
+            uwsgi_pass <span class="m">127</span>.0.0.1:8521<span class="p">;</span>
+            include uwsgi_params<span class="p">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+<p>然后，给我们自己开发的应用程序编写一个配置文件，让supervisor来管理它。每个进程的配置文件都可以单独分拆，放在/etc/supervisor/conf.d/目录下，以.conf作为扩展名,就叫django_app.conf</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>program:app<span class="o">]</span>
+<span class="nv">command</span><span class="o">=</span>uwsgi -x django.xml
+<span class="nv">directory</span><span class="o">=</span>/root/.pip/blog
+<span class="nv">user</span><span class="o">=</span>root
+</pre></div>
+<p>其中，进程app定义在[program:app]中，command是命令，directory是进程的当前目录，user是进程运行的用户身份。</p>
+<p>重启supervisor，让配置文件生效，然后运行命令supervisorctl启动进程：</p>
+<div class="highlight"><pre><span></span>supervisorctl start app
+</pre></div>
+<p>停止进程：</p>
+<div class="highlight"><pre><span></span>supervisorctl stop app
+</pre></div>
+<p>这样，系统重启的时候，uwsgi 也会自动启动，省的我们手动启动它了，我是用的root用户配置的，生产环境不推荐这样做，全文基本搭建完了，运行也是正常的，后期，再深入一点，优化一下性能。</p>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

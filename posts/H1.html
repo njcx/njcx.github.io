@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>抓包和nids规则编写 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/H1.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="抓包和nids规则编写">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>抓包和nids规则编写
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-05-29T13:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Tue 29 May 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/nids.html">#nids</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h5>两种抓包方式</h5>
+<p>1、来自客户端的抓包方式</p>
+<ul>
+<li>
+<p>工具：wireshark</p>
+</li>
+<li>
+<p>介绍：wireshark是一个网络包分析软件。Wireshark使用WinPCAP作为接口，直接与网卡进行数据报文交换。</p>
+</li>
+<li>
+<p>目的：分析客户端的发出的请求以及服务器响应</p>
+<p><img alt="ml1" class="img-fluid" src="../images/WX20180813-161129.png"/></p>
+</li>
+</ul>
+<p>2、来自服务端的抓包方式</p>
+<ul>
+<li>
+<p>工具: bro</p>
+</li>
+<li>
+<p>介绍: Bro是一款被动的开源流量分析器。它主要用于对链路上所有深层次的可疑行为流量进行一个安全监控。更通俗点说就是，Bro支持在安全域之外进行大范围的流量分析，分析包括性能评估和错误定位。</p>
+</li>
+<li>
+<p>协议: 支持多种应用层协议 DNS FTP HTTP IRC SMTP SSH SSL 等等</p>
+</li>
+<li>
+<p>目的: 接受和分析来自链路的流量</p>
+<p><img alt="ml1" class="img-fluid" src="../images/WX20180813-161105.png"/></p>
+</li>
+</ul>
+<h5>目的</h5>
+<ul>
+<li>确定指定字段包含或者等于指定内容,用于nids相关规则编写。</li>
+</ul>
+<h5>NIDS规则的编写</h5>
+<ul>
+<li>PATH(HTTP)</li>
+</ul>
+<p>通过bro抓取分析Url里面的特征</p>
+<div class="highlight"><pre><span></span>/etc/passwd?format<span class="o">=</span>%<span class="p">&amp;</span><span class="nv">xss</span><span class="o">=</span><span class="s2">"&gt;&lt;script&gt;alert('GoLismero');&lt;/script&gt;&amp;traversal=../../&amp;sql=' OR 1;</span>
+</pre></div>
+<p>对应的规则</p>
+<div class="highlight"><pre><span></span>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER1"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;rule_name&gt;</span>GoLismero Scanner<span class="nt">&lt;/rule_name&gt;</span>
+        <span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
+        <span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
+        <span class="nt">&lt;threshold/&gt;</span>
+        <span class="nt">&lt;freq_designate/&gt;</span>
+        <span class="nt">&lt;pre_check</span> <span class="na">part=</span><span class="s">"path"</span><span class="nt">&gt;</span>GoLismero<span class="nt">&lt;/pre_check&gt;</span>
+        <span class="nt">&lt;check_list&gt;</span>
+            <span class="nt">&lt;path</span> <span class="na">type=</span><span class="s">"INCL"</span><span class="nt">&gt;</span><span class="cp">&lt;![CDATA[GoLismero]]&gt;</span>/<span class="nt">&lt;/path&gt;</span>
+        <span class="nt">&lt;/check_list&gt;</span>
+        <span class="nt">&lt;alert_email/&gt;</span>
+        <span class="nt">&lt;action/&gt;</span>
+        <span class="nt">&lt;desc</span> <span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>检测到GoLismero扫描<span class="nt">&lt;/desc&gt;</span>
+    <span class="nt">&lt;/rule&gt;</span>
+</pre></div>
+<ul>
+<li>UA(HTTP)</li>
+</ul>
+<p>通过bro分析http请求中的UA头</p>
+<div class="highlight"><pre><span></span> Mozilla/5.0 <span class="o">(</span>compatible, GoLismero/2.0 The Web Knife<span class="p">;</span> +https://github.com/golismero/golismero<span class="o">)</span>
+</pre></div>
+<p>对应的规则</p>
+<div class="highlight"><pre><span></span>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER2"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;rule_name&gt;</span>GoLismero Traffic<span class="nt">&lt;/rule_name&gt;</span>
+        <span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
+        <span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
+        <span class="nt">&lt;threshold/&gt;</span>
+        <span class="nt">&lt;freq_designate/&gt;</span>
+        <span class="nt">&lt;pre_check</span> <span class="na">part=</span><span class="s">"type"</span><span class="nt">&gt;</span>http<span class="nt">&lt;/pre_check&gt;</span>
+        <span class="nt">&lt;check_list&gt;</span>
+            <span class="nt">&lt;http.request.headers.user-agent</span> <span class="na">type=</span><span class="s">"REGEX"</span><span class="nt">&gt;</span>
+                <span class="cp">&lt;![CDATA[GoLismero]]&gt;</span><span class="nt">&lt;/http.request.headers.user-agent&gt;</span>
+        <span class="nt">&lt;/check_list&gt;</span>
+        <span class="nt">&lt;alert_email/&gt;</span>
+        <span class="nt">&lt;action/&gt;</span>
+        <span class="nt">&lt;desc</span> <span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>GoLismero Scanner<span class="nt">&lt;/desc&gt;</span>
+    <span class="nt">&lt;/rule&gt;</span>
+</pre></div>
+<ul>
+<li>看看header里面有没有其他字段</li>
+</ul>
+<div class="highlight"><pre><span></span>GET / HTTP/1.1
+Accept: text/html,application/xhtml+xml,application/xml<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.9,image/webp,image/apng,*/*<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.9
+Cache-Control: max-age<span class="o">=</span><span class="m">0</span>
+Connection: keep-alive
+
+X-Scanner: Netsparker
+
+Upgrade-Insecure-Requests: <span class="m">1</span>
+User-Agent: <span class="m">68</span>.0.3440.106 
+</pre></div>
+<p>对应规则</p>
+<div class="highlight"><pre><span></span>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER7"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;rule_name&gt;</span>Netsparker Scanner<span class="nt">&lt;/rule_name&gt;</span>
+        <span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
+        <span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
+        <span class="nt">&lt;threshold/&gt;</span>
+        <span class="nt">&lt;freq_designate/&gt;</span>
+        <span class="nt">&lt;pre_check</span> <span class="na">part=</span><span class="s">"http.request.headers.X-Scanner"</span><span class="nt">&gt;</span>Netsparker<span class="nt">&lt;/pre_check&gt;</span>
+        <span class="nt">&lt;check_list&gt;</span>
+            <span class="nt">&lt;http.request.headers.X-Scanner</span> <span class="na">type=</span><span class="s">"INCL"</span><span class="nt">&gt;</span><span class="cp">&lt;![CDATA[Netsparker]]&gt;</span><span class="nt">&lt;/http.request.headers.X-Scanner&gt;</span>
+        <span class="nt">&lt;/check_list&gt;</span>
+        <span class="nt">&lt;alert_email/&gt;</span>
+        <span class="nt">&lt;action/&gt;</span>
+        <span class="nt">&lt;desc</span> <span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>Netsparker Scanner<span class="nt">&lt;/desc&gt;</span>
+    <span class="nt">&lt;/rule&gt;</span>
+</pre></div>
+<ul>
+<li>端口扫描</li>
+</ul>
+<p>来自bro  conn.log 的conn_state字段</p>
+<div class="highlight"><pre><span></span>S0  看到连接尝试，没有响应。
+S1  已建立连接，未终止。
+SF  正常建立和终止。
+REJ 连接尝试被拒绝。
+S2  已建立连接，并且看到发起人关闭尝试（但没有来自响应者的回复）。
+S3  建立连接并通过响应者查看关闭尝试（但没有来自发起者的回复）。
+RSTO    建立连接，发起者中止（发送RST）。
+RSTR    响应者发送了RST。
+RSTOS0  发起者发送了一个SYN后跟一个RST，未看到来自响应者的SYN-ACK。
+RSTRH   响应者发送了一个SYN ACK后跟一个RST，未见过发起人的SYN。
+SH  发起者发送了一个SYN后跟一个FIN，我们从未看到来自响应者的SYN ACK，连接是“半”打开状态。
+SHR 响应者发送了一个SYN ACK后跟一个FIN，我们从未看到来自发起者的SYN。
+OTH 没有看到SYN，没有关闭全部连接。
+</pre></div>
+<p>3次握手，建立tcp连接</p>
+<p><img alt="ml1" class="img-fluid" src="../images/7b652.png"/></p>
+<p>4次挥手，断开连接</p>
+<p><img alt="ml1" class="img-fluid" src="../images/0ba8.png"/></p>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

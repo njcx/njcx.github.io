@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>bro 打log进kafka | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/H7.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="bro 打log进kafka">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>bro 打log进kafka
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-06-06T13:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Wed 06 June 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/bro.html">bro</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/bro.html">#bro</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>安装</h4>
+<p>bro的安装参照<a href="https://www.njcx.bid/posts/H11.html">bro安装</a></p>
+<p>编译 librdkafka</p>
+<div class="highlight"><pre><span></span>二选一
+
+<span class="c1"># wget https://github.com/edenhill/librdkafka/archive/v0.11.5.tar.gz</span>
+
+<span class="c1"># tar -zxvf v0.11.5.tar.gz</span>
+
+<span class="c1"># cd librdkafka-0.11.5 &amp;&amp; ./configure &amp;&amp; make &amp;&amp; make install</span>
+
+
+<span class="c1"># yum install librdkafka  librdkafka-devel -y</span>
+</pre></div>
+<p>把bro 添加到环境变量  （/etc/profile）</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">BRO_HOME</span><span class="o">=</span>/opt/bro
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$BRO_HOME</span>/bin
+</pre></div>
+<p>注意：</p>
+<p>bro-2.5.5.tar.gz  解压后的源码目录不要删除，后面有用</p>
+<div class="highlight"><pre><span></span><span class="c1">#  pip install zkg</span>
+<span class="c1">#  zkg autoconfig</span>
+</pre></div>
+<p>bro-pkg 是bro的包管理器，在包安装的过程中，会依赖bro源码目录，不然某些bro插件安装会报错</p>
+<p>安装metron-bro-plugin-kafka插件</p>
+<div class="highlight"><pre><span></span><span class="c1">#  zkg install apache/metron-bro-plugin-kafka --version master</span>
+</pre></div>
+<p>编译 bro 的 kafka插件</p>
+<div class="highlight"><pre><span></span><span class="c1">#cd bro-2.5.5/aux/plugins/kafka/</span>
+<span class="c1"># ./configure --bro-dist=../../.. --install-root=/opt/bro/lib/bro/plugins</span>
+<span class="c1"># make &amp;&amp; make install</span>
+</pre></div>
+<p>测试</p>
+<div class="highlight"><pre><span></span><span class="c1"># bro -N Bro::Kafka</span>
+Bro::Kafka - Writes logs to Kafka <span class="o">(</span>dynamic, version <span class="m">0</span>.1<span class="o">)</span>
+</pre></div>
+<h4>配置</h4>
+<div class="highlight"><pre><span></span>@load Bro/Kafka/logs-to-kafka.bro
+redef Kafka::logs_to_send <span class="o">=</span> set<span class="o">(</span>Conn::LOG, HTTP::LOG<span class="o">)</span><span class="p">;</span>
+redef Kafka::kafka_conf <span class="o">=</span> table<span class="o">(</span>
+    <span class="o">[</span><span class="s2">"metadata.broker.list"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"localhost:9092"</span>
+<span class="o">)</span><span class="p">;</span>
+redef Kafka::topic_name <span class="o">=</span> <span class="s2">"bro"</span><span class="p">;</span>
+</pre></div>
+<div class="highlight"><pre><span></span>@load Apache/Kafka
+
+redef Kafka::logs_to_send <span class="o">=</span> set<span class="o">(</span>Conn::LOG, DNS::LOG, SSH::LOG,SNMP::LOG, SMTP::LOG, mysql::LOG, NTLM::LOG, HTTP::LOG<span class="o">)</span><span class="p">;</span>
+
+redef Kafka::topic_name <span class="o">=</span> <span class="s2">"bro_all"</span><span class="p">;</span>
+redef Kafka::kafka_conf <span class="o">=</span> table<span class="o">(</span>
+<span class="o">[</span><span class="s2">"metadata.broker.list"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"10.10.128.9:9092"</span>
+
+<span class="o">)</span><span class="p">;</span>
+<span class="c1">#redef Kafka::tag_json = T;</span>
+
+event bro_init<span class="o">()</span> <span class="p">&amp;</span><span class="nv">priority</span><span class="o">=</span>-10
+<span class="o">{</span>
+    <span class="c1"># handles HTTP</span>
+    <span class="nb">local</span> http_filter: Log::Filter <span class="o">=</span> <span class="o">[</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="s2">"kafka-http"</span>,
+        <span class="nv">$writer</span> <span class="o">=</span> Log::WRITER_KAFKAWRITER,
+        <span class="nv">$config</span> <span class="o">=</span> table<span class="o">(</span>
+                <span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"http"</span>       
+<span class="o">)</span>
+    <span class="o">]</span><span class="p">;</span>
+    Log::add_filter<span class="o">(</span>HTTP::LOG, http_filter<span class="o">)</span><span class="p">;</span>
+
+
+    <span class="nb">local</span> dns_filter: Log::Filter <span class="o">=</span> <span class="o">[</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="s2">"kafka-dns"</span>,
+        <span class="nv">$writer</span> <span class="o">=</span> Log::WRITER_KAFKAWRITER,
+        <span class="nv">$config</span> <span class="o">=</span> table<span class="o">(</span>
+                <span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"dns"</span> <span class="o">)</span>
+    <span class="o">]</span><span class="p">;</span>
+    Log::add_filter<span class="o">(</span>DNS::LOG, dns_filter<span class="o">)</span><span class="p">;</span>
+
+    <span class="nb">local</span> mysql_filter: Log::Filter <span class="o">=</span> <span class="o">[</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="s2">"kafka-mysql"</span>, 
+        <span class="nv">$writer</span> <span class="o">=</span> Log::WRITER_KAFKAWRITER, 
+        <span class="nv">$config</span> <span class="o">=</span> table<span class="o">(</span>
+                <span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"mysql"</span> <span class="o">)</span>
+    <span class="o">]</span><span class="p">;</span> 
+    Log::add_filter<span class="o">(</span>mysql::LOG, mysql_filter<span class="o">)</span><span class="p">;</span>
+
+    <span class="nb">local</span> conn_filter: Log::Filter <span class="o">=</span> <span class="o">[</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="s2">"kafka-conn"</span>, 
+        <span class="nv">$writer</span> <span class="o">=</span> Log::WRITER_KAFKAWRITER, 
+        <span class="nv">$config</span> <span class="o">=</span> table<span class="o">(</span>
+                <span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"conn"</span> <span class="o">)</span>
+    <span class="o">]</span><span class="p">;</span> 
+    Log::add_filter<span class="o">(</span>Conn::LOG, conn_filter<span class="o">)</span><span class="p">;</span>
+
+
+    <span class="nb">local</span> ntlm_filter: Log::Filter <span class="o">=</span> <span class="o">[</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="s2">"kafka-ntlm"</span>, 
+        <span class="nv">$writer</span> <span class="o">=</span> Log::WRITER_KAFKAWRITER, 
+        <span class="nv">$config</span> <span class="o">=</span> table<span class="o">(</span>
+                <span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"ntlm"</span> <span class="o">)</span>
+    <span class="o">]</span><span class="p">;</span> 
+    Log::add_filter<span class="o">(</span>NTLM::LOG, ntlm_filter<span class="o">)</span><span class="p">;</span>
+
+
+    <span class="nb">local</span> ssh_filter: Log::Filter <span class="o">=</span> <span class="o">[</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="s2">"kafka-ssh"</span>, 
+        <span class="nv">$writer</span> <span class="o">=</span> Log::WRITER_KAFKAWRITER, 
+        <span class="nv">$config</span> <span class="o">=</span> table<span class="o">(</span>
+                <span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"ssh"</span> <span class="o">)</span>
+    <span class="o">]</span><span class="p">;</span> 
+    Log::add_filter<span class="o">(</span>SSH::LOG, ssh_filter<span class="o">)</span><span class="p">;</span>
+
+
+    <span class="nb">local</span> smtp_filter: Log::Filter <span class="o">=</span> <span class="o">[</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="s2">"kafka-smtp"</span>,
+        <span class="nv">$writer</span> <span class="o">=</span> Log::WRITER_KAFKAWRITER,
+        <span class="nv">$config</span> <span class="o">=</span> table<span class="o">(</span>
+                <span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"smtp"</span> <span class="o">)</span>
+    <span class="o">]</span><span class="p">;</span>
+    Log::add_filter<span class="o">(</span>SMTP::LOG, smtp_filter<span class="o">)</span><span class="p">;</span>
+
+
+
+    <span class="nb">local</span> snmp_filter: Log::Filter <span class="o">=</span> <span class="o">[</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="s2">"kafka-snmp"</span>,
+        <span class="nv">$writer</span> <span class="o">=</span> Log::WRITER_KAFKAWRITER,
+        <span class="nv">$config</span> <span class="o">=</span> table<span class="o">(</span>
+                <span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"snmp"</span> <span class="o">)</span>
+    <span class="o">]</span><span class="p">;</span>
+    Log::add_filter<span class="o">(</span>SNMP::LOG, snmp_filter<span class="o">)</span><span class="p">;</span>
+
+<span class="o">}</span>
+</pre></div>
+<p>启动</p>
+<div class="highlight"><pre><span></span><span class="c1">#./broctl deploy</span>
+<span class="c1">#./broctl start</span>
+</pre></div>
+<h4>测试</h4>
+<div class="highlight"><pre><span></span><span class="c1">#./ kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bro</span>
+
+创建 bro topic
+
+<span class="c1">#./kafka-topics.sh --list --zookeeper localhost:2181</span>
+
+查看是否创建bro
+
+<span class="c1">#./kafka-console-producer.sh --broker-list localhost:9092 --topic bro</span>
+
+创建生产者
+
+<span class="c1">#./kafka-console-consumer.sh --zookeeper localhost:2181 --topic bro --from-beginning</span>
+
+创建消费者
+
+<span class="c1"># ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic bro --from-beginning (新版本kafka .90版本之后)</span>
+
+创建消费者（新版本）  
+</pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

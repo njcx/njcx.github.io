@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>zabbix实践笔记 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/H25.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="记录一下Zabbix实践笔记 ~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>zabbix实践笔记
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-07-01T16:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        日 01 七月 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/zabbix.html">Zabbix</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/zabbix.html">#zabbix</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>介绍</h4>
+<h4>安装</h4>
+<p>版本：centos7.3，zabbix-4.0</p>
+<div class="highlight"><pre><span></span>sudo tee -a /etc/yum.repos.d/zabbix.repo &gt;&gt; EOF
+<span class="o">[</span>zabbix<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>Zabbix Official Repository - <span class="nv">$basearch</span>
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.aliyun.com/zabbix/zabbix/4.0/rhel/7/<span class="nv">$basearch</span>/
+<span class="nv">enabled</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgkey</span><span class="o">=</span>https://mirrors.aliyun.com/zabbix/RPM-GPG-KEY-ZABBIX
+EOF
+</pre></div>
+<p>这里没有用zabbix官网的源，不知道是不是挂了，一直time out，所以我把baseurl 改为阿里源的。</p>
+<div class="highlight"><pre><span></span>yum install zabbix-server-mysql zabbix-web-mysql zabbix-agent -y
+</pre></div>
+<p>这里会报错</p>
+<p>Requires: libiksemel.so.3()(64bit)</p>
+<div class="highlight"><pre><span></span><span class="c1"># wget ftp://ftp.pbone.net/mirror/ftp5.gwdg.de/pub/opensuse/repositories/home:/aevseev/CentOS_CentOS-6/x86_64/iksemel-1.4-20.1.x86_64.rpm</span>
+<span class="c1"># yum install iksemel-1.4-20.1.x86_64.rpm</span>
+</pre></div>
+<div class="highlight"><pre><span></span>yum install mariadb-server -y
+</pre></div>
+<h4>配置</h4>
+<p>首先启动MariaDB</p>
+<div class="highlight"><pre><span></span>systemctl start mariadb
+</pre></div>
+<p>设置开机启动</p>
+<div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> mariadb
+</pre></div>
+<p>接下来进行MariaDB的相关简单配置</p>
+<div class="highlight"><pre><span></span>mysql_secure_installation
+</pre></div>
+<p>首先是设置密码，会提示先输入密码
+配置MariaDB的字符集</p>
+<p>vim /etc/my.cnf</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>mysqld<span class="o">]</span>
+<span class="nv">init_connect</span><span class="o">=</span><span class="s1">'SET collation_connection = utf8_general_ci'</span> 
+<span class="nv">init_connect</span><span class="o">=</span><span class="s1">'SET NAMES utf8'</span> 
+character-set-server<span class="o">=</span>utf8 
+collation-server<span class="o">=</span>utf8_general_ci 
+skip-character-set-client-handshake
+</pre></div>
+<p>vim /etc/my.cnf.d/client.cnf
+在[client]中添加</p>
+<div class="highlight"><pre><span></span>default-character-set<span class="o">=</span>utf8
+</pre></div>
+<p>vim /etc/my.cnf.d/mysql-clients.cnf
+在[mysql]中添加</p>
+<div class="highlight"><pre><span></span>default-character-set<span class="o">=</span>utf8
+</pre></div>
+<p>全部配置完成，重启mariadb</p>
+<div class="highlight"><pre><span></span>systemctl restart mariadb
+</pre></div>
+<p>之后进入MariaDB查看字符集</p>
+<div class="highlight"><pre><span></span>mysql&gt; show variables like <span class="s2">"%character%"</span><span class="p">;</span>show variables like <span class="s2">"%collation%"</span><span class="p">;</span>
+</pre></div>
+<div class="highlight"><pre><span></span>mysql&gt; create database zabbix<span class="p">;</span>
+mysql&gt; grant all privileges on zabbix.* to njcx@localhost identified by <span class="s1">'qwaszxerdfcv'</span><span class="p">;</span>
+mysql&gt; quit<span class="p">;</span>
+</pre></div>
+<div class="highlight"><pre><span></span> zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz <span class="p">|</span> mysql -unjcx -p zabbix
+</pre></div>
+<p>启动 zabbix_server 报错</p>
+<div class="highlight"><pre><span></span><span class="m">29225</span>:20180714:084923.611 cannot start preprocessing service: Cannot <span class="nb">bind</span> socket to <span class="s2">"/var/run/zabbix/zabbix_server_preprocessing.sock"</span>: <span class="o">[</span><span class="m">13</span><span class="o">]</span> Permission denied.
+</pre></div>
+<p>关闭selinux 即可, 先临时关闭，setenforce 0</p>
+<p>vim /etc/selinux/config</p>
+<div class="highlight"><pre><span></span>SELINUX=disabled
+</pre></div>
+<p>永久关闭</p>
+<div class="highlight"><pre><span></span><span class="c1"># vim /etc/php.ini</span>
+date.timezone <span class="o">=</span> Asia/Shanghai
+</pre></div>
+<div class="highlight"><pre><span></span>systemctl restart zabbix-server zabbix-agent mariadb  httpd
+systemctl <span class="nb">enable</span> zabbix-server zabbix-agent mariadb  httpd
+</pre></div>
+<p>访问 http://192.168.1.110/zabbix/ 就OK，配置一下，默认用户密码 Admin/zabbix</p>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

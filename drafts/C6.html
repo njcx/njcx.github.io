@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Redis学习笔记总结(A) | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/drafts/C6.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Redis学习笔记">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Redis学习笔记总结(A)
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-06-02T22:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Sat 02 June 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/shu-ju-ku.html">数据库</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/redis.html">#Redis</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>介绍</h4>
+<p>Redis是很火的一个Key-Value数据库,它以优异的性能得到了广泛的应用.Redis是一个内存数据库，但在磁盘数据库上是持久的，它有5种数据类型，string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)，它所有的操作都是原子类型的,可以应对复杂的生产环境,可用于多种用例，如：缓存，消息队列，应用程序中短期数据。</p>
+<h4>安装</h4>
+<p>Redis 可以编译安装,也可以apt-get /yum安装,一般编译安装的版本比较新一些</p>
+<div class="highlight"><pre><span></span>centos/rhce : yum install redis -y
+</pre></div>
+<div class="highlight"><pre><span></span>debian/ubuntu : sudo apt-get install redis-server -y
+</pre></div>
+<p>编译安装,</p>
+<div class="highlight"><pre><span></span>wget http://download.redis.io/releases/redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> tar -xzvf redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> <span class="nb">cd</span> redis-3.2.9
+
+make <span class="o">&amp;&amp;</span> make <span class="nv">PREFIX</span><span class="o">=</span>/usr/local/redis install <span class="o">&amp;&amp;</span> mkdir /usr/local/redis/etc/
+
+cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /usr/local/redis/bin/ <span class="o">&amp;&amp;</span> cp redis-benchmark redis-cli redis-server /usr/bin/
+</pre></div>
+<h4>使用</h4>
+<p>先通过读取配置文件启动服务端,我通过apt-get 安装的,默认配置文件在 /etc/redis/redis.conf,先启动服务端</p>
+<div class="highlight"><pre><span></span>redis-server /etc/redis/redis.conf
+</pre></div>
+<p>再启动客服端</p>
+<div class="highlight"><pre><span></span>redis-cli
+</pre></div>
+<h4>命令</h4>
+<p>Redis的命令主要围绕着:配置,以及相关数据类型的操作的.</p>
+<ul>
+<li>配置</li>
+</ul>
+<p>查看配置</p>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; CONFIG GET *
+
+<span class="m">127</span>.0.0.1:6379&gt; CONFIG GET loglevel  
+</pre></div>
+<p>更改配置</p>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; CONFIG SET CONFIG_SETTING_NAME NEW_CONFIG_VALUE
+
+<span class="m">127</span>.0.0.1:6379&gt; CONFIG SET loglevel <span class="s2">"notice"</span> 
+</pre></div>
+<ul>
+<li>Redis 键命令</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;　DEL key　　             // 删除key
+<span class="m">127</span>.0.0.1:6379&gt; DUMP key                // 返回存储在指定键的值的序列化版本。
+<span class="m">127</span>.0.0.1:6379&gt; EXISTS key              // 检查键是否存在
+<span class="m">127</span>.0.0.1:6379&gt; EXPIRE key seconds         //   设置键在指定时间秒数之后到期/过期。
+<span class="m">127</span>.0.0.1:6379&gt; EXPIRE key timestamp        // 设置在指定时间戳之后键到期/过期。这里的时间是Unix时间戳格式。
+<span class="m">127</span>.0.0.1:6379&gt; PEXPIRE key milliseconds     // 设置键的到期时间<span class="o">(</span>以毫秒为单位<span class="o">)</span>。1000毫秒等于1秒
+<span class="m">127</span>.0.0.1:6379&gt; PEXPIREAT key milliseconds-timestamp // 以Unix时间戳形式来设置键的到期时间<span class="o">(</span>以毫秒为单位<span class="o">)</span>。
+<span class="m">127</span>.0.0.1:6379&gt; KEYS pattern                // 查找与指定模式匹配的所有键。
+<span class="m">127</span>.0.0.1:6379&gt; MOVE key db                // 将键移动到另一个数据库
+<span class="m">127</span>.0.0.1:6379&gt; PERSIST key                // 删除指定键的过期时间
+<span class="m">127</span>.0.0.1:6379&gt; PTTL key                     // 获取键的剩余到期时间
+<span class="m">127</span>.0.0.1:6379&gt; RANDOMKEY                  // 随机获取一个key
+<span class="m">127</span>.0.0.1:6379&gt; RENAME key newkey        // 重命名一个key
+<span class="m">127</span>.0.0.1:6379&gt; RENAMENX key newkey         // 如果新键不存在，重命名键
+<span class="m">127</span>.0.0.1:6379&gt; TYPE key                   // 返回key的数据类型
+</pre></div>
+<ul>
+<li>Redis 字符串命令</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; SET key value                  // 此命令设置指定键的值。
+<span class="m">127</span>.0.0.1:6379&gt; GET key                        // 得到键的值
+<span class="m">127</span>.0.0.1:6379&gt; GETRANGE key start end         // 得到key 上字符串的子串<span class="o">(</span>索引<span class="o">)</span>
+<span class="m">127</span>.0.0.1:6379&gt; GETSET key value                // 先得到旧值,再设置新值
+<span class="m">127</span>.0.0.1:6379&gt; GETBIT key offset              // 返回在键处存储的字符串值中偏移处的位值
+<span class="m">127</span>.0.0.1:6379&gt; MGET key<span class="o">[</span>key1<span class="o">]</span>                //    获取所有给定键的值
+<span class="m">127</span>.0.0.1:6379&gt; SETBIT key offset value        // 存储在键上的字符串值中设置或清除偏移处的位
+<span class="m">127</span>.0.0.1:6379&gt; SETEX key seconds value            //   使用键和到期时间来设置值<span class="o">(</span>同时把两个都设置了<span class="o">)</span>
+<span class="m">127</span>.0.0.1:6379&gt; SETNX key value                 // 设置键的值，仅当键不存在时
+<span class="m">127</span>.0.0.1:6379&gt; SETRANGE key offset value       // 在指定偏移处开始的键处覆盖字符串的一部分
+<span class="m">127</span>.0.0.1:6379&gt; STRLEN key                        // 获取key中值的长度
+<span class="m">127</span>.0.0.1:6379&gt; MSET key value <span class="o">[</span>key value …<span class="o">]</span>       // 为多个key 设置 值
+<span class="m">127</span>.0.0.1:6379&gt; MSETNX key value <span class="o">[</span>key value …<span class="o">]</span>        // 为多个键分别设置它们的值，仅当键不存在时
+<span class="m">127</span>.0.0.1:6379&gt; PSETEX key milliseconds value       // 设置键的值和到期时间<span class="o">(</span>以毫秒为单位<span class="o">)</span>
+<span class="m">127</span>.0.0.1:6379&gt; INCR key                        // 将键的整数值增加1
+<span class="m">127</span>.0.0.1:6379&gt; INCRBY key  increment             //  将键的整数值按给定的数值增加
+<span class="m">127</span>.0.0.1:6379&gt; INCRBYFLOAT key increment          // 将键的整数值按给定的数值增加
+<span class="m">127</span>.0.0.1:6379&gt; DECR key                           //  将键的整数值减1
+<span class="m">127</span>.0.0.1:6379&gt; DECRBY key decrement              //  按给定数值减少键的整数值
+<span class="m">127</span>.0.0.1:6379&gt; APPEND key value                 //     将指定值附加到键
+</pre></div>
+<ul>
+<li>Redis 哈希命令</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; HMGET key field1 <span class="o">[</span>field2<span class="o">]</span>                      // 获取所有给定哈希字段的值
+<span class="m">127</span>.0.0.1:6379&gt; HMSET key field1 value1 <span class="o">[</span>field2 value2 <span class="o">]</span>       // 为多个哈希字段分别设置它们的值
+<span class="m">127</span>.0.0.1:6379&gt; HSET key field value                         // 设置散列字段的字符串值
+<span class="m">127</span>.0.0.1:6379&gt; HSETNX key field value                         //   仅当字段不存在时，才设置散列字段的值
+<span class="m">127</span>.0.0.1:6379&gt; HLEN key                                      // 获取散列中的字段数量
+<span class="m">127</span>.0.0.1:6379&gt; HKEYS key                                   // 获取哈希中的所有字段
+<span class="m">127</span>.0.0.1:6379&gt; HINCRBY key field increment                  //     将哈希字段的整数值按给定数字增加
+<span class="m">127</span>.0.0.1:6379&gt; HINCRBYFLOAT key field increment               // 将哈希字段的浮点值按给定数值增加
+<span class="m">127</span>.0.0.1:6379&gt; HGETALL key                                   // 获取存储在指定键的哈希中的所有字段和值
+<span class="m">127</span>.0.0.1:6379&gt; HGET key field                              // 获取存储在指定键的哈希字段的值
+<span class="m">127</span>.0.0.1:6379&gt; HEXISTS key field                            // 判断是否存在散列字段
+<span class="m">127</span>.0.0.1:6379&gt; HDEL key field2 <span class="o">[</span>field2<span class="o">]</span>                       // 删除一个或多个哈希字段
+<span class="m">127</span>.0.0.1:6379&gt; HVALS key                                   // 获取哈希中的所有值
+</pre></div>
+<ul>
+<li>Redis 列表命令</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; BLPOP key1 <span class="o">[</span>key2 <span class="o">]</span> timeout          // 删除并获取列表中的第一个元素，或阻塞，直到有一个元素可用
+<span class="m">127</span>.0.0.1:6379&gt; BRPOP key1 <span class="o">[</span>key2 <span class="o">]</span> timeout           //     删除并获取列表中的最后一个元素，或阻塞，直到有一个元素可用
+<span class="m">127</span>.0.0.1:6379&gt; LINDEX key index                 // 通过其索引从列表获取元素
+<span class="m">127</span>.0.0.1:6379&gt; LLEN key                           //   获取列表的长度
+<span class="m">127</span>.0.0.1:6379&gt; LINSERT key BEFORE/AFTER pivot value  // 在列表中的另一个元素之前或之后插入元素
+<span class="m">127</span>.0.0.1:6379&gt; LPOP key                           // 删除并获取列表中的第一个元素
+<span class="m">127</span>.0.0.1:6379&gt; LPUSH key value1 <span class="o">[</span>value2<span class="o">]</span>            //将一个或多个值添加到列表
+<span class="m">127</span>.0.0.1:6379&gt; BRPOPLPUSH <span class="nb">source</span> destination timeout   // 从列表中弹出值，将其推送到另一个列表并返回它<span class="p">;</span> 或阻塞，直到一个可用
+<span class="m">127</span>.0.0.1:6379&gt; RPOP key                             // 删除并获取列表中的最后一个元素
+<span class="m">127</span>.0.0.1:6379&gt; RPUSH key value1 <span class="o">[</span>value2<span class="o">]</span>           //将一个或多个值附加到列表
+<span class="m">127</span>.0.0.1:6379&gt; RPUSHX key value                     //仅当列表存在时才将值附加到列表
+<span class="m">127</span>.0.0.1:6379&gt; RPOPLPUSH <span class="nb">source</span> destination        // 删除列表中的最后一个元素，将其附加到另一个列表并返回
+<span class="m">127</span>.0.0.1:6379&gt; LREM key count value                 //     从列表中删除元素
+<span class="m">127</span>.0.0.1:6379&gt; LSET key index value            // 通过索引在列表中设置元素的值
+<span class="m">127</span>.0.0.1:6379&gt; LTRIM key start stop             // 修剪列表的指定范围
+<span class="m">127</span>.0.0.1:6379&gt; LPUSHX key value                  //仅当列表存在时，才向列表添加值
+<span class="m">127</span>.0.0.1:6379&gt; LRANGE key start stop          // 从列表中获取一系列元素
+</pre></div>
+<ul>
+<li>Redis 集合命令</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;  SADD key member1 <span class="o">[</span>member2<span class="o">]</span>         //将一个或多个成员添加到集合
+<span class="m">127</span>.0.0.1:6379&gt;  SCARD key                           // 获取集合中的成员数
+<span class="m">127</span>.0.0.1:6379&gt;  SDIFF key1 <span class="o">[</span>key2<span class="o">]</span>                    //    减去多个集合
+<span class="m">127</span>.0.0.1:6379&gt;  SDIFFSTORE destination key1 <span class="o">[</span>key2<span class="o">]</span>    // 减去多个集并将结果集存储在键中
+<span class="m">127</span>.0.0.1:6379&gt;  SINTER key1 <span class="o">[</span>key2<span class="o">]</span>                    // 集合相交
+<span class="m">127</span>.0.0.1:6379&gt;  SINTERSTORE destination key1 <span class="o">[</span>key2<span class="o">]</span>   // 交叉多个集合并将结果集存储在键中
+<span class="m">127</span>.0.0.1:6379&gt;  SISMEMBER key member                  // 判断确定给定值是否是集合的成员
+<span class="m">127</span>.0.0.1:6379&gt;  SMOVE <span class="nb">source</span> destination member        //将成员从一个集合移动到另一个集合
+<span class="m">127</span>.0.0.1:6379&gt;  SPOP key                               // 从集合中删除并返回随机成员
+<span class="m">127</span>.0.0.1:6379&gt;  SRANDMEMBER key <span class="o">[</span>count<span class="o">]</span>                //  从集合中获取一个或多个随机成员
+<span class="m">127</span>.0.0.1:6379&gt;  SREM key member1 <span class="o">[</span>member2<span class="o">]</span>             // 从集合中删除一个或多个成员
+<span class="m">127</span>.0.0.1:6379&gt;  SUNION key1 <span class="o">[</span>key2<span class="o">]</span>                  // 添加多个集合
+<span class="m">127</span>.0.0.1:6379&gt;  SUNIONSTORE destination key1 <span class="o">[</span>key2<span class="o">]</span>   // 添加多个集并将结果集存储在键中
+<span class="m">127</span>.0.0.1:6379&gt;  SSCAN key cursor <span class="o">[</span>MATCH pattern<span class="o">]</span> <span class="o">[</span>COUNT count<span class="o">]</span>  //     递增地迭代集合中的元素
+</pre></div>
+<ul>
+<li>Redis 有序集合(sorted set)</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; ZADD key score1 member1 <span class="o">[</span>score2 member2<span class="o">]</span>       //向有序集合添加一个或多个成员，或者更新已存在成员的分数
+<span class="m">127</span>.0.0.1:6379&gt; ZCARD key                                      // 获取有序集合的成员数
+<span class="m">127</span>.0.0.1:6379&gt; ZCOUNT key min max                             //计算在有序集合中指定区间分数的成员数
+<span class="m">127</span>.0.0.1:6379&gt; ZINCRBY key increment member                   //有序集合中对指定成员的分数加上增量 increment
+<span class="m">127</span>.0.0.1:6379&gt; ZINTERSTORE destination numkeys key <span class="o">[</span>key ...<span class="o">]</span>  //计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
+<span class="m">127</span>.0.0.1:6379&gt; ZLEXCOUNT key min max                          //在有序集合中计算指定字典区间内成员数量
+<span class="m">127</span>.0.0.1:6379&gt; ZRANGE key start stop <span class="o">[</span>WITHSCORES<span class="o">]</span>             //通过索引区间返回有序集合成指定区间内的成员
+<span class="m">127</span>.0.0.1:6379&gt; ZRANGEBYLEX key min max <span class="o">[</span>LIMIT offset count<span class="o">]</span>  //通过字典区间返回有序集合的成员
+<span class="m">127</span>.0.0.1:6379&gt; ZRANGEBYSCORE key min max <span class="o">[</span>WITHSCORES<span class="o">]</span> <span class="o">[</span>LIMIT<span class="o">]</span>  //通过分数返回有序集合指定区间内的成员
+<span class="m">127</span>.0.0.1:6379&gt; ZRANK key member                               // 返回有序集合中指定成员的索引
+<span class="m">127</span>.0.0.1:6379&gt; ZREM key member <span class="o">[</span>member ...<span class="o">]</span>                  //移除有序集合中的一个或多个成员
+<span class="m">127</span>.0.0.1:6379&gt; ZREMRANGEBYLEX key min max                     //移除有序集合中给定的字典区间的所有成员
+<span class="m">127</span>.0.0.1:6379&gt; ZREMRANGEBYRANK key start stop                 //移除有序集合中给定的排名区间的所有成员
+<span class="m">127</span>.0.0.1:6379&gt; ZREMRANGEBYSCORE key min max                  //移除有序集合中给定的分数区间的所有成员
+<span class="m">127</span>.0.0.1:6379&gt; ZREVRANGE key start stop <span class="o">[</span>WITHSCORES<span class="o">]</span>         //返回有序集中指定区间内的成员，通过索引，分数从高到底
+<span class="m">127</span>.0.0.1:6379&gt; ZREVRANGEBYSCORE key max min <span class="o">[</span>WITHSCORES<span class="o">]</span>     //返回有序集中指定分数区间内的成员，分数从高到低排序
+<span class="m">127</span>.0.0.1:6379&gt; ZREVRANK key member                           // 返回有序集合中指定成员的排名，有序集成员按分数值递减<span class="o">(</span>从大到小<span class="o">)</span>排序
+<span class="m">127</span>.0.0.1:6379&gt; ZSCORE key member                               //返回有序集中，成员的分数值
+<span class="m">127</span>.0.0.1:6379&gt; ZUNIONSTORE destination numkeys key <span class="o">[</span>key ...<span class="o">]</span>   //计算给定的一个或多个有序集的并集，并存储在新的 key 中
+<span class="m">127</span>.0.0.1:6379&gt; ZSCAN key cursor <span class="o">[</span>MATCH pattern<span class="o">]</span> <span class="o">[</span>COUNT count<span class="o">]</span>   //迭代有序集合中的元素（包括元素成员和元素分值）
+</pre></div>
+<ul>
+<li>Redis HyperLogLog</li>
+</ul>
+<p>HyperLogLog 是做基数统计的算法</p>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; PFADD key element <span class="o">[</span>element ...<span class="o">]</span>               //添加指定元素到 HyperLogLog 中。
+<span class="m">127</span>.0.0.1:6379&gt; PFCOUNT key <span class="o">[</span>key ...<span class="o">]</span>.                        //返回给定 HyperLogLog 的基数估算值。
+<span class="m">127</span>.0.0.1:6379&gt; PFMERGE destkey sourcekey <span class="o">[</span>sourcekey ...<span class="o">]</span>     //将多个 HyperLogLog 合并为一个 HyperLogLog
+</pre></div>
+<ul>
+<li>Redis 发布订阅</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; PSUBSCRIBE pattern <span class="o">[</span>pattern ...<span class="o">]</span>               //订阅一个或多个符合给定模式的频道。
+<span class="m">127</span>.0.0.1:6379&gt; PUBSUB subcommand <span class="o">[</span>argument <span class="o">[</span>argument ...<span class="o">]]</span>    //查看订阅与发布系统状态。
+<span class="m">127</span>.0.0.1:6379&gt; PUBLISH channel message                         //将信息发送到指定的频道。
+<span class="m">127</span>.0.0.1:6379&gt; PUNSUBSCRIBE <span class="o">[</span>pattern <span class="o">[</span>pattern ...<span class="o">]]</span>            //退订所有给定模式的频道。
+<span class="m">127</span>.0.0.1:6379&gt; SUBSCRIBE channel <span class="o">[</span>channel ...<span class="o">]</span>                //订阅给定的一个或多个频道的信息。
+<span class="m">127</span>.0.0.1:6379&gt; UNSUBSCRIBE <span class="o">[</span>channel <span class="o">[</span>channel ...<span class="o">]]</span>            //指退订给定的频道。
+</pre></div>
+<ul>
+<li>Redis 事务</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;  DISCARD                //取消事务，放弃执行事务块内的所有命令。
+<span class="m">127</span>.0.0.1:6379&gt;  EXEC                   //执行所有事务块内的命令。
+<span class="m">127</span>.0.0.1:6379&gt;  MULTI                  //标记一个事务块的开始。
+<span class="m">127</span>.0.0.1:6379&gt;  UNWATCH                //取消 WATCH 命令对所有 key 的监视。
+<span class="m">127</span>.0.0.1:6379&gt;  WATCH key <span class="o">[</span>key ...<span class="o">]</span>    // 监视一个<span class="o">(</span>或多个<span class="o">)</span> key ，如果在事务执行之前这个<span class="o">(</span>或这些<span class="o">)</span> key 被其他命令所改动，那么事务将被打断
+</pre></div>
+<p>样例</p>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; MULTI
+OK
+
+<span class="m">127</span>.0.0.1:6379&gt; SET book-name <span class="s2">"Mastering C++ in 21 days"</span>
+QUEUED
+
+<span class="m">127</span>.0.0.1:6379&gt; GET book-name
+QUEUED
+
+<span class="m">127</span>.0.0.1:6379&gt; SADD tag <span class="s2">"C++"</span> <span class="s2">"Programming"</span> <span class="s2">"Mastering Series"</span>
+QUEUED
+
+<span class="m">127</span>.0.0.1:6379&gt; SMEMBERS tag
+QUEUED
+
+<span class="m">127</span>.0.0.1:6379&gt; EXEC
+<span class="m">1</span><span class="o">)</span> OK
+<span class="m">2</span><span class="o">)</span> <span class="s2">"Mastering C++ in 21 days"</span>
+<span class="m">3</span><span class="o">)</span> <span class="o">(</span>integer<span class="o">)</span> <span class="m">3</span>
+<span class="m">4</span><span class="o">)</span> <span class="m">1</span><span class="o">)</span> <span class="s2">"Mastering Series"</span>
+   <span class="m">2</span><span class="o">)</span> <span class="s2">"C++"</span>
+   <span class="m">3</span><span class="o">)</span> <span class="s2">"Programming"</span>
+</pre></div>
+<ul>
+<li>Redis脚本</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;  EVAL script numkeys key <span class="o">[</span>key ...<span class="o">]</span> arg <span class="o">[</span>arg ...<span class="o">]</span>    //执行 Lua 脚本。
+<span class="m">127</span>.0.0.1:6379&gt;     EVALSHA sha1 numkeys key <span class="o">[</span>key ...<span class="o">]</span> arg <span class="o">[</span>arg ...<span class="o">]</span>   //执行 Lua 脚本。
+<span class="m">127</span>.0.0.1:6379&gt;     SCRIPT EXISTS script <span class="o">[</span>script ...<span class="o">]</span> 查看指定的脚本是否已经被保存在缓存当中。
+<span class="m">127</span>.0.0.1:6379&gt;     SCRIPT FLUSH 从脚本缓存中移除所有脚本。
+<span class="m">127</span>.0.0.1:6379&gt;     SCRIPT KILL 杀死当前正在运行的 Lua 脚本。
+<span class="m">127</span>.0.0.1:6379&gt;     SCRIPT LOAD script    将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本。
+</pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

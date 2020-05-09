@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Python 字符串方法详解 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/drafts/E4.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Python 字符串方法详解">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Python 字符串方法详解
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2017-04-25T10:40:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Tue 25 April 2017
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/python.html">Python</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/python.html">#Python</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>开始</h4>
+<div class="highlight"><pre><span></span><span class="nb">str</span><span class="o">.</span><span class="n">capitalize</span>  <span class="nb">str</span><span class="o">.</span><span class="n">isalnum</span>     <span class="nb">str</span><span class="o">.</span><span class="n">lstrip</span>      <span class="nb">str</span><span class="o">.</span><span class="n">splitlines</span>
+<span class="nb">str</span><span class="o">.</span><span class="n">center</span>      <span class="nb">str</span><span class="o">.</span><span class="n">isalpha</span>     <span class="nb">str</span><span class="o">.</span><span class="n">partition</span>   <span class="nb">str</span><span class="o">.</span><span class="n">startswith</span>
+<span class="nb">str</span><span class="o">.</span><span class="n">count</span>       <span class="nb">str</span><span class="o">.</span><span class="n">isdigit</span>     <span class="nb">str</span><span class="o">.</span><span class="n">replace</span>     <span class="nb">str</span><span class="o">.</span><span class="n">strip</span>
+<span class="nb">str</span><span class="o">.</span><span class="n">decode</span>      <span class="nb">str</span><span class="o">.</span><span class="n">islower</span>     <span class="nb">str</span><span class="o">.</span><span class="n">rfind</span>       <span class="nb">str</span><span class="o">.</span><span class="n">swapcase</span>
+<span class="nb">str</span><span class="o">.</span><span class="n">encode</span>      <span class="nb">str</span><span class="o">.</span><span class="n">isspace</span>     <span class="nb">str</span><span class="o">.</span><span class="n">rindex</span>      <span class="nb">str</span><span class="o">.</span><span class="n">title</span>
+<span class="nb">str</span><span class="o">.</span><span class="n">endswith</span>    <span class="nb">str</span><span class="o">.</span><span class="n">istitle</span>     <span class="nb">str</span><span class="o">.</span><span class="n">rjust</span>       <span class="nb">str</span><span class="o">.</span><span class="n">translate</span>
+<span class="nb">str</span><span class="o">.</span><span class="n">expandtabs</span>  <span class="nb">str</span><span class="o">.</span><span class="n">isupper</span>     <span class="nb">str</span><span class="o">.</span><span class="n">rpartition</span>  <span class="nb">str</span><span class="o">.</span><span class="n">upper</span>
+<span class="nb">str</span><span class="o">.</span><span class="n">find</span>        <span class="nb">str</span><span class="o">.</span><span class="n">join</span>        <span class="nb">str</span><span class="o">.</span><span class="n">rsplit</span>      <span class="nb">str</span><span class="o">.</span><span class="n">zfill</span>
+<span class="nb">str</span><span class="o">.</span><span class="n">format</span>      <span class="nb">str</span><span class="o">.</span><span class="n">ljust</span>       <span class="nb">str</span><span class="o">.</span><span class="n">rstrip</span>      
+<span class="nb">str</span><span class="o">.</span><span class="n">index</span>       <span class="nb">str</span><span class="o">.</span><span class="n">lower</span>       <span class="nb">str</span><span class="o">.</span><span class="n">split</span>       
+</pre></div>
+<p>以Python2.7.12为主，Python字符串有上述方法，一共38个方法。</p>
+<h4>介绍</h4>
+<ul>
+<li>capitalize   返回第一个字母大写开头的字符串</li>
+<li>isalpha  如果是字母，返回一个Ture；否则返回为 False</li>
+<li>isalnum  如果是字母或数字，返回一个Ture；否则返回为 False</li>
+<li>isdigit  如果是数字（0-9），返回一个Ture；否则返回为 False</li>
+<li>islower  如果 string 中包含至少一个区分大小写的字符，并且所有这些(区分大小写的)字符都是小写，则返回 True，否则返回 False</li>
+<li>isspace  如果 string 中只包含空格，则返回 True，否则返回 False.</li>
+<li>istitle  如果 string 是标题化的(见 title())则返回 True，否则返回 False</li>
+<li>isupper  如果 string 中包含至少一个区分大小写的字符，并且所有这些(区分大小写的)字符都是大写，则返回 True，否则返回 False</li>
+<li>center</li>
+<li>count</li>
+<li>decode </li>
+<li>endswith  endswith(obj, beg=0, end=len(string)) 检查字符串是否以 obj 结束，如果beg 或者 end 指定则检查指定的范围内是否以 obj 结束，如果是，返回 True,否则返回 False.</li>
+<li>expandtabs</li>
+<li>find     find(str, beg=0, end=len(string)),方法检测字符串中是否包含子字符串 str ，如果指定 beg（开始） 和 end（结束） 范围，则检查是否包含在指定范围内，如果包含子字符串返回开始的索引值，否则返回-1</li>
+<li>format  </li>
+<li>index</li>
+<li>join</li>
+<li>ljust</li>
+<li>lower</li>
+<li>lstrip</li>
+<li>partition</li>
+<li>replace</li>
+<li>rfind </li>
+<li>rindex</li>
+<li>rjust</li>
+<li>rpartition</li>
+<li>rsplit </li>
+<li>rstrip</li>
+<li>split </li>
+<li>splitlines</li>
+<li>startswith</li>
+<li>strip</li>
+<li>swapcase</li>
+<li>title</li>
+<li>translate</li>
+<li>upper</li>
+<li>zfill</li>
+</ul>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

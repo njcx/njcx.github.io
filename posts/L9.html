@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>常见中间件（middleware） 0day合集 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/L9.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="常见中间件（middleware） 0day合集">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>常见中间件（middleware） 0day合集
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2017-06-08T15:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Thu 08 June 2017
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/middleware.html">#middleware</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <ul>
+<li>
+<p>redis 未授权公网访问</p>
+<ul>
+<li>https://www.seebug.org/vuldb/ssvid-89715</li>
+</ul>
+</li>
+<li>
+<p>Mongodb RCE</p>
+<ul>
+<li>MongoDB before 2.0.9 and 2.2.x before 2.2.4</li>
+<li>https://www.exploit-db.com/exploits/24935</li>
+</ul>
+</li>
+<li>
+<p>MongoDB 未授权访问</p>
+<ul>
+<li>https://www.freebuf.com/articles/database/125127.html</li>
+</ul>
+</li>
+<li>
+<p>Memcached Server SASL 身份认证远程命令执行漏洞CVE-2016-8706(RCE)</p>
+<ul>
+<li>Memcached 1.4.31(tested)</li>
+<li>https://www.seebug.org/vuldb/ssvid-92507</li>
+</ul>
+</li>
+<li>
+<p>Memcached Server Update 远程代码执行漏洞</p>
+<ul>
+<li>https://www.seebug.org/vuldb/ssvid-92506</li>
+</ul>
+</li>
+<li>
+<p>Memcached Server Append/Prepend 远程代码执行漏洞</p>
+<ul>
+<li>https://www.seebug.org/vuldb/ssvid-92505</li>
+</ul>
+</li>
+<li>
+<p>Atlassian Jira 登陆后可以上传执行代码</p>
+<ul>
+<li>https://www.exploit-db.com/exploits/45851/</li>
+</ul>
+</li>
+<li>
+<p>Atlassian Confluence 任意文件读取和目录遍历漏洞 (CVE-2015-8399)</p>
+<ul>
+<li>Atlassian Confluence &lt; 5.8.17</li>
+<li>https://www.seebug.org/vuldb/ssvid-92416</li>
+</ul>
+</li>
+<li>
+<p>Atlassian Bitbucket Server远程代码执行漏洞（CVE-2018-5225）</p>
+<ul>
+<li>Atlassian Bitbucket Server 5.8.0 &lt; 5.8.2</li>
+<li>Atlassian Bitbucket Server 5.7.0 &lt; 5.7.3</li>
+<li>Atlassian Bitbucket Server 5.6.0 &lt; 5.6.5</li>
+<li>Atlassian Bitbucket Server 5.5.0 &lt; 5.5.8</li>
+<li>
+<p>Atlassian Bitbucket Server 4.13.0 &lt; 5.4.8</p>
+</li>
+<li>
+<p>https://www.linuxidc.com/Linux/2018-03/151578.htm</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Zabbix  SQL注入漏洞</p>
+<ul>
+<li>2.2.x, 3.0.0-3.0.3</li>
+<li>在Zabbix中有两个文件存在SQL注入漏洞，分别是jsrpc.php和latest.php，存在漏洞参数分别为：profileIdx2和toggle_ids</li>
+<li>https://blog.csdn.net/Jiajiajiang_/article/details/84064957</li>
+<li>https://www.jisec.com/sec/703.html</li>
+</ul>
+</li>
+<li>
+<p>Phpmyadmin</p>
+<ul>
+<li>phpmyadmin4.8.1后台getshell</li>
+<li>https://www.seebug.org/vuldb/ssvid-97355</li>
+<li>PhpMyAdmin 4.3.0—4.6.2 授权用户远程命令执行漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-92209</li>
+<li>phpmyadmin2.8.0.3任意文件包含漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-92339</li>
+</ul>
+</li>
+<li>
+<p>Jenkins</p>
+<ul>
+<li>Jenkins 任意文件读取漏洞(CVE-2018-1999002)</li>
+<li>https://www.seebug.org/vuldb/ssvid-97431</li>
+<li>Jenkins “Java 反序列化”过程远程命令执行漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-89725</li>
+</ul>
+</li>
+<li>
+<p>Elk</p>
+<ul>
+<li>Elasticsearch Kibana Console本地文件包含漏洞 (CVE-2018-17246)</li>
+<li>https://www.seebug.org/vuldb/ssvid-97730</li>
+<li>Elasticsearch Kibana跨站请求伪造漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-90026</li>
+</ul>
+</li>
+<li>
+<p>Gitlab</p>
+<ul>
+<li>Gitlab Wiki API 远程命令执行漏洞 (CVE-2018-18649)</li>
+<li>https://www.seebug.org/vuldb/ssvid-97723</li>
+<li>GitLab application server 文件读取导致命令执行漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-92516</li>
+<li>GitLab 模版 API 目录遍历漏洞 (CVE-2018-19856)</li>
+<li>https://www.seebug.org/vuldb/ssvid-97708</li>
+<li>GitLab 任意用户 authentication tokens 泄漏导致远程代码执行漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-92529</li>
+</ul>
+</li>
+<li>
+<p>Kubernetes</p>
+<ul>
+<li>Kubernetes特权升级漏洞 (CVE-2018-1002105)</li>
+<li>https://www.seebug.org/vuldb/ssvid-97707</li>
+<li>Etcd REST API 未授权访问漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-97202</li>
+</ul>
+</li>
+<li>
+<p>Nagios</p>
+<ul>
+<li>NagiosXI &lt;= 5.4.12 commandline.php SQL injection(CVE-2018-10735)</li>
+<li>NagiosXI &lt;= 5.4.12 info.php SQL injection(CVE-2018-10736)</li>
+<li>NagiosXI &lt;= 5.4.12 logbook.php SQL injection(CVE-2018-10737)</li>
+<li>NagiosXI &lt;= 5.4.12 menuaccess.php SQL injection(CVE-2018-10738)</li>
+<li>Nagios XI &lt;=5.5.7 Reflect XSS#1</li>
+<li>Nagios XI &lt;=5.5.7 Reflect XSS#2</li>
+<li>https://www.seebug.org/vuldb/ssvid-97699</li>
+<li>https://www.seebug.org/vuldb/ssvid-97259  </li>
+</ul>
+</li>
+<li>
+<p>Apache CouchDB</p>
+<ul>
+<li>Remote Code Execution in CouchDB(CVE-2017-12635)</li>
+<li>https://www.seebug.org/vuldb/ssvid-96869</li>
+<li>CouchDB未授权访问导致的任意系统命令执行漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-91597</li>
+<li>Apache CouchDB Remote Privilege Escalations (CVE-2018-17188)</li>
+<li>https://www.seebug.org/vuldb/ssvid-97732</li>
+</ul>
+</li>
+<li>
+<p>WebLogic</p>
+<ul>
+<li>WebLogic 反序列化远程命令执行漏洞(CVE-2018-3252)</li>
+<li>https://www.seebug.org/vuldb/ssvid-97673</li>
+<li>WebLogic “Java 反序列化”过程远程命令执行漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-89726</li>
+</ul>
+</li>
+<li>
+<p>JBoss</p>
+<ul>
+<li>JBOSSAS 5.x/6.x 反序列化命令执行漏洞（CVE-2017-12149）</li>
+<li>https://www.seebug.org/vuldb/ssvid-96880</li>
+<li>JBOSSAS 4.x 反序列化命令执行漏洞（CVE-2017-7504）</li>
+<li>https://www.seebug.org/vuldb/ssvid-96881</li>
+</ul>
+</li>
+<li>
+<p>WebSphere</p>
+<ul>
+<li>IBM WebSphere Application Server Admin Console File Disclosure</li>
+<li>https://www.seebug.org/vuldb/ssvid-97612</li>
+<li>IBM WebSphere Portal内存消耗拒绝服务漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-89793</li>
+<li>WebSphere “Java 反序列化”过程远程命令执行漏洞 </li>
+<li>https://www.sebug.net/vuldb/ssvid-89727</li>
+<li>IBM WebSphere Application Server CRLF 注入漏洞</li>
+<li>https://www.seebug.org/vuldb/ssvid-89752</li>
+</ul>
+</li>
+<li>
+<p>Tomcat</p>
+<ul>
+<li>Tomcat代码执行漏洞(CVE-2017-12615)</li>
+<li>https://www.seebug.org/vuldb/ssvid-96557</li>
+<li>Tomcat ​信息泄露漏洞(CVE-2017-12616 )</li>
+<li>https://www.seebug.org/vuldb/ssvid-96562</li>
+<li>Apache Tomcat 信息泄露漏洞（CVE-2016-6816）</li>
+<li>https://www.seebug.org/vuldb/ssvid-92678</li>
+</ul>
+</li>
+<li>
+<p>Jetty</p>
+<ul>
+<li>Jetty 6.1.x JSP Snoop Page Multiple Cross-Site Scripting Vulnerabilities</li>
+<li>https://www.seebug.org/vuldb/ssvid-86772</li>
+</ul>
+</li>
+<li>
+<p>RabbitMQ</p>
+<ul>
+<li>RabbitMQ Web Management &lt; 3.7.6 - Cross-Site Request Forgery (Add Admin)</li>
+<li>https://www.seebug.org/vuldb/ssvid-97394</li>
+</ul>
+</li>
+<li>
+<p>Supervisord</p>
+<ul>
+<li>Supervisor Authenticated Remote Code Execution(CVE-2017-11610)</li>
+<li>https://www.seebug.org/vuldb/ssvid-96316</li>
+</ul>
+</li>
+<li>
+<p>Openssl </p>
+<ul>
+<li>OpenSSL Heartbleed 漏洞 (心脏出血)</li>
+<li>https://www.seebug.org/vuldb/ssvid-89231</li>
+</ul>
+</li>
+</ul>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

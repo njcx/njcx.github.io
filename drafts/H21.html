@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>spark 集群搭建 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/drafts/H21.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="记录一下spark集群的搭建 ~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>spark 集群搭建
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-07-01T09:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Sun 01 July 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/big-data.html">Big data</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/spark.html">#spark</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>介绍</h4>
+<p>Spark是一个计算引擎,是加州大学伯克利分校的AMP实验室所开源的通用并行框架，是在 Scala中实现的，拥有如下模块，SQL、DataFrames、MLlib、GraphX、Spark Streaming。 开发者可以在同一个应用程序中无缝组合使用这些库。</p>
+<h4>安装</h4>
+<p>版本 ：spark-2.3.2,jdk-8u181,scala-2.12.6</p>
+<p>目录 : /opt</p>
+<div class="highlight"><pre><span></span>wget https://downloads.lightbend.com/scala/2.12.6/scala-2.12.6.tgz
+
+https://mirrors.aliyun.com/apache/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz
+
+wget http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz
+</pre></div>
+<p>tar -zxvf spark-2.3.2-bin-hadoop2.7.tgz &amp;&amp; tar -zxvf jdk-8u181-linux-x64.tar.gz &amp;&amp; tar -zxvf scala-2.12.6.tgz</p>
+<p>配置环境变量</p>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> -e <span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
+<span class="s2">export JRE_HOME=\${JAVA_HOME}/jre \n\</span>
+<span class="s2">export CLASSPATH=.:\${JAVA_HOME}/lib:\${JRE_HOME}/lib \n\</span>
+<span class="s2">export PATH=\${JAVA_HOME}/bin:\$PATH \n\</span>
+
+<span class="s2">export SCALA_HOME=/opt/scala-2.12.6 \n\</span>
+<span class="s2">export PATH=\$PATH:\$SCALA_HOME/bin \n\</span>
+<span class="s2">"</span> &gt;&gt; /etc/profile <span class="o">&amp;&amp;</span> <span class="nb">source</span> /etc/profile
+</pre></div>
+<p>然后再把spark 添加到环境变量里面</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
+</pre></div>
+<h4>配置</h4>
+<div class="highlight"><pre><span></span>cp spark-env.sh.template spark-env.sh
+　
+</pre></div>
+<p>vim spark-env.sh</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/opt/jdk1.8.0_181
+<span class="nb">export</span> <span class="nv">SCALA_HOME</span><span class="o">=</span>/opt/scala-2.12.6
+<span class="nb">export</span> <span class="nv">HADOOP_HOME</span><span class="o">=</span>/opt/hadoop-2.7.7/
+<span class="nb">export</span> <span class="nv">HADOOP_CONF_DIR</span><span class="o">=</span>/opt/hadoop-2.7.7/etc/hadoop
+<span class="nb">export</span> <span class="nv">SPARK_MASTER_IP</span><span class="o">=</span><span class="m">192</span>.168.1.110
+<span class="nb">export</span> <span class="nv">SPARK_MASTER_HOST</span><span class="o">=</span><span class="m">192</span>.168.1.110
+<span class="nb">export</span> <span class="nv">SPARK_LOCAL_IP</span><span class="o">=</span><span class="m">192</span>.168.1.110
+<span class="nb">export</span> <span class="nv">SPARK_WORKER_MEMORY</span><span class="o">=</span>1g
+<span class="nb">export</span> <span class="nv">SPARK_WORKER_CORES</span><span class="o">=</span><span class="m">2</span>
+<span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
+<span class="nb">export</span> <span class="nv">SPARK_DIST_CLASSPATH</span><span class="o">=</span><span class="k">$(</span>/opt/hadoop-2.7.7/bin/hadoop classpath<span class="k">)</span>
+</pre></div>
+<p>cp slaves.template slaves</p>
+<div class="highlight"><pre><span></span>Master
+Slave1
+Slave2
+</pre></div>
+<p>scp -r  spark-2.3.2-bin-hadoop2.7 root@192.168.1.108:/opt</p>
+<p>scp -r  spark-2.3.2-bin-hadoop2.7 root@192.168.1.107:/opt</p>
+<p>然后在Slave1 ，Slave2上添加 spark的环境变量</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
+</pre></div>
+<p>并且在 slave1 和 slave2 上修改spark-env.sh “export SPARK_LOCAL_IP=” 为本机ip。</p>
+<p>启动 /sbin/start-all.sh</p>
+<p>jps 验证</p>
+<div class="highlight"><pre><span></span><span class="m">5809</span> Jps
+<span class="m">5749</span> Worker
+<span class="m">1882</span> DataNode
+</pre></div>
+<p>有个Worker即为成功</p>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
