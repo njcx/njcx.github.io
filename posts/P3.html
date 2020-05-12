@@ -8,9 +8,9 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Tags | nJcx's Blog
+  <title>通过Go(netlink机制)绑定audit实现hids-agent | nJcx's Blog
 </title>
-  <link rel="canonical" href="https://www.njcx.bid/tags.html">
+  <link rel="canonical" href="https://www.njcx.bid/posts/P3.html">
 
 
   <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
@@ -24,6 +24,8 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
+
+<meta name="description" content="通过Go(netlink机制)绑定audit实现hids-agent~">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -77,148 +79,45 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>Tags
+      <h1>通过Go(netlink机制)绑定audit实现hids-agent
 </h1>
       <hr>
-<table class="table table-bordered table-striped table-hover">
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/an-quan.html">#安全</a></td>
-    <td>2</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/bro.html">#bro</a></td>
-    <td>2</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/ddos.html">#DDOS</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/discuz-wordpress-0day.html">#Discuz、WordPress 0day</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/django.html">#Django</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/django-flask-0day.html">#django、flask 0day</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/docker.html">#docker</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/dpdk.html">#DPDK</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/drupal-joomla-0day.html">#Drupal、Joomla 0day</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/duan-kou.html">#端口</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/elk.html">#elk</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/fan-dan-shell.html">#反弹shell</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/flink.html">#flink</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/hids.html">#HIDS</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/huan-jing-bian-liang-he-ruan-jian-bao-ming.html">#环境变量和软件包名</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/hyperscan.html">#Hyperscan</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/ji-qun-ha.html">#集群，HA</a></td>
-    <td>2</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/k8s.html">#K8S</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/linux.html">#Linux</a></td>
-    <td>4</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/middleware.html">#middleware</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/ml.html">#ml</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/nids.html">#nids</a></td>
-    <td>3</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/nmap.html">#Nmap</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/ossec.html">#ossec</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/pf_ring.html">#PF_RING</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/python.html">#Python</a></td>
-    <td>9</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/rootkit.html">#rootkit</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/shu-ju-wa-jue-suan-fa.html">#数据挖掘算法</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/snort.html">#Snort</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/spark.html">#Spark</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/suricata.html">#Suricata</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/thinkphp-0day.html">#thinkphp 0day</a></td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/windows.html">#Windows</a></td>
-    <td>5</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.njcx.bid/tag/yara.html">#Yara</a></td>
-    <td>1</td>
-  </tr>
-</table>
-    </div>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-08-01T20:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Wed 01 August 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/hids.html">#HIDS</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>安装</h4>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
   </div>
 
   <footer class="footer">

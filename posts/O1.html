@@ -8,7 +8,7 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>使用Flink和Syslog、Flume做大规模主机日志审计 | nJcx's Blog
+  <title>使用Spark做大规模主机日志审计 | nJcx's Blog
 </title>
   <link rel="canonical" href="https://www.njcx.bid/posts/O1.html">
 
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="使用flink和syslog、flume做大规模主机日志审计~">
+<meta name="description" content="使用Spark做大规模主机日志审计~">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,7 +79,7 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>使用Flink和Syslog、Flume做大规模主机日志审计
+      <h1>使用Spark做大规模主机日志审计
 </h1>
       <hr>
 <article class="article">
@@ -103,33 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
-<p>使用Docker 快速搭建一个flink 集群环境</p>
-<div class="highlight"><pre><span></span>version: <span class="s2">"2.1"</span>
-services:
-  jobmanager:
-    image: flink:1.10.0-scala_2.12
-    expose:
-      - <span class="s2">"6123"</span>
-    ports:
-      - <span class="s2">"8081:8081"</span>
-    command: jobmanager
-    environment:
-      - <span class="nv">JOB_MANAGER_RPC_ADDRESS</span><span class="o">=</span>jobmanager
-  taskmanager:
-    image: flink:1.10.0-scala_2.12
-    expose:
-      - <span class="s2">"6121"</span>
-      - <span class="s2">"6122"</span>
-    depends_on:
-      - jobmanager
-    command: taskmanager
-    links:
-      - <span class="s2">"jobmanager:jobmanager"</span>
-    environment:
-      - <span class="nv">JOB_MANAGER_RPC_ADDRESS</span><span class="o">=</span>jobmanager
-</pre></div>
-<div class="highlight"><pre><span></span>
-</pre></div>
+<p>ELK，Spark， Kafka， Syslog、Flume</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
