@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Windows环境渗透测试常用的命令总结 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/P9.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Windows环境渗透测试常用的命令总结~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Windows环境渗透测试常用的命令总结
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-06-07T01:10:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        四 07 六月 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/windows.html">#Windows</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>介绍</h4>
+<p>由于长期工作在Linux环境下，企业内网也基本是Linux的，对Windows有点生疏，所以决定记录总结一下Windows的相关常用命令，多面发展</p>
+<div class="highlight"><pre><span></span>https://blog.csdn.net/mfkpie/article/details/48005847
+https://blog.csdn.net/qq_45174221/article/details/104979705
+http://t3ngyu.leanote.com/post/LM-WinRM-WinRS
+https://blog.csdn.net/qq_20307987/article/details/85087960
+</pre></div>
+<div class="highlight"><pre><span></span>ifconfig /all 获取获取域名、IP地址、DHCP服务器、网关、MAC地址、主机名
+net <span class="nb">time</span> /domain 查看域名、时间
+net view /domain 查看域内所有共享
+net view ip 查看对方局域网内开启了哪些共享
+net config workstation 查看域名、机器名等
+net user 用户名 密码 /add 建立用户
+net user 用户名 /del <span class="c1">#删除用户</span>
+net user guest /active:yes 激活guest账户
+net user 查看账户
+net user 账户名 查看指定账户信息
+net user /domain 查看域内有哪些用户，Windows NT Workstation 计算机上可用，由此可以此判断用户是否是域成员。
+net user 用户名 /domain 查看账户信息
+net group /domain 查看域中的组
+net group <span class="s2">"domain admins"</span> /domain 查看当前域的管理用户
+query user 查看当前在线的用户
+net localgroup 查看所有的本地组
+net localgroup administrators 查看administrators组中有哪些用户
+net localgroup administrators 用户名 /add 把用户添加到管理员组中
+net start 查看开启服务
+net start 服务名 开启某服务
+net stop 服务名 停止某服务
+net share 查看本地开启的共享
+net share ipc$ 开启ipc$共享
+net share ipc$ /del 删除ipc$共享
+net share c$ /del 删除C：共享
+dsquery server 查看所有域控制器
+dsquery subnet 查看域内内子网
+dsquery group 查看域内工作组
+dsquery site 查看域内站点
+netstat -a 查看开启了哪些端口,常用netstat -an
+netstat -n 查看端口的网络连接情况，常用netstat -an
+netstat -v 查看正在进行的工作
+netstat -p 协议名 例：netstat -p tcq/ip 查看某协议使用情况（查看tcp/ip协议使用情况）
+netstat -s 查看正在使用的所有协议使用情况
+nbtstat -A ip 对方136到139其中一个端口开了的话，就可查看对方最近登陆的用户名（03前的为用户名）-注意：参数-A要大写
+reg save hklm<span class="se">\s</span>am sam.hive 导出用户组信息、权限配置
+reg save hklm<span class="se">\s</span>ystem system.hive 导出SYSKEY
+net use <span class="se">\\</span>目标IP<span class="se">\i</span>pc$ 密码 /u:用户名 连接目标机器
+at <span class="se">\\</span>目标IP <span class="m">21</span>:31 c:<span class="se">\s</span>erver.exe 在某个时间启动某个应用
+wmic /node:<span class="s2">"目标IP"</span> /password:<span class="s2">"123456"</span> /user:<span class="s2">"admin"</span> 连接目标机器
+psexec.exe <span class="se">\\</span>目标IP -u username -p password -s cmd 在目标机器上执行cmd
+finger username @host 查看最近有哪些用户登陆
+route print 显示出IP路由，将主要显示网络地址Network addres，子网掩码Netmask，网关地址Gateway addres，接口地址Interface
+arp 查看和处理ARP缓存，ARP是名字解析的意思，负责把一个IP解析成一个物理性的MAC地址。
+arp -a 将显示出全部信息
+nslookup IP地址侦测器
+tasklist 查看当前进程
+taskkill /pid PID数 终止指定PID进程
+whoami 查看当前用户及权限
+systeminfo 查看计算机信息（版本，位数，补丁情况）
+ver 查看计算机操作系统版本
+tasklist /svc 查看当前计算机进程情况
+netstat -ano 查看当前计算机进程情况
+
+wmic product &gt; ins.txt 查看安装软件以及版本路径等信息，重定向到ins.txt
+wmic bios ----- 查看bios信息
+wmic qfe ----- 查看补丁信息
+wmic qfe get hotfixid ----- 查看补丁-Patch号
+wmic startup ----- 查看启动项
+wmic service ----- 查看服务
+wmic os ----- 查看OS信息
+
+wmic process get caption,executablepath,commandline
+wmic process call create “process_name” <span class="o">(</span>executes a program<span class="o">)</span>
+wmic process where <span class="nv">name</span><span class="o">=</span>”process_name” call terminate <span class="o">(</span>terminates program<span class="o">)</span>
+wmic logicaldisk where <span class="nv">drivetype</span><span class="o">=</span><span class="m">3</span> get name, freespace, systemname, filesystem, size,
+volumeserialnumber <span class="o">(</span>hard drive information<span class="o">)</span>
+wmic useraccount <span class="o">(</span>usernames, sid, and various security related goodies<span class="o">)</span>
+wmic useraccount get /ALL
+wmic share get /ALL <span class="o">(</span>you can use ? <span class="k">for</span> gets <span class="nb">help</span> ! <span class="o">)</span>
+wmic startup list full <span class="o">(</span>this can be a huge list!!!<span class="o">)</span>
+wmic /node:“hostname” bios get serialnumber <span class="o">(</span>this can be great <span class="k">for</span> finding warranty info about target<span class="o">)</span>
+
+
+winrs -r:https://myserver.com <span class="nb">command</span>
+winrs -r:myserver.com -usessl <span class="nb">command</span>
+winrs -r:myserver <span class="nb">command</span>
+winrs -r:http://127.0.0.1 <span class="nb">command</span>
+winrs -r:http://169.51.2.101:80 -unencrypted <span class="nb">command</span>
+winrs -r:https://<span class="o">[</span>::FFFF:129.144.52.38<span class="o">]</span> <span class="nb">command</span>
+winrs -r:http://<span class="o">[</span><span class="m">1080</span>:0:0:0:8:800:200C:417A<span class="o">]</span>:80 <span class="nb">command</span>
+winrs -r:https://myserver.com -t:600 -u:administrator -p:$%fgh7 ipconfig
+winrs -r:myserver -env:PATH<span class="o">=</span>^%PATH^%<span class="p">;</span>c:<span class="se">\t</span>ools -env:TEMP<span class="o">=</span>d:<span class="se">\t</span>emp config.cmd
+winrs -r:myserver netdom join myserver /domain:testdomain /userd:johns /passwordd:$%fgh789
+winrs -r:myserver -ad -u:administrator -p:$%fgh7 dir <span class="se">\\</span>anotherserver<span class="se">\s</span>hare
+</pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
