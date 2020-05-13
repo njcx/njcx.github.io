@@ -8,9 +8,9 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Linux环境的下提权方式总结 | nJcx's Blog
+  <title>Linux环境失陷机器命令和控制 | nJcx's Blog
 </title>
-  <link rel="canonical" href="https://www.njcx.bid/posts/O6.html">
+  <link rel="canonical" href="https://www.njcx.bid/drafts/O10.html">
 
 
   <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="Linux环境的下提权方式总结~">
+<meta name="description" content="Linux环境失陷机器命令和控制~">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,15 +79,15 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>Linux环境的下提权方式总结
+      <h1>Linux环境失陷机器命令和控制
 </h1>
       <hr>
 <article class="article">
   <header>
     <ul class="list-inline">
-      <li class="list-inline-item text-muted" title="2018-06-15T03:20:00+03:00">
+      <li class="list-inline-item text-muted" title="2018-06-10T03:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        五 15 六月 2018
+        日 10 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -102,32 +102,17 @@ var _hmt = _hmt || [];
     </ul>
   </header>
   <div class="content">
-    <h4>工具</h4>
-<p>工具镇楼：</p>
-<div class="highlight"><pre><span></span>https://github.com/SecWiki/linux-kernel-exploits.git
-https://github.com/offensive-security/exploitdb.git
-https://github.com/mzet-/linux-exploit-suggester.git
-https://github.com/InteliSecureLabs/Linux_Exploit_Suggester.git
-https://github.com/jondonas/linux-exploit-suggester-2.git
-https://github.com/belane/linux-soft-exploit-suggester.git
-linuxprivchecker： https://www.securitysift.com/download/linuxprivchecker.py
-http://pentestmonkey.net/tools/unix-privesc-check/unix-privesc-check-1.4.tar.gz
+    <h4>安装</h4>
+<p>安装masscan</p>
+<div class="highlight"><pre><span></span><span class="c1"># yum install git gcc make libpcap-devel</span>
+
+<span class="c1">#git clone https://github.com/robertdavidgraham/masscan</span>
+<span class="c1"># cd masscan</span>
+<span class="c1"># make</span>
+
+<span class="c1"># cp bin/masscan  /bin</span>
 </pre></div>
-<p><img alt="linux提权" class="img-fluid" src="../images/WechatIMG169.png"/></p>
-<h4>内核漏洞提权</h4>
-<p>利用比如脏牛漏洞提权(CVE-2016-5195) overlayfs （CVE-2015-1328）
-，等等</p>
-<p>上工具linux-exploit-suggester</p>
-<p><img alt="linux提权" class="img-fluid" src="../images/WechatIMG180.jpeg"/></p>
-<p>用 脏牛漏洞提权(CVE-2016-5195) 测试一下 </p>
-<p><img alt="linux提权" class="img-fluid" src="../images/WechatIMG96.jpeg"/></p>
-<p>用 overlayfs（CVE-2015-1328） 测试一下 </p>
-<p><img alt="linux提权" class="img-fluid" src="../images/WechatIMG182.jpeg"/></p>
-<h4>SUID 提权</h4>
-<h4>环境变量提权</h4>
-<ul>
-<li></li>
-</ul>
+<p><img alt="icmp" class="img-fluid" src="../images/WechatIMG171.jpeg"/></p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
