@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-07-06T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        五 06 七月 2018
+        Fri 06 July 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -132,15 +132,15 @@ var _hmt = _hmt || [];
 </pre></div>
 <p><img alt="dns" class="img-fluid" src="../images/dnstun.jpeg"/></p>
 <p>如果在企业内网，那么黑客的攻击机器，就是所谓的权威服务器</p>
-<div class="highlight"><pre><span></span>第一步: 受控机向内部dns服务器发送一个查询NKNFjklKLuJNVIUM.ml.org的请求
+<div class="highlight"><pre><span></span><span class="err">第一步</span><span class="o">:</span> <span class="err">受控机向内部</span><span class="n">dns服务器发送一个查询NKNFjklKLuJNVIUM</span><span class="o">.</span><span class="na">ml</span><span class="o">.</span><span class="na">org的请求</span>
 
-第二步：内部dns服务器通过防火墙向根dns服务器发出查询请求
+<span class="err">第二步：内部</span><span class="n">dns服务器通过防火墙向根dns服务器发出查询请求</span>
 
-第三步：经过大量迭代后，DNS请求到达NKNFjklKLuJNVIUM.ml.org的权威DNS服务器（黑客所控制）
+<span class="err">第三步：经过大量迭代后，</span><span class="n">DNS请求到达NKNFjklKLuJNVIUM</span><span class="o">.</span><span class="na">ml</span><span class="o">.</span><span class="na">org的权威DNS服务器</span><span class="err">（黑客所控制）</span>
 
-第四步：受控机请求查询的响应通过防火墙返回到内部DNS服务器
+<span class="err">第四步：受控机请求查询的响应通过防火墙返回到内部</span><span class="n">DNS服务器</span>
 
-第五步：内部DNS服务器将响应结果返回给受控机
+<span class="err">第五步：内部</span><span class="n">DNS服务器将响应结果返回给受控机</span>
 </pre></div>
 <p>上面的流程展示了一个受控机在连接外部网络时dns解析的一个过程。由于防火墙并没有对dns协议做任何处理，所以我们可以通过这种方式来穿透防火墙。</p>
 <p>这里很多人会有一个疑问，关于dns 请求查询NKNFjklKLuJNVIUMvKL.ml.org 是怎么到达黑客所控制的权威DNS服务器的？</p>
