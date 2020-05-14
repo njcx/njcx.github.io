@@ -103,7 +103,8 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>工具</h4>
-<div class="highlight"><pre><span></span>https://github.com/GinjaChris/pentmenu.git
+<div class="highlight"><pre><span></span>https://github.com/cxueqin/falcon.git  //tfn2k
+https://github.com/GinjaChris/pentmenu.git
 https://github.com/OffensivePython/Saddam.git
 https://github.com/649/Memcrashed-DDoS-Exploit
 </pre></div>
@@ -165,6 +166,8 @@ STACK tweaking：管理员可以调整TCP堆栈以减缓SYN泛洪攻击的影响
  不难发现，UDP Flood攻击报文具有一定的特点，这些攻击报文通常都拥有相同的特征字段，比如都包含某一个字符串，或整个报文内容一致。这些字段来自于DDoS工具自带的默认字符串，所以防火墙是通过收集这些字符串来检测UDP Flood。这种防御算法在现网使用很多，主要因为黑客为了加大攻击频率，快速、长时间挤占攻击目标所在网络带宽，在使用攻击工具实现时直接在内存存放一段内容，然后高频发送到攻击目标，所以攻击报文具有很高的相似性。而正常业务的UDP报文一般每个报文负载内容都是不一样的，这样可以减少误判。</p>
 <p>指纹学习是通过分析客户端向服务器发送的UDP报文载荷是否有大量的一致内容，来判定这个UDP报文是否异常。防火墙对到达指定目的地的UDP报文进行统计，当UDP报文达到告警阈值时，开始对UDP报文的指纹进行学习。如果相同的特征频繁出现，就会被学习成指纹，后续命中指纹的报文判定这是攻击报文，作为攻击特征进行过滤。</p>
 <p>防火墙防御UDP Flood攻击主要有两种方式：限流和指纹学习，两种方式各有利弊。限流方式属于暴力型，可以很快将UDP流量限制在一个合理的范围内，但是不分青红皂白，超过就丢，可能会丢弃一些正常报文；而指纹学习属于理智型，不会随意丢弃报文，但是发生攻击后需要有个指纹学习的过程。目前，指纹学习功能是针对UDP Flood攻击的主流防御手段，在华为防火墙产品中广泛应用。</p>
+<p>ICMP 防御：</p>
+<p>可以考虑禁用ICMP 协议</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
