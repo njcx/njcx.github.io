@@ -104,6 +104,25 @@ var _hmt = _hmt || [];
   <div class="content">
     <p>渗透使用跳板已经是默认的了，那么最小化攻击日志，也是必须的。你是VPN也好，3389也罢，ssh中转，代理都行。直接连接攻击目标并且留下大量日志，是愚蠢的</p>
 <h4>Windows 痕迹清理</h4>
+<div class="highlight"><pre><span></span>https://github.com/hlldz/Invoke-Phant0m.git
+</pre></div>
+<p>Windows的日志文件通常有应用程序日志，安全日志、系统日志、DNS服务器日志、FTP日志、WWW日志等等。
+应用程序日志文件：%systemroot%\system32\config\AppEvent.EVT;</p>
+<p>安全日志文件：%systemroot%\system32\config\SecEvent.EVT;</p>
+<p>系统日志文件：%systemroot%\system32\config\SysEvent.EVT;</p>
+<p>DNS日志默认位置：%sys temroot%\system32\config，默认文件大小512KB</p>
+<p>Internet信息服务FTP日志默认位置：%systemroot%\system32\logfiles\msftpsvc1\，默认每天一个日志;</p>
+<p>Internet信息服务WWW日志默认位置：%systemroot%\system32\logfiles\w3svc1\，默认每天一个日志;</p>
+<p>Scheduler服务日志默认位置：%sys temroot%\schedlgu.txt;</p>
+<div class="highlight"><pre><span></span>@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\c</span>onfig<span class="se">\*</span>.evt
+@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\l</span>ogfiles<span class="se">\*</span>.*
+@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\*</span>.log
+@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\*</span>.txt
+@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\W</span>inevt<span class="se">\L</span>ogs<span class="se">\*</span>.evt
+@del c:<span class="se">\%</span>systemroot%<span class="se">\*</span>.evt
+@del c:<span class="se">\%</span>systemroot%<span class="se">\*</span>.log
+@del cl.bat
+</pre></div>
 <h4>Linux痕迹清理</h4>
 <div class="highlight"><pre><span></span><span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># echo &gt; /var/log/wtmp //此文件默认打开时乱码，可查到ip等信息</span>
 <span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># last //此时即查不到用户登录信息</span>
