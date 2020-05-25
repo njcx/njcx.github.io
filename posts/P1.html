@@ -135,6 +135,34 @@ var _hmt = _hmt || [];
 指定配置文件（安装时请用-i）</p>
 <p>sysmon -c xxx.xml
 注：安装需要管理员权限并重启，windows 7 或者以上，服务器系统windows server 2012 及以上。   </p>
+<p>配置样例</p>
+<p>```bash
+ <sysmon schemaversion="4.21">
+<!-- Capture all hashes -->
+<hashalgorithms>*</hashalgorithms> <!--哈希配置(默认使用sha1) -->
+<eventfiltering> <!--事件筛选-->
+<!-- Log all drivers except if the signature -->
+<!-- contains Microsoft or Windows -->
+<driverload onmatch="exclude"> <!--默认记录所有日志 除非标记 ? -->
+<signature condition="contains">microsoft</signature>
+<signature condition="contains">windows</signature>
+</driverload>
+<!-- Do not log process termination -->
+<!--不记录进程终止-->
+<processterminate onmatch="include"></processterminate>
+<!-- Log network connection if the destination port equal 443 -->
+<!-- or 80, and process isn't InternetExplorer -->
+<networkconnect onmatch="include">
+<destinationport>443</destinationport> <!-- 记录443 端口连接记录-->
+<destinationport>80</destinationport>
+</networkconnect>
+<networkconnect onmatch="exclude">
+<image condition="end with"/>iexplore.exe
+</networkconnect>
+</eventfiltering>
+</sysmon>
+ -- 配置条目直接位于Sysmon 标签下, 过滤器位于 EventFiltering 标签下 </p>
+<p>```</p>
 <p>```bash</p>
 <p>ProcessCreate            进程创建
  FileCreateTime           文件创建时间更改
