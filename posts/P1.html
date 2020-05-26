@@ -136,39 +136,36 @@ var _hmt = _hmt || [];
 <p>sysmon -c xxx.xml
 注：安装需要管理员权限并重启，windows 7 或者以上，服务器系统windows server 2012 及以上。   </p>
 <p>配置样例</p>
-<p>```bash
- <sysmon schemaversion="4.21">
-<!-- Capture all hashes -->
-<hashalgorithms>*</hashalgorithms> <!--哈希配置(默认使用sha1) -->
-<eventfiltering> <!--事件筛选-->
-<!-- Log all drivers except if the signature -->
-<!-- contains Microsoft or Windows -->
-<driverload onmatch="exclude"> <!--默认记录所有日志 除非标记 ? -->
-<signature condition="contains">microsoft</signature>
-<signature condition="contains">windows</signature>
-</driverload>
-<!-- Do not log process termination -->
-<!--不记录进程终止-->
-<processterminate onmatch="include"></processterminate>
-<!-- Log network connection if the destination port equal 443 -->
-<!-- or 80, and process isn't InternetExplorer -->
-<networkconnect onmatch="include">
-<destinationport>443</destinationport> <!-- 记录443 端口连接记录-->
-<destinationport>80</destinationport>
-</networkconnect>
-<networkconnect onmatch="exclude">
-<image condition="end with"/>iexplore.exe
-</networkconnect>
-</eventfiltering>
-</sysmon>
- -- 配置条目直接位于Sysmon 标签下, 过滤器位于 EventFiltering 标签下 </p>
-<p>```</p>
+<div class="highlight"><pre><span></span> &lt;Sysmon <span class="nv">schemaversion</span><span class="o">=</span><span class="s2">"4.21"</span>&gt;
+&lt;!-- Capture all hashes --&gt;
+&lt;HashAlgorithms&gt;*&lt;/HashAlgorithms&gt; &lt;!--哈希配置<span class="o">(</span>默认使用sha1<span class="o">)</span> --&gt;
+&lt;EventFiltering&gt; &lt;!--事件筛选--&gt;
+&lt;!-- Log all drivers except <span class="k">if</span> the signature --&gt;
+&lt;!-- contains Microsoft or Windows --&gt;
+&lt;DriverLoad <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"exclude"</span>&gt; &lt;!--默认记录所有日志 除非标记 ? --&gt;
+     &lt;Signature <span class="nv">condition</span><span class="o">=</span><span class="s2">"contains"</span>&gt;microsoft&lt;/Signature&gt;
+     &lt;Signature <span class="nv">condition</span><span class="o">=</span><span class="s2">"contains"</span>&gt;windows&lt;/Signature&gt;
+&lt;/DriverLoad&gt;
+&lt;!-- Do not log process termination --&gt;
+&lt;!--不记录进程终止--&gt;
+&lt;ProcessTerminate <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"include"</span> /&gt;
+&lt;!-- Log network connection <span class="k">if</span> the destination port equal <span class="m">443</span> --&gt;
+&lt;!-- or <span class="m">80</span>, and process isn<span class="err">'</span>t InternetExplorer --&gt;
+&lt;NetworkConnect <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"include"</span>&gt;
+     &lt;DestinationPort&gt;443&lt;/DestinationPort&gt; &lt;!-- 记录443 端口连接记录--&gt;
+     &lt;DestinationPort&gt;80&lt;/DestinationPort&gt;
+&lt;/NetworkConnect&gt;
+&lt;NetworkConnect <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"exclude"</span>&gt;
+     &lt;Image <span class="nv">condition</span><span class="o">=</span><span class="s2">"end with"</span>&gt;iexplore.exe&lt;/Image&gt;
+&lt;/NetworkConnect&gt;
+&lt;/EventFiltering&gt;
+&lt;/Sysmon&gt;
+ -- 配置条目直接位于Sysmon 标签下, 过滤器位于 EventFiltering 标签下 
+</pre></div>
 <p>一些配置规则</p>
-<p>```bash
- https://github.com/sametsazak/sysmon.git</p>
-<p>```</p>
-<p>```bash</p>
-<p>ProcessCreate            进程创建
+<div class="highlight"><pre><span></span> https://github.com/sametsazak/sysmon.git
+</pre></div>
+<div class="highlight"><pre><span></span> ProcessCreate            进程创建
  FileCreateTime           文件创建时间更改
  NetworkConnect           检测到网络连接
  ProcessTerminate         进程终止
@@ -187,8 +184,8 @@ var _hmt = _hmt || [];
  WmiEvent                 检测到WmiEventFilter活动 -- WmiEventFilter activity detected
  WmiEvent                 检测到WmiEventConsumer活动 -- WmiEventConsumer activity detected
  WmiEvent                 检测到WmiEventConsumerToFilter活动 -- WmiEventConsumerToFilter activity 
- DnsQuery                 DNS查询</p>
-<p>```</p>
+ DnsQuery                 DNS查询
+</pre></div>
 <p>我们可以使用 winlogbeat采集到elk，也可以使用wazuh完成数据日志采集，然后用来分析</p>
 <p>我们也可以使用一些工具辅助我们分析，如下：</p>
 <p>Sysmon View：Sysmon日志可视化工具</p>
