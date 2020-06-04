@@ -109,7 +109,34 @@ var _hmt = _hmt || [];
 https://github.com/AonCyberLabs/Windows-Exploit-Suggester  //比较老了，可以考虑用下面的
 
 https://github.com/johnchakauya/wesng.git
+
+https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS
+
+https://github.com/PowerShellMafia/PowerSploit/tree/master/Privesc
+
+https://github.com/rasta-mouse/Watson
+
+https://github.com/GhostPack/Seatbelt
+
+https://github.com/411Hall/JAWS
 </pre></div>
+<p>1， 系统内核溢出漏洞提权</p>
+<div class="highlight"><pre><span></span><span class="c1">#手工查找补丁情况</span>
+systeminfo
+Wmic qfe get Caption,Description,HotFixID,InstalledOn
+
+<span class="c1">#MSF后渗透扫描</span>
+post/windows/gather/enum_patches
+
+<span class="c1">#Powershell扫描</span>
+Import-Module C:<span class="se">\S</span>herlock.ps1
+Find-AllVulns
+
+<span class="c1">#Empire内置模块</span>
+usemodule privesc/powerup/allchecks
+execute
+</pre></div>
+<p>2， DLL 劫持提权</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
