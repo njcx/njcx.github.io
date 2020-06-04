@@ -135,7 +135,16 @@ find / -user root -perm -4000-exec ls -ldb <span class="o">{}</span> <span class
 </pre></div>
 <h4>环境变量劫持提权</h4>
 <p>如果有一个程序具有ROOT权限，它运行的时候需要调用其他程序，那么我们通过环境变量来挟持它运行我们的payload。我们的payload将拥有ROOT权限。</p>
-<h4></h4>
+<h4>配置错误提权</h4>
+<h4>其他工具提权</h4>
+<p>OpenSMTPD 提权</p>
+<p>Exim 4.87 / 4.91 提权</p>
+<p>Ubuntu 18.04 - 'lxd'  提权</p>
+<p>Serv-U FTP Server  提权</p>
+<p>systemtap 1.1-3.el5  提权</p>
+<p>Chkrootkit 0.49  提权</p>
+<p>OSSEC 2.8 - 'hosts.deny'  提权</p>
+<p>Docker Daemon   提权</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
