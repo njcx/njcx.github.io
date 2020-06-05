@@ -103,6 +103,44 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
+<p>安装并且把Auto_Update.bat，自动更新加入定时任务,把相关的地址替换一下</p>
+<div class="highlight"><pre><span></span>@echo off
+setlocal
+<span class="nb">set</span> <span class="nv">hour</span><span class="o">=</span>%time:~0,2%
+<span class="nb">set</span> <span class="nv">minute</span><span class="o">=</span>%time:~3,2%
+<span class="nb">set</span> /A <span class="nv">minute</span><span class="o">+=</span><span class="m">2</span>
+<span class="k">if</span> %minute% GTR <span class="m">59</span> <span class="o">(</span>
+ <span class="nb">set</span> /A minute-<span class="o">=</span><span class="m">60</span>
+ <span class="nb">set</span> /A <span class="nv">hour</span><span class="o">+=</span><span class="m">1</span>
+<span class="o">)</span>
+<span class="k">if</span> %hour%<span class="o">==</span><span class="m">24</span> <span class="nb">set</span> <span class="nv">hour</span><span class="o">=</span><span class="m">00</span>
+<span class="k">if</span> <span class="s2">"%hour:~0,1%"</span><span class="o">==</span><span class="s2">" "</span> <span class="nb">set</span> <span class="nv">hour</span><span class="o">=</span><span class="m">0</span>%hour:~1,1%
+<span class="k">if</span> <span class="s2">"%hour:~1,1%"</span><span class="o">==</span><span class="s2">""</span> <span class="nb">set</span> <span class="nv">hour</span><span class="o">=</span><span class="m">0</span>%hour%
+<span class="k">if</span> <span class="s2">"%minute:~1,1%"</span><span class="o">==</span><span class="s2">""</span> <span class="nb">set</span> <span class="nv">minute</span><span class="o">=</span><span class="m">0</span>%minute%
+<span class="nb">set</span> <span class="nv">tasktime</span><span class="o">=</span>%hour%:%minute%
+mkdir C:<span class="se">\P</span>rogramData<span class="se">\s</span>ysmon
+<span class="nb">pushd</span> <span class="s2">"C:\ProgramData\sysmon\"</span>
+<span class="s2">echo [+] Downloading Sysmon...</span>
+<span class="s2">@powershell (new-object System.Net.WebClient).DownloadFile('https://live.sysinternals.com/Sysmon64.exe','C:\ProgramData\sysmon\sysmon64.exe')"</span>
+<span class="nb">echo</span> <span class="o">[</span>+<span class="o">]</span> Downloading Sysmon config...
+@powershell <span class="o">(</span>new-object System.Net.WebClient<span class="o">)</span>.DownloadFile<span class="o">(</span><span class="s1">'https://raw.githubusercontent.com/ion-storm/sysmon-config/develop/sysmonconfig-export.xml'</span>,<span class="s1">'C:\ProgramData\sysmon\sysmonconfig-export.xml'</span><span class="o">)</span><span class="s2">"</span>
+<span class="s2">@powershell (new-object System.Net.WebClient).DownloadFile('https://raw.githubusercontent.com/ion-storm/sysmon-config/develop/Auto_Update.bat','C:\ProgramData\sysmon\Auto_Update.bat')"</span>
+sysmon64.exe -accepteula -i sysmonconfig-export.xml
+sc failure Sysmon64 <span class="nv">actions</span><span class="o">=</span> restart/10000/restart/10000// <span class="nv">reset</span><span class="o">=</span> <span class="m">120</span>
+<span class="nb">echo</span> <span class="o">[</span>+<span class="o">]</span> Sysmon Successfully Installed!
+<span class="nb">echo</span> <span class="o">[</span>+<span class="o">]</span> Creating Auto Update Task <span class="nb">set</span> to Hourly..
+SchTasks /Create /RU SYSTEM /RL HIGHEST /SC HOURLY /TN Update_Sysmon_Rules /TR C:<span class="se">\P</span>rogramData<span class="se">\s</span>ysmon<span class="se">\A</span>uto_Update.bat /F /ST %tasktime%
+timeout /t <span class="m">10</span>
+<span class="nb">exit</span>
+</pre></div>
+<p>Auto_Update.bat</p>
+<div class="highlight"><pre><span></span>@echo on
+<span class="nb">cd</span> C:<span class="se">\P</span>rogramData<span class="se">\s</span>ysmon<span class="se">\</span>
+@powershell <span class="o">(</span>new-object System.Net.WebClient<span class="o">)</span>.DownloadFile<span class="o">(</span><span class="s1">'https://raw.githubusercontent.com/ion-storm/sysmon-config/develop/sysmonconfig-export.xml'</span>,<span class="s1">'C:\ProgramData\sysmon\sysmonconfig-export.xml'</span><span class="o">)</span><span class="s2">"</span>
+<span class="s2">sysmon64 -c sysmonconfig-export.xml</span>
+<span class="s2">exit</span>
+</pre></div>
+<p>然后安装 Winlogbeat</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
