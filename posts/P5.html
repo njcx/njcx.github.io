@@ -140,7 +140,8 @@ https://www.freebuf.com/articles/network/244094.html</p>
 <p><img alt="botnet2" class="img-fluid" src="../images/botnets2.png"/></p>
 <p>DGA僵尸网络基础架构</p>
 <p><img alt="DGA" class="img-fluid" src="../images/DGA.png"/></p>
-<p>Banjori  DGA 域名生成</p>
+<p>DGA算法生成逻辑</p>
+<p>Banjori  DGA 域名生成算法</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">map_to_lowercase_letter</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">s</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">'a'</span><span class="p">))</span> <span class="o">%</span> <span class="mi">26</span><span class="p">)</span>
 
@@ -176,7 +177,7 @@ kacuestnessbiophysicalohax.com
 <p>1、需要遍历DGA列表，寻址效率低。
 2、大量NX Domain流量导致通信易被检测发现。
 3、如果DGA数量过多，出于时间和金钱成本开销，攻击者难以全部注册，安全人员可以抢注并通过sink hole手段劫持僵尸网络</p>
-<h4>利用一些在线网站或者程序做为C2 Server</h4>
+<h4>利用一些在线网站或者程序做为C2 Server或者中转C2 Server真实IP</h4>
 <p>比如， gmail，github，twitter，telegram等等</p>
 <div class="highlight"><pre><span></span>用Gmail 做C2 Server
 https://github.com/maldevel/gdog
@@ -187,6 +188,32 @@ https://github.com/maldevel/canisrufus
 <div class="highlight"><pre><span></span>用telegram 做C2 Server
 https://github.com/blazeinfosec/bt2
 </pre></div>
+<p>主要有两种玩法：</p>
+<p>1， 直接做C2 Server </p>
+<p>比如， getlook23使用GitHub Issues作为C2</p>
+<p><img alt="botnet2" class="img-fluid" src="../images/command_edit.png"/></p>
+<p>解析出来就是</p>
+<div class="highlight"><pre><span></span><span class="m">1</span>. whoami
+<span class="m">2</span>. <span class="s2">"\r\nUser accounts for \\\\JOHN-PC\r\n\r\n-------------------------------------------------------------------------------\r\nAdministrator            Guest                    John                     \r\nThe command completed successfully.\r\n\r\n----John"</span>
+<span class="m">3</span>.  <span class="s2">"\r\nUser accounts for \\\\BEA-CHI-T-7PR01\r\n\r\n-------------------------------------------------------------------------------\r\n5upervisor               Administrator            Guest                    \r\nJohn Doe                 \r\nThe command completed successfully.\r\n\r\n----John Doe"</span>
+<span class="m">4</span>.  <span class="s2">"john-pc\\administrator\r\n----Administrator"</span>
+<span class="m">5</span>.  <span class="s2">"warzone1\\worker\r\n----worker"</span>
+<span class="m">6</span>.  <span class="s2">"win7pro-maltest\\buf\r\n----BUF"</span>
+<span class="m">7</span>.  <span class="s2">"anna-pc\\anna\r\n----anna"</span>
+<span class="m">8</span>.  <span class="s2">"johnson-pc\\johnson\r\n----Johnson"</span>
+<span class="m">9</span>.  <span class="s2">"klone-pc\\admin\r\n----admin"</span>
+<span class="m">10</span>. <span class="s2">"john-pc\\john\r\n----John"</span>
+<span class="m">11</span>. <span class="s2">"admin-win7\admin\r\n----Admin"</span>
+<span class="m">12</span>. <span class="s2">"admin-win7\admin\r\n----Admin"</span>
+<span class="m">13</span>. <span class="s2">"admin-win7\admin\r\n----Admin"</span>
+<span class="m">14</span>. <span class="s2">"warzone1\worker\r\n----worker"</span>
+<span class="m">15</span>. <span class="s2">"warzone1\worker\r\n----worker"</span>
+<span class="m">16</span>. <span class="s2">"warzone1\worker\r\n----worker"</span>
+<span class="m">17</span>. <span class="s2">"od-sploit\od\r\n----od"</span>
+<span class="m">18</span>. <span class="s2">"bea-chi-t-7pr01\john doe\r\n----John Doe"</span>
+</pre></div>
+<p>2， 把C2 Server IP 或者Dns域名藏起来（比如，藏到repo里面），解析到真正的C2的地址</p>
+<p><img alt="botnet2" class="img-fluid" src="../images/winnti-github-5.png"/></p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
