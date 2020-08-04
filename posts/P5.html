@@ -111,7 +111,12 @@ https://github.com/sin5678/gh0st.git
 https://github.com/alibawazeeer/rat-njrat-0.7d-modded-source-code.git
 https://github.com/NYAN-x-CAT/RevengeRAT-Stub-CSsharp.git
 </pre></div>
-<h4>各种隧道，加密（icmp隧道/ssh隧道/dns隧道/http隧道）</h4>
+<h4>各种隧道，加密（icmp隧道/dns隧道/ssh隧道/http隧道）</h4>
+<p>我们先介绍一下 ICMP协议，ICMP的内容是放在ip数据包的数据部分里传输的，ICMP是基于IP协议工作的，我们要区别于传输层，它仍然属于网络层协议。ICMP报文包含在IP数据报中，IP报头在ICMP报文的最前面。一个ICMP报文包括IP报头（至少20字节）、ICMP报头（至少八字节）和ICMP报文（属于ICMP报文的数据部分）。当IP报头中的协议字段值为1时，就说明这是一个ICMP报文。重点关注 Checksum 字段和Data字段，因为我们改变Data字段的时候，Checksum也要改变,我们把我们的payload或者数据放到Data字段里面即可.我们分别使用，Linux和Windows测试一下， Linux ping 发出的Data的内容为 ：!\"#$%&amp;'()*+,-./01234567  ， Windows ping 的发出的Data的内容为 abcdefghijklmnopqrstuvwabcdefghi. 一般攻击者会把Payload放到Data 字段里面，返回的内容也放到Data里面。</p>
+<p>NIDS(suricata)中的ICMP隐蔽隧道检测
+https://www.freebuf.com/articles/es/243486.html</p>
+<p>NIDS（suricata）中的DNS隐蔽隧道检测
+https://www.freebuf.com/articles/network/244094.html</p>
 <h4>DGA 算法</h4>
 <p>DGA是恶意程序所使用的一种DNS技术，用于隐藏C2服务器。恶意软件通常使用它们来逃避基于域名的防火墙、NIDS拦截。使用DGA的恶意软件将不断尝试连接生成的DGA域名列表里面的域名，直到完成C2通信。DGA算法最早是在2008年的Conficker恶意软件中发现的。Conficker的第一个变体（变体A）每天使用日期作为种子来产生250个不同的域名。后来FBI进行了报复，逆向了Conficker，并注册恶意软件使用的所有域（真的假的？）。随着Conficker恶意软件的发展，引入了另外4种恶意软件变体（从B到E），变体C每天生成超过50,000个域，从中随机选择仅500个域以尝试与C&amp;C服务器进行通信。</p>
 <p><img alt="botnet1" class="img-fluid" src="../images/botnets1.png"/></p>
