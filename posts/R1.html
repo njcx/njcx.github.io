@@ -109,26 +109,25 @@ var _hmt = _hmt || [];
         <span class="nb">local</span> <span class="nb">time</span> <span class="o">=</span> tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy , <span class="s2">","</span><span class="o">)[</span><span class="m">1</span><span class="o">])</span>   -- 单位时间
         <span class="nb">local</span> <span class="nb">times</span> <span class="o">=</span> tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy , <span class="s2">","</span><span class="o">)[</span><span class="m">2</span><span class="o">])</span>  -- 请求次数
         <span class="nb">local</span> <span class="nv">block_time</span> <span class="o">=</span> tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy , <span class="s2">","</span><span class="o">)[</span><span class="m">3</span><span class="o">])</span>  -- 封禁时间
-        <span class="nb">local</span> req, <span class="nv">_</span> <span class="o">=</span> ngx.shared.challenge:get<span class="o">(</span><span class="s2">"cc_deny_"</span>..host..real_ip<span class="o">)</span>
+        <span class="nb">local</span> req, <span class="nv">_</span> <span class="o">=</span> ngx.shared.cc:get<span class="o">(</span><span class="s2">"cc_deny_"</span>..host..real_ip<span class="o">)</span>
         <span class="k">if</span> req <span class="k">then</span>
             _M.log_record<span class="o">(</span><span class="s2">"cc_module"</span>, <span class="s1">'cc_01'</span>, <span class="s1">'cc'</span>,
                     <span class="s1">'cc'</span>,<span class="s1">'cc attack)</span>
 <span class="s1">            util.waf_output(block_template_cc)</span>
 <span class="s1">            end</span>
 <span class="s1">        end</span>
-<span class="s1">        local req_h, _ = ngx.shared.challenge:get(host..real_ip)</span>
+<span class="s1">        local req_h, _ = ngx.shared.cc:get(host..real_ip)</span>
 <span class="s1">        if req_h then</span>
 <span class="s1">            if req_h &gt;= times then</span>
-<span class="s1">                ngx.shared.challenge:set("cc_deny_"..host..real_ip, "1", block_time*60)</span>
-<span class="s1">                _M.log_record("cc_module", '</span>cc_01<span class="s1">', '</span>cc<span class="s1">',</span>
-<span class="s1">                        '</span>cc<span class="s1">','</span>cc attack<span class="err">'</span><span class="o">)</span>
+<span class="s1">                ngx.shared.cc:set("cc_deny_"..host..real_ip, "1", block_time*60)</span>
+<span class="s1">                _M.log_record("cc_module", '</span>cc_01<span class="s1">', '</span>cc<span class="s1">', '</span>cc<span class="s1">','</span>cc attack<span class="err">'</span><span class="o">)</span>
                 util.waf_output<span class="o">(</span>block_template_cc<span class="o">)</span>
 
             <span class="k">else</span>
-                ngx.shared.challenge:incr<span class="o">(</span>host..real_ip, <span class="m">1</span><span class="o">)</span>
+                ngx.shared.cc:incr<span class="o">(</span>host..real_ip, <span class="m">1</span><span class="o">)</span>
             end
         <span class="k">else</span>
-            ngx.shared.challenge:set<span class="o">(</span>host..real_ip, <span class="m">1</span>, <span class="nb">time</span><span class="o">)</span>
+            ngx.shared.cc:set<span class="o">(</span>host..real_ip, <span class="m">1</span>, <span class="nb">time</span><span class="o">)</span>
         end
     end
 </pre></div>
@@ -147,9 +146,7 @@ var _hmt = _hmt || [];
     <span class="k">if</span> flow_count <span class="k">then</span>
         <span class="k">if</span> flow_count&gt;<span class="o">=</span> flow_max <span class="k">then</span>
             ngx.shared.flow_control:set<span class="o">(</span><span class="s2">"flow_deny_"</span>..host..real_ip, <span class="s2">"1"</span>, block_time*60<span class="o">)</span>
-            _M.log_record<span class="o">(</span><span class="s2">"flow_module"</span>, <span class="s1">'flow_01'</span>,
-                    <span class="s1">'flow'</span>, <span class="s1">'flow'</span>,
-                    <span class="s1">'flow policy'</span><span class="o">)</span>
+            _M.log_record<span class="o">(</span><span class="s2">"flow_module"</span>, <span class="s1">'flow_01'</span>,<span class="s1">'flow'</span>, <span class="s1">'flow'</span>,<span class="s1">'flow policy'</span><span class="o">)</span>
 
             util.waf_output<span class="o">(</span>block_template_flow<span class="o">)</span>
         <span class="k">else</span>
@@ -166,11 +163,8 @@ end
     <span class="nb">local</span> flow_count, <span class="nv">_</span> <span class="o">=</span> ngx.shared.flow_control:get<span class="o">(</span><span class="s1">'flow_ip'</span>..host..real_ip<span class="o">)</span>
     <span class="k">if</span> flow_count <span class="k">then</span>
         <span class="k">if</span> flow_count&gt;<span class="o">=</span> tonumber<span class="o">(</span>flow_rate<span class="o">)</span> <span class="k">then</span>
-            _M.log_record<span class="o">(</span><span class="s2">"flow_module"</span>, <span class="s1">'flow_ip_01'</span>,
-                    <span class="s1">'flow'</span>, <span class="s1">'flow_ip'</span>,
-                    <span class="s1">'flow policy'</span><span class="o">)</span>
+            _M.log_record<span class="o">(</span><span class="s2">"flow_module"</span>, <span class="s1">'flow_ip_01'</span>,<span class="s1">'flow'</span>, <span class="s1">'flow_ip'</span>,<span class="s1">'flow policy'</span><span class="o">)</span>
             util.waf_output<span class="o">(</span>block_template_flow<span class="o">)</span>
-
         <span class="k">else</span>
             ngx.shared.flow_control:incr<span class="o">(</span><span class="s1">'flow_ip'</span>..host..real_ip, <span class="m">1</span><span class="o">)</span>
         end
