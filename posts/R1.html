@@ -232,19 +232,16 @@ end
 <p><img alt="WAF" class="img-fluid" src="../images/WechatIMG7.jpeg"/></p>
 <p>WAF会把拦截记录序列化成json格式，写入log中，而不是直接写入任何数据库，因为这里对性能要求较高，综合考虑采取此方法，然后使用logstash写入kafka再写入es。WAF log输出是用的nginx 的worker 进程执行权限，一般www-data, 保证log输出目录，拥有对应权限，否则无log输出，且不报错。</p>
 <h4>压测</h4>
-<div class="highlight"><pre><span></span><span class="m">14</span>.04.1-Ubuntu  IP :  <span class="m">110</span>.110.110.110
+<div class="highlight"><pre><span></span>WAF所在物理机：
+
+<span class="m">14</span>.04.1-Ubuntu  IP :  <span class="m">110</span>.110.110.110
 Kernel Version: <span class="m">4</span>.2.0-27-generic
 CPU Type : Intel<span class="o">(</span>R<span class="o">)</span> Xeon<span class="o">(</span>R<span class="o">)</span> CPU E5-2680 v4 @ <span class="m">2</span>.40GHz    * <span class="m">2</span>
-Memory Size : 64050M
+Memory Size : 64G
+Network Card : Intel <span class="m">10</span>-Gigabit X540-AT2 <span class="o">(</span>rev <span class="m">01</span><span class="o">)</span>    10G万兆
 
-Disk Size : <span class="m">479</span>.6GB
-Mainborad Ver : INSPUR
-Network Card : Intel Corporation Ethernet Controller <span class="m">10</span>-Gigabit X540-AT2 <span class="o">(</span>rev <span class="m">01</span><span class="o">)</span>    10G万兆
-Net-Card eth0 : 6c:92:bf:5d:c4:38
-Net-Card eth1 : 6c:92:bf:5d:c4:38
 
 物理机公网网速：
-
 Testing download speed........
 Download: <span class="m">588</span>.17 Mbit/s
 Testing upload speed..........
