@@ -230,8 +230,41 @@ end
 </pre></div>
 <h4>数据传输</h4>
 <p><img alt="WAF" class="img-fluid" src="../images/WechatIMG7.jpeg"/></p>
-<p>WAF log输出是用的nginx 的worker 进程执行权限，一般www-data, 保证log输出目录，拥有对应权限，否则无log输出，且不报错</p>
+<p>WAF会把拦截记录序列化成json格式，写入log中，而不是直接写入任何数据库，因为这里对性能要求较高，综合考虑采取此方法，然后使用logstash写入kafka再写入es。WAF log输出是用的nginx 的worker 进程执行权限，一般www-data, 保证log输出目录，拥有对应权限，否则无log输出，且不报错。</p>
 <h4>压测</h4>
+<div class="highlight"><pre><span></span><span class="m">14</span>.04.1-Ubuntu  IP :  <span class="m">110</span>.110.110.110
+Kernel Version: <span class="m">4</span>.2.0-27-generic
+CPU Type : Intel<span class="o">(</span>R<span class="o">)</span> Xeon<span class="o">(</span>R<span class="o">)</span> CPU E5-2680 v4 @ <span class="m">2</span>.40GHz    * <span class="m">2</span>
+Memory Size : 64050M
+
+Disk Size : <span class="m">479</span>.6GB
+Mainborad Ver : INSPUR
+Network Card : Intel Corporation Ethernet Controller <span class="m">10</span>-Gigabit X540-AT2 <span class="o">(</span>rev <span class="m">01</span><span class="o">)</span>    10G万兆
+Net-Card eth0 : 6c:92:bf:5d:c4:38
+Net-Card eth1 : 6c:92:bf:5d:c4:38
+
+物理机公网网速：
+
+Testing download speed........
+Download: <span class="m">588</span>.17 Mbit/s
+Testing upload speed..........
+Upload: <span class="m">332</span>.21 Mbit/s
+
+请求机公网网速： CentOS <span class="m">6</span>.5   IP：112.112.112.112
+
+Testing download speed...............
+Download: <span class="m">500</span>.96 Mbit/s
+Testing upload speed................
+Upload: <span class="m">327</span>.65 Mbit/s
+</pre></div>
+<p>http性能测试工具：  wrk</p>
+<p>公网测试：</p>
+<p>由请求机从公网链路发出请求，贴近真实场景</p>
+<p>命令: ./wrk -t8 -c200 -d10s   http://110.110.110.110/</p>
+<p>这里从压测报告中挑出一个场景，抛砖引玉：</p>
+<p>开启waf，upstream转发转发到 server1, server2, server3 ,80端口 (静态页面)，黑白ip，各100条，常规流控100个域名, 常规cc 域名100个，其他模块开启（包括get post ua url 拦截模块等）</p>
+<p>Requests/sec:  15423.37</p>
+<p>Latency：28.59ms</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
