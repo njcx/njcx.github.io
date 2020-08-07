@@ -185,7 +185,7 @@ rule_dict :safe_set<span class="o">(</span><span class="s2">"rule_version"</span
     end
 </pre></div>
 <h5>对域名的限流</h5>
-<p>对域名限流的模块位于access.lua 文件中</p>
+<p>对域名限流的模块位于access.lua 文件中，主要逻辑就是，把当前的域名作为一个key写入共享内存，在1s内对该key累加计数，把超过阀值的流量用IP标记，拦截指定时间并返回一个拦截的页面，完成流量置换。见下面演示代码：</p>
 <div class="highlight"><pre><span></span>    <span class="nb">local</span> <span class="nv">flow_max</span> <span class="o">=</span> tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>flow_rate, <span class="s2">","</span><span class="o">)[</span><span class="m">1</span><span class="o">])</span>    -- qps
     <span class="nb">local</span> <span class="nv">block_time</span> <span class="o">=</span> tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>flow_rate, <span class="s2">","</span><span class="o">)[</span><span class="m">2</span><span class="o">])</span>  -- 拦截时间
     <span class="nb">local</span> <span class="nv">req</span> <span class="o">=</span> ngx.shared.flow_control:get<span class="o">(</span><span class="s2">"flow_deny_"</span>..host..real_ip<span class="o">)</span>
