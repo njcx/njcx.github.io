@@ -131,7 +131,7 @@ make <span class="o">&amp;&amp;</span>make install
 <h5>动态规则更新</h5>
 <p>比如，黑白IP的添加，域名url的拦截封禁，流控CC规则的添加，这些动态的规则要求快速生效，这一块规则是存放在Redis里面的，通过API进行修改添加，WAF定时从Redis里面读取到共享内存中，Lua更新规则部分使用了redis-lua 2.0.5-dev类库和luasocket类库完成， 相关的代码放到init_worker.lua文件中， 如果有什么修改， nginx reload 即可，在 nginx reload 的过程中， master进程不退出，worker 进程陆续退出重启，这里特别注意，不然容易踩坑，比如，init.lua 在 nginx reload 的过后代码不会生效</p>
 <h5>传统规则引擎</h5>
-<p>一些安全拦截的规则，是编写在json文件之中，就像下面列子一样</p>
+<p>一些安全拦截的规则，是编写在json文件之中，就像下面列子一样，规则在OpenResty启动时候，由init_worker.lua写入共享内存，在 nginx reload 的过程中可完成更新，无缝对接更新规则</p>
 <div class="highlight"><pre><span></span><span class="o">{</span>
     <span class="s2">"state"</span>: <span class="s2">"enable"</span>,
     <span class="s2">"rule_id"</span>:<span class="s2">"scanner_01"</span>,
