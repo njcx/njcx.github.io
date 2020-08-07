@@ -212,19 +212,19 @@ rule_dict :safe_set<span class="o">(</span><span class="s2">"rule_version"</span
 end
 </pre></div>
 <h5>对IP的限流</h5>
-<p>对IP限流的模块位于access.lua 文件中</p>
+<p>对IP限流的模块位于access.lua 文件中，主要逻辑就是，把IP和当前的域名作为一个key写入共享内存，在1s内对该key累加计数，把超过阀值的流量拦截并返回一个拦截的页面。见下面演示代码：</p>
 <div class="highlight"><pre><span></span><span class="nv">flow_rate</span> <span class="o">=</span>ngx.shared.flow_ip_rules:get<span class="o">(</span>ip_str_key<span class="o">)</span>   -- 单个IP 1s内最大请求数
 <span class="k">if</span> flow_rate <span class="k">then</span>
-    <span class="nb">local</span> flow_count, <span class="nv">_</span> <span class="o">=</span> ngx.shared.flow_control:get<span class="o">(</span><span class="s1">'flow_ip'</span>..host..real_ip<span class="o">)</span>
+    <span class="nb">local</span> flow_count, <span class="nv">_</span> <span class="o">=</span> ngx.shared.flow_control:get<span class="o">(</span>host..real_ip<span class="o">)</span>
     <span class="k">if</span> flow_count <span class="k">then</span>
         <span class="k">if</span> flow_count&gt;<span class="o">=</span> tonumber<span class="o">(</span>flow_rate<span class="o">)</span> <span class="k">then</span>
             _M.log_record<span class="o">(</span><span class="s2">"flow_module"</span>, <span class="s1">'flow_ip_01'</span>,<span class="s1">'flow'</span>, <span class="s1">'flow_ip'</span>,<span class="s1">'flow policy'</span><span class="o">)</span>
             util.waf_output<span class="o">(</span>block_template_flow<span class="o">)</span>
         <span class="k">else</span>
-            ngx.shared.flow_control:incr<span class="o">(</span><span class="s1">'flow_ip'</span>..host..real_ip, <span class="m">1</span><span class="o">)</span>
+            ngx.shared.flow_control:incr<span class="o">(</span>host..real_ip, <span class="m">1</span><span class="o">)</span>
         end
     <span class="k">else</span>
-        ngx.shared.flow_control:set<span class="o">(</span><span class="s1">'flow_ip'</span>..host..real_ip, <span class="m">1</span>, <span class="m">1</span><span class="o">)</span>
+        ngx.shared.flow_control:set<span class="o">(</span>host..real_ip, <span class="m">1</span>, <span class="m">1</span><span class="o">)</span>
     end
 end
 </pre></div>
