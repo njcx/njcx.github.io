@@ -102,7 +102,8 @@ var _hmt = _hmt || [];
     </ul>
   </header>
   <div class="content">
-    <h4>架构</h4>
+    <p>Web应用防护系统（也称为：网站应用级入侵防御系统。英文：Web Application Firewall，简称： WAF）。利用国际上公认的一种说法：Web应用防火墙是通过执行一系列针对HTTP/HTTPS的安全策略来专门为Web应用提供保护的一款产品。</p>
+<h4>架构</h4>
 <p>我们的流量第一层先到达高防抗D，做DDOS清洗，然后转发给WAF，由WAF做第二次清洗流控，转发给后端业务LB，整体架构如下，并旁路了分析引擎，弥补了WAF这一块无法做太复杂的计算缺陷，并把分析结果通过接口交给WAF执行。</p>
 <p><img alt="WAF" class="img-fluid" src="../images/WechatIMG9.jpeg"/></p>
 <h4>技术选型</h4>
@@ -127,9 +128,9 @@ make <span class="o">&amp;&amp;</span>make install
 /usr/local/openresty/luajit/bin/luarocks install luasocket                                                                                                                                                                                  //根据真实环境调整目录
 注意： 这里有个bug，显示安装成功，其实没有安装成功，通过检查 /usr/local/openresty/luajit/lib/lua/5.1  目录下面，有没有mime  socket 目录来确定是否安装成功，否则再次执行安装步骤三，直到安装成功
 </pre></div>
-<h5>动态规则更新</h5>
+<h6>动态规则更新</h6>
 <p>比如，黑白IP的添加，域名URL的拦截封禁，流控CC规则的添加，这些动态的规则要求快速生效，这一块规则是存放在Redis里面的，通过API进行修改添加，WAF定时从Redis里面读取到共享内存中，Lua更新规则部分使用了redis-lua 2.0.5-dev类库和luasocket类库完成， 相关的代码放到init_worker.lua文件中， 如果有什么修改， nginx reload 即可，在 nginx reload 的过程中， master进程不退出，worker 进程陆续退出重启，这里特别注意，不然容易踩坑，比如，init.lua 在 nginx reload 的过后代码不会生效</p>
-<h5>传统规则引擎</h5>
+<h6>传统规则引擎</h6>
 <p>一些安全拦截的规则，主要有GET和POST参数、Header里面的一些字段过滤，文件上传的拦截，是编写在json文件之中，就像下面列子一样，规则在OpenResty启动时候，由init_worker.lua写入共享内存，在 nginx reload 的过程中可完成更新，无缝对接更新规则</p>
 <div class="highlight"><pre><span></span><span class="o">{</span>
     <span class="s2">"state"</span>: <span class="s2">"enable"</span>,
@@ -156,7 +157,7 @@ rule_dict :safe_set<span class="o">(</span><span class="s2">"rule"</span>,cjson.
 end
 rule_dict :safe_set<span class="o">(</span><span class="s2">"rule_version"</span>,1.2,0<span class="o">)</span>
 </pre></div>
-<h5>CC算法</h5>
+<h6>CC算法</h6>
 <p>CC 模块位于access.lua 文件中，主要逻辑就是，把IP和当前的域名作为一个key写入共享内存，在单位内对该key累加计数，只要超过阀值，就拦截指定时间长度并返回一个拦截的页面，下一次访问的时候就直接拦截。见下面演示代码：</p>
 <div class="highlight"><pre><span></span><span class="k">if</span> cc_policy  <span class="k">then</span>
         <span class="nb">local</span> <span class="nb">time</span> <span class="o">=</span> tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy , <span class="s2">","</span><span class="o">)[</span><span class="m">1</span><span class="o">])</span>   -- 单位时间
@@ -184,7 +185,7 @@ rule_dict :safe_set<span class="o">(</span><span class="s2">"rule_version"</span
         end
     end
 </pre></div>
-<h5>对域名的限流</h5>
+<h6>对域名的限流</h6>
 <p>对域名限流的模块位于access.lua 文件中，主要逻辑就是，把当前的域名作为一个key写入共享内存，在1s内对该key累加计数，把超过阀值的流量用IP标记，拦截指定时间并返回一个拦截的页面，完成流量置换。见下面演示代码：</p>
 <div class="highlight"><pre><span></span>    <span class="nb">local</span> <span class="nv">flow_max</span> <span class="o">=</span> tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>flow_rate, <span class="s2">","</span><span class="o">)[</span><span class="m">1</span><span class="o">])</span>    -- qps
     <span class="nb">local</span> <span class="nv">block_time</span> <span class="o">=</span> tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>flow_rate, <span class="s2">","</span><span class="o">)[</span><span class="m">2</span><span class="o">])</span>  -- 拦截时间
@@ -211,7 +212,7 @@ rule_dict :safe_set<span class="o">(</span><span class="s2">"rule_version"</span
     end
 end
 </pre></div>
-<h5>对IP的限流</h5>
+<h6>对IP的限流</h6>
 <p>对IP限流的模块位于access.lua 文件中，主要逻辑就是，把IP和当前的域名作为一个key写入共享内存，在1s内对该key累加计数，把超过阀值的流量拦截并返回一个拦截的页面。见下面演示代码：</p>
 <div class="highlight"><pre><span></span><span class="nv">flow_rate</span> <span class="o">=</span>ngx.shared.flow_ip_rules:get<span class="o">(</span>ip_str_key<span class="o">)</span>   -- 单个IP 1s内最大请求数
 <span class="k">if</span> flow_rate <span class="k">then</span>
