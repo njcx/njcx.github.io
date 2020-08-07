@@ -262,7 +262,7 @@ Upload: <span class="m">327</span>.65 Mbit/s
 <p>由请求机从公网链路发出请求，贴近真实场景</p>
 <p>命令: ./wrk -t8 -c200 -d10s   http://110.110.110.110/</p>
 <p>这里从压测报告中挑出一个场景，抛砖引玉：</p>
-<p>开启waf，upstream转发转发到 server1, server2, server3 ,80端口 (静态页面)，黑白ip，各100条，常规流控100个域名, 常规cc 域名100个，其他模块开启（包括get post ua url 拦截模块等）</p>
+<p>开启waf，upstream转发转发到 server1, server2, server3 ,80端口 (静态页面)，黑白ip，各100条，常规域名、常规URL拦截各100条,常规流控100个域名, 常规cc 域名100个，其他模块开启（包括get post ua url 拦截模块等）</p>
 <p>Requests/sec:  15423.37</p>
 <p>Latency：28.59ms</p>
   </div>
