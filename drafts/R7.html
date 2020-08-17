@@ -8,9 +8,9 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>MongoDB学习笔记(A) | nJcx's Blog
+  <title>HIDS开发之抓取DNS请求 | nJcx's Blog
 </title>
-  <link rel="canonical" href="https://www.njcx.bid/drafts/C5.html">
+  <link rel="canonical" href="https://www.njcx.bid/drafts/R7.html">
 
 
   <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="记录一下自己学到的东西">
+<meta name="description" content="HIDS开发之抓取DNS请求~">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,136 +79,30 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>MongoDB学习笔记(A)
+      <h1>HIDS开发之抓取DNS请求
 </h1>
       <hr>
 <article class="article">
   <header>
     <ul class="list-inline">
-      <li class="list-inline-item text-muted" title="2018-06-02T23:20:00+03:00">
+      <li class="list-inline-item text-muted" title="2018-08-07T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 02 June 2018
+        Tue 07 August 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
-        <a href="https://www.njcx.bid/category/shu-ju-ku.html">数据库</a>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
       </li>
       <li class="list-inline-item">
         <i class="fa fa-user-o"></i>
         <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
       <li class="list-inline-item">
         <i class="fa fa-files-o"></i>
-        <a href="https://www.njcx.bid/tag/mongodb.html">#MongoDB</a>      </li>
+        <a href="https://www.njcx.bid/tag/hids.html">#HIDS</a>      </li>
     </ul>
   </header>
   <div class="content">
-    <h4>介绍</h4>
-<p>Mongodb的3大元素:数据库(db),集合(collection),文档(document),"数据库"还是对应关系数据库中的"数据库",其中"集合"就是对应关系数据库中的"表"，"文档"对应"记录"。</p>
-<table class="table-hover table table-striped">
-<thead>
-<tr>
-<th align="center">RDBMS</th>
-<th align="center">MongoDB</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center">Database</td>
-<td align="center">Database</td>
-</tr>
-<tr>
-<td align="center">Table</td>
-<td align="center">Collection</td>
-</tr>
-<tr>
-<td align="center">Tuple/Row</td>
-<td align="center">Document</td>
-</tr>
-<tr>
-<td align="center">column</td>
-<td align="center">Field</td>
-</tr>
-<tr>
-<td align="center">Table Join</td>
-<td align="center">Embedded Documents</td>
-</tr>
-<tr>
-<td align="center">Primary Key</td>
-<td align="center">Primary Key (Default key _id provided by mongodb itself)</td>
-</tr>
-</tbody>
-</table>
-<p>数据库服务器和客户端</p>
-<table class="table-hover table table-striped">
-<thead>
-<tr>
-<th align="center">mysql</th>
-<th align="center">oracle</th>
-<th align="center">mongodb</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center">Mysqld</td>
-<td align="center">Oracle</td>
-<td align="center">mongod</td>
-</tr>
-<tr>
-<td align="center">mysql</td>
-<td align="center">sqlplus</td>
-<td align="center">mongo</td>
-</tr>
-</tbody>
-</table>
-<h4>安装</h4>
-<div class="highlight"><pre><span></span>centos/rhce : yum install mongodb-server -y
-
-debian/ubuntu : apt-get install mongodb-server -y
-</pre></div>
-<h4>使用</h4>
-<ul>
-<li>创建数据库</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; use njcx
-switched to db njcx
-&gt; db
-njcx
-&gt; 
-</pre></div>
-<ul>
-<li>查看数据库</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; show dbs
-</pre></div>
-<ul>
-<li>删除数据库</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; use njcx
-switched to db njcx
-&gt; db
-njcx
-&gt; db.dropDatabase<span class="o">()</span>
-</pre></div>
-<ul>
-<li>创建集合(插入自动创建)</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; db.njcx.insert<span class="o">({</span><span class="s2">"name"</span>:<span class="s2">"njcx"</span><span class="o">})</span>
-</pre></div>
-<ul>
-<li>创建集合(db.createCollection(name, options))</li>
-</ul>
-<p>name 指定集合名称,opt 指定有关内存大小和索引选项(可选)</p>
-<p>capped           Boolean  （可选）如果为true，则启用封顶集合。封顶集合是固定大小的集合，会自动覆盖最早的条目，当它达到其最大大小。如果指定true，则需要也指定尺寸参数。</p>
-<p>autoIndexID     Boolean （可选）如果为true，自动创建索引_id字段的默认值是false。</p>
-<p>size            number  （可选）指定最大大小字节封顶集合。如果封顶如果是 true，那么你还需要指定这个字段。</p>
-<p>max             number  （可选）指定封顶集合允许在文件的最大数量。</p>
-<div class="highlight"><pre><span></span>&gt; db.createCollection<span class="o">(</span><span class="s2">"tudou"</span>, <span class="o">{</span> capped : true, autoIndexID : true, size : <span class="m">6142800</span>, max : <span class="m">10000</span> <span class="o">}</span> <span class="o">)</span>
-</pre></div>
-<ul>
-<li>删除集合</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; db.njcx.drop<span class="o">()</span>
-</pre></div>
+    <h4>汇总</h4>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
