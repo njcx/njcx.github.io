@@ -103,6 +103,12 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
+<p>一共3个节点，</p>
+<div class="highlight"><pre><span></span><span class="m">10</span>.10.252.215   master   
+<span class="m">10</span>.10.252.214   node1 
+<span class="m">10</span>.10.252.213   node2  
+</pre></div>
+<p>除了初始化，软件安装一致</p>
 <p>k8s repo</p>
 <div class="highlight"><pre><span></span><span class="o">[</span>k8s<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>k8s
@@ -172,6 +178,12 @@ systemctl restart docker <span class="o">&amp;&amp;</span> systemctl <span class
  systemctl restart kubelet <span class="o">&amp;&amp;</span> systemctl <span class="nb">enable</span> kubelet
 
 
+
+master node1 node2 上面内容一致
+
+
+master执行
+
 kubeadm init --kubernetes-version<span class="o">=</span><span class="m">1</span>.19.0 --apiserver-advertise-address<span class="o">=</span><span class="m">10</span>.10.252.215 --image-repository registry.aliyuncs.com/google_containers --service-cidr<span class="o">=</span><span class="m">10</span>.10.0.0/16 --pod-network-cidr<span class="o">=</span><span class="m">10</span>.244.0.0/16
 
   mkdir -p <span class="nv">$HOME</span>/.kube
@@ -181,10 +193,11 @@ kubeadm init --kubernetes-version<span class="o">=</span><span class="m">1</span
 
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 </pre></div>
-<p>kubeadm join 10.10.252.215:6443 --token u3toqk.8j7fnn0lmajgvnvq     --discovery-token-ca-cert-hash sha256:49b37a021f9223d2f3af10d71a5ca47cc34e12d2c20147adfc61a6a4b90c4b97 </p>
-<div class="highlight"><pre><span></span>kubeadm join <span class="m">172</span>.16.251.175:6443 --token gc9vwd.stdwhqf0crus6qdp <span class="se">\</span>
-    --discovery-token-ca-cert-hash sha256:6fe5cfa6036b98a971d74f40f70e007ed139787463983826e0db267e483eb62d 
+<div class="highlight"><pre><span></span>node1 node2 执行
+
+ kubeadm join <span class="m">10</span>.10.252.215:6443 --token u3toqk.8j7fnn0lmajgvnvq     --discovery-token-ca-cert-hash sha256:49b37a021f9223d2f3af10d71a5ca47cc34e12d2c20147adfc61a6a4b90c4b97 
 </pre></div>
+<p>master 生成join语句脚本备用</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
 <span class="k">if</span> <span class="o">[</span> <span class="nv">$EUID</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span><span class="k">then</span>
