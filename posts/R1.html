@@ -229,6 +229,40 @@ end
     end
 end
 </pre></div>
+<h6>旁路分析</h6>
+<p>我们把流量解析后序列化写入log里面，然后，采集到kafka里面，用于与威胁情报联动拦截，以及业务安全上面的分析，比如，机器人爬虫、刷接口、刷单、撞库、恶意注册账号、薅羊毛、骗补贴等等</p>
+<div class="highlight"><pre><span></span><span class="nb">local</span> <span class="nv">client_ip</span> <span class="o">=</span> client_ip
+<span class="nb">local</span> <span class="nv">user_agent</span> <span class="o">=</span> user_agent
+<span class="nb">local</span> <span class="nv">local_time</span> <span class="o">=</span> local_time
+<span class="nb">local</span> <span class="nv">host</span> <span class="o">=</span> host
+<span class="nb">local</span> <span class="nv">url</span> <span class="o">=</span> http_req_url
+<span class="nb">local</span> <span class="nv">waf_host</span> <span class="o">=</span> waf_host
+<span class="nb">local</span> <span class="nv">req_data</span> <span class="o">=</span> req_data
+<span class="nb">local</span> <span class="nv">req_method</span> <span class="o">=</span> req_method
+<span class="nb">local</span> <span class="nv">header</span> <span class="o">=</span> header
+<span class="nb">local</span> <span class="nv">cookie</span> <span class="o">=</span> cookie
+<span class="nb">local</span> <span class="nv">log_json_obj</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="nv">ip</span> <span class="o">=</span> client_ip,
+    <span class="nb">time</span> <span class="o">=</span> local_time,
+    <span class="nv">host</span> <span class="o">=</span> host,
+    <span class="nv">useragent</span> <span class="o">=</span> user_agent,
+    <span class="nv">req_method</span> <span class="o">=</span>req_method,
+    <span class="nv">url</span> <span class="o">=</span> url,
+    <span class="nv">header</span> <span class="o">=</span> header,
+    <span class="nv">cookie</span> <span class="o">=</span> cookie,
+    <span class="nv">req_data</span><span class="o">=</span>req_data,
+    <span class="nv">waf_host</span> <span class="o">=</span> waf_host
+<span class="o">}</span>
+<span class="nb">local</span> <span class="nv">log_line</span> <span class="o">=</span> cjson.encode<span class="o">(</span>log_json_obj<span class="o">)</span>
+<span class="nb">local</span> <span class="nv">log_name</span> <span class="o">=</span> string.format<span class="o">(</span><span class="s2">"%s/%s-access-waf.log"</span>, log_path, os.date<span class="o">(</span><span class="s2">"%Y-%m-%d"</span><span class="o">))</span>
+<span class="nb">local</span> <span class="nv">file</span> <span class="o">=</span> io.open<span class="o">(</span>log_name, <span class="s2">"a"</span><span class="o">)</span>
+<span class="k">if</span> <span class="nv">file</span> <span class="o">==</span> nil <span class="k">then</span>
+    <span class="k">return</span>
+end
+file:write<span class="o">(</span>string.format<span class="o">(</span><span class="s2">"%s\n"</span>, log_line<span class="o">))</span>
+file:flush<span class="o">()</span>
+file:close<span class="o">()</span>
+</pre></div>
 <h4>数据传输</h4>
 <p><img alt="WAF" class="img-fluid" src="../images/WechatIMG7.jpeg"/></p>
 <p>WAF会把拦截记录序列化成json格式，写入log中，而不是直接写入任何数据库，因为这里对性能要求较高，综合考虑采取此方法，然后使用logstash写入kafka再写入es。WAF log输出是用的nginx 的worker 进程执行权限，一般www-data, 保证log输出目录，拥有对应权限，否则无log输出，且不报错。</p>
