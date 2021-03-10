@@ -169,6 +169,47 @@ memory.kmem.failcnt    memory.kmem.tcp.max_usage_in_bytes  memory.memsw.limit_in
 <p>添加控制进程pid,当进程 1234 使用内存超过 10MB 的时候，默认进程 1234 会触发 OOM，被系统 Kill 掉。</p>
 <div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">1234</span> &gt; /sys/fs/cgroup/memory/test1/cgroup.procs
 </pre></div>
+<h4>cgroups 挂载问题</h4>
+<p>测试发现很多Ubuntu 机器开机没有挂载cgroupfs，下面提供一个挂载脚本</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<span class="nb">set</span> -e
+
+<span class="k">if</span> grep -v <span class="s1">'^#'</span> /etc/fstab <span class="p">|</span> grep -q cgroup<span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">"cgroups mounted from fstab, not mounting /sys/fs/cgroup"</span>
+        <span class="nb">exit</span> <span class="m">0</span>
+<span class="k">fi</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -e /proc/cgroups <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">exit</span> <span class="m">0</span>
+<span class="k">fi</span>
+
+mountpoint -q /sys/fs/cgroup <span class="o">||</span> mount -t tmpfs -o <span class="nv">uid</span><span class="o">=</span><span class="m">0</span>,gid<span class="o">=</span><span class="m">0</span>,mode<span class="o">=</span><span class="m">0755</span> cgroup /sys/fs/cgroup
+
+<span class="k">for</span> d in <span class="sb">`</span>tail -n +2 /proc/cgroups <span class="p">|</span> awk <span class="s1">'{</span>
+<span class="s1">        if ($2 == 0)</span>
+<span class="s1">                print $1</span>
+<span class="s1">        else if (a[$2])</span>
+<span class="s1">                a[$2] = a[$2]","$1</span>
+<span class="s1">        else</span>
+<span class="s1">                a[$2]=$1</span>
+<span class="s1">};END{</span>
+<span class="s1">        for(i in a) {</span>
+<span class="s1">                print a[i]</span>
+<span class="s1">        }</span>
+<span class="s1">}'</span><span class="sb">`</span><span class="p">;</span> <span class="k">do</span>
+        mkdir -p /sys/fs/cgroup/<span class="nv">$d</span>
+        mountpoint -q /sys/fs/cgroup/<span class="nv">$d</span> <span class="o">||</span> <span class="o">(</span>mount -n -t cgroup -o <span class="nv">$d</span> cgroup /sys/fs/cgroup/<span class="nv">$d</span> <span class="o">||</span> rmdir /sys/fs/cgroup/<span class="nv">$d</span> <span class="o">||</span> <span class="nb">true</span><span class="o">)</span>
+<span class="k">done</span>
+
+<span class="nv">dir</span><span class="o">=</span>/sys/fs/cgroup/systemd
+<span class="k">if</span> <span class="o">[</span> ! -d <span class="s2">"</span><span class="si">${</span><span class="nv">dir</span><span class="si">}</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        mkdir <span class="s2">"</span><span class="si">${</span><span class="nv">dir</span><span class="si">}</span><span class="s2">"</span>
+        mount -n -t cgroup -o none,name<span class="o">=</span>systemd <span class="nv">name</span><span class="o">=</span>systemd <span class="s2">"</span><span class="si">${</span><span class="nv">dir</span><span class="si">}</span><span class="s2">"</span> <span class="o">||</span> rmdir <span class="s2">"</span><span class="si">${</span><span class="nv">dir</span><span class="si">}</span><span class="s2">"</span> <span class="o">||</span> <span class="nb">true</span>
+<span class="k">fi</span>
+
+<span class="nb">echo</span> <span class="s2">"Cgroupfs successfully mounted"</span>
+<span class="nb">exit</span> <span class="m">0</span>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
