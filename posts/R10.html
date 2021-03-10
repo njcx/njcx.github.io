@@ -169,6 +169,213 @@ memory.kmem.failcnt    memory.kmem.tcp.max_usage_in_bytes  memory.memsw.limit_in
 <p>添加控制进程pid,当进程 1234 使用内存超过 10MB 的时候，默认进程 1234 会触发 OOM，被系统 Kill 掉。</p>
 <div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">1234</span> &gt; /sys/fs/cgroup/memory/test1/cgroup.procs
 </pre></div>
+<h4>使用cgroups限制HIDS-Agent的cpu和内存</h4>
+<p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。</p>
+<p>agent 支持安装成系统服务，直接亮代码：</p>
+<p>test1-master.go</p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">"fmt"</span>
+    <span class="s">"log"</span>
+    <span class="s">"os"</span>
+    <span class="s">"os/signal"</span>
+    <span class="s">"syscall"</span>
+    <span class="s">"github.com/takama/daemon"</span>
+    <span class="s">"path/filepath"</span>
+    <span class="s">"io/ioutil"</span>
+    <span class="s">"os/exec"</span>
+<span class="p">)</span>
+
+<span class="kd">const</span> <span class="p">(</span>
+    <span class="nx">name</span>            <span class="p">=</span> <span class="s">"test1"</span>
+    <span class="nx">description</span>     <span class="p">=</span> <span class="s">"test1 service"</span>
+    <span class="nx">procsFile</span>       <span class="p">=</span> <span class="s">"cgroup.procs"</span>
+    <span class="nx">memoryLimitFile</span> <span class="p">=</span> <span class="s">"memory.limit_in_bytes"</span>
+    <span class="nx">swapLimitFile</span>   <span class="p">=</span> <span class="s">"memory.swappiness"</span>
+    <span class="nx">cpuLimitFile</span>    <span class="p">=</span> <span class="s">"cpu.cfs_quota_us"</span>
+    <span class="nx">Name</span>            <span class="p">=</span> <span class="s">"Pagent"</span>
+    <span class="nx">memoLimit</span>       <span class="p">=</span>  <span class="mi">50</span>                                          <span class="c1">// 50M</span>
+    <span class="nx">mcgroupRoot</span>     <span class="p">=</span>  <span class="s">"/sys/fs/cgroup/memory/"</span><span class="o">+</span><span class="nx">Name</span>
+    <span class="nx">cpuLimit</span>        <span class="p">=</span>  <span class="mi">5</span>                                           <span class="c1">//  5%</span>
+    <span class="nx">cpucgroupRoot</span>   <span class="p">=</span>  <span class="s">"/sys/fs/cgroup/cpu/"</span><span class="o">+</span><span class="nx">Name</span>
+<span class="p">)</span>
+
+
+<span class="kd">var</span> <span class="nx">stdlog</span><span class="p">,</span> <span class="nx">errlog</span> <span class="o">*</span><span class="nx">log</span><span class="p">.</span><span class="nx">Logger</span>
+
+<span class="kd">type</span> <span class="nx">Service</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">daemon</span><span class="p">.</span><span class="nx">Daemon</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">service</span> <span class="o">*</span><span class="nx">Service</span><span class="p">)</span> <span class="nx">Manage</span><span class="p">()</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="nx">usage</span> <span class="o">:=</span> <span class="s">"Usage: ./test1-master  install | remove | start | stop | status"</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">1</span> <span class="p">{</span>
+        <span class="nx">command</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">switch</span> <span class="nx">command</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="s">"install"</span><span class="p">:</span>
+            <span class="nx">exist</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">PathExists</span><span class="p">(</span><span class="nx">mcgroupRoot</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nx">exist</span> <span class="p">{</span>
+                <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"has dir![%v]\n"</span><span class="p">,</span> <span class="nx">mcgroupRoot</span><span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Mkdir</span><span class="p">(</span><span class="nx">mcgroupRoot</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">ModePerm</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"mkdir failed![%v]\n"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"mkdir success!\n"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="nx">exist</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">PathExists</span><span class="p">(</span><span class="nx">cpucgroupRoot</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nx">exist</span> <span class="p">{</span>
+                <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"has dir![%v]\n"</span><span class="p">,</span> <span class="nx">cpucgroupRoot</span><span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Mkdir</span><span class="p">(</span><span class="nx">cpucgroupRoot</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">ModePerm</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"mkdir failed![%v]\n"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"mkdir success!\n"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="nx">mPath</span> <span class="o">:=</span> <span class="nx">filepath</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">mcgroupRoot</span><span class="p">,</span> <span class="nx">memoryLimitFile</span><span class="p">)</span>
+            <span class="nx">writeFile</span><span class="p">(</span><span class="nx">mPath</span><span class="p">,</span> <span class="nx">memoLimit</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span>
+            <span class="nx">sPath</span> <span class="o">:=</span> <span class="nx">filepath</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">mcgroupRoot</span><span class="p">,</span> <span class="nx">swapLimitFile</span><span class="p">)</span>
+            <span class="nx">writeFile</span><span class="p">(</span><span class="nx">sPath</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="nx">cPath</span> <span class="o">:=</span> <span class="nx">filepath</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">cpucgroupRoot</span><span class="p">,</span> <span class="nx">cpuLimitFile</span><span class="p">)</span>
+            <span class="nx">writeFile</span><span class="p">(</span><span class="nx">cPath</span><span class="p">,</span> <span class="nx">cpuLimit</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="nx">service</span><span class="p">.</span><span class="nx">Install</span><span class="p">()</span>
+        <span class="k">case</span> <span class="s">"remove"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nx">service</span><span class="p">.</span><span class="nx">Remove</span><span class="p">()</span>
+        <span class="k">case</span> <span class="s">"start"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nx">service</span><span class="p">.</span><span class="nx">Start</span><span class="p">()</span>
+        <span class="k">case</span> <span class="s">"stop"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nx">service</span><span class="p">.</span><span class="nx">Stop</span><span class="p">()</span>
+        <span class="k">case</span> <span class="s">"status"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nx">service</span><span class="p">.</span><span class="nx">Status</span><span class="p">()</span>
+        <span class="k">default</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nx">usage</span><span class="p">,</span> <span class="kc">nil</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">go</span> <span class="nx">startCmd</span><span class="p">(</span><span class="s">"/usr/local/test1/test1-agent"</span><span class="p">)</span>
+    <span class="nx">interrupt</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Signal</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nx">signal</span><span class="p">.</span><span class="nx">Notify</span><span class="p">(</span><span class="nx">interrupt</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Interrupt</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Kill</span><span class="p">,</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">SIGTERM</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">{</span>
+        <span class="k">select</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="nx">killSignal</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">interrupt</span><span class="p">:</span>
+            <span class="nx">stdlog</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"Got signal:"</span><span class="p">,</span> <span class="nx">killSignal</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nx">killSignal</span> <span class="o">==</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Interrupt</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="s">"Daemon was interruped by system signal"</span><span class="p">,</span> <span class="kc">nil</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="s">"Daemon was killed"</span><span class="p">,</span> <span class="kc">nil</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">usage</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">stdlog</span> <span class="p">=</span> <span class="nx">log</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">,</span> <span class="s">""</span><span class="p">,</span> <span class="nx">log</span><span class="p">.</span><span class="nx">Ldate</span><span class="p">|</span><span class="nx">log</span><span class="p">.</span><span class="nx">Ltime</span><span class="p">)</span>
+    <span class="nx">errlog</span> <span class="p">=</span> <span class="nx">log</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">,</span> <span class="s">""</span><span class="p">,</span> <span class="nx">log</span><span class="p">.</span><span class="nx">Ldate</span><span class="p">|</span><span class="nx">log</span><span class="p">.</span><span class="nx">Ltime</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">srv</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">daemon</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">description</span><span class="p">,</span> <span class="nx">daemon</span><span class="p">.</span><span class="nx">SystemDaemon</span><span class="p">,</span><span class="s">"nil"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">errlog</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"Error: "</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+        <span class="nx">os</span><span class="p">.</span><span class="nx">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nx">service</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">Service</span><span class="p">{</span><span class="nx">srv</span><span class="p">}</span>
+    <span class="nx">status</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">Manage</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">errlog</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">status</span><span class="p">,</span> <span class="s">"\nError: "</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+        <span class="nx">os</span><span class="p">.</span><span class="nx">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">status</span><span class="p">)</span>
+<span class="p">}</span>
+
+
+<span class="kd">func</span> <span class="nx">PathExists</span><span class="p">(</span><span class="nx">path</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kt">bool</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stat</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="nx">os</span><span class="p">.</span><span class="nx">IsNotExist</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span>
+
+
+<span class="kd">func</span> <span class="nx">writeFile</span><span class="p">(</span><span class="nx">path</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">value</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ioutil</span><span class="p">.</span><span class="nx">WriteFile</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span> <span class="nx">value</span><span class="p">)),</span> <span class="mo">0755</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">.</span><span class="nx">Panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+
+<span class="kd">type</span> <span class="nx">ExitStatus</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Signal</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Signal</span>
+    <span class="nx">Code</span>   <span class="kt">int</span>
+<span class="p">}</span>
+
+
+<span class="kd">func</span> <span class="nx">startCmd</span><span class="p">(</span><span class="nx">command</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">restart</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">ExitStatus</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nx">runner</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nx">Cmd</span><span class="p">{</span>
+            <span class="nx">Path</span><span class="p">:</span> <span class="nx">command</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>
+        <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">Start</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="nx">log</span><span class="p">.</span><span class="nx">Panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"add pid"</span><span class="p">,</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">Process</span><span class="p">.</span><span class="nx">Pid</span><span class="p">,</span> <span class="s">"to file cgroup.procs"</span><span class="p">)</span>
+        <span class="nx">mPath</span> <span class="o">:=</span> <span class="nx">filepath</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">mcgroupRoot</span><span class="p">,</span> <span class="nx">procsFile</span><span class="p">)</span>
+        <span class="nx">writeFile</span><span class="p">(</span><span class="nx">mPath</span><span class="p">,</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">Process</span><span class="p">.</span><span class="nx">Pid</span><span class="p">)</span>
+        <span class="nx">cpuPath</span> <span class="o">:=</span> <span class="nx">filepath</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">cpucgroupRoot</span><span class="p">,</span> <span class="nx">procsFile</span><span class="p">)</span>
+        <span class="nx">writeFile</span><span class="p">(</span><span class="nx">cpuPath</span><span class="p">,</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">Process</span><span class="p">.</span><span class="nx">Pid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">Wait</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"cmd return with error:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nx">status</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">ProcessState</span><span class="p">.</span><span class="nx">Sys</span><span class="p">().(</span><span class="nx">syscall</span><span class="p">.</span><span class="nx">WaitStatus</span><span class="p">)</span>
+        <span class="nx">options</span> <span class="o">:=</span> <span class="nx">ExitStatus</span><span class="p">{</span>
+            <span class="nx">Code</span><span class="p">:</span> <span class="nx">status</span><span class="p">.</span><span class="nx">ExitStatus</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nx">status</span><span class="p">.</span><span class="nx">Signaled</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">options</span><span class="p">.</span><span class="nx">Signal</span> <span class="p">=</span> <span class="nx">status</span><span class="p">.</span><span class="nx">Signal</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="nx">cmd</span><span class="p">.</span><span class="nx">Process</span><span class="p">.</span><span class="nx">Kill</span><span class="p">()</span>
+        <span class="nx">restart</span> <span class="o">&lt;-</span> <span class="nx">options</span>
+    <span class="p">}</span>
+    <span class="k">go</span> <span class="nx">runner</span><span class="p">()</span>
+    <span class="k">for</span> <span class="p">{</span>
+        <span class="nx">status</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">restart</span>
+        <span class="k">switch</span> <span class="nx">status</span><span class="p">.</span><span class="nx">Signal</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Kill</span><span class="p">:</span>
+            <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"app is killed by system"</span><span class="p">)</span>
+        <span class="k">default</span><span class="p">:</span>
+            <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"app exit with code:"</span><span class="p">,</span> <span class="nx">status</span><span class="p">.</span><span class="nx">Code</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"restart app.."</span><span class="p">)</span>
+        <span class="k">go</span> <span class="nx">runner</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>test1-agent</p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">"test1/app"</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">agent</span> <span class="nx">app</span><span class="p">.</span><span class="nx">Agent</span>
+    <span class="nx">agent</span><span class="p">.</span><span class="nx">Run</span><span class="p">()</span>
+<span class="p">}</span>
+</pre></div>
 <h4>cgroups 挂载问题</h4>
 <p>测试发现很多Ubuntu 机器开机没有挂载cgroupfs，下面提供一个挂载脚本</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
