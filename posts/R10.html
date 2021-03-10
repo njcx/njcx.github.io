@@ -135,6 +135,28 @@ cpu.cfs_quota_us：表示该control group限制占用的时间（微秒），默
 <p>然后，把受限进程pid写入cgroup.procs文件中，即可完成对该进程限制CPU 使用5%，当进程退出，cgroup.procs以及tasks会清除相关pid的记录。</p>
 <div class="highlight"><pre><span></span>echo 1234  &gt;  /sys/fs/cgroup/cpu/test1/cgroup.procs
 </pre></div>
+<h4>使用cgroups限制内存使用</h4>
+<p>测试系统： CentOS7 ，内核版本 3.10.0-1062.18.1.el7.x86_64，cgroup v1</p>
+<p>首先进入cpu子系统对应的层级路径下：cd /sys/fs/cgroup/memory
+通过新建文件夹创建一个内存控制族群：mkdir test1，即新建了一个内存控制族群：test1
+新建test1之后，可以看到目录下自动建立了相关的文件，这些文件是伪文件。</p>
+<div class="highlight"><pre><span></span>$ ls -la /sys/fs/cgroup/memory/test1
+
+cgroup.clone_children  memory.kmem.limit_in_bytes          memory.kmem.tcp.usage_in_bytes  memory.memsw.max_usage_in_bytes  memory.soft_limit_in_bytes  tasks
+cgroup.event_control   memory.kmem.max_usage_in_bytes      memory.kmem.usage_in_bytes      memory.memsw.usage_in_bytes      memory.stat
+cgroup.procs           memory.kmem.slabinfo                memory.limit_in_bytes           memory.move_charge_at_immigrate  memory.swappiness
+memory.failcnt         memory.kmem.tcp.failcnt             memory.max_usage_in_bytes       memory.numa_stat                 memory.usage_in_bytes
+memory.force_empty     memory.kmem.tcp.limit_in_bytes      memory.memsw.failcnt            memory.oom_control               memory.use_hierarchy
+memory.kmem.failcnt    memory.kmem.tcp.max_usage_in_bytes  memory.memsw.limit_in_bytes     memory.pressure_level            notify_on_release
+</pre></div>
+<p>主要配置含义：</p>
+<p>cgroup.procs: 使用该组配置的进程列表。
+memory.limit_in_bytes：内存使用限制。
+memory.memsw.limit_in_bytes：内存和交换分区总计限制。
+memory.swappiness: 交换分区使用比例。
+memory.usage_in_bytes： 当前进程内存使用量。
+memory.stat: 内存使用统计信息。
+memory.oom_control: OOM 控制参数。</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
