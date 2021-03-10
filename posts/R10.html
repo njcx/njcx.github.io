@@ -8,9 +8,9 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>安全 Articles | nJcx's Blog
+  <title>Linux的cgroups在HIDS-Agent 开发上的应用 | nJcx's Blog
 </title>
-  <link rel="canonical" href="https://www.njcx.bid/category/an-quan5.html">
+  <link rel="canonical" href="https://www.njcx.bid/posts/R10.html">
 
 
   <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="Linux重度用户，Python从业人员，个人小博客，欢迎访问">
+<meta name="description" content="Linux的cgroups在HIDS-Agent 开发上的应用~">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,93 +79,60 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>安全 Articles
+      <h1>Linux的cgroups在HIDS-Agent 开发上的应用
 </h1>
       <hr>
-<article class="row teaser">
-  <header class="col-sm-4 text-muted">
-    <ul>
-      <li title="2017-05-27T13:20:00+03:00">
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-07-18T02:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 27 May 2017
+        Wed 18 July 2018
       </li>
-      <li>
+      <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
         <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
       </li>
-      <li>
+      <li class="list-inline-item">
         <i class="fa fa-user-o"></i>
         <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/hids.html">#HIDS</a>      </li>
     </ul>
   </header>
-  <div class="col-sm-8">
-    <h4 class="title"><a href="https://www.njcx.bid/posts/K1.html">Snort 学习记录</a></h4>
-    <div class="content">
-      Snort 学习记录
-    </div>
-  </div>
-</article>
-<hr>
-<article class="row teaser">
-  <header class="col-sm-4 text-muted">
-    <ul>
-      <li title="2017-05-27T12:21:00+03:00">
-        <i class="fa fa-clock-o"></i>
-        Sat 27 May 2017
-      </li>
-      <li>
-        <i class="fa fa-folder-open-o"></i>
-        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
-      </li>
-      <li>
-        <i class="fa fa-user-o"></i>
-        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
-    </ul>
-  </header>
-  <div class="col-sm-8">
-    <h4 class="title"><a href="https://www.njcx.bid/posts/L1.html">OSSEC的rootkit_trojans.txt的理解</a></h4>
-    <div class="content">
-      记录一下学习ossec 心路~
-    </div>
-  </div>
-</article>
-<hr>
-<article class="row teaser">
-  <header class="col-sm-4 text-muted">
-    <ul>
-      <li title="2017-05-27T12:20:00+03:00">
-        <i class="fa fa-clock-o"></i>
-        Sat 27 May 2017
-      </li>
-      <li>
-        <i class="fa fa-folder-open-o"></i>
-        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
-      </li>
-      <li>
-        <i class="fa fa-user-o"></i>
-        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
-    </ul>
-  </header>
-  <div class="col-sm-8">
-    <h4 class="title"><a href="https://www.njcx.bid/posts/K2.html">Suricata 学习记录</a></h4>
-    <div class="content">
-      suricata 学习记录
-    </div>
-  </div>
-</article>
-<hr>
-<ul class="pagination">
-  <li class="page-item">
-    <a class="page-link" href="https://www.njcx.bid/category/an-quan4.html">
-      <span aria-hidden="true">&laquo;</span>
-      <span class="sr-only">Previous</span>
-    </a>
-  </li>
-  <li class="page-item disabled">
-    <span class="page-link">5 of 5</span>
-  </li>
+  <div class="content">
+    <h4>介绍</h4>
+<p>cgroups 是Linux内核提供的一种可以限制单个进程或者多个进程所使用资源的机制，可以对 cpu，内存等资源实现精确的控制，Docker 就使用了 cgroups 提供的资源限制能力来完成cpu，内存等部分的资源控制。</p>
+<p>cgroups 的全称是control groups，cgroups为每种可以控制的资源定义了一个子系统。典型的子系统介绍如下：</p>
+<ul>
+<li>cpu 子系统，主要限制进程的 cpu 使用率。</li>
+<li>cpuacct 子系统，可以统计 cgroups 中的进程的 cpu 使用报告。</li>
+<li>cpuset 子系统，可以为 cgroups 中的进程分配单独的 cpu 节点或者内存节点。</li>
+<li>memory 子系统，可以限制进程的 memory 使用量。</li>
+<li>blkio 子系统，可以限制进程的块设备 io。</li>
+<li>devices 子系统，可以控制进程能够访问某些设备。</li>
+<li>net_cls 子系统，可以标记 cgroups 中进程的网络数据包，然后可以使用 tc 模块（traffic control）对数据包进行控制。</li>
+<li>freezer 子系统，可以挂起或者恢复 cgroups 中的进程。</li>
+<li>ns 子系统，可以使不同 cgroups 下面的进程使用不同的 namespace。</li>
 </ul>
-    </div>
+<p>cgroup和namespace类似，也是将进程进行分组，但它的目的和namespace不一样，namespace是为了隔离进程组之间的资源，而cgroup是为了对一组进程进行统一的资源监控和限制。</p>
+<p>cgroup分v1和v2两个版本，v1实现较早，最初版本是在 Linux 2.6.24，随着时间的推移，添加了越来越多的controller，而这些controller又各自独立开发，导致了controller之间很大的不一致，功能比较多，但是由于它里面的功能都是零零散散的实现的，所以规划的不是很好，导致了一些使用和维护上的不便，v2的出现就是为了解决v1中这方面的问题，随着v2一起引入内核的还有cgroup namespace。Linux 3.10 提供了作为试验特性的 Cgroups V2, 到了 Linux kernel 4.5 后 Cgroups V2 才成为正式特性。</p>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
   </div>
 
   <footer class="footer">
