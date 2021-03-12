@@ -143,7 +143,7 @@ etcd的重点是利用raft算法做分布式一致性，强调各个节点之间
 <p>etcd v3的底层采用boltdb做存储，value直接持久化；redis是一个内存数据库，它的持久化方案有aof和rdb，在宕机时都或多或少会丢失数据。</p>
 <h4>Etcd 集群的搭建</h4>
 <p>一共3台机器：</p>
-<p>CentOS7</p>
+<p>CentOS7，Etcd-v3.4.14</p>
 <ul>
 <li>HOST_1=172.19.0.12</li>
 <li>HOST_2=172.19.0.13</li>
@@ -200,9 +200,8 @@ etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv
 
 8e9e05c52164694d, started, default, http://localhost:2380, http://0.0.0.0:2379, <span class="nb">false</span>
 </pre></div>
-<div class="highlight"><pre><span></span>put 和get
-
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web1 value1
+<p>put 和get操作</p>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web1 value1
 OK
 
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web2 value2
@@ -223,6 +222,18 @@ web2
 value2
 web3
 value3
+</pre></div>
+<p>删除操作</p>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put key myvalue
+OK
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> del key
+<span class="m">1</span>
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put k1 value1
+OK
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put k2 value2
+OK
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> del k --prefix
+<span class="m">1</span>
 </pre></div>
 <h4>Etcd在HIDS-Agent配置管理和健康监测上的应用</h4>
   </div>
