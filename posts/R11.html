@@ -109,10 +109,11 @@ etcd是CoreOS团队于2013年6月发起的开源项目，它的目标是构建�
 <ul>
 <li>简单：安装配置简单，而且提供了HTTP API进行交互，使用也很简单</li>
 <li>安全：支持SSL证书验证</li>
-<li>快速：根据官方提供的benchmark数据，单实例支持每秒2k+读操作</li>
-<li>可靠：采用raft算法，实现分布式系统数据的可用性和一致性
-etcd项目地址：https://github.com/coreos/etcd/</li>
+<li>快速：根据官方提供的benchmark数据，每秒 10000次写操作</li>
+<li>可靠：采用raft算法，实现分布式系统数据的可用性和一致性</li>
 </ul>
+<p>etcd项目地址：https://github.com/etcd-io/etcd</p>
+<p>下载地址： https://github.com/etcd-io/etcd/releases/download/v3.4.14/etcd-v3.4.14-linux-amd64.tar.gz</p>
 <p>etcd应用场景</p>
 <p>etcd比较多的应用场景是用于服务发现，服务发现(Service Discovery)要解决的是分布式系统中最常见的问题之一，即在同一个分布式集群中的进程或服务如何才能找到对方并建立连接。</p>
 <p>从本质上说，服务发现就是要了解集群中是否有进程在监听upd或者tcp端口，并且通过名字就可以进行查找和链接。</p>
