@@ -266,15 +266,18 @@ ok
 etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put sample value --lease<span class="o">=</span>2be7547fbc6a5afa
 etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
 
-etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease keep-alive 2be7547fbc6a5afa      <span class="c1">#续期</span>
+etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease keep-alive 2be7547fbc6a5afa      <span class="c1">#到期自动续期，会阻塞</span>
 etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease revoke 2be7547fbc6a5afa          <span class="c1">#直接销毁</span>
 <span class="c1"># or after 300 seconds</span>
 etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
 </pre></div>
+<p>认证</p>
+<div class="highlight"><pre><span></span>
+</pre></div>
 <p>分布式锁</p>
 <div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
 
-<span class="c1"># another client with the same name blocks</span>
+<span class="c1"># 启动另一个shell，上面会退出</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
 </pre></div>
 <p>查看etcd集群状态</p>
