@@ -159,11 +159,13 @@ etcd的重点是利用raft算法做分布式一致性，强调各个节点之间
 <span class="nv">HOST_2</span><span class="o">=</span><span class="m">10</span>.240.0.18
 <span class="nv">HOST_3</span><span class="o">=</span><span class="m">10</span>.240.0.19
 <span class="nv">CLUSTER</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_1</span><span class="si">}</span>:2380,<span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_2</span><span class="si">}</span>:2380,<span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_3</span><span class="si">}</span>:2380
+mkdir -p /var/lib/etcd
+<span class="nv">ETCD_DATA</span><span class="o">=</span>/var/lib/etcd
 </pre></div>
 <p>然后在HOST_1 执行</p>
 <div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span>
 <span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_1</span><span class="si">}</span>
-etcd --data-dir<span class="o">=</span>data.etcd --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
+etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span> --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
     --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
     --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
     --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
@@ -172,7 +174,7 @@ etcd --data-dir<span class="o">=</span>data.etcd --name <span class="si">${</spa
 <p>然后在HOST_2 执行</p>
 <div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span>
 <span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_2</span><span class="si">}</span>
-etcd --data-dir<span class="o">=</span>data.etcd --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
+etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span> --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
     --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
     --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
     --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
@@ -181,11 +183,20 @@ etcd --data-dir<span class="o">=</span>data.etcd --name <span class="si">${</spa
 <p>然后在HOST_3 执行</p>
 <div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span>
 <span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_3</span><span class="si">}</span>
-etcd --data-dir<span class="o">=</span>data.etcd --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
+etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span> --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
     --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
     --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
     --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
     --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
+</pre></div>
+<p>然后，在任何一个机器上面</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ETCDCTL_API</span><span class="o">=</span><span class="m">3</span>
+<span class="nv">HOST_1</span><span class="o">=</span><span class="m">10</span>.240.0.17
+<span class="nv">HOST_2</span><span class="o">=</span><span class="m">10</span>.240.0.18
+<span class="nv">HOST_3</span><span class="o">=</span><span class="m">10</span>.240.0.19
+<span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379,<span class="nv">$HOST_2</span>:2379,<span class="nv">$HOST_3</span>:2379
+
+etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> member list
 </pre></div>
 <h4>Etcd在HIDS-Agent配置管理和健康监测上的应用</h4>
   </div>
