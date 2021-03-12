@@ -262,7 +262,15 @@ ok
 <p>查看etcd集群状态</p>
 <div class="highlight"><pre><span></span>./etcdctl --write-out<span class="o">=</span>table --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint status       //查看集群状态
 
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint health                         // 
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint health                         // 查看节点健康状态
+</pre></div>
+<p>备份与恢复</p>
+<p>只能从一个etcd节点请求快照，因此--endpoints标志应仅包含一个端点。</p>
+<div class="highlight"><pre><span></span><span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> snapshot save my.db
+
+./etcdctl snapshot restore my.db -data-dir /var/lib/etcd
 </pre></div>
 <h4>Etcd在HIDS-Agent配置管理和健康监测上的应用</h4>
   </div>
