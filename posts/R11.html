@@ -260,16 +260,29 @@ ok
 ok
 </pre></div>
 <p>TTL</p>
-<div class="highlight"><pre><span></span>etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease grant <span class="m">30</span>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease grant <span class="m">30</span>
 <span class="c1"># lease 2be7547fbc6a5afa granted with TTL(30s)</span>
 
-etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put sample value --lease<span class="o">=</span>2be7547fbc6a5afa
-etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put sample value --lease<span class="o">=</span>2be7547fbc6a5afa
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
 
-etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease keep-alive 2be7547fbc6a5afa      <span class="c1">#到期自动续期，会阻塞</span>
-etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease revoke 2be7547fbc6a5afa          <span class="c1">#直接销毁</span>
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease keep-alive 2be7547fbc6a5afa      <span class="c1">#到期自动续期，会阻塞</span>
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease revoke 2be7547fbc6a5afa          <span class="c1">#直接销毁</span>
 <span class="c1"># or after 300 seconds</span>
-etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
+</pre></div>
+<p>事务写</p>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put user1 bad
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> txn --interactive
+
+compares:
+value<span class="o">(</span><span class="s2">"user1"</span><span class="o">)</span> <span class="o">=</span> <span class="s2">"bad"</span>      
+
+success requests <span class="o">(</span>get, put, delete<span class="o">)</span>:
+del user1  
+
+failure requests <span class="o">(</span>get, put, delete<span class="o">)</span>:
+put user1 good
 </pre></div>
 <p>认证</p>
 <div class="highlight"><pre><span></span>
