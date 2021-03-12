@@ -141,6 +141,53 @@ etcd的爆火来源于k8s用etcd做服务发现，而redis的兴起则来源于m
 etcd的重点是利用raft算法做分布式一致性，强调各个节点之间的通信、同步，确保各节点数据和事务的一致性，使得服务发现工作更稳定；</p>
 <p>redis也可以做主从同步和读写分离，但节点一致性强调的是数据，不是事务。redis的注册和发现只能通过pub和sub实现，安全性不能保证（断线重连之后不会将历史信息推送给客户端，需要自己做一个定时轮询），延时也比etcd v3高。</p>
 <p>etcd v3的底层采用boltdb做存储，value直接持久化；redis是一个内存数据库，它的持久化方案有aof和rdb，在宕机时都或多或少会丢失数据。</p>
+<h4>Etcd 集群的搭建</h4>
+<p>一共3台机器：</p>
+<p>CentOS7</p>
+<ul>
+<li>HOST_1=10.240.0.17</li>
+<li>HOST_2=10.240.0.18</li>
+<li>HOST_3=10.240.0.19</li>
+</ul>
+<p>先在所有机器上面执行</p>
+<div class="highlight"><pre><span></span><span class="nv">TOKEN</span><span class="o">=</span>etcd-token-test-njcx
+<span class="nv">CLUSTER_STATE</span><span class="o">=</span>new
+<span class="nv">NAME_1</span><span class="o">=</span>machine-1
+<span class="nv">NAME_2</span><span class="o">=</span>machine-2
+<span class="nv">NAME_3</span><span class="o">=</span>machine-3
+<span class="nv">HOST_1</span><span class="o">=</span><span class="m">10</span>.240.0.17
+<span class="nv">HOST_2</span><span class="o">=</span><span class="m">10</span>.240.0.18
+<span class="nv">HOST_3</span><span class="o">=</span><span class="m">10</span>.240.0.19
+<span class="nv">CLUSTER</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_1</span><span class="si">}</span>:2380,<span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_2</span><span class="si">}</span>:2380,<span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_3</span><span class="si">}</span>:2380
+</pre></div>
+<p>然后在HOST_1 执行</p>
+<div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span>
+<span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_1</span><span class="si">}</span>
+etcd --data-dir<span class="o">=</span>data.etcd --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
+    --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
+    --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
+    --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
+    --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
+</pre></div>
+<p>然后在HOST_2 执行</p>
+<div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span>
+<span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_2</span><span class="si">}</span>
+etcd --data-dir<span class="o">=</span>data.etcd --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
+    --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
+    --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
+    --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
+    --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
+</pre></div>
+<p>然后在HOST_3 执行</p>
+<div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span>
+<span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_3</span><span class="si">}</span>
+etcd --data-dir<span class="o">=</span>data.etcd --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
+    --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
+    --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
+    --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
+    --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
+</pre></div>
+<h4>Etcd在HIDS-Agent配置管理和健康监测上的应用</h4>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
