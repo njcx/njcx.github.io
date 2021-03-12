@@ -285,7 +285,21 @@ failure requests <span class="o">(</span>get, put, delete<span class="o">)</span
 put user1 good
 </pre></div>
 <p>认证</p>
-<div class="highlight"><pre><span></span>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role add root               <span class="c1">#创建角色root</span>
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role grant-permission root readwrite  foo     <span class="c1">#只给foo读写权限（foo是key）</span>
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role get root
+
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user add root                                 <span class="c1">#创建用户root</span>
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user grant-role root root                     <span class="c1">#把用户添加到root 角色里面</span>
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user get root
+
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> auth <span class="nb">enable</span>                                   <span class="c1">#激活认证</span>
+
+
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 put foo bar
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> get foo
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 get foo
+./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 get foo1
 </pre></div>
 <p>分布式锁</p>
 <div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
