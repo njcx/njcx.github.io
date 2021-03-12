@@ -235,6 +235,35 @@ OK
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> del k --prefix
 <span class="m">1</span>
 </pre></div>
+<p>监听key的变化</p>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> watch stock1
+
+PUT
+stock1
+<span class="m">1000</span>
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put stock1 <span class="m">1000</span>
+ok
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> watch stock --prefix
+
+PUT
+stock1
+<span class="m">10</span>
+PUT
+stock2
+<span class="m">20</span>
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put stock1 <span class="m">10</span>
+ok
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put stock2 <span class="m">20</span>
+ok
+</pre></div>
+<p>查看etcd集群状态</p>
+<div class="highlight"><pre><span></span>./etcdctl --write-out<span class="o">=</span>table --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint status       //查看集群状态
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint health                         // 
+</pre></div>
 <h4>Etcd在HIDS-Agent配置管理和健康监测上的应用</h4>
   </div>
 </article>
