@@ -197,25 +197,19 @@ etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv
 <span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379,<span class="nv">$HOST_2</span>:2379,<span class="nv">$HOST_3</span>:2379
 </pre></div>
 <div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> member list
-
 8e9e05c52164694d, started, default, http://localhost:2380, http://0.0.0.0:2379, <span class="nb">false</span>
 </pre></div>
 <p>put 和get操作</p>
 <div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web1 value1
 OK
-
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web2 value2
 OK
-
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web3 value3
 OK
-
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get web3
 web3
 value3
-
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get web --prefix
-
 web1
 value1
 web2
@@ -237,16 +231,13 @@ OK
 </pre></div>
 <p>监听key的变化</p>
 <div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> watch stock1
-
 PUT
 stock1
 <span class="m">1000</span>
 
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put stock1 <span class="m">1000</span>
 ok
-
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> watch stock --prefix
-
 PUT
 stock1
 <span class="m">10</span>
@@ -262,21 +253,17 @@ ok
 <p>TTL</p>
 <div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease grant <span class="m">30</span>
 <span class="c1"># lease 2be7547fbc6a5afa granted with TTL(30s)</span>
-
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put sample value --lease<span class="o">=</span>2be7547fbc6a5afa
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
-
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease keep-alive 2be7547fbc6a5afa      <span class="c1">#到期自动续期，会阻塞</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease revoke 2be7547fbc6a5afa          <span class="c1">#直接销毁</span>
-<span class="c1"># or after 300 seconds</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
 </pre></div>
 <p>事务写</p>
 <div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put user1 bad
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> txn --interactive
-
 compares:
-value<span class="o">(</span><span class="s2">"user1"</span><span class="o">)</span> <span class="o">=</span> <span class="s2">"bad"</span>      
+value<span class="o">(</span><span class="s2">"user1"</span><span class="o">)</span> <span class="o">=</span> <span class="s2">"bad"</span>  
 
 success requests <span class="o">(</span>get, put, delete<span class="o">)</span>:
 del user1  
@@ -285,17 +272,13 @@ failure requests <span class="o">(</span>get, put, delete<span class="o">)</span
 put user1 good
 </pre></div>
 <p>认证</p>
-<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role add root               <span class="c1">#创建角色root</span>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role add root                                 <span class="c1">#创建角色root</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role grant-permission root readwrite  foo     <span class="c1">#只给foo读写权限（foo是key）</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role get root
-
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user add root                                 <span class="c1">#创建用户root</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user grant-role root root                     <span class="c1">#把用户添加到root 角色里面</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user get root
-
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> auth <span class="nb">enable</span>                                   <span class="c1">#激活认证</span>
-
-
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 put foo bar
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> get foo
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 get foo
@@ -303,7 +286,6 @@ put user1 good
 </pre></div>
 <p>分布式锁</p>
 <div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
-
 <span class="c1"># 启动另一个shell，上面会退出</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
 </pre></div>
