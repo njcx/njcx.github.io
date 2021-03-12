@@ -195,8 +195,34 @@ etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv
 <span class="nv">HOST_2</span><span class="o">=</span><span class="m">172</span>.19.0.13
 <span class="nv">HOST_3</span><span class="o">=</span><span class="m">172</span>.19.0.14
 <span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379,<span class="nv">$HOST_2</span>:2379,<span class="nv">$HOST_3</span>:2379
+</pre></div>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> member list
 
-etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> member list
+8e9e05c52164694d, started, default, http://localhost:2380, http://0.0.0.0:2379, <span class="nb">false</span>
+</pre></div>
+<div class="highlight"><pre><span></span>put 和get
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web1 value1
+OK
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web2 value2
+OK
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web3 value3
+OK
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get web3
+web3
+value3
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get web --prefix
+
+web1
+value1
+web2
+value2
+web3
+value3
 </pre></div>
 <h4>Etcd在HIDS-Agent配置管理和健康监测上的应用</h4>
   </div>
