@@ -259,10 +259,28 @@ ok
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put stock2 <span class="m">20</span>
 ok
 </pre></div>
-<p>查看etcd集群状态</p>
-<div class="highlight"><pre><span></span>./etcdctl --write-out<span class="o">=</span>table --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint status       //查看集群状态
+<p>TTL</p>
+<div class="highlight"><pre><span></span>etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease grant <span class="m">30</span>
+<span class="c1"># lease 2be7547fbc6a5afa granted with TTL(30s)</span>
 
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint health                         // 查看节点健康状态
+etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put sample value --lease<span class="o">=</span>2be7547fbc6a5afa
+etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
+
+etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease keep-alive 2be7547fbc6a5afa      <span class="c1">#续期</span>
+etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease revoke 2be7547fbc6a5afa          <span class="c1">#直接销毁</span>
+<span class="c1"># or after 300 seconds</span>
+etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
+</pre></div>
+<p>分布式锁</p>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
+
+<span class="c1"># another client with the same name blocks</span>
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
+</pre></div>
+<p>查看etcd集群状态</p>
+<div class="highlight"><pre><span></span>./etcdctl --write-out<span class="o">=</span>table --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint status       <span class="c1">#查看集群状态</span>
+
+./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint health                         <span class="c1">#查看节点健康状态</span>
 </pre></div>
 <p>备份与恢复</p>
 <p>只能从一个etcd节点请求快照，因此--endpoints标志应仅包含一个端点。</p>
