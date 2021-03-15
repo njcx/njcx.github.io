@@ -126,7 +126,7 @@ var _hmt = _hmt || [];
 通过在etcd指定的主题下注册的服务业能在对应的主题下查找到。</p>
 <h4>Etcd vs Zookeeper</h4>
 <p>提供配置共享和服务发现的系统比较多，其中最为大家熟知的是 Zookeeper，而 etcd 可以算得上是后起之秀了。在项目实现、一致性协议易理解性、运维、安全等多个维度上，etcd 相比 zookeeper 都占据优势。</p>
-<p>本文选取 Zookeeper 作为典型代表与 etcd 进行比较，而不考虑 Consul 项目作为比较对象，原因为 Consul 的可靠性和稳定性还需要时间来验证（项目发起方自身服务并未使用Consul，自己都不用)。</p>
+<p>本文选取 Zookeeper 作为典型代表与 etcd 进行比较，而不考虑 Consul 项目作为比较对象，原因为 Consul 的可靠性和稳定性还需要时间来验证。</p>
 <ul>
 <li>一致性协议： etcd 使用 Raft 协议，Zookeeper 使用 ZAB（类PAXOS协议），前者容易理解，方便工程实现；</li>
 <li>运维方面：etcd 方便运维，Zookeeper 难以运维；</li>
@@ -303,6 +303,85 @@ put user1 good
 ./etcdctl snapshot restore my.db -data-dir /var/lib/etcd
 </pre></div>
 <h4>Etcd在HIDS-Agent配置管理和健康监测上的应用</h4>
+<p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。</p>
+<p>HIDS-Agent 有如下需求：</p>
+<ul>
+<li>1， agent 存活检测</li>
+<li>2， 配置管理以及动态更新配置</li>
+<li>3， 规则下发(比如，恶意程序扫描)</li>
+</ul>
+<p>获取配置</p>
+<div class="highlight"><pre><span></span>    <span class="nx">cli</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">clientv3</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span>
+        <span class="nx">Endpoints</span><span class="p">:</span>   <span class="nx">etcD</span><span class="p">,</span>
+        <span class="nx">DialTimeout</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+    <span class="p">})</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"connect failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+
+    <span class="nx">ctx</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nx">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+    <span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="s">"/hids/kafka/host"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"get kafka_host failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+
+    <span class="nx">resp1</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="s">"/hids/kafka/topic"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"get kafka_topic failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+
+    <span class="nx">ev</span> <span class="o">:=</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">Kvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nx">kafkaHost</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">Value</span><span class="p">)</span>
+
+    <span class="nx">ev1</span> <span class="o">:=</span> <span class="nx">resp1</span><span class="p">.</span><span class="nx">Kvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nx">kafkaTopic</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">ev1</span><span class="p">.</span><span class="nx">Value</span><span class="p">)</span>
+
+    <span class="nx">a</span><span class="p">.</span><span class="nx">Kafka</span> <span class="p">=</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">NewKafkaProducer</span><span class="p">(</span><span class="nx">kafkaHost</span><span class="p">,</span> <span class="nx">kafkaTopic</span><span class="p">)</span>
+    <span class="nx">a</span><span class="p">.</span><span class="nx">Mutex</span> <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span><span class="p">)</span>
+</pre></div>
+<p>单独起一个goroutine，利用ttl做 agent 存活检测，如果key不在了，则认为agent下线了，这里用keep-alive也可以的</p>
+<div class="highlight"><pre><span></span><span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">cli</span> <span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="k">for</span> <span class="p">{</span>
+            <span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Grant</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">TODO</span><span class="p">(),</span> <span class="mi">60</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"etcd client leasegrant failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="p">}</span>
+            <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Put</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">TODO</span><span class="p">(),</span> <span class="s">"/hids/alivehost/"</span><span class="o">+</span><span class="nx">host</span><span class="o">+</span><span class="s">"--"</span><span class="o">+</span><span class="nx">LocalIP</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Format</span><span class="p">(</span><span class="s">"2006-01-02 15:04:05"</span><span class="p">),</span>
+                <span class="nx">clientv3</span><span class="p">.</span><span class="nx">WithLease</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">ID</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"etcd client leaseput failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="p">}</span>
+            <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nx">cli</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+    <span class="p">}(</span><span class="nx">cli</span><span class="p">)</span>
+</pre></div>
+<p>配置更新以及规则下发可以用 watch 实现</p>
+<div class="highlight"><pre><span></span><span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">cli</span> <span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">{</span>
+        <span class="nx">rch</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Watch</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span> <span class="s">"/hids/kafka/host"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nx">wresp</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">rch</span> <span class="p">{</span>
+            <span class="nx">err</span> <span class="p">=</span> <span class="nx">wresp</span><span class="p">.</span><span class="nx">Err</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                    <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"etcd client watch failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ev</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">wresp</span><span class="p">.</span><span class="nx">Events</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="nb">string</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">Kv</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span><span class="o">==</span> <span class="s">"PUT"</span> <span class="p">{</span>
+                <span class="nx">a</span><span class="p">.</span><span class="nx">Kafka</span> <span class="p">=</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">NewKafkaProducer</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">Kv</span><span class="p">.</span><span class="nx">Value</span><span class="p">),</span> <span class="nx">kafkaTopic</span><span class="p">)</span>
+                <span class="p">}</span>
+
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="p">}</span>
+    <span class="p">}(</span><span class="nx">cli</span><span class="p">)</span>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
