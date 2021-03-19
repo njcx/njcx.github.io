@@ -183,12 +183,12 @@ RR：Resource Record 的缩写</p>
 <p>DNS 报文中最后的三个字段，回答字段、授权字段和附加信息字段， 均采用一种称为资源记录RR（Resource Record）的相同格式。 图显示了资源记录的格式。</p>
 <ul>
 <li>Ethereal 里的名字 说明</li>
-<li>Name  资源的域名——其实前文已经出现了</li>
-<li>Type  类型。下文说明</li>
-<li>Class 大多数是 0x0001，代表 IN</li>
-<li>Time to Live  TTL 秒数</li>
-<li>Data length   当前 RR 剩余部分的长度</li>
-<li>variable      RR 主数据</li>
+<li>Name             资源的域名</li>
+<li>Type             类型。下文说明</li>
+<li>Class         大多数是 0x0001，代表 IN</li>
+<li>Time to Live   TTL 秒数</li>
+<li>Data length       当前 RR 剩余部分的长度</li>
+<li>variable       RR 主数据</li>
 </ul>
 <p>域名是记录中资源数据对应的名字。它的格式和前面介绍的查询名字段格式相同。</p>
 <p>类型说明 RR 的类型码。它的值和前面介绍的查询类型值是一样的。类通常为 1，指 Internet 数据。</p>
@@ -301,7 +301,7 @@ RR：Resource Record 的缩写</p>
 <p>3， DNS发生频率很高，短时间为了发送大量数据，会产生大量请求</p>
 <p>我们也可以联动威胁情报</p>
 <p><img alt="agent" class="img-fluid" src="../images/WeChatbbbaf08c7e6210a037f98624f609c378.png"/></p>
-<p>去干吧。</p>
+<p>在server 端做流式分析，挖掘 C2 、APT、 botnet 等等。</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
