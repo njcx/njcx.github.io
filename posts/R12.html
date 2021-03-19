@@ -106,7 +106,7 @@ var _hmt = _hmt || [];
 <p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。关于agent 使用cgroups限制资源以及使用etcd做配置管理agent存活已经在前文介绍了一下。下面介绍一下agent抓取DNS请求和异常分析的部分。</p>
 <h6>DNS 响应报文格式介绍</h6>
 <p><img alt="agent" class="img-fluid" src="../images/dnsgenformat.png"/></p>
-<p>DNS 请求的格式和响应格式差不多，DNS 定义了一个用于查询和响应的报文格式。上图显示这个报文的总体格式。这个报文由 12 字节长的首部和 4 个长度可变的字段组成。DNS 报文 12 字节长的首部格式如下图所示。</p>
+<p>DNS 请求的格式和响应格式差不多，DNS 定义了一个用于查询和响应的报文格式。上图显示这个报文的总体格式。这个报文由 12 字节长的首部和 4 个长度可变的字段组成。</p>
 <p>DNS报文里的名字   说明</p>
 <ul>
 <li>Transaction ID    标识符。下文说明</li>
@@ -120,6 +120,7 @@ var _hmt = _hmt || [];
 <li>Authortative name servers 域名管理机构数据</li>
 <li>Additional records    附加信息数据</li>
 </ul>
+<p>DNS 报文 12 字节长的首部格式如下图所示。</p>
 <p><img alt="agent" class="img-fluid" src="../images/dnsheaderformat.png"/></p>
 <p>标识字段由客户程序设置并由服务器返回结果。 客户程序通过它来确定响应与查询是否匹配。</p>
 <p>16 bit 的标志字段被划分为若干子字段，如下图所示。</p>
