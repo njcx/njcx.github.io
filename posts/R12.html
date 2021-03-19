@@ -103,7 +103,8 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>介绍</h4>
-<p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。关于agent 使用cgroups限制资源以及使用etcd做配置管理agent存活已经在前文介绍了一下。下面介绍一下agent抓取DNS请求和异常分析的部分</p>
+<p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。关于agent 使用cgroups限制资源以及使用etcd做配置管理agent存活已经在前文介绍了一下。下面介绍一下agent抓取DNS请求和异常分析的部分。</p>
+<h6>DNS 响应报文格式介绍</h6>
 <p><img alt="agent" class="img-fluid" src="../images/dnsgenformat.png"/></p>
 <p>DNS 请求的格式和响应格式差不多，DNS 定义了一个用于查询和响应的报文格式。上图显示这个报文的总体格式。这个报文由 12 字节长的首部和 4 个长度可变的字段组成。DNS 报文 12 字节长的首部格式如下图所示。</p>
 <p><img alt="agent" class="img-fluid" src="../images/dnsheaderformat.png"/></p>
