@@ -289,7 +289,8 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 <p>目标机执行后的结果如下：</p>
 <p>创建了一个常住进程“sh ”， 它的得0和1文件描述符都指向socket。</p>
 <p>匹配规则：sh进程的0，和1文件描述符指向socket</p>
-<p>Don't forget to check with others shell : sh, ash, bsh, csh, ksh, zsh, pdksh, tcsh, bash</p>
+<p>归纳起来，shell环境的进程如果0和1（或某一个）文件描述符都关联到socket或者pipe，就认为它是反弹shell。</p>
+<p>shell 环境包含： sh, ash, bsh, csh, ksh, zsh, pdksh, tcsh, bash</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
