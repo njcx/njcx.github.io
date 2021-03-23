@@ -304,6 +304,9 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 <p>归纳起来，shell环境的进程如果0和1（或某一个）文件描述符都关联到socket或者pipe，就认为它是反弹shell。</p>
 <p>shell 环境包含： sh, ash, bsh, csh, ksh, zsh, pdksh, tcsh, bash</p>
 <h4>HIDS-Agent 开发</h4>
+<p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。关于agent 使用cgroups限制资源以及使用etcd做配置管理agent存活等已经在前文介绍了一下。下面介绍一下agent分析反弹shell的部分。</p>
+<p>代码例子：
+主要是分析 Linux /proc的内容</p>
 <div class="highlight"><pre><span></span>import <span class="o">(</span>
     <span class="s2">"fmt"</span>
     <span class="s2">"io/ioutil"</span>
@@ -471,6 +474,7 @@ func dirsFile<span class="o">(</span>dirPath string<span class="o">)</span> <spa
     <span class="k">return</span> ret, nil
 <span class="o">}</span>
 </pre></div>
+<p>抓取的数据如下</p>
 <div class="highlight"><pre><span></span><span class="o">{</span>
     <span class="s2">"command"</span>:<span class="s2">"bash -i"</span>,
     <span class="s2">"egid"</span>:<span class="s2">"0"</span>,
@@ -495,6 +499,7 @@ func dirsFile<span class="o">(</span>dirPath string<span class="o">)</span> <spa
     <span class="s2">"uid"</span>:<span class="s2">"0"</span>
 <span class="o">}</span>
 </pre></div>
+<p>对应上面的规则，在server 端做流式分析，很多东西一目了然，不过， 百密总有一疏，绕过的方法大家自主了解，技术在对抗中升华。</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
