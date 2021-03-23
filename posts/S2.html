@@ -251,8 +251,8 @@ or
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/>
 目标机执行后的结果如下：</p>
-<p>创建了bash进程，0和1描述符都指向了pipe，这两个pipe关联到nc进程上。nc创建了socket外联。</p>
-<p>匹配规则：bash进程的0，和1文件描述符指向pipe</p>
+<p>创建了sh进程，0和1描述符都指向了pipe，这两个pipe关联到nc进程上。nc创建了socket外联。</p>
+<p>匹配规则：sh进程的0，和1文件描述符指向pipe</p>
 <p>用openssl 反弹shell</p>
 <p>攻击者</p>
 <div class="highlight"><pre><span></span>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days <span class="m">365</span> -nodes <span class="c1">#Generate certificate</span>
