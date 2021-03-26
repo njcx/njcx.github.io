@@ -252,6 +252,36 @@ timeout /t <span class="m">10</span>
 <div class="highlight"><pre><span></span>./kafka-console-consumer.sh --bootstrap-server <span class="m">172</span>.21.129.2:9092 --topic win-hids 
 </pre></div>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG80.jpeg"/></p>
+<p>kafka的流量分流，写es 和 规则引擎消费， 下面是logstash to es的配置</p>
+<div class="highlight"><pre><span></span>input<span class="o">{</span>
+  kafka<span class="o">{</span>
+    <span class="nv">bootstrap_servers</span> <span class="o">=</span>&gt; <span class="s2">"172.21.129.2:9092"</span>
+    <span class="nv">topics_pattern</span>  <span class="o">=</span>&gt; <span class="s2">".*"</span>
+    <span class="nv">consumer_threads</span> <span class="o">=</span>&gt; <span class="m">5</span>
+    <span class="nv">decorate_events</span> <span class="o">=</span>&gt; <span class="nb">true</span>
+    <span class="nv">codec</span> <span class="o">=</span>&gt; <span class="s2">"json"</span>
+    <span class="nv">auto_offset_reset</span> <span class="o">=</span>&gt; <span class="s2">"latest"</span>
+    <span class="nv">group_id</span> <span class="o">=</span>&gt; <span class="s2">"logstash1"</span>
+
+<span class="o">}</span>
+<span class="o">}</span>
+filter <span class="o">{</span>
+
+        mutate <span class="o">{</span>
+        <span class="nv">remove_field</span> <span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"beat"</span>,<span class="s2">"agent"</span>,<span class="s2">"ecs"</span><span class="o">]</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+output <span class="o">{</span>
+   elasticsearch <span class="o">{</span>
+         <span class="nv">hosts</span> <span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"127.0.0.1:9200"</span><span class="o">]</span>
+
+         <span class="nv">index</span> <span class="o">=</span>&gt; <span class="s2">"%{[@metadata][kafka][topic]}-%{+YYYY.MM.dd}"</span>
+<span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
