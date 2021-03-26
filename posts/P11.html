@@ -102,7 +102,102 @@ var _hmt = _hmt || [];
     </ul>
   </header>
   <div class="content">
-    <h4>安装</h4>
+    <h4>介绍</h4>
+<div class="highlight"><pre><span></span>https://docs.microsoft.com/zh-cn/sysinternals/downloads/sysmon
+</pre></div>
+<p>Sysmon是微软的一款免费的轻量级系统监控工具。它通过系统服务和驱动程序实现记录进程创建，网络连接以及文件创建时间更改的详细信息，并把相关的信息写入并展示在windows的日志事件里。我们可以通过读取Windows的日志，了解Windows的安全状态。</p>
+<p>Sysmon安装后分为用户态系统服务，即ring3层的exe， 驱动（Flt的minifilter）两部分，下面开始上篇的讲解，ring3实现对网络数据记录以及对驱动返回的数据进行解析，而驱动部分则返回进程相关的信息以及进程访问文件注册表的数据给ring3，我们首选讲解ring3的实现原理。用户态通过ETW(Event Tracing for Windows)实现对网络数据记录，通过EventLog对驱动返回的数据进行解析，驱动部分则通过进、线程，模块的回调函数收集进程相关的信息，通过Minifilter文件过滤驱动和注册表回调函数记录访问文件、注册表的数据。</p>
+<p>从功能上来讲，Sysmon是一款优秀的HIDS、EDR的主机入侵检测引擎，其依托于Windows内核层进、线程，模块，注册表回调，及文件过滤驱动针对相应的行为进行实时的增、删、改信息收集并通过ETW存储并展示于Windows日志。</p>
+<h4>安装</h4>
+<p>下载地址</p>
+<div class="highlight"><pre><span></span>https://download.sysinternals.com/files/Sysmon.zip
+</pre></div>
+<div class="highlight"><pre><span></span>    Install:    Sysmon.exe -i &lt;configfile&gt;
+    <span class="o">[</span>-h &lt;<span class="o">[</span>sha1<span class="p">|</span>md5<span class="p">|</span>sha256<span class="p">|</span>imphash<span class="p">|</span>*<span class="o">]</span>,...&gt;<span class="o">]</span> <span class="o">[</span>-n <span class="o">[</span>&lt;process,...&gt;<span class="o">]]</span>
+    <span class="o">[</span>-l <span class="o">(</span>&lt;process,...&gt;<span class="o">)]</span>
+
+    Configure:  Sysmon.exe -c &lt;configfile&gt;
+                  <span class="o">[</span>--<span class="p">|</span><span class="o">[</span>-h &lt;<span class="o">[</span>sha1<span class="p">|</span>md5<span class="p">|</span>sha256<span class="p">|</span>imphash<span class="p">|</span>*<span class="o">]</span>,...&gt;<span class="o">]</span> <span class="o">[</span>-n <span class="o">[</span>&lt;process,...&gt;<span class="o">]]</span>
+                   <span class="o">[</span>-l <span class="o">[</span>&lt;process,...&gt;<span class="o">]]]</span>
+
+    Uninstall:  Sysmon.exe -u
+</pre></div>
+<p>-c 更新或显示配置</p>
+<p>-h 指定hash记录的算法</p>
+<p>-i 安装，可用xml文件来更新配置文件</p>
+<p>-l 记录加载模块，可指定进程</p>
+<p>-m 安装事件清单</p>
+<p>-n 记录网络链接</p>
+<p>-r 检测证书是否撤销</p>
+<p>-u 卸载服务和驱动</p>
+<p>一键安装：</p>
+<p>sysmon -accepteula  –i -n
+指定配置文件（安装时请用-i）</p>
+<p>sysmon -c xxx.xml
+注：安装需要管理员权限并重启，windows 7 或者以上，服务器系统windows server 2012 及以上。   </p>
+<p>配置样例</p>
+<div class="highlight"><pre><span></span> &lt;Sysmon <span class="nv">schemaversion</span><span class="o">=</span><span class="s2">"4.21"</span>&gt;
+&lt;!-- Capture all hashes --&gt;
+&lt;HashAlgorithms&gt;*&lt;/HashAlgorithms&gt; &lt;!--哈希配置<span class="o">(</span>默认使用sha1<span class="o">)</span> --&gt;
+&lt;EventFiltering&gt; &lt;!--事件筛选--&gt;
+&lt;!-- Log all drivers except <span class="k">if</span> the signature --&gt;
+&lt;!-- contains Microsoft or Windows --&gt;
+&lt;DriverLoad <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"exclude"</span>&gt; &lt;!--默认记录所有日志 除非标记 ? --&gt;
+     &lt;Signature <span class="nv">condition</span><span class="o">=</span><span class="s2">"contains"</span>&gt;microsoft&lt;/Signature&gt;
+     &lt;Signature <span class="nv">condition</span><span class="o">=</span><span class="s2">"contains"</span>&gt;windows&lt;/Signature&gt;
+&lt;/DriverLoad&gt;
+&lt;!-- Do not log process termination --&gt;
+&lt;!--不记录进程终止--&gt;
+&lt;ProcessTerminate <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"include"</span> /&gt;
+&lt;!-- Log network connection <span class="k">if</span> the destination port equal <span class="m">443</span> --&gt;
+&lt;!-- or <span class="m">80</span>, and process isn<span class="err">'</span>t InternetExplorer --&gt;
+&lt;NetworkConnect <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"include"</span>&gt;
+     &lt;DestinationPort&gt;443&lt;/DestinationPort&gt; &lt;!-- 记录443 端口连接记录--&gt;
+     &lt;DestinationPort&gt;80&lt;/DestinationPort&gt;
+&lt;/NetworkConnect&gt;
+&lt;NetworkConnect <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"exclude"</span>&gt;
+     &lt;Image <span class="nv">condition</span><span class="o">=</span><span class="s2">"end with"</span>&gt;iexplore.exe&lt;/Image&gt;
+&lt;/NetworkConnect&gt;
+&lt;/EventFiltering&gt;
+&lt;/Sysmon&gt;
+ -- 配置条目直接位于Sysmon 标签下, 过滤器位于 EventFiltering 标签下 
+</pre></div>
+<p>一些配置规则</p>
+<div class="highlight"><pre><span></span> https://github.com/sametsazak/sysmon.git
+
+ https://github.com/SwiftOnSecurity/sysmon-config
+
+ https://github.com/ion-storm/sysmon-config
+</pre></div>
+<div class="highlight"><pre><span></span> ProcessCreate            进程创建
+ FileCreateTime           文件创建时间更改
+ NetworkConnect           检测到网络连接
+ ProcessTerminate         进程终止
+ DriverLoad               驱动程序已加载
+ ImageLoad                镜像加载
+ CreateRemoteThread       已检测到创建远程线程
+ RawAccessRead            检测到原始访问读取
+ ProcessAccess            已访问的进程
+ FileCreate               文件创建
+ RegistryEvent            添加或删除注册表对象
+ RegistryEvent            注册表值设置
+ RegistryEvent            注册表对象已重命名
+ FileCreateStreamHash     已创建文件流
+ PipeEvent                管道创建
+ PipeEvent                管道已连接
+ WmiEvent                 检测到WmiEventFilter活动 -- WmiEventFilter activity detected
+ WmiEvent                 检测到WmiEventConsumer活动 -- WmiEventConsumer activity detected
+ WmiEvent                 检测到WmiEventConsumerToFilter活动 -- WmiEventConsumerToFilter activity 
+ DnsQuery                 DNS查询
+</pre></div>
+<p>我们可以使用 winlogbeat采集到elk，也可以使用wazuh完成数据日志采集，然后用来分析</p>
+<p>我们也可以使用一些工具辅助我们分析，如下：</p>
+<p>Sysmon View：Sysmon日志可视化工具</p>
+<p>Sysmon Shell：Sysmon配置文件生成工具</p>
+<p>Sysmon Box：Sysmon和网络捕获日志记录工具</p>
+<div class="highlight"><pre><span></span>https://github.com/nshalabi/SysmonTools
+</pre></div>
+<h4>部署</h4>
 <p>安装并且把Auto_Update.bat，自动更新加入定时任务,把相关的地址替换一下</p>
 <div class="highlight"><pre><span></span>@echo off
 setlocal
