@@ -235,14 +235,14 @@ timeout /t <span class="m">10</span>
 <span class="s2">sysmon64 -c sysmonconfig-export.xml</span>
 <span class="s2">exit</span>
 </pre></div>
+<p>sysmon 安装完成后，可以看到对应的Sysmon服务</p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG74.jpeg"/></p>
-<p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG75.jpeg"/></p>
+<p>sysmon 的日志位于，C:\Windows\System32\winevt\Logs\Microsoft-Windows-Sysmon%4Operational.evtx</p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG76.jpeg"/></p>
 <p>然后安装 Winlogbeat</p>
 <div class="highlight"><pre><span></span>https://artifacts.elastic.co/downloads/beats/winlogbeat/winlogbeat-7.8.0-windows-x86_64.zip
 </pre></div>
-<p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG78.jpeg"/></p>
-<p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG79.jpeg"/></p>
+<p>配置文件的output 改为：</p>
 <div class="highlight"><pre><span></span>output.kafka:
   # initial brokers for reading cluster metadata
   hosts: ["172.21.129.2:9092"]
@@ -250,6 +250,12 @@ timeout /t <span class="m">10</span>
   
   
 </pre></div>
+<p>接下来就是启动了，用管理员的身份启动wPowerShell 。</p>
+<p>输入如下：
+.\install-service-winlogbeat.ps1
+net start winlogbeat</p>
+<p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG78.jpeg"/></p>
+<p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG79.jpeg"/></p>
 <div class="highlight"><pre><span></span>./kafka-console-consumer.sh --bootstrap-server <span class="m">172</span>.21.129.2:9092 --topic win-hids 
 </pre></div>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG80.jpeg"/></p>
