@@ -243,10 +243,13 @@ timeout /t <span class="m">10</span>
 </pre></div>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG78.jpeg"/></p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG79.jpeg"/></p>
-<p>output.kafka:
+<div class="highlight"><pre><span></span>output.kafka:
   # initial brokers for reading cluster metadata
   hosts: ["172.21.129.2:9092"]
-  topic: 'win-hids'</p>
+  topic: 'win-hids'
+  
+  
+</pre></div>
 <div class="highlight"><pre><span></span>./kafka-console-consumer.sh --bootstrap-server <span class="m">172</span>.21.129.2:9092 --topic win-hids 
 </pre></div>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG80.jpeg"/></p>
