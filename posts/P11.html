@@ -305,9 +305,9 @@ powershell IEX <span class="o">(</span>New-Object System.Net.Webclient<span clas
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG87.jpeg"/></p>
 <p>我们在用Go自研的规则引擎里面添加如下规则（也可以用flink做）</p>
 <div class="highlight"><pre><span></span>state:     <span class="nb">enable</span>
-rule_id :  Hacker-Command-Line-01
-rule_tag:  Hacker-Command-Line-events
-rule_name: Hacker-Command-Line
+rule_id :  hacker-command-line-01
+rule_tag:  hacker-command-line
+rule_name: hacker-command-line-01
 rule_type: or  
 
 detect_list:
@@ -315,15 +315,15 @@ detect_list:
   - field : command_line
     type: re
     rule: <span class="o">(</span>Get-GPPAutologon<span class="p">|</span>Get-TimedScreenshot<span class="p">|</span>Invoke-DllInjection<span class="p">|</span>Invoke-Shellcode<span class="p">|</span>Invoke-WmiCommand<span class="p">|</span>Get-System<span class="p">|</span>Invoke-Mimikatz<span class="p">|</span>Invoke-NinjaCopy<span class="p">|</span>Out-Minidump<span class="o">)</span>
-    ignorecase: True
+    ignorecase: <span class="nb">true</span>
 
 threat_level : high
 auth : njcx
-info<span class="s2">": "</span>Hacking Command Line events<span class="s2">"</span>
+info: hacker <span class="nb">command</span> tools
 
-<span class="s2">e-mail:</span>
-<span class="s2">    - njcx@qq.com</span>
-<span class="s2">    - njcx91@qq.com</span>
+e-mail:
+    - njcx@qq.com
+    - njcx91@qq.com
 </pre></div>
 <p>规则引擎命中后，即会写es，同时给邮箱发送告警，方便许多。</p>
   </div>
