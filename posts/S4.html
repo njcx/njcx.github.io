@@ -159,6 +159,26 @@ use radius
 
 <span class="nb">source</span> /etc/raddb/mods-config/sql/main/mysql/schema.sql 
 </pre></div>
+<p>上面的指令，共导入了7个表，分别是：
+radcheck 用户检查信息表
+radreply 用户回复信息表
+radgroupcheck 用户组检查信息表
+radgroupreply 用户组检查信息表
+radusergroup 用户和组关系表
+radacct 计费情况表
+radpostauth 认证后处理信息，可以包括认证请求成功和拒绝的记录。</p>
+<div class="highlight"><pre><span></span>建立组信息：（在此新建组名称为user）
+insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘user’,’Auth-Type’,’:<span class="o">=</span>’,’Local’<span class="o">)</span><span class="p">;</span>
+insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘user’,’Service-Type’,’:<span class="o">=</span>’,’Framed-User’<span class="o">)</span><span class="p">;</span>
+insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘user’,’Framed-IP-Address’,’:<span class="o">=</span>’,’255.255.255.255′<span class="o">)</span><span class="p">;</span>
+insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘user’,’Framed-IP-Netmask’,’:<span class="o">=</span>’,’255.255.255.0′<span class="o">)</span><span class="p">;</span>
+
+建立用户信息：（在此新建用户名为test，密码为testpwd）
+insert into radcheck <span class="o">(</span>username,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘test’,’Cleartext-Password’,’:<span class="o">=</span>’,’testpwd’<span class="o">)</span><span class="p">;</span>
+
+将用户加入组中：
+insert into radusergroup <span class="o">(</span>username,groupname<span class="o">)</span> values <span class="o">(</span>‘test’,’user’<span class="o">)</span><span class="p">;</span>
+</pre></div>
 <div class="highlight"><pre><span></span>修改FreeRadius中的mysql认证配置
 
 cd /etc/raddb/mods-enabled
