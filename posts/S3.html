@@ -118,21 +118,23 @@ var _hmt = _hmt || [];
 　　 </p>
 <p>思科交换机配置</p>
 <p>本例采用的Cisco交换机，要开启aaa，配置radius服务器和认证组，并在端口启用dot1x认证和guest vlan，具体配置如下：</p>
-<h1>全局配置</h1>
-<p>enable aaa new-model
+<p>交换机全局配置</p>
+<div class="highlight"><pre><span></span><span class="nb">enable</span> aaa new-model
 aaa authentication dot1x default group radius
 aaa authorization network default group radius
 dot1x system-auth-control
 dot1x guest-vlan supplicant
-radius-server host 192.168.2.16 auth-port 1812 acct-port 1813 timeout 3
-radius-server retransmit 2
-radius-server key 7 cisco
-radius-server vsa send authentication        #如果需要802.1x指定端口vlan需要配置这个</p>
-<h1>端口配置，interface G1/0/1</h1>
-<p>(config-if)# switchport mode access
-(config-if)# switchport access vlan 10       #配置该端口默认为vlan10
-(config-if)# dot1x port-control auto
-(config-if)# authentication event no-response action authorize vlan 771 #配置guest vlan，当检测到该机器没加入域，则将其划到vlan 771中</p>
+radius-server host <span class="m">192</span>.168.2.16 auth-port <span class="m">1812</span> acct-port <span class="m">1813</span> timeout <span class="m">3</span>
+radius-server retransmit <span class="m">2</span>
+radius-server key <span class="m">7</span> cisco
+radius-server vsa send authentication        <span class="c1">#如果需要802.1x指定端口vlan需要配置这个</span>
+</pre></div>
+<p>端口配置，interface G1/0/1</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport mode access</span>
+<span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport access vlan 10       #配置该端口默认为vlan10</span>
+<span class="o">(</span>config-if<span class="o">)</span><span class="c1"># dot1x port-control auto</span>
+<span class="o">(</span>config-if<span class="o">)</span><span class="c1"># authentication event no-response action authorize vlan 771 #配置guest vlan，当检测到该机器没加入域，则将其划到vlan 771中</span>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
