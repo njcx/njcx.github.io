@@ -8,9 +8,9 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>MongoDB学习笔记(A) | nJcx's Blog
+  <title>企业安全建设之访客网络准入Portal认证Web开发 | nJcx's Blog
 </title>
-  <link rel="canonical" href="https://www.njcx.bid/drafts/C5.html">
+  <link rel="canonical" href="https://www.njcx.bid/posts/S4.html">
 
 
   <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="记录一下自己学到的东西">
+<meta name="description" content="企业安全建设之网络准入Portal认证Web开发 ~">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,135 +79,137 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>MongoDB学习笔记(A)
+      <h1>企业安全建设之访客网络准入Portal认证Web开发
 </h1>
       <hr>
 <article class="article">
   <header>
     <ul class="list-inline">
-      <li class="list-inline-item text-muted" title="2018-06-02T23:20:00+03:00">
+      <li class="list-inline-item text-muted" title="2018-08-15T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 02 June 2018
+        Wed 15 August 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
-        <a href="https://www.njcx.bid/category/shu-ju-ku.html">数据库</a>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
       </li>
       <li class="list-inline-item">
         <i class="fa fa-user-o"></i>
         <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
       <li class="list-inline-item">
         <i class="fa fa-files-o"></i>
-        <a href="https://www.njcx.bid/tag/mongodb.html">#MongoDB</a>      </li>
+        <a href="https://www.njcx.bid/tag/qi-ye-an-quan-jian-she.html">#企业安全建设</a>      </li>
     </ul>
   </header>
   <div class="content">
     <h4>介绍</h4>
-<p>Mongodb的3大元素:数据库(db),集合(collection),文档(document),"数据库"还是对应关系数据库中的"数据库",其中"集合"就是对应关系数据库中的"表"，"文档"对应"记录"。</p>
-<table class="table-striped table table-hover">
-<thead>
-<tr>
-<th align="center">RDBMS</th>
-<th align="center">MongoDB</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center">Database</td>
-<td align="center">Database</td>
-</tr>
-<tr>
-<td align="center">Table</td>
-<td align="center">Collection</td>
-</tr>
-<tr>
-<td align="center">Tuple/Row</td>
-<td align="center">Document</td>
-</tr>
-<tr>
-<td align="center">column</td>
-<td align="center">Field</td>
-</tr>
-<tr>
-<td align="center">Table Join</td>
-<td align="center">Embedded Documents</td>
-</tr>
-<tr>
-<td align="center">Primary Key</td>
-<td align="center">Primary Key (Default key _id provided by mongodb itself)</td>
-</tr>
-</tbody>
-</table>
-<p>数据库服务器和客户端</p>
-<table class="table-striped table table-hover">
-<thead>
-<tr>
-<th align="center">mysql</th>
-<th align="center">oracle</th>
-<th align="center">mongodb</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center">Mysqld</td>
-<td align="center">Oracle</td>
-<td align="center">mongod</td>
-</tr>
-<tr>
-<td align="center">mysql</td>
-<td align="center">sqlplus</td>
-<td align="center">mongo</td>
-</tr>
-</tbody>
-</table>
-<h4>安装</h4>
-<div class="highlight"><pre><span></span>centos/rhce : yum install mongodb-server -y
+<p>Portal认证通常也称为Web认证，一般将Portal认证网站称为门户网站。用户上网时，必须在门户网站进行认证，只有认证通过后才可以使用网络资源。</p>
+<p>用户可以主动访问已知的Portal认证网站，输入用户名和密码进行认证，这种开始Portal认证的方式称作主动认证。反之，如果用户试图通过HTTP访问其他外网，将被强制访问Portal认证网站，从而开始Portal认证过程，这种方式称作强制认证。</p>
+<p>Portal认证特点：</p>
+<div class="highlight"><pre><span></span>不需要安装客户端，直接使用Web页面认证，使用方便，减少客户端的维护工作量。
 
-debian/ubuntu : apt-get install mongodb-server -y
+便于运营，可以在Portal页面上开展业务拓展，如广告推送、责任公告、企业宣传等。
+
+技术成熟，被广泛应用于运营商、连锁快餐、酒店、学校等网络。
 </pre></div>
-<h4>使用</h4>
-<ul>
-<li>创建数据库</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; use njcx
-switched to db njcx
-&gt; db
-njcx
-&gt; 
+<p>应用场景：</p>
+<div class="highlight"><pre><span></span>访客接入
+
+低成本混合接入：Portal + MAC旁路。
 </pre></div>
-<ul>
-<li>查看数据库</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; show dbs
+<p><img alt="ac" class="img-fluid" src="../images/WechatIMG123.jpeg"/></p>
+<div class="highlight"><pre><span></span>1）用户访问任意网站，经过AC判断该用户未完成认证，发送HTTP 302请求到用户端，要求重定向到Portal Server的URL；
+
+2）用户收到重定向报文，再次请求portal server的URL；
+
+3）Portal Server推送统一的URL认证页面；
+
+4）用户填入用户名、密码，提交页面，向Portal Server发起连接请求；
+
+5）Portal Server向AC发起认证请求，请求中携带用户名和密码（已经加密）；
+
+6）而后AC进行RADIUS认证，发送Access-Request请求；
+
+7）AC接收Radius响应Access-Accept（Access-Reject等）消息；
+
+8）AC向Portal Server发送认证结果；
+
+9) Portal Server回应确认收到认证结果的报文。
+
+10）Portal Server推送认证结果给用户。
 </pre></div>
-<ul>
-<li>删除数据库</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; use njcx
-switched to db njcx
-&gt; db
-njcx
-&gt; db.dropDatabase<span class="o">()</span>
+<div class="highlight"><pre><span></span>docker run -p <span class="m">3306</span>:3306 --name mysql -e <span class="nv">MYSQL_ROOT_PASSWORD</span><span class="o">=</span><span class="m">208512512</span> -d mysql:5.7
 </pre></div>
-<ul>
-<li>创建集合(插入自动创建)</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; db.njcx.insert<span class="o">({</span><span class="s2">"name"</span>:<span class="s2">"njcx"</span><span class="o">})</span>
+<div class="highlight"><pre><span></span>yum -y install freeradius freeradius-utils freeradius-mysql
 </pre></div>
-<ul>
-<li>创建集合(db.createCollection(name, options))</li>
-</ul>
-<p>name 指定集合名称,opt 指定有关内存大小和索引选项(可选)</p>
-<p>capped           Boolean  （可选）如果为true，则启用封顶集合。封顶集合是固定大小的集合，会自动覆盖最早的条目，当它达到其最大大小。如果指定true，则需要也指定尺寸参数。</p>
-<p>autoIndexID     Boolean （可选）如果为true，自动创建索引_id字段的默认值是false。</p>
-<p>size            number  （可选）指定最大大小字节封顶集合。如果封顶如果是 true，那么你还需要指定这个字段。</p>
-<p>max             number  （可选）指定封顶集合允许在文件的最大数量。</p>
-<div class="highlight"><pre><span></span>&gt; db.createCollection<span class="o">(</span><span class="s2">"tudou"</span>, <span class="o">{</span> capped : true, autoIndexID : true, size : <span class="m">6142800</span>, max : <span class="m">10000</span> <span class="o">}</span> <span class="o">)</span>
+<div class="highlight"><pre><span></span>pip install mycli
+
+使用 mycli代替mysql
+
+
+<span class="m">1</span>. create database radius default character <span class="nb">set</span> utf8 collate utf8_general_ci<span class="p">;</span>  
+
+<span class="m">2</span>. grant all on radius.* to <span class="s1">'radius'</span>@<span class="s1">'%'</span> identified by <span class="s1">'123456'</span><span class="p">;</span>
+
+<span class="m">3</span>. grant all on radius.* to <span class="s1">'radius'</span>@<span class="s1">'localhost'</span> identified by <span class="s1">'123456'</span><span class="p">;</span>
+
+<span class="m">4</span>. flush privileges<span class="p">;</span>
+
+use radius
+
+<span class="nb">source</span> /etc/raddb/mods-config/sql/main/mysql/schema.sql 
 </pre></div>
-<ul>
-<li>删除集合</li>
-</ul>
-<div class="highlight"><pre><span></span>&gt; db.njcx.drop<span class="o">()</span>
+<div class="highlight"><pre><span></span>修改FreeRadius中的mysql认证配置
+
+cd /etc/raddb/mods-enabled
+ln -s ../mods-available/sql
+chgrp -h radiusd /etc/raddb/mods-enabled/sql
+
+vim /etc/raddb/mods-available/sql
+
+找到driver = “rlm_sql_null”这一行，修改为driver = “rlm_sql_mysql”
+
+vim /etc/raddb/radiusd.conf
+
+
+
+        auth = yes
+        auth_badpass = yes
+        auth_goodpass = yes
+
+vim /etc/raddb/sites-available/default
+
+
+取消sql的注释，将-sql的-去掉
+
+vim /etc/raddb/mods-available/sql
+
+
+修改dialect = “sqlite” 为 dialect = “mysql”
+
+server = "10.10.128.235"
+port = 3306
+login = "radius"
+password = "123456"
+
+radius_db = "radius"
+
+
+read_clients=yes
+取消注释
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1">#  cd /etc/raddb/certs</span>
+
+<span class="c1">#  ./bootstrap </span>
+
+<span class="c1">#  chown radiusd:radiusd server.pem  ca.pem  dh</span>
+</pre></div>
+<p>测试radius是否运行正常</p>
+<div class="highlight"><pre><span></span>radiusd -X
+</pre></div>
+<div class="highlight"><pre><span></span>启动radius和设置为开机启动
+systemctl start radiusd.service
+systemctl <span class="nb">enable</span> radiusd.service
 </pre></div>
   </div>
 </article>
