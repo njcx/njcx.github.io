@@ -168,16 +168,18 @@ radusergroup 用户和组关系表
 radacct 计费情况表
 radpostauth 认证后处理信息，可以包括认证请求成功和拒绝的记录。</p>
 <div class="highlight"><pre><span></span>建立组信息：（在此新建组名称为user）
-insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘user’,’Auth-Type’,’:<span class="o">=</span>’,’Local’<span class="o">)</span><span class="p">;</span>
-insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘user’,’Service-Type’,’:<span class="o">=</span>’,’Framed-User’<span class="o">)</span><span class="p">;</span>
-insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘user’,’Framed-IP-Address’,’:<span class="o">=</span>’,’255.255.255.255′<span class="o">)</span><span class="p">;</span>
-insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘user’,’Framed-IP-Netmask’,’:<span class="o">=</span>’,’255.255.255.0′<span class="o">)</span><span class="p">;</span>
+insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span><span class="s2">"user"</span>,<span class="s2">"Auth-Type"</span>,<span class="s2">":="</span>,<span class="s2">"Local"</span><span class="o">)</span><span class="p">;</span>
+
+insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span><span class="s2">"user"</span>,<span class="s2">"Service-Type"</span>,<span class="s2">":="</span>,<span class="s2">"Framed-User"</span><span class="o">)</span><span class="p">;</span>
+
+insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span><span class="s2">"user"</span>,<span class="s2">"Framed-IP-Address"</span>, <span class="s2">":="</span>,<span class="s2">"255.255.255.255"</span><span class="o">)</span><span class="p">;</span>
+insert into radgroupreply <span class="o">(</span>groupname,attribute,op,value<span class="o">)</span> values <span class="o">(</span><span class="s2">"user"</span>,<span class="s2">"Framed-IP-Netmask"</span>, <span class="s2">":="</span>,<span class="s2">"255.255.255.0"</span><span class="o">)</span><span class="p">;</span>
 
 建立用户信息：（在此新建用户名为test，密码为testpwd）
-insert into radcheck <span class="o">(</span>username,attribute,op,value<span class="o">)</span> values <span class="o">(</span>‘test’,’Cleartext-Password’,’:<span class="o">=</span>’,’testpwd’<span class="o">)</span><span class="p">;</span>
+insert into radcheck <span class="o">(</span>username,attribute,op,value<span class="o">)</span> values <span class="o">(</span><span class="s2">"test"</span>, <span class="s2">"Cleartext-Password"</span>,<span class="s2">":="</span>,<span class="s2">"testpwd"</span><span class="o">)</span><span class="p">;</span>
 
 将用户加入组中：
-insert into radusergroup <span class="o">(</span>username,groupname<span class="o">)</span> values <span class="o">(</span>‘test’,’user’<span class="o">)</span><span class="p">;</span>
+insert into radusergroup <span class="o">(</span>username,groupname<span class="o">)</span> values <span class="o">(</span><span class="s2">"test"</span>,<span class="s2">"user"</span><span class="o">)</span><span class="p">;</span>
 </pre></div>
 <div class="highlight"><pre><span></span>修改FreeRadius中的mysql认证配置
 
@@ -191,14 +193,11 @@ vim /etc/raddb/mods-available/sql
 
 vim /etc/raddb/radiusd.conf
 
-
-
-        auth = yes
-        auth_badpass = yes
-        auth_goodpass = yes
+auth = yes
+auth_badpass = yes
+auth_goodpass = yes
 
 vim /etc/raddb/sites-available/default
-
 
 取消sql的注释，将-sql的-去掉
 
@@ -218,6 +217,17 @@ radius_db = "radius"
 read_clients=yes
 取消注释
 </pre></div>
+<div class="highlight"><pre><span></span>Unable to check file <span class="s2">"/etc/raddb/certs/server.pem"</span>: No such file or directory
+rlm_eap_tls: Failed initializing SSL context
+rlm_eap <span class="o">(</span>EAP<span class="o">)</span>: Failed to initialise rlm_eap_tls
+/etc/raddb/mods-enabled/eap<span class="o">[</span><span class="m">14</span><span class="o">]</span>: Instantiation failed <span class="k">for</span> module <span class="s2">"eap"</span>
+
+rlm_eap: SSL error error:0200100D:system library:fopen:Permission denied
+rlm_eap_tls: Error reading certificate file /etc/raddb/certs/server.pem
+rlm_eap: Failed to initialize <span class="nb">type</span> tls
+/etc/raddb/eap.conf<span class="o">[</span><span class="m">17</span><span class="o">]</span>: Instantiation failed <span class="k">for</span> module <span class="s2">"eap"</span>
+</pre></div>
+<p>下面一定要操作，不然会报证书错误，读不到或者权限错误(上面的报错)</p>
 <div class="highlight"><pre><span></span><span class="c1">#  cd /etc/raddb/certs</span>
 
 <span class="c1">#  ./bootstrap </span>
@@ -230,6 +240,52 @@ read_clients=yes
 <div class="highlight"><pre><span></span>启动radius和设置为开机启动
 systemctl start radiusd.service
 systemctl <span class="nb">enable</span> radiusd.service
+</pre></div>
+<p>正常启动</p>
+<div class="highlight"><pre><span></span>radtest <span class="nb">test</span> testpwd localhost <span class="m">1812</span> testing123
+
+
+Sent Access-Request Id <span class="m">222</span> from <span class="m">0</span>.0.0.0:19958 to <span class="m">127</span>.0.0.1:1812 length <span class="m">74</span>
+        User-Name <span class="o">=</span> <span class="s2">"test"</span>
+        User-Password <span class="o">=</span> <span class="s2">"testpwd"</span>
+        NAS-IP-Address <span class="o">=</span> <span class="m">10</span>.10.128.235
+        NAS-Port <span class="o">=</span> <span class="m">1812</span>
+        Message-Authenticator <span class="o">=</span> 0x00
+        Cleartext-Password <span class="o">=</span> <span class="s2">"testpwd"</span>
+Received Access-Accept Id <span class="m">222</span> from <span class="m">127</span>.0.0.1:1812 to <span class="m">0</span>.0.0.0:0 length <span class="m">44</span>
+        Service-Type <span class="o">=</span> Framed-User
+        Service-Type <span class="o">=</span> Framed-User
+        Framed-IP-Address <span class="o">=</span> <span class="m">255</span>.255.255.255
+        Framed-IP-Netmask <span class="o">=</span> <span class="m">255</span>.255.255.0
+</pre></div>
+<p>添加客户端连接设置</p>
+<div class="highlight"><pre><span></span>编辑/etc/raddb/clients.conf文件，为允许连接的客户端设置相应的共享秘钥
+例一：本地localhost接入<span class="o">(</span>一般用于测试<span class="o">)</span>，共享秘钥为demoradiussecret:
+client localhost <span class="o">{</span>
+<span class="nv">ipaddr</span> <span class="o">=</span> <span class="m">127</span>.0.0.1
+<span class="nv">proto</span> <span class="o">=</span> *
+<span class="nv">secret</span> <span class="o">=</span> demo_radius_secret
+<span class="o">}</span>
+<span class="se">\#</span> IPv6 Client
+client localhost_ipv6 <span class="o">{</span> 
+
+<span class="nv">ipv6addr</span>        <span class="o">=</span> ::1
+<span class="nv">secret</span>          <span class="o">=</span> demo_radius_secret
+<span class="o">}</span>
+例二：允许内网192.168.110网段连接该radius，共享秘钥为demoradiussecret: client my_lan <span class="o">{</span>
+<span class="nv">ipaddr</span> <span class="o">=</span> <span class="m">192</span>.168.110.0/24
+<span class="nv">secret</span> <span class="o">=</span> demo_radius_secret
+<span class="nv">require_message_authenticator</span> <span class="o">=</span> no
+<span class="o">}</span>
+例三：允许所有客户端连接：
+client all_client <span class="o">{</span>
+<span class="nv">ipaddr</span> <span class="o">=</span> <span class="m">0</span>.0.0.0/0
+<span class="nv">secret</span> <span class="o">=</span> demo_radius_secret
+<span class="nv">require_message_authenticator</span> <span class="o">=</span> no
+<span class="o">}</span>
+启动服务
+<span class="se">\#</span> systemctl start radiusd.service
+<span class="se">\#</span> systemctl status radiusd.service
 </pre></div>
   </div>
 </article>
