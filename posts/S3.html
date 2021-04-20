@@ -294,6 +294,124 @@ ldapadd -x -D cn=admin,dc=yaobili,dc=com -W -f base.ldif
 ————————————————
 </pre></div>
 <p>通过以上的所有步骤，我们就设置好了一个 LDAP 目录树：其中基准 dc=yaobili,dc=com 是该树的根节点，其下有一个管理域 cn=admin,dc=yaobili,dc=com 和两个组织单元 ou=People,dc=yaobili,dc=com 及 ou=Group,dc=yaobili,dc=com。</p>
+<p>打通 radius 和 ldap</p>
+<p>/etc/raddb/mods-available/ldap文件</p>
+<div class="highlight"><pre><span></span>ldap <span class="o">{</span>
+    <span class="nv">server</span> <span class="o">=</span> <span class="s1">'192.168.236.30'</span>
+    <span class="nv">port</span> <span class="o">=</span> <span class="m">389</span>
+    <span class="nv">identity</span> <span class="o">=</span> <span class="s1">'cn=Manager,dc=alex,dc=localhost'</span>
+    <span class="nv">password</span> <span class="o">=</span> <span class="m">111111</span>
+    <span class="nv">base_dn</span> <span class="o">=</span> <span class="s1">'dc=alex,dc=localhost'</span>
+    sasl <span class="o">{</span>
+    <span class="o">}</span>
+    update <span class="o">{</span>
+        control:Password-With-Header    +<span class="o">=</span> <span class="s1">'userPassword'</span>
+        control:            +<span class="o">=</span> <span class="s1">'radiusControlAttribute'</span>
+        request:            +<span class="o">=</span> <span class="s1">'radiusRequestAttribute'</span>
+        reply:              +<span class="o">=</span> <span class="s1">'radiusReplyAttribute'</span>
+    <span class="o">}</span>
+    user <span class="o">{</span>
+        <span class="nv">base_dn</span> <span class="o">=</span> <span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
+        <span class="nv">filter</span> <span class="o">=</span> <span class="s2">"(uid=%{%{Stripped-User-Name}:-%{User-Name}})"</span>
+        sasl <span class="o">{</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    group <span class="o">{</span>
+        <span class="nv">base_dn</span> <span class="o">=</span> <span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
+        <span class="nv">filter</span> <span class="o">=</span> <span class="s1">'(objectClass=posixGroup)'</span>
+        <span class="nv">membership_attribute</span> <span class="o">=</span> <span class="s1">'memberOf'</span>
+    <span class="o">}</span>
+    profile <span class="o">{</span>
+    <span class="o">}</span>
+    client <span class="o">{</span>
+        <span class="nv">base_dn</span> <span class="o">=</span> <span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
+        <span class="nv">filter</span> <span class="o">=</span> <span class="s1">'(objectClass=radiusClient)'</span>
+        template <span class="o">{</span>
+        <span class="o">}</span>
+        attribute <span class="o">{</span>
+            <span class="nv">ipaddr</span>              <span class="o">=</span> <span class="s1">'radiusClientIdentifier'</span>
+            <span class="nv">secret</span>              <span class="o">=</span> <span class="s1">'radiusClientSecret'</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    accounting <span class="o">{</span>
+        <span class="nv">reference</span> <span class="o">=</span> <span class="s2">"%{tolower:type.%{Acct-Status-Type}}"</span>
+        <span class="nb">type</span> <span class="o">{</span>
+            start <span class="o">{</span>
+                update <span class="o">{</span>
+                    description :<span class="o">=</span> <span class="s2">"Online at %S"</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            interim-update <span class="o">{</span>
+                update <span class="o">{</span>
+                    description :<span class="o">=</span> <span class="s2">"Last seen at %S"</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            stop <span class="o">{</span>
+                update <span class="o">{</span>
+                    description :<span class="o">=</span> <span class="s2">"Offline at %S"</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    post-auth <span class="o">{</span>
+        update <span class="o">{</span>
+            description :<span class="o">=</span> <span class="s2">"Authenticated at %S"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    options <span class="o">{</span>
+        <span class="nv">chase_referrals</span> <span class="o">=</span> yes
+        <span class="nv">rebind</span> <span class="o">=</span> yes
+        <span class="nv">res_timeout</span> <span class="o">=</span> <span class="m">10</span>
+        <span class="nv">srv_timelimit</span> <span class="o">=</span> <span class="m">3</span>
+        <span class="nv">net_timeout</span> <span class="o">=</span> <span class="m">1</span>
+        <span class="nv">idle</span> <span class="o">=</span> <span class="m">60</span>
+        <span class="nv">probes</span> <span class="o">=</span> <span class="m">3</span>
+        <span class="nv">interval</span> <span class="o">=</span> <span class="m">3</span>
+        <span class="nv">ldap_debug</span> <span class="o">=</span> 0x0028
+    <span class="o">}</span>
+    tls <span class="o">{</span>
+    <span class="o">}</span>
+    pool <span class="o">{</span>
+        <span class="nv">start</span> <span class="o">=</span> <span class="si">${</span><span class="nv">thread</span><span class="p">[pool].start_servers</span><span class="si">}</span>
+        <span class="nv">min</span> <span class="o">=</span> <span class="si">${</span><span class="nv">thread</span><span class="p">[pool].min_spare_servers</span><span class="si">}</span>
+        <span class="nv">max</span> <span class="o">=</span> <span class="si">${</span><span class="nv">thread</span><span class="p">[pool].max_servers</span><span class="si">}</span>
+        <span class="nv">spare</span> <span class="o">=</span> <span class="si">${</span><span class="nv">thread</span><span class="p">[pool].max_spare_servers</span><span class="si">}</span>
+        <span class="nv">uses</span> <span class="o">=</span> <span class="m">0</span>
+        <span class="nv">retry_delay</span> <span class="o">=</span> <span class="m">30</span>
+        <span class="nv">lifetime</span> <span class="o">=</span> <span class="m">0</span>
+        <span class="nv">idle_timeout</span> <span class="o">=</span> <span class="m">60</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+<div class="highlight"><pre><span></span> /etc/raddb/sites-available/site_ldap文件内容如下
+
+cat  /etc/raddb/sites-available/site_ldap
+server site_ldap <span class="o">{</span>
+    listen <span class="o">{</span>
+         <span class="nv">ipaddr</span> <span class="o">=</span> <span class="m">0</span>.0.0.0
+         <span class="nv">port</span> <span class="o">=</span> <span class="m">1833</span>
+         <span class="nb">type</span> <span class="o">=</span> auth
+     <span class="o">}</span>
+     authorize <span class="o">{</span>
+         update <span class="o">{</span>
+             control:Auth-Type :<span class="o">=</span> ldap
+             <span class="o">}</span>
+         <span class="o">}</span>
+     authenticate <span class="o">{</span>
+         Auth-Type ldap <span class="o">{</span>
+             ldap
+             <span class="o">}</span>
+         <span class="o">}</span>
+     post-auth <span class="o">{</span>
+         Post-Auth-Type Reject <span class="o">{</span>
+             <span class="o">}</span>
+         <span class="o">}</span>
+ <span class="o">}</span>
+ 
+</pre></div>
+<p>ln -s /etc/raddb/sites-available/site_ldap  /etc/raddb/sites-enabled/</p>
+<p>修改/etc/raddb/sites-enabled/default的配置信息，如果你的ldap是注释状态，你需要把注释去掉，保存退出。</p>
+<p>重启systemctl restart radiusd</p>
 <p>思科交换机配置</p>
 <p>本例采用的Cisco交换机，要开启aaa，配置radius服务器和认证组，并在端口启用dot1x认证和guest vlan，具体配置如下：</p>
 <p>交换机全局配置</p>
