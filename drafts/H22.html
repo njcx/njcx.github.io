@@ -106,8 +106,8 @@ var _hmt = _hmt || [];
 <p>OpenVAS是一款开源的漏洞扫描攻击，主要用来检测网络或主机的安全性。其强大的扫描能力来自于集成数万个漏洞测试程序，这些测试程序以插件的形式提供，可以从官方网站免费更新.</p>
 <p><img alt="openvas1" class="img-fluid" src="../images/openvas1.jpg"/></p>
 <h4>安装</h4>
-<div class="highlight"><pre><span></span>wget -q -O - http://www.atomicorp.com/installers/atomic <span class="p">|</span>sh
-</pre></div>
+<div class="highlight"><pre><span></span><code>wget -q -O - http://www.atomicorp.com/installers/atomic <span class="p">|</span>sh
+</code></pre></div>
 <p>然后，关闭selinux，修改/etc/selinux/config文件，将SELINUX=enforcing改为SELINUX=disabled</p>
 <h4>启动</h4>
 <p>openvas-setup</p>
@@ -116,13 +116,13 @@ var _hmt = _hmt || [];
 <p>greenbone-scapdata-sync</p>
 <p>greenbone-certdata-sync</p>
 <p>openvasmd --rebuild</p>
-<div class="highlight"><pre><span></span><span class="c1"># openvassd</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># openvassd</span>
 <span class="c1"># openvasmd</span>
-</pre></div>
-<div class="highlight"><pre><span></span>创建用户
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>创建用户
 openvasmd --create-user<span class="o">=</span>admin --role<span class="o">=</span>Admin
 openvasmd --user<span class="o">=</span>admin --new-password<span class="o">=</span>*******
-</pre></div>
+</code></pre></div>
 <p>openvas-check-setup --v9</p>
 <p>gsad --listen=0.0.0.0 --port=9392</p>
 <p>然后访问 https://ip:9392</p>

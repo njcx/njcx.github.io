@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>环境变量</h4>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/opt/jdk1.8.0_181
+<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/opt/jdk1.8.0_181
 <span class="nb">export</span> <span class="nv">JRE_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/jre
 <span class="nb">export</span> <span class="nv">CLASSPATH</span><span class="o">=</span>.:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/lib:<span class="si">${</span><span class="nv">JRE_HOME</span><span class="si">}</span>/lib
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
@@ -127,19 +127,19 @@ var _hmt = _hmt || [];
 
 <span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
-</pre></div>
+</code></pre></div>
 <h4>源</h4>
 <p>pip 源</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>global<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>global<span class="o">]</span>
 index-url <span class="o">=</span> https://pypi.tuna.tsinghua.edu.cn/simple
-</pre></div>
+</code></pre></div>
 <p>CentOS7 （清华）</p>
 <p>记得备份</p>
-<div class="highlight"><pre><span></span>cp /etc/yum.repos.d/CentOS-Base.repo  /etc/yum.repos.d/CentOS-Base.repo.bak
+<div class="highlight"><pre><span></span><code>cp /etc/yum.repos.d/CentOS-Base.repo  /etc/yum.repos.d/CentOS-Base.repo.bak
 
 cp /etc/yum.repos.d/epel.repo  /etc/yum.repos.d/epel.repo.bak
-</pre></div>
-<div class="highlight"><pre><span></span><span class="o">[</span>base<span class="o">]</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>base<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Base
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/os/<span class="nv">$basearch</span>/
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os</span>
@@ -170,8 +170,8 @@ cp /etc/yum.repos.d/epel.repo  /etc/yum.repos.d/epel.repo.bak
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
 <span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-</pre></div>
-<div class="highlight"><pre><span></span><span class="o">[</span>epel<span class="o">]</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>epel<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>Extra Packages <span class="k">for</span> Enterprise Linux <span class="m">7</span> - <span class="nv">$basearch</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/epel/7/<span class="nv">$basearch</span>
 <span class="c1">#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&amp;arch=$basearch</span>
@@ -197,14 +197,14 @@ cp /etc/yum.repos.d/epel.repo  /etc/yum.repos.d/epel.repo.bak
 <span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
-</pre></div>
+</code></pre></div>
 <p>CentOS7 阿里源</p>
-<div class="highlight"><pre><span></span>curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+<div class="highlight"><pre><span></span><code>curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
 
 curl -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
-</pre></div>
+</code></pre></div>
 <p>kali linux </p>
-<div class="highlight"><pre><span></span><span class="c1">#阿里云</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#阿里云</span>
 deb http://mirrors.aliyun.com/kali kali-rolling main non-free contrib 
 deb-src http://mirrors.aliyun.com/kali kali-rolling main non-free contrib 
 
@@ -215,12 +215,12 @@ deb-src https://mirrors.tuna.tsinghua.edu.cn/kali kali-rolling main contrib non-
 <span class="c1">#浙江大学 </span>
 deb http://mirrors.zju.edu.cn/kali kali-rolling main contrib non-free 
 deb-src http://mirrors.zju.edu.cn/kali kali-rolling main contrib non-free 
-</pre></div>
+</code></pre></div>
 <p>mysql 源</p>
-<div class="highlight"><pre><span></span>rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
-</pre></div>
+<div class="highlight"><pre><span></span><code>rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+</code></pre></div>
 <h4>软件包</h4>
-<div class="highlight"><pre><span></span>yum groupinstall development tools
+<div class="highlight"><pre><span></span><code>yum groupinstall development tools
 
 yum install -y pcre pcre-devel zlip zlib-devel openssl openssl-devel 
 
@@ -232,14 +232,14 @@ yum install mongodb-server mariadb-server
 yum install redis 
 
 yum install python36 python36-devel
-</pre></div>
+</code></pre></div>
 <h4>nodejs</h4>
-<div class="highlight"><pre><span></span>wget https://npm.taobao.org/mirrors/node/v10.14.2/node-v10.14.2-linux-x64.tar.gz 
-</pre></div>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NODE_HOME</span><span class="o">=</span>/root/node-v10.14.2-linux-x64
+<div class="highlight"><pre><span></span><code>wget https://npm.taobao.org/mirrors/node/v10.14.2/node-v10.14.2-linux-x64.tar.gz 
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">NODE_HOME</span><span class="o">=</span>/root/node-v10.14.2-linux-x64
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$NODE_HOME</span>/bin
 <span class="nb">export</span> <span class="nv">NODE_PATH</span><span class="o">=</span><span class="nv">$NODE_HOME</span>/lib/node_modules
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

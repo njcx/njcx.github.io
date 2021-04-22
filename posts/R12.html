@@ -144,7 +144,7 @@ RR：Resource Record 的缩写</p>
 <p>Bit 5,  0</p>
 <p>Bit 4,  0 </p>
 <p>Bit 3~0, Reply code：响应状态码，是一个 4 bit 的返回码字段。通常的值为 0（没有差错）和 3（名字差错）。 名字差错只能从一个授权名字服务器上返回，它表示在查询中指定的域名不存在。 下面列出rcode</p>
-<div class="highlight"><pre><span></span><span class="m">0</span>：OK
+<div class="highlight"><pre><span></span><code><span class="m">0</span>：OK
 <span class="m">1</span>：查询格式错误
 <span class="m">2</span>：服务器内部错误
 <span class="m">3</span>：名字不存在
@@ -155,7 +155,7 @@ RR：Resource Record 的缩写</p>
 <span class="m">8</span>：RR 设置应当存在但是却不存在
 <span class="m">9</span>：服务器不具备改管理区的权限
 <span class="m">10</span>：name 不在管理区中
-</pre></div>
+</code></pre></div>
 <p>随后的 4 个 16 bit 字段说明最后 4 个变长字段中包含的条目数。
 对于查询报文，问题(question)数通常是 1，而其他 3 项则均为 0。
 类似地，对于应答报文，回答数至少是 1，剩下的两项可以是 0 或非 0。</p>
@@ -165,7 +165,7 @@ RR：Resource Record 的缩写</p>
 <p>查询名(Name)是要查找的名字，它是一个或多个标识符的序列。
 每个标识符以首字节的计数值来说明随后标识符的字节长度， 每个名字以最后字节为 0 结束，长度为 0 的标识符是根标识符。 计数字节的值必须是 0 ~ 63 的数，因为标识符的最大长度仅为 63 （我们会看到计数字节的最高两比特为 1，即值 192 ~ 255，将用于压缩格式）。 不像我们已经看到的许多其他报文格式，该字段无需以整 32 bit 边界结束，即无需填充字节。</p>
 <p>每个问题有一个查询类型(Type)，而每个响应（也称一个资源记录，我们下面将谈到）也有一个类型。 大约有 20 个不同的类型值，其中的一些目前已经过时。 下面列出：</p>
-<div class="highlight"><pre><span></span><span class="m">1</span>   A   由域名获得IPv4地址
+<div class="highlight"><pre><span></span><code><span class="m">1</span>   A   由域名获得IPv4地址
 <span class="m">2</span>   NS  查询域名服务器
 <span class="m">5</span>   CNAME   查询规范名称
 <span class="m">6</span>   SOA 开始授权
@@ -176,7 +176,7 @@ RR：Resource Record 的缩写</p>
 <span class="m">28</span>  AAAA    由域名获得IPv6地址
 <span class="m">252</span> AXFR    传送整个区的请求
 <span class="m">255</span> ANY 对所有记录的请求
-</pre></div>
+</code></pre></div>
 <p>最常用的查询类型是 A 类型，表示期望获得查询名的 IP 地址。 一个 PTR 查询则请求获得一个 IP 地址对应的域名。查询类(Class)通常是 1，指互联网地址（某些站点也支持其他非 IP 地址）。</p>
 <h6>DNS 响应报文中的资源记录部分</h6>
 <p><img alt="agent" class="img-fluid" src="../images/dnsrrformat.png"/></p>
@@ -197,7 +197,7 @@ RR：Resource Record 的缩写</p>
 <p>实例代码</p>
 <p>抓取dns记录，可以hook udp_recvmsg() udpv6_recvmsg() 函数，也可能直接用libpcap。libpcap的工作原理可以描述为，当一个数据包到达网卡时，通过网络分接口（即旁路机制）将数据包发给BPF过滤器，匹配通过的数据包可以被libpcap利用创建的套接字PF_PACKET从链路层驱动程序中获得。进而在用户空间提供独立于系统的用户级API接口。我们使用谷歌的包github.com/google/gopacket， gopacket构建在libpcap之上。配合 audit 或者hook 相关函数，可以清楚看到对应的uid pid。</p>
 <p>样例：</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="p">(</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="p">(</span>
     <span class="s">"fmt"</span>
     <span class="s">"log"</span>
     <span class="s">"errors"</span>
@@ -290,7 +290,7 @@ RR：Resource Record 的缩写</p>
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>上面给出了一个抓取dns请求的样例，比如，看下面这个DNS隧道：</p>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG26.jpeg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG21.jpeg"/></p>

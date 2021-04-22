@@ -103,18 +103,18 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
-<div class="highlight"><pre><span></span>https://github.com/f0rb1dd3n/Reptile.git
+<div class="highlight"><pre><span></span><code>https://github.com/f0rb1dd3n/Reptile.git
 https://github.com/naworkcaj/bdvl.git
 https://github.com/yaoyumeng/adore-ng.git
 https://github.com/citypw/suterusu.git
 https://github.com/jgamblin/Mirai-Source-Code.git
 https://github.com/m0nad/Diamorphine.git
 https://raw.githubusercontent.com/yzimhao/godpock/master/Rootkit/mafix.tar.gz
-</pre></div>
+</code></pre></div>
 <p>Linux Rootkit 主要分为两种，一种是用户态的rootkit，一种是内核态的rootkit. Rootkit 主要的目的干坏事且隐藏自己，像个鬼影，隐藏自身的文件、进程、网络连接、rootkit模块本身。用户态的rootkit主要是替换相关命令完成(通过替换ps、top、ls、ss、netstat等系统工具)，内核态的rootkit主要是可装载内核模块（LKM）实现。</p>
 <p>内核态的rootkit，我们主要靠挂钩hook技术来实现，系统调用hook，函数api hook，还有一种，直接内核对象操作系统，主要通过/dev/mem、/dev/kmem设备直接操作内存，从而对内核进行修改</p>
 <p>当某个程序需要借助网络、文件系统或其他系统特定活动进行工作时，它就必须经过内核。也就是说，在此时它将使用系统调用。我们使用了一个名为Strace的工具。Strace将会列出程序所使用的系统调用。</p>
-<div class="highlight"><pre><span></span><span class="c1"># yum -y install strace</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># yum -y install strace</span>
 <span class="c1">#cd /bin &amp;&amp; strace ls </span>
 
 ioctl<span class="o">(</span><span class="m">1</span>, TIOCGWINSZ, 0x7ffedb86fcd0<span class="o">)</span>    <span class="o">=</span> -1 ENOTTY <span class="o">(</span>Inappropriate ioctl <span class="k">for</span> device<span class="o">)</span>
@@ -129,7 +129,7 @@ brk<span class="o">(</span>NULL<span class="o">)</span>                         
 mmap<span class="o">(</span>NULL, <span class="m">311296</span>, PROT_READ<span class="p">|</span>PROT_WRITE, MAP_PRIVATE<span class="p">|</span>MAP_ANONYMOUS, -1, <span class="m">0</span><span class="o">)</span> <span class="o">=</span> 0x7f60ea4a8000
 getdents<span class="o">(</span><span class="m">3</span>, /* <span class="m">32</span> entries */, <span class="m">32768</span><span class="o">)</span>    <span class="o">=</span> <span class="m">1096</span>
 getdents<span class="o">(</span><span class="m">3</span>, /* <span class="m">0</span> entries */, <span class="m">32768</span><span class="o">)</span>     <span class="o">=</span> <span class="m">0</span>
-</pre></div>
+</code></pre></div>
 <p>我们需要关注的系统调用是getdents函数。</p>
 <p>可装载内核模块（LKM）
 在Linux系统中，如果我们想在内核中运行代码，我们可以借助于可装载内核模块（LKM）。本文将不会花用太多篇幅阐述它是如何工作的，大家可以参考这一篇文章（链接）。我们的思路是将自定义的模块加载到内核。一些有用的内核符号就会被内核导出，我们便能够去使用它们，或者也可以通过kallsyms_lookup_name函数来获取。在内核中，我们需要拦截getdents调用，并对它返回的值进行更改。此外，我们也希望可以稍微隐藏一下自己的行为，由于该模块是在系统中，因此就不会那么明显。</p>

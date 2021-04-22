@@ -104,7 +104,7 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>介绍</h4>
 <p>Mongodb的3大元素:数据库(db),集合(collection),文档(document),"数据库"还是对应关系数据库中的"数据库",其中"集合"就是对应关系数据库中的"表"，"文档"对应"记录"。</p>
-<table class="table-hover table table-striped">
+<table class="table-striped table table-hover">
 <thead>
 <tr>
 <th align="center">RDBMS</th>
@@ -139,7 +139,7 @@ var _hmt = _hmt || [];
 </tbody>
 </table>
 <p>数据库服务器和客户端</p>
-<table class="table-hover table table-striped">
+<table class="table-striped table table-hover">
 <thead>
 <tr>
 <th align="center">mysql</th>
@@ -161,39 +161,39 @@ var _hmt = _hmt || [];
 </tbody>
 </table>
 <h4>安装</h4>
-<div class="highlight"><pre><span></span>centos/rhce : yum install mongodb-server -y
+<div class="highlight"><pre><span></span><code>centos/rhce : yum install mongodb-server -y
 
 debian/ubuntu : apt-get install mongodb-server -y
-</pre></div>
+</code></pre></div>
 <h4>使用</h4>
 <ul>
 <li>创建数据库</li>
 </ul>
-<div class="highlight"><pre><span></span>&gt; use njcx
+<div class="highlight"><pre><span></span><code>&gt; use njcx
 switched to db njcx
 &gt; db
 njcx
 &gt; 
-</pre></div>
+</code></pre></div>
 <ul>
 <li>查看数据库</li>
 </ul>
-<div class="highlight"><pre><span></span>&gt; show dbs
-</pre></div>
+<div class="highlight"><pre><span></span><code>&gt; show dbs
+</code></pre></div>
 <ul>
 <li>删除数据库</li>
 </ul>
-<div class="highlight"><pre><span></span>&gt; use njcx
+<div class="highlight"><pre><span></span><code>&gt; use njcx
 switched to db njcx
 &gt; db
 njcx
 &gt; db.dropDatabase<span class="o">()</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>创建集合(插入自动创建)</li>
 </ul>
-<div class="highlight"><pre><span></span>&gt; db.njcx.insert<span class="o">({</span><span class="s2">"name"</span>:<span class="s2">"njcx"</span><span class="o">})</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code>&gt; db.njcx.insert<span class="o">({</span><span class="s2">"name"</span>:<span class="s2">"njcx"</span><span class="o">})</span>
+</code></pre></div>
 <ul>
 <li>创建集合(db.createCollection(name, options))</li>
 </ul>
@@ -202,13 +202,13 @@ njcx
 <p>autoIndexID     Boolean （可选）如果为true，自动创建索引_id字段的默认值是false。</p>
 <p>size            number  （可选）指定最大大小字节封顶集合。如果封顶如果是 true，那么你还需要指定这个字段。</p>
 <p>max             number  （可选）指定封顶集合允许在文件的最大数量。</p>
-<div class="highlight"><pre><span></span>&gt; db.createCollection<span class="o">(</span><span class="s2">"tudou"</span>, <span class="o">{</span> capped : true, autoIndexID : true, size : <span class="m">6142800</span>, max : <span class="m">10000</span> <span class="o">}</span> <span class="o">)</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code>&gt; db.createCollection<span class="o">(</span><span class="s2">"tudou"</span>, <span class="o">{</span> capped : true, autoIndexID : true, size : <span class="m">6142800</span>, max : <span class="m">10000</span> <span class="o">}</span> <span class="o">)</span>
+</code></pre></div>
 <ul>
 <li>删除集合</li>
 </ul>
-<div class="highlight"><pre><span></span>&gt; db.njcx.drop<span class="o">()</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code>&gt; db.njcx.drop<span class="o">()</span>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

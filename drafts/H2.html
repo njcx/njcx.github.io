@@ -105,15 +105,15 @@ var _hmt = _hmt || [];
     <h5>介绍</h5>
 <p>Lua 是一脚本语言，巴西人所开发。由标准C开发，方便嵌入应用程序中。几乎可以在所有操作系统和平台上都可以编译，运行。</p>
 <h4>安装</h4>
-<div class="highlight"><pre><span></span>$ brew install lua
+<div class="highlight"><pre><span></span><code>$ brew install lua
 <span class="c1"># yum install lua -y</span>
 $ sudo apt-get -y install lua
-</pre></div>
+</code></pre></div>
 <p>包管理</p>
-<div class="highlight"><pre><span></span>$ brew install luarocks
-</pre></div>
+<div class="highlight"><pre><span></span><code>$ brew install luarocks
+</code></pre></div>
 <p>常用包</p>
-<div class="highlight"><pre><span></span>luarocks install luasocket
+<div class="highlight"><pre><span></span><code>luarocks install luasocket
 luarocks install luasql-sqlite3
 luarocks install lpeg
 luarocks install lzlib
@@ -123,13 +123,13 @@ luarocks install md5
 luarocks install luacurl
 luarocks install luasql-mysql 
 luarocks install lua-cjson
-</pre></div>
+</code></pre></div>
 <h4>hello world</h4>
 <p>老规矩</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/local/bin/lua</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/local/bin/lua</span>
 
 print<span class="o">(</span><span class="s2">"Hello World！"</span><span class="o">)</span>
-</pre></div>
+</code></pre></div>
 <p>两个减号是单行注释:</p>
 <p>-- 单行注释
 --[ 单行注释 --]</p>
@@ -143,32 +143,32 @@ print<span class="o">(</span><span class="s2">"Hello World！"</span><span class
 <li>string    字符串由一对双引号或单引号来表示 (通过'..'连接字符串，通过# 取得字符串长度)</li>
 <li>table table是一个"关联数组"（associative arrays），数组的索引可以是数字或者是字符串。在 Lua 里，table构造表达式是{}，用来创建一个空表</li>
 </ul>
-<div class="highlight"><pre><span></span>&gt; print<span class="o">(</span><span class="c1">#"www.njcx.bid")</span>
+<div class="highlight"><pre><span></span><code>&gt; print<span class="o">(</span><span class="c1">#"www.njcx.bid")</span>
 <span class="m">12</span>
 &gt; 
-</pre></div>
+</code></pre></div>
 <h4>运算符号</h4>
-<div class="highlight"><pre><span></span>and
+<div class="highlight"><pre><span></span><code>and
 or  
 not 
-</pre></div>
-<div class="highlight"><pre><span></span>+   加法  
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>+   加法  
 -   减法  
 *   乘法  
 /   除法  
 %   取余  
 ^   乘幂  
 -   负号
-</pre></div>
-<div class="highlight"><pre><span></span><span class="o">==</span>  等于
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">==</span>  等于
 ~<span class="o">=</span>  不等于 //敲黑板
 &gt;   大于
 &lt;   小于 
 &gt;<span class="o">=</span>  大于等于
 &lt;<span class="o">=</span>  小于等于
-</pre></div>
+</code></pre></div>
 <h4>字符串</h4>
-<div class="highlight"><pre><span></span>string.upper<span class="o">(</span>argument<span class="o">)</span>:
+<div class="highlight"><pre><span></span><code>string.upper<span class="o">(</span>argument<span class="o">)</span>:
 字符串全部转为大写字母。
 
 string.lower<span class="o">(</span>argument<span class="o">)</span>:
@@ -226,7 +226,7 @@ www.runoobcom
 
 string.gmatch<span class="o">(</span>str, pattern<span class="o">)</span>
 回一个迭代器函数，每一次调用这个函数，返回一个在字符串 str 找到的下一个符合 pattern 描述的子串。如果参数 pattern 描述的字符串没有找到，迭代函数返回nil。
-&gt; <span class="k">for</span> word in string.gmatch<span class="o">(</span><span class="s2">"Hello Lua user"</span>, <span class="s2">"%a+"</span><span class="o">)</span> <span class="k">do</span> print<span class="o">(</span>word<span class="o">)</span> end
+&gt; <span class="k">for</span> word <span class="k">in</span> string.gmatch<span class="o">(</span><span class="s2">"Hello Lua user"</span>, <span class="s2">"%a+"</span><span class="o">)</span> <span class="k">do</span> print<span class="o">(</span>word<span class="o">)</span> end
 Hello
 Lua
 user
@@ -239,14 +239,14 @@ string.match<span class="o">()</span>只寻找源字串str中的第一个配对.
 
 &gt; <span class="o">=</span> string.format<span class="o">(</span><span class="s2">"%d, %q"</span>, string.match<span class="o">(</span><span class="s2">"I have 2 questions for you."</span>, <span class="s2">"(%d+) (%a+)"</span><span class="o">))</span>
 <span class="m">2</span>, <span class="s2">"questions"</span>
-</pre></div>
+</code></pre></div>
 <h4>数组</h4>
-<div class="highlight"><pre><span></span><span class="nv">array</span> <span class="o">=</span> <span class="o">{}</span>
+<div class="highlight"><pre><span></span><code><span class="nv">array</span> <span class="o">=</span> <span class="o">{}</span>
 <span class="nv">array</span> <span class="o">=</span> <span class="o">{</span>‘njcx’，‘demo’<span class="o">}</span>
 <span class="nv">Table</span> <span class="o">=</span> <span class="o">{</span><span class="nv">name</span><span class="o">=</span><span class="s2">"盘子脸"</span>,age<span class="o">=</span><span class="m">18</span>,isMan<span class="o">=</span>true<span class="o">}</span> 
-</pre></div>
+</code></pre></div>
 <p>在Lua索引值是以 默认1为起始，</p>
-<div class="highlight"><pre><span></span>table.concat <span class="o">(</span>table <span class="o">[</span>, sep <span class="o">[</span>, start <span class="o">[</span>, end<span class="o">]]])</span>:
+<div class="highlight"><pre><span></span><code>table.concat <span class="o">(</span>table <span class="o">[</span>, sep <span class="o">[</span>, start <span class="o">[</span>, end<span class="o">]]])</span>:
 concat是concatenate<span class="o">(</span>连锁, 连接<span class="o">)</span>的缩写. table.concat<span class="o">()</span>函数列出参数中指定table的数组部分从start位置到end位置的所有元素, 元素间以指定的分隔符<span class="o">(</span>sep<span class="o">)</span>隔开。
 
 table.insert <span class="o">(</span>table, <span class="o">[</span>pos,<span class="o">]</span> value<span class="o">)</span>:
@@ -260,14 +260,14 @@ table.remove <span class="o">(</span>table <span class="o">[</span>, pos<span cl
 
 table.sort <span class="o">(</span>table <span class="o">[</span>, comp<span class="o">])</span>
 对给定的table进行升序排序。
-</pre></div>
+</code></pre></div>
 <h4>变量,循环,流程控制</h4>
 <ul>
 <li>变量</li>
 </ul>
 <p>Lua 变量有三种类型：全局变量、局部变量、表中的域。
 Lua 中的变量全是全局变量，那怕是语句块或是函数里，除非用 local 显式声明为局部变量。局部变量的作用域为从声明位置开始到所在语句块结束。变量的默认值均为 nil。</p>
-<div class="highlight"><pre><span></span><span class="nv">a</span> <span class="o">=</span> <span class="m">5</span>               -- 全局变量
+<div class="highlight"><pre><span></span><code><span class="nv">a</span> <span class="o">=</span> <span class="m">5</span>               -- 全局变量
 <span class="nb">local</span> <span class="nv">b</span> <span class="o">=</span> <span class="m">5</span>         -- 局部变量
 
 <span class="k">function</span> joke<span class="o">()</span>
@@ -276,12 +276,12 @@ Lua 中的变量全是全局变量，那怕是语句块或是函数里，除非�
 end
 joke<span class="o">()</span>
 print<span class="o">(</span>c,d<span class="o">)</span>          --&gt; <span class="m">5</span> nil
-</pre></div>
+</code></pre></div>
 <ul>
 <li>循环</li>
 </ul>
 <p>while</p>
-<div class="highlight"><pre><span></span><span class="nv">a</span><span class="o">=</span><span class="m">10</span>
+<div class="highlight"><pre><span></span><code><span class="nv">a</span><span class="o">=</span><span class="m">10</span>
 <span class="k">while</span><span class="o">(</span> a &lt; <span class="m">20</span> <span class="o">)</span>
 <span class="k">do</span>
    print<span class="o">(</span><span class="s2">"a 的值为:"</span>, a<span class="o">)</span>
@@ -292,9 +292,9 @@ end
 <span class="k">do</span>
    print<span class="o">(</span><span class="s2">"循环将永远执行下去"</span><span class="o">)</span>
 end
-</pre></div>
+</code></pre></div>
 <p>for  </p>
-<div class="highlight"><pre><span></span><span class="k">for</span> <span class="nv">var</span><span class="o">=</span>exp1,exp2,exp3 <span class="k">do</span>  
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="nv">var</span><span class="o">=</span>exp1,exp2,exp3 <span class="k">do</span>  
     &lt;执行体&gt;  
 end  
 var 从 exp1 变化到 exp2，每次变化以 exp3 为步长递增 var，并执行一次 <span class="s2">"执行体"</span>。exp3 是可选的，如果不指定，默认为1。
@@ -306,28 +306,28 @@ end
 <span class="k">for</span> <span class="nv">i</span><span class="o">=</span><span class="m">10</span>,1,-1 <span class="k">do</span>
     print<span class="o">(</span>i<span class="o">)</span>
 end
-</pre></div>
-<div class="highlight"><pre><span></span><span class="nv">days</span><span class="o">={</span><span class="s2">"Sunday"</span>,<span class="s2">"Monday"</span>,<span class="s2">"Tuesday"</span>,<span class="s2">"Wednesday"</span>,<span class="s2">"Thursday"</span>,<span class="s2">"Friday"</span>,<span class="s2">"Saturday"</span><span class="o">}</span>  
-<span class="k">for</span> i,v in ipairs<span class="o">(</span>days<span class="o">)</span> <span class="k">do</span> 
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nv">days</span><span class="o">={</span><span class="s2">"Sunday"</span>,<span class="s2">"Monday"</span>,<span class="s2">"Tuesday"</span>,<span class="s2">"Wednesday"</span>,<span class="s2">"Thursday"</span>,<span class="s2">"Friday"</span>,<span class="s2">"Saturday"</span><span class="o">}</span>  
+<span class="k">for</span> i,v <span class="k">in</span> ipairs<span class="o">(</span>days<span class="o">)</span> <span class="k">do</span> 
     print<span class="o">(</span>v<span class="o">)</span> 
 end  
-</pre></div>
+</code></pre></div>
 <p>这里提一下pairs能够遍历表中全部的key，而ipairs则不能返回nil,遇到nil则退出。</p>
 <p>repeat</p>
-<div class="highlight"><pre><span></span>--<span class="o">[</span> 变量定义 --<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>--<span class="o">[</span> 变量定义 --<span class="o">]</span>
 <span class="nv">a</span> <span class="o">=</span> <span class="m">10</span>
 --<span class="o">[</span> 执行循环 --<span class="o">]</span>
 repeat
    print<span class="o">(</span><span class="s2">"a的值为:"</span>, a<span class="o">)</span>
    <span class="nv">a</span> <span class="o">=</span> a + <span class="m">1</span>
 <span class="k">until</span><span class="o">(</span> a &gt; <span class="m">15</span> <span class="o">)</span>
-</pre></div>
+</code></pre></div>
 <p>repeat 没有do end</p>
 <ul>
 <li>流程控制</li>
 </ul>
 <p>if  （then  do）</p>
-<div class="highlight"><pre><span></span>--<span class="o">[</span> 定义变量 --<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>--<span class="o">[</span> 定义变量 --<span class="o">]</span>
 <span class="nv">a</span> <span class="o">=</span> <span class="m">10</span><span class="p">;</span>
 
 --<span class="o">[</span> 使用 <span class="k">if</span> 语句 --<span class="o">]</span>
@@ -337,17 +337,17 @@ repeat
    print<span class="o">(</span><span class="s2">"a 小于 20"</span> <span class="o">)</span><span class="p">;</span>
 end
 print<span class="o">(</span><span class="s2">"a 的值为:"</span>, a<span class="o">)</span><span class="p">;</span>
-</pre></div>
+</code></pre></div>
 <p>if else</p>
-<div class="highlight"><pre><span></span><span class="k">if</span><span class="o">(</span>布尔表达式<span class="o">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="o">(</span>布尔表达式<span class="o">)</span>
 <span class="k">then</span>
    --<span class="o">[</span> 布尔表达式为 <span class="nb">true</span> 时执行该语句块 --<span class="o">]</span>
 <span class="k">else</span>
    --<span class="o">[</span> 布尔表达式为 <span class="nb">false</span> 时执行该语句块 --<span class="o">]</span>
 end
-</pre></div>
+</code></pre></div>
 <p>if...elseif...else </p>
-<div class="highlight"><pre><span></span><span class="k">if</span><span class="o">(</span> 布尔表达式 <span class="m">1</span><span class="o">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="o">(</span> 布尔表达式 <span class="m">1</span><span class="o">)</span>
 <span class="k">then</span>
    --<span class="o">[</span> 在布尔表达式 <span class="m">1</span> 为 <span class="nb">true</span> 时执行该语句块 --<span class="o">]</span>
 
@@ -361,10 +361,10 @@ elseif<span class="o">(</span> 布尔表达式 <span class="m">3</span><span cla
 <span class="k">else</span> 
    --<span class="o">[</span> 如果以上布尔表达式都不为 <span class="nb">true</span> 则执行该语句块 --<span class="o">]</span>
 end
-</pre></div>
+</code></pre></div>
 <h4>函数</h4>
 <p>函数名前面加 local代表局部函数，不然，就代表全局函数，lua的函数支持多返回值</p>
-<div class="highlight"><pre><span></span>--<span class="o">[[</span> 函数返回两个值的最大值 --<span class="o">]]</span>
+<div class="highlight"><pre><span></span><code>--<span class="o">[[</span> 函数返回两个值的最大值 --<span class="o">]]</span>
 <span class="k">function</span> max<span class="o">(</span>num1, num2<span class="o">)</span>
 
    <span class="k">if</span> <span class="o">(</span>num1 &gt; num2<span class="o">)</span> <span class="k">then</span>
@@ -377,22 +377,22 @@ end
 end
 -- 调用函数
 print<span class="o">(</span><span class="s2">"两值比较最大值为 "</span>,max<span class="o">(</span><span class="m">10</span>,4<span class="o">))</span>
-</pre></div>
+</code></pre></div>
 <p>可变参数</p>
 <p>Lua 函数可以接受可变数目的参数，在函数参数列表中使用三点 ... 表示函数有可变的参数。</p>
-<div class="highlight"><pre><span></span><span class="k">function</span> add<span class="o">(</span>...<span class="o">)</span>  
+<div class="highlight"><pre><span></span><code><span class="k">function</span> add<span class="o">(</span>...<span class="o">)</span>  
 <span class="nb">local</span> <span class="nv">s</span> <span class="o">=</span> <span class="m">0</span>  
-  <span class="k">for</span> i, v in ipairs<span class="o">{</span>...<span class="o">}</span> <span class="k">do</span>   --&gt; <span class="o">{</span>...<span class="o">}</span> 表示一个由所有变长参数构成的数组  
+  <span class="k">for</span> i, v <span class="k">in</span> ipairs<span class="o">{</span>...<span class="o">}</span> <span class="k">do</span>   --&gt; <span class="o">{</span>...<span class="o">}</span> 表示一个由所有变长参数构成的数组  
     <span class="nv">s</span> <span class="o">=</span> s + v  
   end  
   <span class="k">return</span> s  
 end  
 print<span class="o">(</span>add<span class="o">(</span><span class="m">3</span>,4,5,6,7<span class="o">))</span>  ---&gt;25
-</pre></div>
-<div class="highlight"><pre><span></span><span class="k">function</span> average<span class="o">(</span>...<span class="o">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">function</span> average<span class="o">(</span>...<span class="o">)</span>
    <span class="nv">result</span> <span class="o">=</span> <span class="m">0</span>
    <span class="nb">local</span> <span class="nv">arg</span><span class="o">={</span>...<span class="o">}</span>    --&gt; arg 为一个表，局部变量
-   <span class="k">for</span> i,v in ipairs<span class="o">(</span>arg<span class="o">)</span> <span class="k">do</span>
+   <span class="k">for</span> i,v <span class="k">in</span> ipairs<span class="o">(</span>arg<span class="o">)</span> <span class="k">do</span>
       <span class="nv">result</span> <span class="o">=</span> result + v
    end
    print<span class="o">(</span><span class="s2">"总共传入 "</span> .. <span class="c1">#arg .. " 个数")</span>
@@ -400,27 +400,27 @@ print<span class="o">(</span>add<span class="o">(</span><span class="m">3</span>
 end
 
 print<span class="o">(</span><span class="s2">"平均值为"</span>,average<span class="o">(</span><span class="m">10</span>,5,3,4,5,6<span class="o">))</span>
-</pre></div>
+</code></pre></div>
 <p>也可以用 select("#",...)  获取长度，
 select('#', …) 返回可变参数的长度,
 select(n, …) 用于访问 n 到 select('#',…) 的参数</p>
-<div class="highlight"><pre><span></span><span class="k">function</span> foo<span class="o">(</span>...<span class="o">)</span>  
+<div class="highlight"><pre><span></span><code><span class="k">function</span> foo<span class="o">(</span>...<span class="o">)</span>  
     <span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="m">1</span>, <span class="k">select</span><span class="o">(</span><span class="s1">'#'</span>, ...<span class="o">)</span> <span class="k">do</span>  --&gt;获取参数总数
         <span class="nb">local</span> <span class="nv">arg</span> <span class="o">=</span> <span class="k">select</span><span class="o">(</span>i, ...<span class="o">)</span><span class="p">;</span> --&gt;读取参数
         print<span class="o">(</span><span class="s2">"arg"</span>, arg<span class="o">)</span><span class="p">;</span>  
     end  
 end 
-</pre></div>
+</code></pre></div>
 <p>lua 也可以固定函数参数</p>
-<div class="highlight"><pre><span></span><span class="k">function</span> fwrite<span class="o">(</span>fmt, ...<span class="o">)</span>  ---&gt; 固定的参数fmt
+<div class="highlight"><pre><span></span><code><span class="k">function</span> fwrite<span class="o">(</span>fmt, ...<span class="o">)</span>  ---&gt; 固定的参数fmt
     <span class="k">return</span> io.write<span class="o">(</span>string.format<span class="o">(</span>fmt, ...<span class="o">))</span>     
 end
 
 fwrite<span class="o">(</span><span class="s2">"tudou\n"</span><span class="o">)</span>       ---&gt;fmt <span class="o">=</span> <span class="s2">"tudou"</span>, 没有变长参数。 
-</pre></div>
+</code></pre></div>
 <h4>Lua 模块与包</h4>
 <p>Lua 的模块是由变量、函数等已知元素组成的 table，因此创建一个模块很简单，就是创建一个 table，然后把需要导出的常量、函数放入其中，最后返回这个 table 就行。以下为创建自定义模块 module.lua，文件代码格式如下：</p>
-<div class="highlight"><pre><span></span>-- 文件名为 module.lua
+<div class="highlight"><pre><span></span><code>-- 文件名为 module.lua
 -- 定义一个名为 module 的模块
 <span class="nv">module</span> <span class="o">=</span> <span class="o">{}</span>
 
@@ -441,7 +441,7 @@ end
 end
 
 <span class="k">return</span> module
-</pre></div>
+</code></pre></div>
 <h4>元表</h4>
 <p>待补充</p>
 <h4>lua协程(coroutine)</h4>
@@ -452,7 +452,7 @@ end
 <p>Lua中处理错误，可以使用函数pcall（protected call）来包装需要执行的代码。</p>
 <p>pcall接收一个函数和要传递给后者的参数，并执行，执行结果：有错误、无错误；返回值true或者或false, errorinfo。</p>
 <p>语法格式如下</p>
-<div class="highlight"><pre><span></span><span class="k">if</span> pcall<span class="o">(</span>function_name, ….<span class="o">)</span> <span class="k">then</span>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> pcall<span class="o">(</span>function_name, ….<span class="o">)</span> <span class="k">then</span>
 -- 没有错误
 <span class="k">else</span>
 -- 一些错误
@@ -472,27 +472,27 @@ pcall<span class="o">(</span><span class="k">function</span><span class="o">(</s
 <span class="k">if</span> f<span class="o">()</span> <span class="k">then</span> print <span class="s1">'1'</span> <span class="k">else</span> print <span class="s1">'0'</span> end
 
 <span class="m">0</span>
-</pre></div>
+</code></pre></div>
 <p>pcall以一种"保护模式"来调用第一个参数，因此pcall可以捕获函数执行中的任何错误。</p>
 <p>通常在错误发生时，希望落得更多的调试信息，而不只是发生错误的位置。但pcall返回时，它已经销毁了调用桟的部分内容。</p>
 <p>Lua提供了xpcall函数，xpcall接收第二个参数——一个错误处理函数，当错误发生时，Lua会在调用桟展开（unwind）前调用错误处理函数，于是就可以在这个函数中使用debug库来获取关于错误的额外信息了。</p>
 <p>debug库提供了两个通用的错误处理函数:
 debug.debug：提供一个Lua提示符，让用户来检查错误的原因
 debug.traceback：根据调用桟来构建一个扩展的错误消息</p>
-<div class="highlight"><pre><span></span>xpcall<span class="o">(</span><span class="k">function</span><span class="o">(</span>i<span class="o">)</span> print<span class="o">(</span>i<span class="o">)</span> error<span class="o">(</span><span class="s1">'error..'</span><span class="o">)</span> end, <span class="k">function</span><span class="o">()</span> print<span class="o">(</span>debug.traceback<span class="o">())</span> end, <span class="m">33</span><span class="o">)</span>
+<div class="highlight"><pre><span></span><code>xpcall<span class="o">(</span><span class="k">function</span><span class="o">(</span>i<span class="o">)</span> print<span class="o">(</span>i<span class="o">)</span> error<span class="o">(</span><span class="s1">'error..'</span><span class="o">)</span> end, <span class="k">function</span><span class="o">()</span> print<span class="o">(</span>debug.traceback<span class="o">())</span> end, <span class="m">33</span><span class="o">)</span>
 <span class="m">33</span>
 
 stack traceback:
-stdin:1: in <span class="k">function</span> &lt;stdin:1&gt;
-<span class="o">[</span>C<span class="o">]</span>: in <span class="k">function</span> <span class="s1">'error'</span>
-stdin:1: in <span class="k">function</span> &lt;stdin:1&gt;
-<span class="o">[</span>C<span class="o">]</span>: in <span class="k">function</span> <span class="s1">'xpcall'</span>
-stdin:1: in main chunk
-<span class="o">[</span>C<span class="o">]</span>: in ?
+stdin:1: <span class="k">in</span> <span class="k">function</span> &lt;stdin:1&gt;
+<span class="o">[</span>C<span class="o">]</span>: <span class="k">in</span> <span class="k">function</span> <span class="s1">'error'</span>
+stdin:1: <span class="k">in</span> <span class="k">function</span> &lt;stdin:1&gt;
+<span class="o">[</span>C<span class="o">]</span>: <span class="k">in</span> <span class="k">function</span> <span class="s1">'xpcall'</span>
+stdin:1: <span class="k">in</span> main chunk
+<span class="o">[</span>C<span class="o">]</span>: <span class="k">in</span> ?
 <span class="nb">false</span>        nil
-</pre></div>
+</code></pre></div>
 <p>xpcall 使用实例 2:</p>
-<div class="highlight"><pre><span></span><span class="k">function</span> myfunction <span class="o">()</span>
+<div class="highlight"><pre><span></span><code><span class="k">function</span> myfunction <span class="o">()</span>
    <span class="nv">n</span> <span class="o">=</span> n/nil
 end
 
@@ -502,11 +502,11 @@ end
 
 <span class="nv">status</span> <span class="o">=</span> xpcall<span class="o">(</span> myfunction, myerrorhandler <span class="o">)</span>
 print<span class="o">(</span> status<span class="o">)</span>
-</pre></div>
+</code></pre></div>
 <p>执行以上程序会出现如下错误：</p>
-<div class="highlight"><pre><span></span>ERROR:    test2.lua:2: attempt to perform arithmetic on global <span class="s1">'n'</span> <span class="o">(</span>a nil value<span class="o">)</span>
+<div class="highlight"><pre><span></span><code>ERROR:    test2.lua:2: attempt to perform arithmetic on global <span class="s1">'n'</span> <span class="o">(</span>a nil value<span class="o">)</span>
 <span class="nb">false</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

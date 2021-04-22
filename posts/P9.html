@@ -104,12 +104,12 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>介绍</h4>
 <p>由于长期工作在Linux环境下，企业内网也基本是Linux的，对Windows有点生疏，所以决定记录总结一下Windows的相关常用命令，多面发展</p>
-<div class="highlight"><pre><span></span>https://blog.csdn.net/mfkpie/article/details/48005847
+<div class="highlight"><pre><span></span><code>https://blog.csdn.net/mfkpie/article/details/48005847
 https://blog.csdn.net/qq_45174221/article/details/104979705
 http://t3ngyu.leanote.com/post/LM-WinRM-WinRS
 https://blog.csdn.net/qq_20307987/article/details/85087960
-</pre></div>
-<div class="highlight"><pre><span></span>certutil-----从远程url下载文件
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>certutil-----从远程url下载文件
 案例:certutil -urlcache  -split  -f http://baidu.com/test.exe
 
 findstr-----查找文件后缀结果
@@ -122,7 +122,7 @@ REG QUERY <span class="s2">"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\
 结果：1表示关闭，0表示开启
 
 快速查找未打补丁的exp
-systeminfo&gt;bzhack.txt<span class="p">&amp;</span><span class="o">(</span><span class="k">for</span> %i in <span class="o">(</span> KB977165 KB2160329 KB2503665 KB2592799 KB2707511 KB2829361 KB2850851 KB3000061 KB3045171 KB3077657 KB3079904 KB3134228 KB3143141 KB3141780 <span class="o">)</span> <span class="k">do</span> @type bzhack.txt<span class="p">|</span>@find /i <span class="s2">"%i"</span><span class="o">||</span> @echo %i you can exp<span class="o">)</span><span class="p">&amp;</span>del /f /q /a bzhack.txt
+systeminfo&gt;bzhack.txt<span class="p">&amp;</span><span class="o">(</span><span class="k">for</span> %i <span class="k">in</span> <span class="o">(</span> KB977165 KB2160329 KB2503665 KB2592799 KB2707511 KB2829361 KB2850851 KB3000061 KB3045171 KB3077657 KB3079904 KB3134228 KB3143141 KB3141780 <span class="o">)</span> <span class="k">do</span> @type bzhack.txt<span class="p">|</span>@find /i <span class="s2">"%i"</span><span class="o">||</span> @echo %i you can exp<span class="o">)</span><span class="p">&amp;</span>del /f /q /a bzhack.txt
 
 
 
@@ -231,7 +231,7 @@ dir /a /s /b d:<span class="se">\"</span>*.conf<span class="s2">"        搜索d
 <span class="s2">winrs -r:myserver -env:PATH=^%PATH^%;c:\tools -env:TEMP=d:\temp config.cmd</span>
 <span class="s2">winrs -r:myserver netdom join myserver /domain:testdomain /userd:johns /passwordd:</span>$<span class="s2">%fgh789</span>
 <span class="s2">winrs -r:myserver -ad -u:administrator -p:</span>$<span class="s2">%fgh7 dir \\anotherserver\share</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

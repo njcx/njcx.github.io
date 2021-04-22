@@ -115,12 +115,12 @@ var _hmt = _hmt || [];
 <h4>复现</h4>
 <p>一般通过yum install redis，要比自己编译安装的要安全的，所以
 我们通过自己编译的redis来复现</p>
-<div class="highlight"><pre><span></span>wget http://download.redis.io/releases/redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> tar -xzvf redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> <span class="nb">cd</span> redis-3.2.9
+<div class="highlight"><pre><span></span><code>wget http://download.redis.io/releases/redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> tar -xzvf redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> <span class="nb">cd</span> redis-3.2.9
 
 make <span class="o">&amp;&amp;</span> make <span class="nv">PREFIX</span><span class="o">=</span>/usr/local/redis install <span class="o">&amp;&amp;</span> mkdir /usr/local/redis/etc/
 
 cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /usr/local/redis/bin/ <span class="o">&amp;&amp;</span> cp redis-benchmark redis-cli redis-server /usr/bin/
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

@@ -116,11 +116,11 @@ var _hmt = _hmt || [];
 <p>RADIUS 协议还规定了重传机制。如果 NAS 向某个 RADIUS 服务器提交请求没有收到返回信息，那么可以要求备份 RADIUS 服务器重传。由于有多个备份 RADIUS 服务器，因此 NAS 进行重传的时候，可以采用轮询的方法。如果备份 RADIUS 服务器的密钥和以前 RADIUS 服务器的密钥不同，则需要重新进行认证。　　由于 RADIUS 协议简单明确，可扩充，因此得到了广泛应用，包括普通电话上网、 ADSL 上网、小区宽带上网、 IP 电话、 VPDN （Virtual Private Dialup Networks ，基于拨号用户的虚拟专用拨号网业务）、移动电话预付费等业务。最近 IEEE提出了 802.1x 标准，这是一种基于端口的标准，用于对无线网络的接入认证，在认证时也采用 RADIUS 协议。
 　　 </p>
 <p>安装</p>
-<div class="highlight"><pre><span></span><span class="c1"># radius 安装</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># radius 安装</span>
 
 yum -y install freeradius freeradius-utils  freeradius-ldap
-</pre></div>
-<div class="highlight"><pre><span></span><span class="c1"># ldap 安装</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># ldap 安装</span>
 
 
 yum install -y openldap openldap-clients openldap-servers
@@ -139,9 +139,9 @@ systemctl <span class="nb">enable</span> slapd
 
 <span class="c1"># 查看状态，正常启动则ok</span>
 systemctl status slapd
-</pre></div>
+</code></pre></div>
 <p>安装openldap后，会有三个命令用于修改配置文件，分别为ldapadd, ldapmodify, ldapdelete，顾名思义就是添加，修改和删除。而需要修改或增加配置时，则需要先写一个ldif后缀的配置文件，然后通过命令将写的配置更新到slapd.d目录下的配置文件中去，完整的配置过程如下，跟着我做就可以了：</p>
-<div class="highlight"><pre><span></span><span class="c1"># 生成管理员密码,记录下这个密码，后面需要用到</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># 生成管理员密码,记录下这个密码，后面需要用到</span>
 slappasswd -s <span class="m">123456</span>
 <span class="o">{</span>SSHA<span class="o">}</span>LSgYPTUW4zjGtIVtuZ8cRUqqFRv1tWpE
 <span class="c1"># 新增修改密码文件,ldif为后缀，文件名随意，不要在/etc/openldap/slapd.d/目录下创建类似文件</span>
@@ -162,8 +162,8 @@ olcRootPW: <span class="o">{</span>SSHA<span class="o">}</span>LSgYPTUW4zjGtIVtu
 <span class="c1"># 在执行下面的命令前，你可以先查看原本的olcDatabase={0}config文件，里面是没有olcRootPW这个项的，执行命令后，你再看就会新增了olcRootPW项，而且内容是我们文件中指定的值加密后的字符串</span>
 <span class="c1"># 执行命令，修改ldap配置，通过-f执行文件</span>
 ldapadd -Y EXTERNAL -H ldapi:/// -f changepwd.ldif
-</pre></div>
-<div class="highlight"><pre><span></span><span class="c1"># 我们需要向 LDAP 中导入一些基本的 Schema。这些 Schema 文件位于 /etc/openldap/schema/ 目录中，schema控制着条目拥有哪些对象类和属性，可以自行选择需要的进行导入，</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># 我们需要向 LDAP 中导入一些基本的 Schema。这些 Schema 文件位于 /etc/openldap/schema/ 目录中，schema控制着条目拥有哪些对象类和属性，可以自行选择需要的进行导入，</span>
 <span class="c1"># 依次执行下面的命令，导入基础的一些配置,我这里将所有的都导入一下，其中core.ldif是默认已经加载了的，不用导入</span>
 ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
 ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/nis.ldif
@@ -216,58 +216,58 @@ olcAccess: <span class="o">{</span><span class="m">2</span><span class="o">}</sp
 
 <span class="c1"># 执行命令，修改配置</span>
 ldapmodify -Y EXTERNAL -H ldapi:/// -f changedomain.ldif
-</pre></div>
-<div class="highlight"><pre><span></span># 新增add-memberof.ldif, #开启memberof支持并新增用户支持memberof配置
-vim add-memberof.ldif
--------------------------------------------------------------
-dn: cn=module{0},cn=config
-cn: modulle{0}
-objectClass: olcModuleList
-objectclass: top
-olcModuleload: memberof.la
-olcModulePath: /usr/lib64/openldap
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># 新增add</span><span class="nb">-</span><span class="c">memberof</span><span class="nt">.</span><span class="c">ldif</span><span class="nt">,</span><span class="c"> #开启memberof支持并新增用户支持memberof配置</span>
+<span class="c">vim add</span><span class="nb">-</span><span class="c">memberof</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="nb">-------------------------------------------------------------</span><span class="c"></span>
+<span class="c">dn: cn=module{0}</span><span class="nt">,</span><span class="c">cn=config</span>
+<span class="c">cn: modulle{0}</span>
+<span class="c">objectClass: olcModuleList</span>
+<span class="c">objectclass: top</span>
+<span class="c">olcModuleload: memberof</span><span class="nt">.</span><span class="c">la</span>
+<span class="c">olcModulePath: /usr/lib64/openldap</span>
 
-dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
-objectClass: olcConfig
-objectClass: olcMemberOf
-objectClass: olcOverlayConfig
-objectClass: top
-olcOverlay: memberof
-olcMemberOfDangling: ignore
-olcMemberOfRefInt: TRUE
-olcMemberOfGroupOC: groupOfUniqueNames
-olcMemberOfMemberAD: uniqueMember
-olcMemberOfMemberOfAD: memberOf
--------------------------------------------------------------
+<span class="c">dn: olcOverlay={0}memberof</span><span class="nt">,</span><span class="c">olcDatabase={2}hdb</span><span class="nt">,</span><span class="c">cn=config</span>
+<span class="c">objectClass: olcConfig</span>
+<span class="c">objectClass: olcMemberOf</span>
+<span class="c">objectClass: olcOverlayConfig</span>
+<span class="c">objectClass: top</span>
+<span class="c">olcOverlay: memberof</span>
+<span class="c">olcMemberOfDangling: ignore</span>
+<span class="c">olcMemberOfRefInt: TRUE</span>
+<span class="c">olcMemberOfGroupOC: groupOfUniqueNames</span>
+<span class="c">olcMemberOfMemberAD: uniqueMember</span>
+<span class="c">olcMemberOfMemberOfAD: memberOf</span>
+<span class="nb">-------------------------------------------------------------</span><span class="c"></span>
 
-# 新增refint1.ldif文件
-vim refint1.ldif
--------------------------------------------------------------
-dn: cn=module{0},cn=config
-add: olcmoduleload
-olcmoduleload: refint
--------------------------------------------------------------
+<span class="c"># 新增refint1</span><span class="nt">.</span><span class="c">ldif文件</span>
+<span class="c">vim refint1</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="nb">-------------------------------------------------------------</span><span class="c"></span>
+<span class="c">dn: cn=module{0}</span><span class="nt">,</span><span class="c">cn=config</span>
+<span class="c">add: olcmoduleload</span>
+<span class="c">olcmoduleload: refint</span>
+<span class="nb">-------------------------------------------------------------</span><span class="c"></span>
 
-# 新增refint2.ldif文件
-vim refint2.ldif
--------------------------------------------------------------
-dn: olcOverlay=refint,olcDatabase={2}hdb,cn=config
-objectClass: olcConfig
-objectClass: olcOverlayConfig
-objectClass: olcRefintConfig
-objectClass: top
-olcOverlay: refint
-olcRefintAttribute: memberof uniqueMember  manager owner
--------------------------------------------------------------
+<span class="c"># 新增refint2</span><span class="nt">.</span><span class="c">ldif文件</span>
+<span class="c">vim refint2</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="nb">-------------------------------------------------------------</span><span class="c"></span>
+<span class="c">dn: olcOverlay=refint</span><span class="nt">,</span><span class="c">olcDatabase={2}hdb</span><span class="nt">,</span><span class="c">cn=config</span>
+<span class="c">objectClass: olcConfig</span>
+<span class="c">objectClass: olcOverlayConfig</span>
+<span class="c">objectClass: olcRefintConfig</span>
+<span class="c">objectClass: top</span>
+<span class="c">olcOverlay: refint</span>
+<span class="c">olcRefintAttribute: memberof uniqueMember  manager owner</span>
+<span class="nb">-------------------------------------------------------------</span><span class="c"></span>
 
-# 依次执行下面命令，加载配置，顺序不能错
-ldapadd -Q -Y EXTERNAL -H ldapi:/// -f add-memberof.ldif
-ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f refint1.ldif
-ldapadd -Q -Y EXTERNAL -H ldapi:/// -f refint2.ldif
-————————————————
-</pre></div>
+<span class="c"># 依次执行下面命令，加载配置，顺序不能错</span>
+<span class="c">ldapadd </span><span class="nb">-</span><span class="c">Q </span><span class="nb">-</span><span class="c">Y EXTERNAL </span><span class="nb">-</span><span class="c">H ldapi:/// </span><span class="nb">-</span><span class="c">f add</span><span class="nb">-</span><span class="c">memberof</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="c">ldapmodify </span><span class="nb">-</span><span class="c">Q </span><span class="nb">-</span><span class="c">Y EXTERNAL </span><span class="nb">-</span><span class="c">H ldapi:/// </span><span class="nb">-</span><span class="c">f refint1</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="c">ldapadd </span><span class="nb">-</span><span class="c">Q </span><span class="nb">-</span><span class="c">Y EXTERNAL </span><span class="nb">-</span><span class="c">H ldapi:/// </span><span class="nb">-</span><span class="c">f refint2</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="c">————————————————</span>
+</code></pre></div>
 <p>到此，配置修改完了，在上述基础上，我们来创建一个叫做 yaobili company 的组织，并在其下创建一个 admin 的组织角色（该组织角色内的用户具有管理整个 LDAP 的权限）和 People 和 Group 两个组织单元：</p>
-<div class="highlight"><pre><span></span># 新增配置文件
+<div class="highlight"><pre><span></span><code># 新增配置文件
 vim base.ldif
 ----------------------------------------------------------
 dn: dc=yaobili,dc=com
@@ -292,11 +292,11 @@ cn: Group
 # 执行命令，添加配置, 这里要注意修改域名为自己配置的域名，然后需要输入上面我们生成的密码
 ldapadd -x -D cn=admin,dc=yaobili,dc=com -W -f base.ldif
 ————————————————
-</pre></div>
+</code></pre></div>
 <p>通过以上的所有步骤，我们就设置好了一个 LDAP 目录树：其中基准 dc=yaobili,dc=com 是该树的根节点，其下有一个管理域 cn=admin,dc=yaobili,dc=com 和两个组织单元 ou=People,dc=yaobili,dc=com 及 ou=Group,dc=yaobili,dc=com。</p>
 <p>打通 radius 和 ldap</p>
 <p>/etc/raddb/mods-available/ldap文件</p>
-<div class="highlight"><pre><span></span>ldap <span class="o">{</span>
+<div class="highlight"><pre><span></span><code>ldap <span class="o">{</span>
     <span class="nv">server</span> <span class="o">=</span> <span class="s1">'192.168.236.30'</span>
     <span class="nv">port</span> <span class="o">=</span> <span class="m">389</span>
     <span class="nv">identity</span> <span class="o">=</span> <span class="s1">'cn=Manager,dc=alex,dc=localhost'</span>
@@ -382,8 +382,8 @@ ldapadd -x -D cn=admin,dc=yaobili,dc=com -W -f base.ldif
         <span class="nv">idle_timeout</span> <span class="o">=</span> <span class="m">60</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
-<div class="highlight"><pre><span></span> /etc/raddb/sites-available/site_ldap文件内容如下
+</code></pre></div>
+<div class="highlight"><pre><span></span><code> /etc/raddb/sites-available/site_ldap文件内容如下
 
 cat  /etc/raddb/sites-available/site_ldap
 server site_ldap <span class="o">{</span>
@@ -408,14 +408,14 @@ server site_ldap <span class="o">{</span>
          <span class="o">}</span>
  <span class="o">}</span>
  
-</pre></div>
+</code></pre></div>
 <p>ln -s /etc/raddb/sites-available/site_ldap  /etc/raddb/sites-enabled/</p>
 <p>修改/etc/raddb/sites-enabled/default的配置信息，如果你的ldap是注释状态，你需要把注释去掉，保存退出。</p>
 <p>重启systemctl restart radiusd</p>
 <p>思科交换机配置</p>
 <p>本例采用的Cisco交换机，要开启aaa，配置radius服务器和认证组，并在端口启用dot1x认证和guest vlan，具体配置如下：</p>
 <p>交换机全局配置</p>
-<div class="highlight"><pre><span></span><span class="nb">enable</span> aaa new-model
+<div class="highlight"><pre><span></span><code><span class="nb">enable</span> aaa new-model
 aaa authentication dot1x default group radius
 aaa authorization network default group radius
 dot1x system-auth-control
@@ -424,13 +424,13 @@ radius-server host <span class="m">192</span>.168.2.16 auth-port <span class="m"
 radius-server retransmit <span class="m">2</span>
 radius-server key <span class="m">7</span> cisco
 radius-server vsa send authentication        <span class="c1">#如果需要802.1x指定端口vlan需要配置这个</span>
-</pre></div>
+</code></pre></div>
 <p>端口配置，interface G1/0/1</p>
-<div class="highlight"><pre><span></span><span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport mode access</span>
+<div class="highlight"><pre><span></span><code><span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport mode access</span>
 <span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport access vlan 10       #配置该端口默认为vlan10</span>
 <span class="o">(</span>config-if<span class="o">)</span><span class="c1"># dot1x port-control auto</span>
 <span class="o">(</span>config-if<span class="o">)</span><span class="c1"># authentication event no-response action authorize vlan 771 #配置guest vlan，当检测到该机器没加入域，则将其划到vlan 771中</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

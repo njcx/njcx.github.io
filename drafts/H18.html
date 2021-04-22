@@ -105,12 +105,12 @@ var _hmt = _hmt || [];
     <h4>介绍</h4>
 <p>Wazuh 是 ossec 一个分支，通过与ELK的结合，可以把相关的记录发到ELK之中，如果把bro 和 wazuh 都往elk里面打，就可以实现一个基于nids 和 hids的 soc。</p>
 <h4>安装</h4>
-<div class="highlight"><pre><span></span>yum groupinstall development tools -y
+<div class="highlight"><pre><span></span><code>yum groupinstall development tools -y
 
 yum install make gcc policycoreutils-python automake autoconf libtool
 
 curl -Ls https://github.com/wazuh/wazuh/archive/v3.10.2.tar.gz <span class="p">|</span> tar zx
-</pre></div>
+</code></pre></div>
 <p>然后 sh install.sh, 填写一些内容，就可以开始安装啦</p>
 <h4>配置agent</h4>
   </div>

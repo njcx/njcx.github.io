@@ -106,43 +106,43 @@ var _hmt = _hmt || [];
 <p>Redis是很火的一个Key-Value数据库,它以优异的性能得到了广泛的应用.Redis是一个内存数据库，但在磁盘数据库上是持久的，它有5种数据类型，string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)，它所有的操作都是原子类型的,可以应对复杂的生产环境,可用于多种用例，如：缓存，消息队列，应用程序中短期数据。</p>
 <h4>安装</h4>
 <p>Redis 可以编译安装,也可以apt-get /yum安装,一般编译安装的版本比较新一些</p>
-<div class="highlight"><pre><span></span>centos/rhce : yum install redis -y
-</pre></div>
-<div class="highlight"><pre><span></span>debian/ubuntu : sudo apt-get install redis-server -y
-</pre></div>
+<div class="highlight"><pre><span></span><code>centos/rhce : yum install redis -y
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>debian/ubuntu : sudo apt-get install redis-server -y
+</code></pre></div>
 <p>编译安装,</p>
-<div class="highlight"><pre><span></span>wget http://download.redis.io/releases/redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> tar -xzvf redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> <span class="nb">cd</span> redis-3.2.9
+<div class="highlight"><pre><span></span><code>wget http://download.redis.io/releases/redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> tar -xzvf redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> <span class="nb">cd</span> redis-3.2.9
 
 make <span class="o">&amp;&amp;</span> make <span class="nv">PREFIX</span><span class="o">=</span>/usr/local/redis install <span class="o">&amp;&amp;</span> mkdir /usr/local/redis/etc/
 
 cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /usr/local/redis/bin/ <span class="o">&amp;&amp;</span> cp redis-benchmark redis-cli redis-server /usr/bin/
-</pre></div>
+</code></pre></div>
 <h4>使用</h4>
 <p>先通过读取配置文件启动服务端,我通过apt-get 安装的,默认配置文件在 /etc/redis/redis.conf,先启动服务端</p>
-<div class="highlight"><pre><span></span>redis-server /etc/redis/redis.conf
-</pre></div>
+<div class="highlight"><pre><span></span><code>redis-server /etc/redis/redis.conf
+</code></pre></div>
 <p>再启动客服端</p>
-<div class="highlight"><pre><span></span>redis-cli
-</pre></div>
+<div class="highlight"><pre><span></span><code>redis-cli
+</code></pre></div>
 <h4>命令</h4>
 <p>Redis的命令主要围绕着:配置,以及相关数据类型的操作的.</p>
 <ul>
 <li>配置</li>
 </ul>
 <p>查看配置</p>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; CONFIG GET *
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt; CONFIG GET *
 
 <span class="m">127</span>.0.0.1:6379&gt; CONFIG GET loglevel  
-</pre></div>
+</code></pre></div>
 <p>更改配置</p>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; CONFIG SET CONFIG_SETTING_NAME NEW_CONFIG_VALUE
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt; CONFIG SET CONFIG_SETTING_NAME NEW_CONFIG_VALUE
 
 <span class="m">127</span>.0.0.1:6379&gt; CONFIG SET loglevel <span class="s2">"notice"</span> 
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis 键命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;　DEL key　　             // 删除key
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;　DEL key　　             // 删除key
 <span class="m">127</span>.0.0.1:6379&gt; DUMP key                // 返回存储在指定键的值的序列化版本。
 <span class="m">127</span>.0.0.1:6379&gt; EXISTS key              // 检查键是否存在
 <span class="m">127</span>.0.0.1:6379&gt; EXPIRE key seconds         //   设置键在指定时间秒数之后到期/过期。
@@ -157,11 +157,11 @@ cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span clas
 <span class="m">127</span>.0.0.1:6379&gt; RENAME key newkey        // 重命名一个key
 <span class="m">127</span>.0.0.1:6379&gt; RENAMENX key newkey         // 如果新键不存在，重命名键
 <span class="m">127</span>.0.0.1:6379&gt; TYPE key                   // 返回key的数据类型
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis 字符串命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; SET key value                  // 此命令设置指定键的值。
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt; SET key value                  // 此命令设置指定键的值。
 <span class="m">127</span>.0.0.1:6379&gt; GET key                        // 得到键的值
 <span class="m">127</span>.0.0.1:6379&gt; GETRANGE key start end         // 得到key 上字符串的子串<span class="o">(</span>索引<span class="o">)</span>
 <span class="m">127</span>.0.0.1:6379&gt; GETSET key value                // 先得到旧值,再设置新值
@@ -181,11 +181,11 @@ cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span clas
 <span class="m">127</span>.0.0.1:6379&gt; DECR key                           //  将键的整数值减1
 <span class="m">127</span>.0.0.1:6379&gt; DECRBY key decrement              //  按给定数值减少键的整数值
 <span class="m">127</span>.0.0.1:6379&gt; APPEND key value                 //     将指定值附加到键
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis 哈希命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; HMGET key field1 <span class="o">[</span>field2<span class="o">]</span>                      // 获取所有给定哈希字段的值
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt; HMGET key field1 <span class="o">[</span>field2<span class="o">]</span>                      // 获取所有给定哈希字段的值
 <span class="m">127</span>.0.0.1:6379&gt; HMSET key field1 value1 <span class="o">[</span>field2 value2 <span class="o">]</span>       // 为多个哈希字段分别设置它们的值
 <span class="m">127</span>.0.0.1:6379&gt; HSET key field value                         // 设置散列字段的字符串值
 <span class="m">127</span>.0.0.1:6379&gt; HSETNX key field value                         //   仅当字段不存在时，才设置散列字段的值
@@ -198,11 +198,11 @@ cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span clas
 <span class="m">127</span>.0.0.1:6379&gt; HEXISTS key field                            // 判断是否存在散列字段
 <span class="m">127</span>.0.0.1:6379&gt; HDEL key field2 <span class="o">[</span>field2<span class="o">]</span>                       // 删除一个或多个哈希字段
 <span class="m">127</span>.0.0.1:6379&gt; HVALS key                                   // 获取哈希中的所有值
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis 列表命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; BLPOP key1 <span class="o">[</span>key2 <span class="o">]</span> timeout          // 删除并获取列表中的第一个元素，或阻塞，直到有一个元素可用
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt; BLPOP key1 <span class="o">[</span>key2 <span class="o">]</span> timeout          // 删除并获取列表中的第一个元素，或阻塞，直到有一个元素可用
 <span class="m">127</span>.0.0.1:6379&gt; BRPOP key1 <span class="o">[</span>key2 <span class="o">]</span> timeout           //     删除并获取列表中的最后一个元素，或阻塞，直到有一个元素可用
 <span class="m">127</span>.0.0.1:6379&gt; LINDEX key index                 // 通过其索引从列表获取元素
 <span class="m">127</span>.0.0.1:6379&gt; LLEN key                           //   获取列表的长度
@@ -219,11 +219,11 @@ cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span clas
 <span class="m">127</span>.0.0.1:6379&gt; LTRIM key start stop             // 修剪列表的指定范围
 <span class="m">127</span>.0.0.1:6379&gt; LPUSHX key value                  //仅当列表存在时，才向列表添加值
 <span class="m">127</span>.0.0.1:6379&gt; LRANGE key start stop          // 从列表中获取一系列元素
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis 集合命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;  SADD key member1 <span class="o">[</span>member2<span class="o">]</span>         //将一个或多个成员添加到集合
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;  SADD key member1 <span class="o">[</span>member2<span class="o">]</span>         //将一个或多个成员添加到集合
 <span class="m">127</span>.0.0.1:6379&gt;  SCARD key                           // 获取集合中的成员数
 <span class="m">127</span>.0.0.1:6379&gt;  SDIFF key1 <span class="o">[</span>key2<span class="o">]</span>                    //    减去多个集合
 <span class="m">127</span>.0.0.1:6379&gt;  SDIFFSTORE destination key1 <span class="o">[</span>key2<span class="o">]</span>    // 减去多个集并将结果集存储在键中
@@ -237,11 +237,11 @@ cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span clas
 <span class="m">127</span>.0.0.1:6379&gt;  SUNION key1 <span class="o">[</span>key2<span class="o">]</span>                  // 添加多个集合
 <span class="m">127</span>.0.0.1:6379&gt;  SUNIONSTORE destination key1 <span class="o">[</span>key2<span class="o">]</span>   // 添加多个集并将结果集存储在键中
 <span class="m">127</span>.0.0.1:6379&gt;  SSCAN key cursor <span class="o">[</span>MATCH pattern<span class="o">]</span> <span class="o">[</span>COUNT count<span class="o">]</span>  //     递增地迭代集合中的元素
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis 有序集合(sorted set)</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; ZADD key score1 member1 <span class="o">[</span>score2 member2<span class="o">]</span>       //向有序集合添加一个或多个成员，或者更新已存在成员的分数
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt; ZADD key score1 member1 <span class="o">[</span>score2 member2<span class="o">]</span>       //向有序集合添加一个或多个成员，或者更新已存在成员的分数
 <span class="m">127</span>.0.0.1:6379&gt; ZCARD key                                      // 获取有序集合的成员数
 <span class="m">127</span>.0.0.1:6379&gt; ZCOUNT key min max                             //计算在有序集合中指定区间分数的成员数
 <span class="m">127</span>.0.0.1:6379&gt; ZINCRBY key increment member                   //有序集合中对指定成员的分数加上增量 increment
@@ -261,36 +261,36 @@ cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span clas
 <span class="m">127</span>.0.0.1:6379&gt; ZSCORE key member                               //返回有序集中，成员的分数值
 <span class="m">127</span>.0.0.1:6379&gt; ZUNIONSTORE destination numkeys key <span class="o">[</span>key ...<span class="o">]</span>   //计算给定的一个或多个有序集的并集，并存储在新的 key 中
 <span class="m">127</span>.0.0.1:6379&gt; ZSCAN key cursor <span class="o">[</span>MATCH pattern<span class="o">]</span> <span class="o">[</span>COUNT count<span class="o">]</span>   //迭代有序集合中的元素（包括元素成员和元素分值）
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis HyperLogLog</li>
 </ul>
 <p>HyperLogLog 是做基数统计的算法</p>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; PFADD key element <span class="o">[</span>element ...<span class="o">]</span>               //添加指定元素到 HyperLogLog 中。
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt; PFADD key element <span class="o">[</span>element ...<span class="o">]</span>               //添加指定元素到 HyperLogLog 中。
 <span class="m">127</span>.0.0.1:6379&gt; PFCOUNT key <span class="o">[</span>key ...<span class="o">]</span>.                        //返回给定 HyperLogLog 的基数估算值。
 <span class="m">127</span>.0.0.1:6379&gt; PFMERGE destkey sourcekey <span class="o">[</span>sourcekey ...<span class="o">]</span>     //将多个 HyperLogLog 合并为一个 HyperLogLog
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis 发布订阅</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; PSUBSCRIBE pattern <span class="o">[</span>pattern ...<span class="o">]</span>               //订阅一个或多个符合给定模式的频道。
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt; PSUBSCRIBE pattern <span class="o">[</span>pattern ...<span class="o">]</span>               //订阅一个或多个符合给定模式的频道。
 <span class="m">127</span>.0.0.1:6379&gt; PUBSUB subcommand <span class="o">[</span>argument <span class="o">[</span>argument ...<span class="o">]]</span>    //查看订阅与发布系统状态。
 <span class="m">127</span>.0.0.1:6379&gt; PUBLISH channel message                         //将信息发送到指定的频道。
 <span class="m">127</span>.0.0.1:6379&gt; PUNSUBSCRIBE <span class="o">[</span>pattern <span class="o">[</span>pattern ...<span class="o">]]</span>            //退订所有给定模式的频道。
 <span class="m">127</span>.0.0.1:6379&gt; SUBSCRIBE channel <span class="o">[</span>channel ...<span class="o">]</span>                //订阅给定的一个或多个频道的信息。
 <span class="m">127</span>.0.0.1:6379&gt; UNSUBSCRIBE <span class="o">[</span>channel <span class="o">[</span>channel ...<span class="o">]]</span>            //指退订给定的频道。
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis 事务</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;  DISCARD                //取消事务，放弃执行事务块内的所有命令。
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;  DISCARD                //取消事务，放弃执行事务块内的所有命令。
 <span class="m">127</span>.0.0.1:6379&gt;  EXEC                   //执行所有事务块内的命令。
 <span class="m">127</span>.0.0.1:6379&gt;  MULTI                  //标记一个事务块的开始。
 <span class="m">127</span>.0.0.1:6379&gt;  UNWATCH                //取消 WATCH 命令对所有 key 的监视。
 <span class="m">127</span>.0.0.1:6379&gt;  WATCH key <span class="o">[</span>key ...<span class="o">]</span>    // 监视一个<span class="o">(</span>或多个<span class="o">)</span> key ，如果在事务执行之前这个<span class="o">(</span>或这些<span class="o">)</span> key 被其他命令所改动，那么事务将被打断
-</pre></div>
+</code></pre></div>
 <p>样例</p>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; MULTI
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt; MULTI
 OK
 
 <span class="m">127</span>.0.0.1:6379&gt; SET book-name <span class="s2">"Mastering C++ in 21 days"</span>
@@ -312,17 +312,17 @@ QUEUED
 <span class="m">4</span><span class="o">)</span> <span class="m">1</span><span class="o">)</span> <span class="s2">"Mastering Series"</span>
    <span class="m">2</span><span class="o">)</span> <span class="s2">"C++"</span>
    <span class="m">3</span><span class="o">)</span> <span class="s2">"Programming"</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Redis脚本</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;  EVAL script numkeys key <span class="o">[</span>key ...<span class="o">]</span> arg <span class="o">[</span>arg ...<span class="o">]</span>    //执行 Lua 脚本。
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;  EVAL script numkeys key <span class="o">[</span>key ...<span class="o">]</span> arg <span class="o">[</span>arg ...<span class="o">]</span>    //执行 Lua 脚本。
 <span class="m">127</span>.0.0.1:6379&gt;     EVALSHA sha1 numkeys key <span class="o">[</span>key ...<span class="o">]</span> arg <span class="o">[</span>arg ...<span class="o">]</span>   //执行 Lua 脚本。
 <span class="m">127</span>.0.0.1:6379&gt;     SCRIPT EXISTS script <span class="o">[</span>script ...<span class="o">]</span> 查看指定的脚本是否已经被保存在缓存当中。
 <span class="m">127</span>.0.0.1:6379&gt;     SCRIPT FLUSH 从脚本缓存中移除所有脚本。
 <span class="m">127</span>.0.0.1:6379&gt;     SCRIPT KILL 杀死当前正在运行的 Lua 脚本。
 <span class="m">127</span>.0.0.1:6379&gt;     SCRIPT LOAD script    将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本。
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
