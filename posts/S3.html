@@ -181,24 +181,24 @@ ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/ppolicy.ldif
 
 
 
-<span class="c1"># 修改域名，新增changedomain.ldif, 这里我自定义的域名为 yaobili.com，管理员用户账号为admin。</span>
-<span class="c1"># 如果要修改，则修改文件中相应的dc=yaobili,dc=com为自己的域名</span>
+<span class="c1"># 修改域名，新增changedomain.ldif, 这里我自定义的域名为 njcx.com，管理员用户账号为admin。</span>
+<span class="c1"># 如果要修改，则修改文件中相应的dc=njcx,dc=com为自己的域名</span>
 vim changedomain.ldif
 -------------------------------------------------------------------------
 dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">1</span><span class="o">}</span>monitor,cn<span class="o">=</span>config
 changetype: modify
 replace: olcAccess
-olcAccess: <span class="o">{</span><span class="m">0</span><span class="o">}</span>to * by dn.base<span class="o">=</span><span class="s2">"gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth"</span> <span class="nb">read</span> by dn.base<span class="o">=</span><span class="s2">"cn=admin,dc=yaobili,dc=com"</span> <span class="nb">read</span> by * none
+olcAccess: <span class="o">{</span><span class="m">0</span><span class="o">}</span>to * by dn.base<span class="o">=</span><span class="s2">"gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth"</span> <span class="nb">read</span> by dn.base<span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span> <span class="nb">read</span> by * none
 
 dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
 changetype: modify
 replace: olcSuffix
-olcSuffix: <span class="nv">dc</span><span class="o">=</span>yaobili,dc<span class="o">=</span>com
+olcSuffix: <span class="nv">dc</span><span class="o">=</span>njcx,dc<span class="o">=</span>com
 
 dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
 changetype: modify
 replace: olcRootDN
-olcRootDN: <span class="nv">cn</span><span class="o">=</span>admin,dc<span class="o">=</span>yaobili,dc<span class="o">=</span>com
+olcRootDN: <span class="nv">cn</span><span class="o">=</span>admin,dc<span class="o">=</span>njcx,dc<span class="o">=</span>com
 
 dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
 changetype: modify
@@ -208,9 +208,9 @@ olcRootPW: <span class="o">{</span>SSHA<span class="o">}</span>LSgYPTUW4zjGtIVtu
 dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
 changetype: modify
 add: olcAccess
-olcAccess: <span class="o">{</span><span class="m">0</span><span class="o">}</span>to <span class="nv">attrs</span><span class="o">=</span>userPassword,shadowLastChange by <span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=yaobili,dc=com"</span> write by anonymous auth by self write by * none
+olcAccess: <span class="o">{</span><span class="m">0</span><span class="o">}</span>to <span class="nv">attrs</span><span class="o">=</span>userPassword,shadowLastChange by <span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span> write by anonymous auth by self write by * none
 olcAccess: <span class="o">{</span><span class="m">1</span><span class="o">}</span>to dn.base<span class="o">=</span><span class="s2">""</span> by * <span class="nb">read</span>
-olcAccess: <span class="o">{</span><span class="m">2</span><span class="o">}</span>to * by <span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=yaobili,dc=com"</span> write by * <span class="nb">read</span>
+olcAccess: <span class="o">{</span><span class="m">2</span><span class="o">}</span>to * by <span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span> write by * <span class="nb">read</span>
 -------------------------------------------------------------------------
 
 
@@ -266,42 +266,42 @@ ldapmodify -Y EXTERNAL -H ldapi:/// -f changedomain.ldif
 <span class="c">ldapadd </span><span class="nb">-</span><span class="c">Q </span><span class="nb">-</span><span class="c">Y EXTERNAL </span><span class="nb">-</span><span class="c">H ldapi:/// </span><span class="nb">-</span><span class="c">f refint2</span><span class="nt">.</span><span class="c">ldif</span>
 <span class="c">————————————————</span>
 </code></pre></div>
-<p>到此，配置修改完了，在上述基础上，我们来创建一个叫做 yaobili company 的组织，并在其下创建一个 admin 的组织角色（该组织角色内的用户具有管理整个 LDAP 的权限）和 People 和 Group 两个组织单元：</p>
+<p>到此，配置修改完了，在上述基础上，我们来创建一个叫做 njcx company 的组织，并在其下创建一个 admin 的组织角色（该组织角色内的用户具有管理整个 LDAP 的权限）和 People 和 Group 两个组织单元：</p>
 <div class="highlight"><pre><span></span><code># 新增配置文件
 vim base.ldif
 ----------------------------------------------------------
-dn: dc=yaobili,dc=com
+dn: dc=njcx,dc=com
 objectClass: top
 objectClass: dcObject
 objectClass: organization
-o: Yaobili Company
-dc: yaobili
+o: njcx Company
+dc: njcx
 
-dn: cn=admin,dc=yaobili,dc=com
+dn: cn=admin,dc=njcx,dc=com
 objectClass: organizationalRole
 cn: admin
 
-dn: ou=People,dc=yaobili,dc=com
+dn: ou=People,dc=njcx,dc=com
 objectClass: organizationalUnit
 ou: People
 
-dn: ou=Group,dc=yaobili,dc=com
+dn: ou=Group,dc=njcx,dc=com
 objectClass: organizationalRole
 cn: Group
 ----------------------------------------------------------
 # 执行命令，添加配置, 这里要注意修改域名为自己配置的域名，然后需要输入上面我们生成的密码
-ldapadd -x -D cn=admin,dc=yaobili,dc=com -W -f base.ldif
+ldapadd -x -D cn=admin,dc=njcx,dc=com -W -f base.ldif
 ————————————————
 </code></pre></div>
-<p>通过以上的所有步骤，我们就设置好了一个 LDAP 目录树：其中基准 dc=yaobili,dc=com 是该树的根节点，其下有一个管理域 cn=admin,dc=yaobili,dc=com 和两个组织单元 ou=People,dc=yaobili,dc=com 及 ou=Group,dc=yaobili,dc=com。</p>
+<p>通过以上的所有步骤，我们就设置好了一个 LDAP 目录树：其中基准 dc=njcx,dc=com 是该树的根节点，其下有一个管理域 cn=admin,dc=njcx,dc=com 和两个组织单元 ou=People,dc=njcx,dc=com 及 ou=Group,dc=njcx,dc=com。</p>
 <p>打通 radius 和 ldap</p>
 <p>/etc/raddb/mods-available/ldap文件</p>
 <div class="highlight"><pre><span></span><code>ldap <span class="o">{</span>
-    <span class="nv">server</span> <span class="o">=</span> <span class="s1">'192.168.236.30'</span>
+    <span class="nv">server</span> <span class="o">=</span> <span class="s1">'111.111.111.111'</span>
     <span class="nv">port</span> <span class="o">=</span> <span class="m">389</span>
-    <span class="nv">identity</span> <span class="o">=</span> <span class="s1">'cn=Manager,dc=alex,dc=localhost'</span>
-    <span class="nv">password</span> <span class="o">=</span> <span class="m">111111</span>
-    <span class="nv">base_dn</span> <span class="o">=</span> <span class="s1">'dc=alex,dc=localhost'</span>
+    <span class="nv">identity</span> <span class="o">=</span> <span class="s1">'ou=People,dc=njcx,dc=com'</span>
+    <span class="nv">password</span> <span class="o">=</span> <span class="m">123456</span>
+    <span class="nv">base_dn</span> <span class="o">=</span> <span class="s1">'dc=njcx,dc=com'</span>
     sasl <span class="o">{</span>
     <span class="o">}</span>
     update <span class="o">{</span>
