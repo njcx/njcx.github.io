@@ -131,17 +131,17 @@ cgroup.procs  记录受限PID
 cpu.cfs_period_us：cpu分配的周期(微秒），默认为100000。
 cpu.cfs_quota_us：表示该control group限制占用的时间（微秒），默认为-1，表示不限制。</p>
 <p>如果要限制CPU 使用5% ，cpu.cfs_quota_us 写入5000。</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span> <span class="m">5000</span> &gt;  /sys/fs/cgroup/cpu/test1/cpu.cfs_quota_us 
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">5000</span> &gt;  /sys/fs/cgroup/cpu/test1/cpu.cfs_quota_us 
+</pre></div>
 <p>然后，把受限进程pid写入cgroup.procs文件中，即可完成对该进程限制CPU 使用5%，当进程CPU使用超过%5就会被系统kill。当进程退出，cgroup.procs以及tasks会清除相关pid的记录。</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span> <span class="m">1234</span>  &gt;  /sys/fs/cgroup/cpu/test1/cgroup.procs
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">1234</span>  &gt;  /sys/fs/cgroup/cpu/test1/cgroup.procs
+</pre></div>
 <h4>使用cgroups限制内存使用</h4>
 <p>测试系统： CentOS7 ，内核版本 3.10.0-1062.18.1.el7.x86_64，cgroup v1</p>
 <p>首先进入cpu子系统对应的层级路径下：cd /sys/fs/cgroup/memory
 通过新建文件夹创建一个内存控制族群：mkdir test1，即新建了一个内存控制族群：test1
 新建test1之后，可以看到目录下自动建立了相关的文件，这些文件是伪文件。</p>
-<div class="highlight"><pre><span></span><code>$ ls -la /sys/fs/cgroup/memory/test1
+<div class="highlight"><pre><span></span>$ ls -la /sys/fs/cgroup/memory/test1
 
 cgroup.clone_children  memory.kmem.limit_in_bytes          memory.kmem.tcp.usage_in_bytes  memory.memsw.max_usage_in_bytes  memory.soft_limit_in_bytes  tasks
 cgroup.event_control   memory.kmem.max_usage_in_bytes      memory.kmem.usage_in_bytes      memory.memsw.usage_in_bytes      memory.stat
@@ -149,7 +149,7 @@ cgroup.procs           memory.kmem.slabinfo                memory.limit_in_bytes
 memory.failcnt         memory.kmem.tcp.failcnt             memory.max_usage_in_bytes       memory.numa_stat                 memory.usage_in_bytes
 memory.force_empty     memory.kmem.tcp.limit_in_bytes      memory.memsw.failcnt            memory.oom_control               memory.use_hierarchy
 memory.kmem.failcnt    memory.kmem.tcp.max_usage_in_bytes  memory.memsw.limit_in_bytes     memory.pressure_level            notify_on_release
-</code></pre></div>
+</pre></div>
 <p>主要配置含义：</p>
 <ul>
 <li>cgroup.procs: 使用该组配置的进程列表。</li>
@@ -162,19 +162,19 @@ memory.kmem.failcnt    memory.kmem.tcp.max_usage_in_bytes  memory.memsw.limit_in
 </ul>
 <p>假设有进程 pid 1234，希望设置内存限制为 10MB，我们可以这样操作：</p>
 <p>limit_in_bytes 设置为 10MB</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span> <span class="s2">"10*1024*1024"</span> <span class="p">|</span> bc &gt; /sys/fs/cgroup/memory/test1/memory.limit_in_bytes
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">"10*1024*1024"</span> <span class="p">|</span> bc &gt; /sys/fs/cgroup/memory/test1/memory.limit_in_bytes
+</pre></div>
 <p>swappiness 设置为 0，表示禁用交换分区，实际生产中可以配置合适的比例。</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span> <span class="m">0</span> &gt; /sys/fs/cgroup/memory/test1/memory.swappiness
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">0</span> &gt; /sys/fs/cgroup/memory/test1/memory.swappiness
+</pre></div>
 <p>添加控制进程pid,当进程 1234 使用内存超过 10MB 的时候，默认进程 1234 会触发 OOM，被系统 Kill 掉。</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span> <span class="m">1234</span> &gt; /sys/fs/cgroup/memory/test1/cgroup.procs
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">1234</span> &gt; /sys/fs/cgroup/memory/test1/cgroup.procs
+</pre></div>
 <h4>使用cgroups限制HIDS-Agent的cpu和内存</h4>
 <p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。</p>
 <p>agent 支持安装成系统服务，直接亮代码：</p>
 <p>test1-master.go</p>
-<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">main</span>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="p">(</span>
     <span class="s">"fmt"</span>
@@ -366,9 +366,9 @@ memory.kmem.failcnt    memory.kmem.tcp.max_usage_in_bytes  memory.memsw.limit_in
         <span class="k">go</span> <span class="nx">runner</span><span class="p">()</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div>
+</pre></div>
 <p>test1-agent</p>
-<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">main</span>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
 <span class="kn">import</span> <span class="p">(</span>
     <span class="s">"test1/app"</span>
 <span class="p">)</span>
@@ -376,10 +376,10 @@ memory.kmem.failcnt    memory.kmem.tcp.max_usage_in_bytes  memory.memsw.limit_in
     <span class="kd">var</span> <span class="nx">agent</span> <span class="nx">app</span><span class="p">.</span><span class="nx">Agent</span>
     <span class="nx">agent</span><span class="p">.</span><span class="nx">Run</span><span class="p">()</span>
 <span class="p">}</span>
-</code></pre></div>
+</pre></div>
 <h4>cgroups 挂载问题</h4>
 <p>测试发现很多Ubuntu 机器开机没有挂载cgroupfs，下面提供一个挂载脚本</p>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
 <span class="nb">set</span> -e
 
 <span class="k">if</span> grep -v <span class="s1">'^#'</span> /etc/fstab <span class="p">|</span> grep -q cgroup<span class="p">;</span> <span class="k">then</span>
@@ -393,7 +393,7 @@ memory.kmem.failcnt    memory.kmem.tcp.max_usage_in_bytes  memory.memsw.limit_in
 
 mountpoint -q /sys/fs/cgroup <span class="o">||</span> mount -t tmpfs -o <span class="nv">uid</span><span class="o">=</span><span class="m">0</span>,gid<span class="o">=</span><span class="m">0</span>,mode<span class="o">=</span><span class="m">0755</span> cgroup /sys/fs/cgroup
 
-<span class="k">for</span> d <span class="k">in</span> <span class="sb">`</span>tail -n +2 /proc/cgroups <span class="p">|</span> awk <span class="s1">'{</span>
+<span class="k">for</span> d in <span class="sb">`</span>tail -n +2 /proc/cgroups <span class="p">|</span> awk <span class="s1">'{</span>
 <span class="s1">        if ($2 == 0)</span>
 <span class="s1">                print $1</span>
 <span class="s1">        else if (a[$2])</span>
@@ -417,7 +417,7 @@ mountpoint -q /sys/fs/cgroup <span class="o">||</span> mount -t tmpfs -o <span c
 
 <span class="nb">echo</span> <span class="s2">"Cgroupfs successfully mounted"</span>
 <span class="nb">exit</span> <span class="m">0</span>
-</code></pre></div>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

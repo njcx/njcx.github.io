@@ -104,18 +104,18 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>安装</h4>
 <p>gitlab 分为收费和免费的社区版，新建 /etc/yum.repos.d/gitlab-ce.repo，内容如下</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>gitlab-ce<span class="o">]</span>
+<div class="highlight"><pre><span></span><span class="o">[</span>gitlab-ce<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>Gitlab CE Repository
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el<span class="nv">$releasever</span>/
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">enabled</span><span class="o">=</span><span class="m">1</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1"># yum makecache</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1"># yum makecache</span>
 <span class="c1"># yum install gitlab-ce</span>
-</code></pre></div>
+</pre></div>
 <h4>配置</h4>
-<div class="highlight"><pre><span></span><code>vim /etc/gitlab/gitlab.rb
-</code></pre></div>
+<div class="highlight"><pre><span></span>vim /etc/gitlab/gitlab.rb
+</pre></div>
 <p>external_url 'https://gitlab.xxx.com'</p>
 <p>改为ip 或者域名</p>
 <h4>遇到的问题</h4>

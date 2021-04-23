@@ -102,12 +102,12 @@ var _hmt = _hmt || [];
     </ul>
   </header>
   <div class="content">
-    <div class="highlight"><pre><span></span><code><span class="c1">#coding='utf-8'</span>
+    <div class="highlight"><pre><span></span><span class="c1">#coding='utf-8'</span>
 <span class="kn">import</span> <span class="nn">urllib2</span>
 <span class="kn">import</span> <span class="nn">pdfkit</span>
 <span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
+<span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span> <span class="s2">"utf-8"</span> <span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">download</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">numretries</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="p">:</span>
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
     <span class="k">try</span><span class="p">:</span>
         <span class="n">html</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">URLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">html</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">numretries</span> <span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="s1">'code'</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">500</span><span class="o">&lt;=</span> <span class="n">e</span><span class="o">.</span><span class="n">code</span><span class="o">&lt;=</span><span class="mi">600</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">numretries</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -150,7 +150,7 @@ var _hmt = _hmt || [];
 <span class="k">def</span> <span class="nf">save_pdf</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="n">urls</span> <span class="o">=</span> <span class="n">get_url_list</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">htmls</span><span class="o">=</span><span class="p">[]</span>
-    <span class="nb">print</span> <span class="s1">'下载ing'</span>
+    <span class="k">print</span> <span class="s1">'下载ing'</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">urls</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">+</span><span class="s1">'.html'</span>
         <span class="n">parse_url_to_html</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
@@ -163,13 +163,13 @@ var _hmt = _hmt || [];
             <span class="p">(</span><span class="s1">'Accept-Encoding'</span><span class="p">,</span> <span class="s1">'gzip'</span><span class="p">)</span>
         <span class="p">]</span>
     <span class="p">}</span>
-    <span class="nb">print</span> <span class="s1">'下载结束'</span>
+    <span class="k">print</span> <span class="s1">'下载结束'</span>
     <span class="n">pdfkit</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">htmls</span><span class="p">,</span> <span class="s1">'first.pdf'</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
      <span class="n">save_pdf</span><span class="p">(</span><span class="s1">'http://www.ruanyifeng.com/blog/computer/'</span><span class="p">)</span>
-</code></pre></div>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

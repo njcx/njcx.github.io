@@ -107,15 +107,15 @@ var _hmt = _hmt || [];
 <h4>安装</h4>
 <p>版本 ：spark-2.3.2,jdk-8u181,scala-2.12.6</p>
 <p>目录 : /opt</p>
-<div class="highlight"><pre><span></span><code>wget https://downloads.lightbend.com/scala/2.12.6/scala-2.12.6.tgz
+<div class="highlight"><pre><span></span>wget https://downloads.lightbend.com/scala/2.12.6/scala-2.12.6.tgz
 
 https://mirrors.aliyun.com/apache/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz
 
 wget http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz
-</code></pre></div>
+</pre></div>
 <p>tar -zxvf spark-2.3.2-bin-hadoop2.7.tgz &amp;&amp; tar -zxvf jdk-8u181-linux-x64.tar.gz &amp;&amp; tar -zxvf scala-2.12.6.tgz</p>
 <p>配置环境变量</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span> -e <span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> -e <span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
 <span class="s2">export JRE_HOME=\${JAVA_HOME}/jre \n\</span>
 <span class="s2">export CLASSPATH=.:\${JAVA_HOME}/lib:\${JRE_HOME}/lib \n\</span>
 <span class="s2">export PATH=\${JAVA_HOME}/bin:\$PATH \n\</span>
@@ -123,17 +123,17 @@ wget http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96
 <span class="s2">export SCALA_HOME=/opt/scala-2.12.6 \n\</span>
 <span class="s2">export PATH=\$PATH:\$SCALA_HOME/bin \n\</span>
 <span class="s2">"</span> &gt;&gt; /etc/profile <span class="o">&amp;&amp;</span> <span class="nb">source</span> /etc/profile
-</code></pre></div>
+</pre></div>
 <p>然后再把spark 添加到环境变量里面</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
-</code></pre></div>
+</pre></div>
 <h4>配置</h4>
-<div class="highlight"><pre><span></span><code>cp spark-env.sh.template spark-env.sh
+<div class="highlight"><pre><span></span>cp spark-env.sh.template spark-env.sh
 　
-</code></pre></div>
+</pre></div>
 <p>vim spark-env.sh</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/opt/jdk1.8.0_181
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/opt/jdk1.8.0_181
 <span class="nb">export</span> <span class="nv">SCALA_HOME</span><span class="o">=</span>/opt/scala-2.12.6
 <span class="nb">export</span> <span class="nv">HADOOP_HOME</span><span class="o">=</span>/opt/hadoop-2.7.7/
 <span class="nb">export</span> <span class="nv">HADOOP_CONF_DIR</span><span class="o">=</span>/opt/hadoop-2.7.7/etc/hadoop
@@ -144,25 +144,25 @@ wget http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96
 <span class="nb">export</span> <span class="nv">SPARK_WORKER_CORES</span><span class="o">=</span><span class="m">2</span>
 <span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
 <span class="nb">export</span> <span class="nv">SPARK_DIST_CLASSPATH</span><span class="o">=</span><span class="k">$(</span>/opt/hadoop-2.7.7/bin/hadoop classpath<span class="k">)</span>
-</code></pre></div>
+</pre></div>
 <p>cp slaves.template slaves</p>
-<div class="highlight"><pre><span></span><code>Master
+<div class="highlight"><pre><span></span>Master
 Slave1
 Slave2
-</code></pre></div>
+</pre></div>
 <p>scp -r  spark-2.3.2-bin-hadoop2.7 root@192.168.1.108:/opt</p>
 <p>scp -r  spark-2.3.2-bin-hadoop2.7 root@192.168.1.107:/opt</p>
 <p>然后在Slave1 ，Slave2上添加 spark的环境变量</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
-</code></pre></div>
+</pre></div>
 <p>并且在 slave1 和 slave2 上修改spark-env.sh “export SPARK_LOCAL_IP=” 为本机ip。</p>
 <p>启动 /sbin/start-all.sh</p>
 <p>jps 验证</p>
-<div class="highlight"><pre><span></span><code><span class="m">5809</span> Jps
+<div class="highlight"><pre><span></span><span class="m">5809</span> Jps
 <span class="m">5749</span> Worker
 <span class="m">1882</span> DataNode
-</code></pre></div>
+</pre></div>
 <p>有个Worker即为成功</p>
   </div>
 </article>

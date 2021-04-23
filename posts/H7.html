@@ -105,7 +105,7 @@ var _hmt = _hmt || [];
     <h4>安装</h4>
 <p>bro的安装参照<a href="https://www.njcx.bid/posts/H11.html">bro安装</a></p>
 <p>编译 librdkafka</p>
-<div class="highlight"><pre><span></span><code>二选一
+<div class="highlight"><pre><span></span>二选一
 
 <span class="c1"># wget https://github.com/edenhill/librdkafka/archive/v0.11.5.tar.gz</span>
 
@@ -115,38 +115,38 @@ var _hmt = _hmt || [];
 
 
 <span class="c1"># yum install librdkafka  librdkafka-devel -y</span>
-</code></pre></div>
+</pre></div>
 <p>把bro 添加到环境变量  （/etc/profile）</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">BRO_HOME</span><span class="o">=</span>/opt/bro
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">BRO_HOME</span><span class="o">=</span>/opt/bro
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$BRO_HOME</span>/bin
-</code></pre></div>
+</pre></div>
 <p>注意：</p>
 <p>bro-2.5.5.tar.gz  解压后的源码目录不要删除，后面有用</p>
-<div class="highlight"><pre><span></span><code><span class="c1">#  pip install zkg</span>
+<div class="highlight"><pre><span></span><span class="c1">#  pip install zkg</span>
 <span class="c1">#  zkg autoconfig</span>
-</code></pre></div>
+</pre></div>
 <p>bro-pkg 是bro的包管理器，在包安装的过程中，会依赖bro源码目录，不然某些bro插件安装会报错</p>
 <p>安装metron-bro-plugin-kafka插件</p>
-<div class="highlight"><pre><span></span><code><span class="c1">#  zkg install apache/metron-bro-plugin-kafka --version master</span>
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="c1">#  zkg install apache/metron-bro-plugin-kafka --version master</span>
+</pre></div>
 <p>编译 bro 的 kafka插件</p>
-<div class="highlight"><pre><span></span><code><span class="c1">#cd bro-2.5.5/aux/plugins/kafka/</span>
+<div class="highlight"><pre><span></span><span class="c1">#cd bro-2.5.5/aux/plugins/kafka/</span>
 <span class="c1"># ./configure --bro-dist=../../.. --install-root=/opt/bro/lib/bro/plugins</span>
 <span class="c1"># make &amp;&amp; make install</span>
-</code></pre></div>
+</pre></div>
 <p>测试</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># bro -N Bro::Kafka</span>
+<div class="highlight"><pre><span></span><span class="c1"># bro -N Bro::Kafka</span>
 Bro::Kafka - Writes logs to Kafka <span class="o">(</span>dynamic, version <span class="m">0</span>.1<span class="o">)</span>
-</code></pre></div>
+</pre></div>
 <h4>配置</h4>
-<div class="highlight"><pre><span></span><code>@load Bro/Kafka/logs-to-kafka.bro
+<div class="highlight"><pre><span></span>@load Bro/Kafka/logs-to-kafka.bro
 redef Kafka::logs_to_send <span class="o">=</span> set<span class="o">(</span>Conn::LOG, HTTP::LOG<span class="o">)</span><span class="p">;</span>
 redef Kafka::kafka_conf <span class="o">=</span> table<span class="o">(</span>
     <span class="o">[</span><span class="s2">"metadata.broker.list"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"localhost:9092"</span>
 <span class="o">)</span><span class="p">;</span>
 redef Kafka::topic_name <span class="o">=</span> <span class="s2">"bro"</span><span class="p">;</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>@load Apache/Kafka
+</pre></div>
+<div class="highlight"><pre><span></span>@load Apache/Kafka
 
 redef Kafka::logs_to_send <span class="o">=</span> set<span class="o">(</span>Conn::LOG, DNS::LOG, SSH::LOG,SNMP::LOG, SMTP::LOG, mysql::LOG, NTLM::LOG, HTTP::LOG<span class="o">)</span><span class="p">;</span>
 
@@ -232,13 +232,13 @@ event bro_init<span class="o">()</span> <span class="p">&amp;</span><span class=
     Log::add_filter<span class="o">(</span>SNMP::LOG, snmp_filter<span class="o">)</span><span class="p">;</span>
 
 <span class="o">}</span>
-</code></pre></div>
+</pre></div>
 <p>启动</p>
-<div class="highlight"><pre><span></span><code><span class="c1">#./broctl deploy</span>
+<div class="highlight"><pre><span></span><span class="c1">#./broctl deploy</span>
 <span class="c1">#./broctl start</span>
-</code></pre></div>
+</pre></div>
 <h4>测试</h4>
-<div class="highlight"><pre><span></span><code><span class="c1">#./ kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bro</span>
+<div class="highlight"><pre><span></span><span class="c1">#./ kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bro</span>
 
 创建 bro topic
 
@@ -257,7 +257,7 @@ event bro_init<span class="o">()</span> <span class="p">&amp;</span><span class=
 <span class="c1"># ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic bro --from-beginning (新版本kafka .90版本之后)</span>
 
 创建消费者（新版本）  
-</code></pre></div>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

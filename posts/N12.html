@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
-<div class="highlight"><pre><span></span><code> git clone https://github.com/ntop/PF_RING.git 
+<div class="highlight"><pre><span></span> git clone https://github.com/ntop/PF_RING.git 
  <span class="nb">cd</span> PF_RING-7.4.0-stable/
  yum install numactl-devel libnuma-dev
  <span class="nv">UNAME</span><span class="o">=</span><span class="k">$(</span>uname -r<span class="k">)</span>
@@ -118,16 +118,16 @@ var _hmt = _hmt || [];
  ethtool -i eno5
  dmesg <span class="p">|</span> grep Ethernet
  cat /proc/net/pf_ring/infocat /proc/net/pf_ring/info
-</code></pre></div>
+</pre></div>
 <p>到这里PF_RING模块，以及网卡驱动已经安装好了</p>
 <p>然后 </p>
-<div class="highlight"><pre><span></span><code><span class="c1"># yum remove libpcap  libpcap-devel </span>
+<div class="highlight"><pre><span></span><span class="c1"># yum remove libpcap  libpcap-devel </span>
 <span class="c1"># cd PF_RING-7.4.0-stable/userland/libpcap</span>
 <span class="c1"># make install</span>
-</code></pre></div>
+</pre></div>
 <p>安装高版本Packetbeat，</p>
-<div class="highlight"><pre><span></span><code>packetbeat.interfaces.type: pcap
-</code></pre></div>
+<div class="highlight"><pre><span></span>packetbeat.interfaces.type: pcap
+</pre></div>
 <p>即可</p>
   </div>
 </article>
