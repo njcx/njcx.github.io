@@ -169,6 +169,34 @@ BPF_MAP_TYPE_DEVICE_MAP：用于存储和查找网络设备引用
 BPF_MAP_TYPE_SOCKET_MAP：存储和查找套接字，并允许使用BPF辅助函数进行套接字重定向
 </pre></div>
 <p>可以使用bpf_map_lookup_elem（）和 bpf_map_update_elem（）函数从eBPF或用户空间程序访问所有Map.</p>
+<p>使用 man bpf 查看 bpf 系统调用，int bpf(int cmd, union bpf_attr *attr, unsigned int size)</p>
+<div class="highlight"><pre><span></span>BPF_MAP_CREATE： 创建一个 map，并返回一个 fd，指向这个 map，这个 map 在 bpf 是非常重要的数据结构，用于 bpf 程序在内核态和用户态之间相互通信。
+BPF_MAP_LOOKUP_ELEM： 在给定一个 map 中查询一个元素，并返回其值
+BPF_MAP_UPDATE_ELEM： 在给定的 map 中创建或更新一个元素<span class="o">(</span>关于 key/value 的键值对<span class="o">)</span>
+BPF_MAP_DELETE_ELEM
+BPF_MAP_GET_NEXT_KEY： 在一个特定的 map 中根据 key 值查找到一个元素，并返回这个 key 对应的下一个元素
+BPF_PROG_LOAD： 验证并加载一个 bpf 程序。并返回与这个程序关联的 fd。本文分析只关注这个 cmd。
+</pre></div>
+<p>bpf_attr：第 2 个参数</p>
+<p>该参数的类型取决于 cmd 参数的值，本文只分析 cmd=BPF_PROG_LOAD 这种情况，其中 prog_type 指定了 bpf 程序类型，eBPF 程序支持 attach 到不同的 event 上，比如 Kprobe，UProbe，tracepoint，Network packets，perf event 等。</p>
+<p>比如,cmd=BPF_PROG_LOAD 使用，如下：</p>
+<div class="highlight"><pre><span></span>struct <span class="o">{</span>    /* Used by BPF_PROG_LOAD */
+    __u32   prog_type<span class="p">;</span>  //设置为 <span class="sb">`</span>BPF_PROG_TYPE_KPROBE<span class="sb">`</span>，表示是通过 kprobe 注入到内核函数。
+    __u32   insn_cnt<span class="p">;</span>
+    __aligned_u64 insns<span class="p">;</span>      /* <span class="s1">'const struct bpf_insn *'</span> */
+    __aligned_u64 license<span class="p">;</span>    // 指定 license
+    __u32   log_level<span class="p">;</span>  /* verbosity level of verifier */
+    __u32   log_size<span class="p">;</span>   /* size of user buffer */
+    __aligned_u64 log_buf<span class="p">;</span>    // 用户buff
+
+    __u32   kern_version<span class="p">;</span>
+    /* checked when <span class="nv">prog_type</span><span class="o">=</span>kprobe
+    <span class="o">(</span>since Linux <span class="m">4</span>.1<span class="o">)</span> */
+<span class="o">}</span><span class="p">;</span>
+size：第三个参数
+
+表示上述 bpf_attr 字节大小。
+</pre></div>
 <p>demo 是在kali Linux 上开发的。环境搭建比较简单，</p>
 <div class="highlight"><pre><span></span>apt-get install golang clang llvm 
 </pre></div>
