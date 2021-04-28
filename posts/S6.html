@@ -450,6 +450,178 @@ R10对应rbp，只读栈帧寄存器
 <span class="c1">// Code is licensed under Apache 2.0 which is GPL compatible.</span>
 <span class="kt">char</span> <span class="n">_license</span><span class="p">[]</span> <span class="n">SEC</span><span class="p">(</span><span class="s">"license"</span><span class="p">)</span> <span class="o">=</span> <span class="s">"GPL"</span><span class="p">;</span>
 </pre></div>
+<p>bpf_helpers.h 文件</p>
+<div class="highlight"><pre><span></span><span class="cp">#define SEC(NAME) __attribute__((section(NAME), used))</span>
+
+<span class="cp">#define printt(fmt, ...)                                                   \</span>
+<span class="cp">        ({                                                                 \</span>
+<span class="cp">                char ____fmt[] = fmt;                                      \</span>
+<span class="cp">                bpf_trace_printk(____fmt, sizeof(____fmt), ##__VA_ARGS__); \</span>
+<span class="cp">        })</span>
+
+<span class="cm">/* helper functions called from eBPF programs written in C */</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">bpf_map_lookup_elem</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">map</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_map_lookup_elem</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_map_update_elem</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">map</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">value</span><span class="p">,</span>
+                                  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">flags</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_map_update_elem</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_map_delete_elem</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">map</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_map_delete_elem</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_probe_read</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">unsafe_ptr</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_probe_read</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">long</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_ktime_get_ns</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_ktime_get_ns</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_trace_printk</span><span class="p">)(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fmt_size</span><span class="p">,</span> <span class="p">...)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_trace_printk</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">long</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_get_smp_processor_id</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_get_smp_processor_id</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">long</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_get_current_pid_tgid</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_get_current_pid_tgid</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">long</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_get_current_uid_gid</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_get_current_uid_gid</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_get_current_comm</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">buf_size</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_get_current_comm</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_perf_event_read</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">map</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_perf_event_read</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_clone_redirect</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ifindex</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_clone_redirect</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_redirect</span><span class="p">)(</span><span class="kt">int</span> <span class="n">ifindex</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_redirect</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_perf_event_output</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">map</span><span class="p">,</span>
+                                    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">flags</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span>
+                                    <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_perf_event_output</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_skb_get_tunnel_key</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_skb_get_tunnel_key</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_skb_set_tunnel_key</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_skb_set_tunnel_key</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">long</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_get_prandom_u32</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_get_prandom_u32</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_current_task_under_cgroup</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">map</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_current_task_under_cgroup</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">bpf_get_current_task</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_get_current_task</span><span class="p">;</span>
+
+<span class="cm">/* llvm builtin functions that eBPF C program may use to</span>
+<span class="cm"> * emit BPF_LD_ABS and BPF_LD_IND instructions</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="n">sk_buff</span><span class="p">;</span>
+<span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="nf">load_byte</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">skb</span><span class="p">,</span>
+                             <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">off</span><span class="p">)</span> <span class="k">asm</span><span class="p">(</span><span class="s">"llvm.bpf.load.byte"</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="nf">load_half</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">skb</span><span class="p">,</span>
+                             <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">off</span><span class="p">)</span> <span class="k">asm</span><span class="p">(</span><span class="s">"llvm.bpf.load.half"</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="nf">load_word</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">skb</span><span class="p">,</span>
+                             <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">off</span><span class="p">)</span> <span class="k">asm</span><span class="p">(</span><span class="s">"llvm.bpf.load.word"</span><span class="p">);</span>
+
+<span class="cm">/* a helper structure used by eBPF C program</span>
+<span class="cm"> * to describe map attributes to elf_bpf loader</span>
+<span class="cm"> */</span>
+<span class="cp">#define BUF_SIZE_MAP_NS 256</span>
+
+<span class="k">struct</span> <span class="n">bpf_map_def</span> <span class="p">{</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">key_size</span><span class="p">;</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">value_size</span><span class="p">;</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">max_entries</span><span class="p">;</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">map_flags</span><span class="p">;</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">pinning</span><span class="p">;</span>
+        <span class="kt">char</span> <span class="n">namespace</span><span class="p">[</span><span class="n">BUF_SIZE_MAP_NS</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_skb_store_bytes</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">off</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">from</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_skb_store_bytes</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_l3_csum_replace</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">off</span><span class="p">,</span> <span class="kt">int</span> <span class="n">from</span><span class="p">,</span> <span class="kt">int</span> <span class="n">to</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_l3_csum_replace</span><span class="p">;</span>
+<span class="k">static</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">bpf_l4_csum_replace</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">off</span><span class="p">,</span> <span class="kt">int</span> <span class="n">from</span><span class="p">,</span> <span class="kt">int</span> <span class="n">to</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span> <span class="o">=</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">BPF_FUNC_l4_csum_replace</span><span class="p">;</span>
+
+<span class="cp">#if defined(__x86_64__)</span>
+
+<span class="cp">#define PT_REGS_PARM1(x) ((x)-&gt;di)</span>
+<span class="cp">#define PT_REGS_PARM2(x) ((x)-&gt;si)</span>
+<span class="cp">#define PT_REGS_PARM3(x) ((x)-&gt;dx)</span>
+<span class="cp">#define PT_REGS_PARM4(x) ((x)-&gt;cx)</span>
+<span class="cp">#define PT_REGS_PARM5(x) ((x)-&gt;r8)</span>
+<span class="cp">#define PT_REGS_RET(x) ((x)-&gt;sp)</span>
+<span class="cp">#define PT_REGS_FP(x) ((x)-&gt;bp)</span>
+<span class="cp">#define PT_REGS_RC(x) ((x)-&gt;ax)</span>
+<span class="cp">#define PT_REGS_SP(x) ((x)-&gt;sp)</span>
+<span class="cp">#define PT_REGS_IP(x) ((x)-&gt;ip)</span>
+
+<span class="cp">#elif defined(__s390x__)</span>
+
+<span class="cp">#define PT_REGS_PARM1(x) ((x)-&gt;gprs[2])</span>
+<span class="cp">#define PT_REGS_PARM2(x) ((x)-&gt;gprs[3])</span>
+<span class="cp">#define PT_REGS_PARM3(x) ((x)-&gt;gprs[4])</span>
+<span class="cp">#define PT_REGS_PARM4(x) ((x)-&gt;gprs[5])</span>
+<span class="cp">#define PT_REGS_PARM5(x) ((x)-&gt;gprs[6])</span>
+<span class="cp">#define PT_REGS_RET(x) ((x)-&gt;gprs[14])</span>
+<span class="cp">#define PT_REGS_FP(x) ((x)-&gt;gprs[11]) </span><span class="cm">/* Works only with CONFIG_FRAME_POINTER */</span><span class="cp"></span>
+<span class="cp">#define PT_REGS_RC(x) ((x)-&gt;gprs[2])</span>
+<span class="cp">#define PT_REGS_SP(x) ((x)-&gt;gprs[15])</span>
+<span class="cp">#define PT_REGS_IP(x) ((x)-&gt;ip)</span>
+
+<span class="cp">#elif defined(__aarch64__)</span>
+
+<span class="cp">#define PT_REGS_PARM1(x) ((x)-&gt;regs[0])</span>
+<span class="cp">#define PT_REGS_PARM2(x) ((x)-&gt;regs[1])</span>
+<span class="cp">#define PT_REGS_PARM3(x) ((x)-&gt;regs[2])</span>
+<span class="cp">#define PT_REGS_PARM4(x) ((x)-&gt;regs[3])</span>
+<span class="cp">#define PT_REGS_PARM5(x) ((x)-&gt;regs[4])</span>
+<span class="cp">#define PT_REGS_RET(x) ((x)-&gt;regs[30])</span>
+<span class="cp">#define PT_REGS_FP(x) ((x)-&gt;regs[29]) </span><span class="cm">/* Works only with CONFIG_FRAME_POINTER */</span><span class="cp"></span>
+<span class="cp">#define PT_REGS_RC(x) ((x)-&gt;regs[0])</span>
+<span class="cp">#define PT_REGS_SP(x) ((x)-&gt;sp)</span>
+<span class="cp">#define PT_REGS_IP(x) ((x)-&gt;pc)</span>
+
+<span class="cp">#elif defined(__powerpc__)</span>
+
+<span class="cp">#define PT_REGS_PARM1(x) ((x)-&gt;gpr[3])</span>
+<span class="cp">#define PT_REGS_PARM2(x) ((x)-&gt;gpr[4])</span>
+<span class="cp">#define PT_REGS_PARM3(x) ((x)-&gt;gpr[5])</span>
+<span class="cp">#define PT_REGS_PARM4(x) ((x)-&gt;gpr[6])</span>
+<span class="cp">#define PT_REGS_PARM5(x) ((x)-&gt;gpr[7])</span>
+<span class="cp">#define PT_REGS_RC(x) ((x)-&gt;gpr[3])</span>
+<span class="cp">#define PT_REGS_SP(x) ((x)-&gt;sp)</span>
+<span class="cp">#define PT_REGS_IP(x) ((x)-&gt;nip)</span>
+
+<span class="cp">#endif</span>
+
+<span class="cp">#ifdef __powerpc__</span>
+<span class="cp">#define BPF_KPROBE_READ_RET_IP(ip, ctx)         ({ (ip) = (ctx)-&gt;link; })</span>
+<span class="cp">#define BPF_KRETPROBE_READ_RET_IP               BPF_KPROBE_READ_RET_IP</span>
+<span class="cp">#else</span>
+<span class="cp">#define BPF_KPROBE_READ_RET_IP(ip, ctx)         ({                              \</span>
+<span class="cp">                bpf_probe_read(&amp;(ip), sizeof(ip), (void *)PT_REGS_RET(ctx)); })</span>
+<span class="cp">#define BPF_KRETPROBE_READ_RET_IP(ip, ctx)      ({                              \</span>
+<span class="cp">                bpf_probe_read(&amp;(ip), sizeof(ip),                               \</span>
+<span class="cp">                                (void *)(PT_REGS_FP(ctx) + sizeof(ip))); })</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+<p>Makefile </p>
+<div class="highlight"><pre><span></span><span class="n">project_root</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">shell</span> <span class="n">pwd</span><span class="p">)</span>
+<span class="n">uname</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">shell</span> <span class="n">uname</span> <span class="o">-</span><span class="n">r</span><span class="p">)</span>
+<span class="n">kernel_src</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">shell</span> <span class="n">rpm</span> <span class="o">-</span><span class="n">qa</span> <span class="n">kernel</span><span class="o">-</span><span class="n">devel</span> <span class="o">|</span> <span class="n">head</span> <span class="o">-</span><span class="mi">1</span> <span class="o">|</span> <span class="n">sed</span> <span class="err">'</span><span class="n">s</span><span class="o">/</span><span class="n">kernel</span><span class="o">-</span><span class="n">devel</span><span class="o">-</span><span class="c1">//g' | awk '{print "/usr/src/kernels/"$$1""}')</span>
+
+<span class="nl">all</span><span class="p">:</span> <span class="n">build</span> <span class="n">copy</span>
+
+<span class="nl">build</span><span class="p">:</span>
+        <span class="n">clang</span> \
+      <span class="o">-</span><span class="n">D__KERNEL__</span> \
+      <span class="o">-</span><span class="n">D__ASM_SYSREG_H</span> \
+      <span class="o">-</span><span class="n">Wno</span><span class="o">-</span><span class="n">address</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">packed</span><span class="o">-</span><span class="n">member</span> \
+      <span class="o">-</span><span class="n">O2</span> <span class="o">-</span><span class="n">emit</span><span class="o">-</span><span class="n">llvm</span> <span class="o">-</span><span class="n">c</span> <span class="n">exec</span><span class="p">.</span><span class="n">c</span> \
+      <span class="o">-</span><span class="n">I</span> <span class="err">$</span><span class="p">(</span><span class="n">project_root</span><span class="p">)</span> \
+      <span class="o">-</span><span class="n">I</span> <span class="err">$</span><span class="p">(</span><span class="n">kernel_src</span><span class="p">)</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">x86</span><span class="o">/</span><span class="n">include</span> \
+      <span class="o">-</span><span class="n">I</span> <span class="err">$</span><span class="p">(</span><span class="n">kernel_src</span><span class="p">)</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">x86</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">generated</span> \
+      <span class="o">-</span><span class="n">I</span> <span class="err">$</span><span class="p">(</span><span class="n">kernel_src</span><span class="p">)</span><span class="o">/</span><span class="n">include</span> \
+      <span class="o">-</span><span class="n">o</span> <span class="o">-</span> <span class="o">|</span> \
+      <span class="n">llc</span> <span class="o">-</span><span class="n">march</span><span class="o">=</span><span class="n">bpf</span> <span class="o">-</span><span class="n">filetype</span><span class="o">=</span><span class="n">obj</span> <span class="o">-</span><span class="n">o</span> <span class="n">exec</span><span class="p">.</span><span class="n">o</span>
+
+<span class="p">.</span><span class="nl">PHONY</span><span class="p">:</span> <span class="n">all</span> <span class="n">build</span> 
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
