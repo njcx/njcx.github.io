@@ -177,8 +177,7 @@ BPF_MAP_DELETE_ELEM
 BPF_MAP_GET_NEXT_KEY： 在一个特定的 map 中根据 key 值查找到一个元素，并返回这个 key 对应的下一个元素
 BPF_PROG_LOAD： 验证并加载一个 bpf 程序。并返回与这个程序关联的 fd。本文分析只关注这个 cmd。
 </pre></div>
-<p>bpf_attr：第 2 个参数</p>
-<p>该参数的类型取决于 cmd 参数的值，本文只分析 cmd=BPF_PROG_LOAD 这种情况，其中 prog_type 指定了 bpf 程序类型，eBPF 程序支持 attach 到不同的 event 上，比如 Kprobe，UProbe，tracepoint，Network packets，perf event 等。</p>
+<p>bpf_attr,第 2 个参数,该参数的类型取决于 cmd 参数的值，本文只分析 cmd=BPF_PROG_LOAD 这种情况，其中 prog_type 指定了 bpf 程序类型，eBPF 程序支持 attach 到不同的 event 上，比如 Kprobe，UProbe，tracepoint，Network packets，perf event 等。</p>
 <p>比如,cmd=BPF_PROG_LOAD 使用，如下：</p>
 <div class="highlight"><pre><span></span>struct <span class="o">{</span>    /* Used by BPF_PROG_LOAD */
     __u32   prog_type<span class="p">;</span>  //设置为 <span class="sb">`</span>BPF_PROG_TYPE_KPROBE<span class="sb">`</span>，表示是通过 kprobe 注入到内核函数。
@@ -193,10 +192,9 @@ BPF_PROG_LOAD： 验证并加载一个 bpf 程序。并返回与这个程序关�
     /* checked when <span class="nv">prog_type</span><span class="o">=</span>kprobe
     <span class="o">(</span>since Linux <span class="m">4</span>.1<span class="o">)</span> */
 <span class="o">}</span><span class="p">;</span>
-size：第三个参数
-
-表示上述 bpf_attr 字节大小。
 </pre></div>
+<p>size：第三个参数</p>
+<p>表示上述 bpf_attr 字节大小。</p>
 <p>demo 是在Kali Linux 上开发的。环境搭建比较简单，</p>
 <div class="highlight"><pre><span></span>apt-get install golang clang llvm 
 </pre></div>
