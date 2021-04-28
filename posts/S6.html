@@ -167,17 +167,19 @@ BPF_MAP_TYPE_SOCKET_MAP：存储和查找套接字，并允许使用BPF辅助函
 </pre></div>
 <p>可以使用bpf_map_lookup_elem（）和 bpf_map_update_elem（）函数从eBPF或用户空间程序访问所有Map.</p>
 <p>使用 man bpf 查看 bpf 系统调用，int bpf(int cmd, union bpf_attr *attr, unsigned int size)</p>
+<p>第一个参数cmd，如下</p>
 <div class="highlight"><pre><span></span>BPF_MAP_CREATE： 创建一个 map，并返回一个 fd，指向这个 map，这个 map 在 bpf 是非常重要的数据结构，用于 bpf 程序在内核态和用户态之间相互通信。
 BPF_MAP_LOOKUP_ELEM： 在给定一个 map 中查询一个元素，并返回其值
 BPF_MAP_UPDATE_ELEM： 在给定的 map 中创建或更新一个元素<span class="o">(</span>关于 key/value 的键值对<span class="o">)</span>
 BPF_MAP_DELETE_ELEM： 在给定的 map 中删除一个元素<span class="o">(</span>关于 key/value 的键值对<span class="o">)</span>
 BPF_MAP_GET_NEXT_KEY： 在一个特定的 map 中根据 key 值查找到一个元素，并返回这个 key 对应的下一个元素
 BPF_PROG_LOAD： 验证并加载一个 bpf 程序。并返回与这个程序关联的 fd。
+
+...... 等等
 </pre></div>
 <p>bpf_attr,第 2 个参数,该参数的类型取决于 cmd 参数的值，本文只分析 cmd=BPF_PROG_LOAD 这种情况，其中 prog_type 指定了 bpf 程序类型，eBPF 程序支持 attach 到不同的 event 上，比如 Kprobe，UProbe，tracepoint，Network packets，perf event 等。
 完整如下：</p>
 <div class="highlight"><pre><span></span>内核支持的当前eBPF程序类型集为：
-
 BPF_PROG_TYPE_SOCKET_FILTER：网络数据包过滤器
 BPF_PROG_TYPE_KPROBE：确定是否应触发kprobe
 BPF_PROG_TYPE_SCHED_CLS：网络流量控制分类器
@@ -192,7 +194,7 @@ BPF_PROG_TYPE_SOCK_OPS：用于设置socket参数的程序
 BPF_PROG_TYPE_SK_SKB：网络数据包过滤器，用于在socket之间转发数据包
 BPF_PROG_CGROUP_DEVICE：确定是否允许设备<span class="o">(</span>device<span class="o">)</span>操作
 </pre></div>
-<p>比如,cmd=BPF_PROG_LOAD 使用，如下：</p>
+<p>比如,cmd=BPF_PROG_LOAD 使用，bpf_attr 字段如下：</p>
 <div class="highlight"><pre><span></span>struct <span class="o">{</span>    /* Used by BPF_PROG_LOAD */
     __u32   prog_type<span class="p">;</span>  //设置为 <span class="sb">`</span>BPF_PROG_TYPE_KPROBE<span class="sb">`</span>，表示是通过 kprobe 注入到内核函数。
     __u32   insn_cnt<span class="p">;</span>
@@ -209,13 +211,15 @@ BPF_PROG_CGROUP_DEVICE：确定是否允许设备<span class="o">(</span>device<
 </pre></div>
 <p>size：第三个参数</p>
 <p>表示上述 bpf_attr 字节大小。</p>
-<p>当加载 bpf 程序时，BPF_PROG_LOAD 表示的是该程序的具体 bpf 指令，对应 SEC宏 下面的函数代码段。
-每条指令的操作码由六部分组成：</p>
-<div class="highlight"><pre><span></span>code(操作码)
-dst_reg(目标寄存器)
-src_reg(源寄存器)
-off(偏移)
-imm(立即数)
+<p>当加载 bpf 程序时，BPF_PROG_LOAD 表示的是加载具体 bpf 指令，对应 SEC宏 下面的函数代码段。
+每条指令的操作码由5部分组成：</p>
+<div class="highlight"><pre><span></span>    <span class="k">struct</span> <span class="n">bpf_insn</span> <span class="p">{</span>
+            <span class="n">__u8</span>    <span class="n">code</span><span class="p">;</span>           <span class="cm">/* opcode(操作码) */</span>
+            <span class="n">__u8</span>    <span class="nl">dst_reg</span><span class="p">:</span><span class="mi">4</span><span class="p">;</span>      <span class="cm">/* dest register(目标寄存器) */</span>
+            <span class="n">__u8</span>    <span class="nl">src_reg</span><span class="p">:</span><span class="mi">4</span><span class="p">;</span>      <span class="cm">/* source register (源寄存器)*/</span>
+            <span class="n">__s16</span>   <span class="n">off</span><span class="p">;</span>            <span class="cm">/* signed offset(偏移)*/</span>
+            <span class="n">__s32</span>   <span class="n">imm</span><span class="p">;</span>            <span class="cm">/* signed immediate constant(立即数) */</span>
+    <span class="p">};</span>
 </pre></div>
 <p>详见</p>
 <div class="highlight"><pre><span></span><span class="nv">insns</span><span class="o">=[</span>
