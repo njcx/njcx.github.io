@@ -286,6 +286,164 @@ R10对应rbp，只读栈帧寄存器
 
 <span class="c1"># reboot 重启一下，应用新的内核</span>
 </pre></div>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;linux/kconfig.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;linux/bpf.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;linux/ptrace.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;uapi/linux/ptrace.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">"bpf_helpers.h"</span><span class="cp"></span>
+
+<span class="cp">#define ARG_LEN 256</span>
+
+<span class="k">struct</span> <span class="n">execve_data_t</span> <span class="p">{</span>
+    <span class="n">u64</span> <span class="n">ktime_ns</span><span class="p">;</span>
+    <span class="n">u64</span> <span class="n">real_start_time_ns</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">pid</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">uid</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">gid</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">ppid</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">comm</span><span class="p">[</span><span class="n">TASK_COMM_LEN</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">execve_arg_t</span> <span class="p">{</span>
+    <span class="n">u32</span> <span class="n">pid</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">_pad</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">arg</span><span class="p">[</span><span class="n">ARG_LEN</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">execve_rtn_t</span> <span class="p">{</span>
+    <span class="n">u32</span> <span class="n">pid</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">rtn_code</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">exit_data_t</span> <span class="p">{</span>
+    <span class="n">u64</span> <span class="n">ktime_ns</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">pid</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">_pad</span><span class="p">;</span>
+<span class="p">};</span>
+
+
+<span class="k">struct</span> <span class="n">bpf_map_def</span> <span class="nf">SEC</span><span class="p">(</span><span class="s">"maps/execve_events"</span><span class="p">)</span> <span class="n">execve_events</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">BPF_MAP_TYPE_PERF_EVENT_ARRAY</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">key_size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">),</span>
+        <span class="p">.</span><span class="n">value_size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">__u32</span><span class="p">),</span>
+        <span class="p">.</span><span class="n">max_entries</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">copy_arg</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="k">const</span> <span class="o">*</span><span class="n">src</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">dst</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">argp</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">bpf_probe_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argp</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">argp</span><span class="p">),</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">src</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argp</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">bpf_probe_read</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">ARG_LEN</span><span class="p">,</span> <span class="n">argp</span><span class="p">);</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">send_arg</span><span class="p">(</span>
+    <span class="k">struct</span> <span class="n">pt_regs</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span>
+    <span class="kt">int</span> <span class="n">cpu</span><span class="p">,</span>
+    <span class="kt">int</span> <span class="o">*</span><span class="n">i</span><span class="p">,</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">,</span>
+    <span class="k">struct</span> <span class="n">execve_arg_t</span> <span class="o">*</span><span class="n">arg_data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">copy_arg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argv</span><span class="p">[</span><span class="o">*</span><span class="n">i</span><span class="p">],</span> <span class="n">arg_data</span><span class="o">-&gt;</span><span class="n">arg</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">bpf_perf_event_output</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">execve_events</span><span class="p">,</span> <span class="n">cpu</span><span class="p">,</span> <span class="n">arg_data</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">arg_data</span><span class="p">));</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">)</span><span class="o">++</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span> <span class="nf">get_ppid</span><span class="p">(</span><span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">task</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">u32</span> <span class="n">ppid</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">parent</span><span class="p">;</span>
+    <span class="n">bpf_probe_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">parent</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">parent</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">task</span><span class="o">-&gt;</span><span class="n">real_parent</span><span class="p">);</span>
+    <span class="n">bpf_probe_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ppid</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ppid</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">pid</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">ppid</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">u64</span> <span class="nf">get_process_start_time</span><span class="p">(</span><span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">task</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">u64</span> <span class="n">real_start_time_ns</span><span class="p">;</span>
+    <span class="n">bpf_probe_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">real_start_time_ns</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">real_start_time_ns</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">task</span><span class="o">-&gt;</span><span class="n">real_start_time</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">real_start_time_ns</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">SEC</span><span class="p">(</span><span class="s">"kprobe/SyS_execve"</span><span class="p">)</span>
+<span class="kt">int</span> <span class="n">kprobe__sys_exeve</span><span class="p">(</span><span class="k">struct</span> <span class="n">pt_regs</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">u64</span> <span class="n">ktime_ns</span> <span class="o">=</span> <span class="n">bpf_ktime_get_ns</span><span class="p">();</span>
+    <span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">task</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="p">)</span><span class="n">bpf_get_current_task</span><span class="p">();</span> <span class="c1">// 4.8</span>
+    <span class="n">u32</span> <span class="n">cpu</span> <span class="o">=</span> <span class="n">bpf_get_smp_processor_id</span><span class="p">();</span>
+
+    <span class="c1">// Read general execve attributes.</span>
+    <span class="k">struct</span> <span class="n">execve_data_t</span> <span class="n">execve_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">ktime_ns</span> <span class="o">=</span> <span class="n">ktime_ns</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">real_start_time_ns</span> <span class="o">=</span> <span class="n">get_process_start_time</span><span class="p">(</span><span class="n">task</span><span class="p">),</span>
+        <span class="p">.</span><span class="n">pid</span> <span class="o">=</span> <span class="n">bpf_get_current_pid_tgid</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">bpf_get_current_uid_gid</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">gid</span> <span class="o">=</span> <span class="n">bpf_get_current_uid_gid</span><span class="p">(),</span>
+        <span class="p">.</span><span class="n">ppid</span> <span class="o">=</span> <span class="n">get_ppid</span><span class="p">(</span><span class="n">task</span><span class="p">),</span>
+    <span class="p">};</span>
+    <span class="n">bpf_get_current_comm</span><span class="p">(</span><span class="o">&amp;</span><span class="n">execve_data</span><span class="p">.</span><span class="n">comm</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">execve_data</span><span class="p">.</span><span class="n">comm</span><span class="p">));</span> <span class="c1">// 4.2</span>
+    <span class="n">bpf_perf_event_output</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">execve_events</span><span class="p">,</span> <span class="n">cpu</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">execve_data</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">execve_data</span><span class="p">));</span>
+
+
+    <span class="k">struct</span> <span class="n">execve_arg_t</span> <span class="n">arg_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pid</span> <span class="o">=</span> <span class="n">execve_data</span><span class="p">.</span><span class="n">pid</span><span class="p">,</span>
+    <span class="p">};</span>
+
+
+    <span class="n">bpf_probe_read</span><span class="p">(</span><span class="n">arg_data</span><span class="p">.</span><span class="n">arg</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arg_data</span><span class="p">.</span><span class="n">arg</span><span class="p">),</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">PT_REGS_PARM1</span><span class="p">(</span><span class="n">ctx</span><span class="p">));</span>
+    <span class="n">bpf_perf_event_output</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">execve_events</span><span class="p">,</span> <span class="n">cpu</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">arg_data</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arg_data</span><span class="p">));</span> <span class="c1">// 4.4</span>
+
+    <span class="k">const</span> <span class="kt">char</span> <span class="n">__user</span> <span class="o">*</span><span class="k">const</span> <span class="n">__user</span> <span class="o">*</span><span class="n">argv</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">PT_REGS_PARM2</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+
+
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">send_arg</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">cpu</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">arg_data</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+
+
+    <span class="kt">char</span> <span class="n">ellipse</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"..."</span><span class="p">;</span>
+    <span class="n">bpf_probe_read</span><span class="p">(</span><span class="n">arg_data</span><span class="p">.</span><span class="n">arg</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arg_data</span><span class="p">.</span><span class="n">arg</span><span class="p">),</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">ellipse</span><span class="p">);</span>
+    <span class="n">bpf_perf_event_output</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">execve_events</span><span class="p">,</span> <span class="n">cpu</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">arg_data</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">arg_data</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">SEC</span><span class="p">(</span><span class="s">"kretprobe/SyS_execve"</span><span class="p">)</span>
+<span class="kt">int</span> <span class="n">kretprobe__sys_exeve</span><span class="p">(</span><span class="k">struct</span> <span class="n">pt_regs</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">execve_rtn_t</span> <span class="n">rtn_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pid</span> <span class="o">=</span> <span class="n">bpf_get_current_pid_tgid</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">rtn_code</span> <span class="o">=</span> <span class="n">PT_REGS_RC</span><span class="p">(</span><span class="n">ctx</span><span class="p">),</span>
+    <span class="p">};</span>
+
+    <span class="n">u32</span> <span class="n">cpu</span> <span class="o">=</span> <span class="n">bpf_get_smp_processor_id</span><span class="p">();</span>
+    <span class="n">bpf_perf_event_output</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">execve_events</span><span class="p">,</span> <span class="n">cpu</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rtn_data</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rtn_data</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">SEC</span><span class="p">(</span><span class="s">"kprobe/do_exit"</span><span class="p">)</span>
+<span class="kt">int</span> <span class="n">kprobe__do_exit</span><span class="p">(</span><span class="k">struct</span> <span class="n">pt_regs</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">exit_data_t</span> <span class="n">exit_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">ktime_ns</span> <span class="o">=</span> <span class="n">bpf_ktime_get_ns</span><span class="p">(),</span>
+        <span class="p">.</span><span class="n">pid</span> <span class="o">=</span> <span class="n">bpf_get_current_pid_tgid</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="p">};</span>
+
+    <span class="n">u32</span> <span class="n">cpu</span> <span class="o">=</span> <span class="n">bpf_get_smp_processor_id</span><span class="p">();</span>
+    <span class="n">bpf_perf_event_output</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">execve_events</span><span class="p">,</span> <span class="n">cpu</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">exit_data</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">exit_data</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Code is licensed under Apache 2.0 which is GPL compatible.</span>
+<span class="kt">char</span> <span class="n">_license</span><span class="p">[]</span> <span class="n">SEC</span><span class="p">(</span><span class="s">"license"</span><span class="p">)</span> <span class="o">=</span> <span class="s">"GPL"</span><span class="p">;</span>
+</pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG145.jpeg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG67.jpeg"/></p>
   </div>
