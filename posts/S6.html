@@ -255,8 +255,8 @@ R9对应r15， callee保存
 R10对应rbp，只读栈帧寄存器
 </pre></div>
 <p>可以看到x64的r9寄存器没有ebpf寄存器对应，所以ebpf函数最多支持5个参数。</p>
-<p>demo 是在Kali Linux 上开发的。环境搭建比较简单，</p>
-<div class="highlight"><pre><span></span>apt-get install golang clang llvm 
+<p>demo 是在Kali Linux 上开发的。环境搭建比较简单，由于内核不一样，可能修改部分参数：</p>
+<div class="highlight"><pre><span></span>apt-get install golang clang llvm  -y
 </pre></div>
 <p>CentOS 7 可以按下面搭建</p>
 <div class="highlight"><pre><span></span>添加yum源 ： c7-clang-x86_64.repo
@@ -447,7 +447,6 @@ R10对应rbp，只读栈帧寄存器
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="c1">// Code is licensed under Apache 2.0 which is GPL compatible.</span>
 <span class="kt">char</span> <span class="n">_license</span><span class="p">[]</span> <span class="n">SEC</span><span class="p">(</span><span class="s">"license"</span><span class="p">)</span> <span class="o">=</span> <span class="s">"GPL"</span><span class="p">;</span>
 </pre></div>
 <p>bpf_helpers.h 文件</p>
@@ -621,6 +620,386 @@ R10对应rbp，只读栈帧寄存器
       <span class="n">llc</span> <span class="o">-</span><span class="n">march</span><span class="o">=</span><span class="n">bpf</span> <span class="o">-</span><span class="n">filetype</span><span class="o">=</span><span class="n">obj</span> <span class="o">-</span><span class="n">o</span> <span class="n">exec</span><span class="p">.</span><span class="n">o</span>
 
 <span class="p">.</span><span class="nl">PHONY</span><span class="p">:</span> <span class="n">all</span> <span class="n">build</span> 
+</pre></div>
+<p>go接受数据：</p>
+<div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s2">"bytes"</span>
+    <span class="s2">"encoding/binary"</span>
+    <span class="s2">"encoding/json"</span>
+    <span class="s2">"fmt"</span>
+    <span class="n">bpf</span> <span class="s2">"github.com/iovisor/gobpf/elf"</span>
+    <span class="s2">"github.com/pkg/errors"</span>
+    <span class="s2">"io/ioutil"</span>
+    <span class="s2">"os"</span>
+    <span class="s2">"os/signal"</span>
+    <span class="s2">"sync"</span>
+    <span class="s2">"time"</span>
+    <span class="s2">"unsafe"</span>
+<span class="p">)</span>
+
+<span class="n">var</span> <span class="p">(</span>
+    <span class="n">sizeofExecveData</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">unsafe</span><span class="o">.</span><span class="n">Sizeof</span><span class="p">(</span><span class="n">ExecveData</span><span class="p">{}))</span>
+    <span class="n">sizeofExecveArg</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">unsafe</span><span class="o">.</span><span class="n">Sizeof</span><span class="p">(</span><span class="n">ExecveArg</span><span class="p">{}))</span>
+    <span class="n">sizeofExecveRtn</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">unsafe</span><span class="o">.</span><span class="n">Sizeof</span><span class="p">(</span><span class="n">ExecveRtn</span><span class="p">{}))</span>
+    <span class="n">sizeofExitData</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">unsafe</span><span class="o">.</span><span class="n">Sizeof</span><span class="p">(</span><span class="n">ExitData</span><span class="p">{}))</span>
+<span class="p">)</span>
+<span class="n">const</span> <span class="p">(</span>
+    <span class="n">execveProbe</span>       <span class="o">=</span> <span class="s2">"kprobe/SyS_execve"</span>
+    <span class="n">execveReturnProbe</span> <span class="o">=</span> <span class="s2">"kretprobe/SyS_execve"</span>
+    <span class="n">execveMap</span>         <span class="o">=</span> <span class="s2">"execve_events"</span>
+    <span class="n">doExitProbe</span>       <span class="o">=</span> <span class="s2">"kprobe/do_exit"</span>
+<span class="p">)</span>
+
+
+<span class="nb">type</span> <span class="n">ExecveData</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">KTimeNS</span>         <span class="n">time</span><span class="o">.</span><span class="n">Duration</span>
+    <span class="n">RealStartTimeNS</span> <span class="n">time</span><span class="o">.</span><span class="n">Duration</span>
+    <span class="n">PID</span>             <span class="n">uint32</span>
+    <span class="n">UID</span>             <span class="n">uint32</span>
+    <span class="n">GID</span>             <span class="n">uint32</span>
+    <span class="n">PPID</span>            <span class="n">uint32</span>
+    <span class="n">Comm</span>            <span class="p">[</span><span class="mi">16</span><span class="p">]</span><span class="n">byte</span>
+<span class="p">}</span>
+
+<span class="nb">type</span> <span class="n">ExecveArg</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">PID</span> <span class="n">uint32</span>
+    <span class="n">_</span>   <span class="n">uint32</span>
+    <span class="n">Arg</span> <span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="n">byte</span>
+<span class="p">}</span>
+
+<span class="nb">type</span> <span class="n">ExecveRtn</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">PID</span>        <span class="n">uint32</span>
+    <span class="n">ReturnCode</span> <span class="n">int32</span>
+<span class="p">}</span>
+
+
+<span class="nb">type</span> <span class="n">ExitData</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">KTime</span> <span class="n">uint64</span>
+    <span class="n">PID</span>   <span class="n">uint32</span>
+<span class="p">}</span>
+
+
+<span class="nb">type</span> <span class="n">processData</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">StartTime</span> <span class="n">time</span><span class="o">.</span><span class="n">Time</span> <span class="sb">`json:"start_time"`</span>
+
+    <span class="n">PPID</span>       <span class="n">uint32</span> <span class="sb">`json:"ppid"`</span>
+    <span class="n">ParentComm</span> <span class="n">string</span> <span class="sb">`json:"parent_comm,omitempty"`</span>
+
+    <span class="n">PID</span>  <span class="n">uint32</span>   <span class="sb">`json:"pid"`</span>
+    <span class="n">UID</span>  <span class="n">uint32</span>   <span class="sb">`json:"uid"`</span>
+    <span class="n">GID</span>  <span class="n">uint32</span>   <span class="sb">`json:"gid"`</span>
+    <span class="n">Comm</span> <span class="n">string</span>   <span class="sb">`json:"comm,omitempty"`</span>
+    <span class="n">Exe</span>  <span class="n">string</span>   <span class="sb">`json:"exe,omitempty"`</span>
+    <span class="n">Args</span> <span class="p">[]</span><span class="n">string</span> <span class="sb">`json:"args,omitempty"`</span>
+<span class="p">}</span>
+
+
+<span class="nb">type</span> <span class="n">ProcessStarted</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">Type</span> <span class="n">string</span> <span class="sb">`json:"type"`</span>
+    <span class="n">processData</span>
+<span class="p">}</span>
+
+<span class="nb">type</span> <span class="n">ProcessExited</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">Type</span> <span class="n">string</span> <span class="sb">`json:"type"`</span>
+    <span class="n">processData</span>
+    <span class="n">EndTime</span>     <span class="n">time</span><span class="o">.</span><span class="n">Time</span>     <span class="sb">`json:"end_time"`</span>
+    <span class="n">RunningTime</span> <span class="n">time</span><span class="o">.</span><span class="n">Duration</span> <span class="sb">`json:"running_time_ns"`</span>
+<span class="p">}</span>
+
+<span class="nb">type</span> <span class="n">ProcessError</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">Type</span> <span class="n">string</span> <span class="sb">`json:"type"`</span>
+    <span class="n">processData</span>
+    <span class="n">ErrorCode</span> <span class="n">int32</span> <span class="sb">`json:"error_code"`</span>
+<span class="p">}</span>
+
+
+<span class="nb">type</span> <span class="n">ProcessMonitor</span> <span class="n">struct</span> <span class="p">{</span>
+
+    <span class="n">module</span>        <span class="o">*</span><span class="n">bpf</span><span class="o">.</span><span class="n">Module</span>
+    <span class="n">execvePerfMap</span> <span class="o">*</span><span class="n">bpf</span><span class="o">.</span><span class="n">PerfMap</span>
+    <span class="n">bpfEvents</span>     <span class="n">chan</span> <span class="p">[]</span><span class="n">byte</span>
+    <span class="n">lostBPFEvents</span> <span class="n">chan</span> <span class="n">uint64</span>
+    <span class="n">lostCount</span>     <span class="n">uint64</span>
+
+    <span class="n">bootTime</span>     <span class="n">time</span><span class="o">.</span><span class="n">Time</span>
+    <span class="n">processTable</span> <span class="nb">map</span><span class="p">[</span><span class="n">uint32</span><span class="p">]</span><span class="o">*</span><span class="n">process</span>
+    <span class="n">warnOnce</span>     <span class="n">sync</span><span class="o">.</span><span class="n">Once</span>
+
+    <span class="n">output</span> <span class="n">chan</span> <span class="n">interface</span><span class="p">{}</span>
+    <span class="n">done</span>   <span class="o">&lt;-</span><span class="n">chan</span> <span class="n">struct</span><span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="nb">type</span> <span class="n">eventSource</span> <span class="nb">int</span>
+
+<span class="n">const</span> <span class="p">(</span>
+    <span class="n">sourceBPF</span> <span class="n">eventSource</span> <span class="o">=</span> <span class="n">iota</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="nb">type</span> <span class="n">processState</span> <span class="nb">int</span>
+
+<span class="n">const</span> <span class="p">(</span>
+    <span class="n">stateStarted</span> <span class="n">processState</span> <span class="o">=</span> <span class="n">iota</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">stateError</span>
+    <span class="n">stateExited</span>
+<span class="p">)</span>
+
+<span class="nb">type</span> <span class="n">process</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">processData</span>
+    <span class="n">State</span>     <span class="n">processState</span>
+    <span class="n">Source</span>    <span class="n">eventSource</span>
+    <span class="n">EndTime</span>   <span class="n">time</span><span class="o">.</span><span class="n">Time</span>
+    <span class="n">ErrorCode</span> <span class="n">int32</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="n">NewMonitor</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><span class="n">ProcessMonitor</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="k">return</span> <span class="o">&amp;</span><span class="n">ProcessMonitor</span><span class="p">{</span>
+        <span class="n">processTable</span><span class="p">:</span> <span class="nb">map</span><span class="p">[</span><span class="n">uint32</span><span class="p">]</span><span class="o">*</span><span class="n">process</span><span class="p">{},</span>
+    <span class="p">},</span> <span class="n">nil</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="p">(</span><span class="n">m</span> <span class="o">*</span><span class="n">ProcessMonitor</span><span class="p">)</span> <span class="n">Start</span><span class="p">(</span><span class="n">done</span> <span class="o">&lt;-</span><span class="n">chan</span> <span class="n">struct</span><span class="p">{})</span> <span class="p">(</span><span class="o">&lt;-</span><span class="n">chan</span> <span class="n">interface</span><span class="p">{},</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">initBPF</span><span class="p">();</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">nil</span><span class="p">,</span> <span class="n">err</span>
+    <span class="p">}</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">make</span><span class="p">(</span><span class="n">chan</span> <span class="n">interface</span><span class="p">{},</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">go</span> <span class="n">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">defer</span> <span class="n">close</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+        <span class="n">defer</span> <span class="n">m</span><span class="o">.</span><span class="n">execvePerfMap</span><span class="o">.</span><span class="n">PollStop</span><span class="p">()</span>
+        <span class="n">defer</span> <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="p">{</span>
+            <span class="n">select</span> <span class="p">{</span>
+            <span class="n">case</span> <span class="n">data</span> <span class="p">:</span><span class="o">=</span> <span class="o">&lt;-</span><span class="n">m</span><span class="o">.</span><span class="n">bpfEvents</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">handleBPFData</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">case</span> <span class="n">count</span> <span class="p">:</span><span class="o">=</span> <span class="o">&lt;-</span><span class="n">m</span><span class="o">.</span><span class="n">lostBPFEvents</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">lostCount</span> <span class="o">+=</span> <span class="n">count</span>
+                <span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s2">"%v messages from kernel dropped"</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+            <span class="n">case</span> <span class="o">&lt;-</span><span class="n">done</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}()</span>
+
+    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">nil</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="p">(</span><span class="n">m</span> <span class="o">*</span><span class="n">ProcessMonitor</span><span class="p">)</span> <span class="n">initBPF</span><span class="p">()</span> <span class="n">error</span> <span class="p">{</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">ioutil</span><span class="o">.</span><span class="n">ReadFile</span><span class="p">(</span><span class="s2">"exec.o"</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">errors</span><span class="o">.</span><span class="n">Wrap</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="s2">"failed to load embedded ebpf code"</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">Load</span> <span class="n">module</span> <span class="n">to</span> <span class="n">kernel</span><span class="o">.</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">bpf</span><span class="o">.</span><span class="n">NewModuleFromReader</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">NewReader</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">Load</span><span class="p">(</span><span class="n">nil</span><span class="p">);</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">errors</span><span class="o">.</span><span class="n">Wrap</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="s2">"failed to load ebpf module to kernel"</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">Setup</span> <span class="n">our</span> <span class="n">perf</span> <span class="n">event</span> <span class="n">readers</span><span class="o">.</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">bpfEvents</span> <span class="o">=</span> <span class="n">make</span><span class="p">(</span><span class="n">chan</span> <span class="p">[]</span><span class="n">byte</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">lostBPFEvents</span> <span class="o">=</span> <span class="n">make</span><span class="p">(</span><span class="n">chan</span> <span class="n">uint64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">execvePerfMap</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">bpf</span><span class="o">.</span><span class="n">InitPerfMap</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="n">execveMap</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">bpfEvents</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">lostBPFEvents</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">errors</span><span class="o">.</span><span class="n">Wrapf</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="s2">"failed to initialize %v perf map"</span><span class="p">,</span> <span class="n">execveMap</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">Enable</span> <span class="n">the</span> <span class="n">kprobes</span><span class="o">.</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">EnableKprobe</span><span class="p">(</span><span class="n">execveProbe</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">errors</span><span class="o">.</span><span class="n">Wrapf</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="s2">"failed to enable %v probe"</span><span class="p">,</span> <span class="n">execveProbe</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">EnableKprobe</span><span class="p">(</span><span class="n">execveReturnProbe</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">errors</span><span class="o">.</span><span class="n">Wrapf</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="s2">"failed to enable %v probe"</span><span class="p">,</span> <span class="n">execveReturnProbe</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">EnableKprobe</span><span class="p">(</span><span class="n">doExitProbe</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">errors</span><span class="o">.</span><span class="n">Wrapf</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="s2">"failed to enable %v probe"</span><span class="p">,</span> <span class="n">doExitProbe</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">m</span><span class="o">.</span><span class="n">execvePerfMap</span><span class="o">.</span><span class="n">PollStart</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">nil</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="p">(</span><span class="n">m</span> <span class="o">*</span><span class="n">ProcessMonitor</span><span class="p">)</span> <span class="n">handleBPFData</span><span class="p">(</span><span class="n">data</span> <span class="p">[]</span><span class="n">byte</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">switch</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">case</span> <span class="n">sizeofExecveData</span><span class="p">:</span>
+        <span class="n">event</span><span class="p">,</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">unmarshalData</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+            <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">"failed to unmarshal execve data"</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+
+        <span class="k">if</span> <span class="n">_</span><span class="p">,</span> <span class="n">exists</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">processTable</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">PID</span><span class="p">];</span> <span class="n">exists</span> <span class="p">{</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="n">m</span><span class="o">.</span><span class="n">processTable</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">PID</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">process</span><span class="p">{</span>
+            <span class="n">State</span><span class="p">:</span>  <span class="n">stateStarted</span><span class="p">,</span>
+            <span class="n">Source</span><span class="p">:</span> <span class="n">sourceBPF</span><span class="p">,</span>
+            <span class="n">processData</span><span class="p">:</span> <span class="n">processData</span><span class="p">{</span>
+                <span class="n">StartTime</span><span class="p">:</span>  <span class="n">m</span><span class="o">.</span><span class="n">bootTime</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">RealStartTimeNS</span><span class="p">),</span>
+                <span class="n">PPID</span><span class="p">:</span>       <span class="n">event</span><span class="o">.</span><span class="n">PPID</span><span class="p">,</span>
+                <span class="n">ParentComm</span><span class="p">:</span> <span class="n">NullTerminatedString</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">Comm</span><span class="p">[:]),</span>
+                <span class="n">PID</span><span class="p">:</span>        <span class="n">event</span><span class="o">.</span><span class="n">PID</span><span class="p">,</span>
+                <span class="n">UID</span><span class="p">:</span>        <span class="n">event</span><span class="o">.</span><span class="n">UID</span><span class="p">,</span>
+                <span class="n">GID</span><span class="p">:</span>        <span class="n">event</span><span class="o">.</span><span class="n">GID</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+    <span class="n">case</span> <span class="n">sizeofExecveArg</span><span class="p">:</span>
+        <span class="n">event</span><span class="p">,</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">unmarshalArg</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+            <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">"failed to unmarshal execve arg"</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="n">p</span><span class="p">,</span> <span class="n">found</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">processTable</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">PID</span><span class="p">]</span>
+        <span class="k">if</span> <span class="err">!</span><span class="n">found</span> <span class="p">{</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="o">//</span> <span class="n">The</span> <span class="n">first</span> <span class="n">argument</span> <span class="n">sent</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">exe</span><span class="o">.</span>
+        <span class="n">arg</span> <span class="p">:</span><span class="o">=</span> <span class="n">NullTerminatedString</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">Arg</span><span class="p">[:])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">Exe</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">Exe</span> <span class="o">=</span> <span class="n">arg</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">Args</span> <span class="o">=</span> <span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">Args</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+    <span class="n">case</span> <span class="n">sizeofExecveRtn</span><span class="p">:</span>
+        <span class="n">event</span><span class="p">,</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">unmarshalRtn</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+            <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">"failed to unmarshal execve return"</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="n">p</span><span class="p">,</span> <span class="n">found</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">processTable</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">PID</span><span class="p">]</span>
+        <span class="k">if</span> <span class="err">!</span><span class="n">found</span>  <span class="p">{</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">ReturnCode</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">State</span> <span class="o">=</span> <span class="n">stateError</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">ErrorCode</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">ReturnCode</span>
+        <span class="p">}</span>
+
+        <span class="n">m</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">case</span> <span class="n">sizeofExitData</span><span class="p">:</span>
+        <span class="n">event</span><span class="p">,</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">unmarshalExitData</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+            <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">"failed to unmarshal exit data"</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="n">p</span><span class="p">,</span> <span class="n">found</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">processTable</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">PID</span><span class="p">]</span>
+        <span class="k">if</span> <span class="err">!</span><span class="n">found</span> <span class="o">||</span> <span class="n">p</span><span class="o">.</span><span class="n">ErrorCode</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">State</span> <span class="o">=</span> <span class="n">stateExited</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">EndTime</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">bootTime</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">KTime</span><span class="p">))</span>
+        <span class="n">delete</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">processTable</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">PID</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="p">(</span><span class="n">m</span> <span class="o">*</span><span class="n">ProcessMonitor</span><span class="p">)</span> <span class="n">publish</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span><span class="n">process</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">event</span> <span class="n">interface</span><span class="p">{}</span>
+    <span class="n">switch</span> <span class="n">p</span><span class="o">.</span><span class="n">State</span> <span class="p">{</span>
+    <span class="n">case</span> <span class="n">stateStarted</span><span class="p">:</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">ProcessStarted</span><span class="p">{</span>
+            <span class="n">Type</span><span class="p">:</span>        <span class="s2">"started"</span><span class="p">,</span>
+            <span class="n">processData</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">processData</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="n">case</span> <span class="n">stateExited</span><span class="p">:</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">ProcessExited</span><span class="p">{</span>
+            <span class="n">Type</span><span class="p">:</span>        <span class="s2">"exited"</span><span class="p">,</span>
+            <span class="n">processData</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">processData</span><span class="p">,</span>
+            <span class="n">EndTime</span><span class="p">:</span>     <span class="n">p</span><span class="o">.</span><span class="n">EndTime</span><span class="p">,</span>
+            <span class="n">RunningTime</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">EndTime</span><span class="o">.</span><span class="n">Sub</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">StartTime</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="n">case</span> <span class="n">stateError</span><span class="p">:</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">ProcessError</span><span class="p">{</span>
+            <span class="n">Type</span><span class="p">:</span>        <span class="s2">"error"</span><span class="p">,</span>
+            <span class="n">processData</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">processData</span><span class="p">,</span>
+            <span class="n">ErrorCode</span><span class="p">:</span>   <span class="n">p</span><span class="o">.</span><span class="n">ErrorCode</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="n">default</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+
+    <span class="n">select</span> <span class="p">{</span>
+    <span class="n">case</span> <span class="o">&lt;-</span><span class="n">m</span><span class="o">.</span><span class="n">done</span><span class="p">:</span>
+    <span class="n">case</span> <span class="n">m</span><span class="o">.</span><span class="n">output</span> <span class="o">&lt;-</span> <span class="n">event</span><span class="p">:</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="n">func</span> <span class="n">unmarshalData</span><span class="p">(</span><span class="n">data</span> <span class="p">[]</span><span class="n">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">ExecveData</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">event</span> <span class="n">ExecveData</span>
+    <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">binary</span><span class="o">.</span><span class="n">Read</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">NewReader</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">binary</span><span class="o">.</span><span class="n">LittleEndian</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">event</span><span class="p">,</span> <span class="n">err</span>
+<span class="p">}</span>
+
+
+<span class="n">func</span> <span class="n">unmarshalArg</span><span class="p">(</span><span class="n">data</span> <span class="p">[]</span><span class="n">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">ExecveArg</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">event</span> <span class="n">ExecveArg</span>
+    <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">binary</span><span class="o">.</span><span class="n">Read</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">NewReader</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">binary</span><span class="o">.</span><span class="n">LittleEndian</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">event</span><span class="p">,</span> <span class="n">err</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="n">unmarshalRtn</span><span class="p">(</span><span class="n">data</span> <span class="p">[]</span><span class="n">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">ExecveRtn</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">event</span> <span class="n">ExecveRtn</span>
+    <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">binary</span><span class="o">.</span><span class="n">Read</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">NewReader</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">binary</span><span class="o">.</span><span class="n">LittleEndian</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">event</span><span class="p">,</span> <span class="n">err</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="n">unmarshalExitData</span><span class="p">(</span><span class="n">data</span> <span class="p">[]</span><span class="n">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">ExitData</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">event</span> <span class="n">ExitData</span>
+    <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">binary</span><span class="o">.</span><span class="n">Read</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">NewReader</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">binary</span><span class="o">.</span><span class="n">LittleEndian</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">event</span><span class="p">,</span> <span class="n">err</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="n">NullTerminatedString</span><span class="p">(</span><span class="n">data</span> <span class="p">[]</span><span class="n">byte</span><span class="p">)</span> <span class="n">string</span> <span class="p">{</span>
+    <span class="n">nullTerm</span> <span class="p">:</span><span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">IndexByte</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nullTerm</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">string</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">string</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="n">nullTerm</span><span class="p">])</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="n">m</span><span class="p">,</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">NewMonitor</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+        <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">"failed to create exec monitor"</span><span class="p">,</span><span class="n">err</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">done</span> <span class="p">:</span><span class="o">=</span> <span class="n">make</span><span class="p">(</span><span class="n">chan</span> <span class="n">struct</span><span class="p">{})</span>
+    <span class="n">events</span><span class="p">,</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="n">done</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+        <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">"failed to start exec monitor"</span><span class="p">,</span><span class="n">err</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">sig</span> <span class="p">:</span><span class="o">=</span> <span class="n">make</span><span class="p">(</span><span class="n">chan</span> <span class="n">os</span><span class="o">.</span><span class="n">Signal</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">signal</span><span class="o">.</span><span class="n">Notify</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">Interrupt</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">Kill</span><span class="p">)</span>
+    <span class="n">go</span> <span class="n">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="o">&lt;-</span><span class="n">sig</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">done</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">}()</span>
+
+    <span class="k">for</span> <span class="n">e</span> <span class="p">:</span><span class="o">=</span> <span class="nb">range</span> <span class="n">events</span> <span class="p">{</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">_</span> <span class="p">:</span><span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">Marshal</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">string</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
   </div>
 </article>
