@@ -605,7 +605,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="n">uname</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">shell</span> <span class="n">uname</span> <span class="o">-</span><span class="n">r</span><span class="p">)</span>
 <span class="n">kernel_src</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">shell</span> <span class="n">rpm</span> <span class="o">-</span><span class="n">qa</span> <span class="n">kernel</span><span class="o">-</span><span class="n">devel</span> <span class="o">|</span> <span class="n">head</span> <span class="o">-</span><span class="mi">1</span> <span class="o">|</span> <span class="n">sed</span> <span class="err">'</span><span class="n">s</span><span class="o">/</span><span class="n">kernel</span><span class="o">-</span><span class="n">devel</span><span class="o">-</span><span class="c1">//g' | awk '{print "/usr/src/kernels/"$$1""}')</span>
 
-<span class="nl">all</span><span class="p">:</span> <span class="n">build</span> <span class="n">copy</span>
+<span class="nl">all</span><span class="p">:</span> <span class="n">build</span>
 
 <span class="nl">build</span><span class="p">:</span>
         <span class="n">clang</span> \
