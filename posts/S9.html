@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>K8S安全建设经验试分享 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/S9.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="K8S安全建设经验试分享 ~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.anquanke.com/member/154147" target="_blank">安全客</a></li>
+                <li class="list-inline-item"><a href="https://www.freebuf.com/column/1481" target="_blank">Freebuf</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>K8S安全建设经验试分享
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-08-28T20:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Tue 28 August 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/qi-ye-an-quan-jian-she.html">#企业安全建设</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>介绍</h4>
+<p>k8s环境的安全主要来自3个方向：</p>
+<p>1， images 镜像的安全问题</p>
+<p>2,  k8s 的配置和使用问题</p>
+<p>3， k8s 自身组件和操作系统及其依赖组件的安全问题</p>
+<div class="highlight"><pre><span></span><span class="c1">#  cd /etc/yum.repos.d/</span>
+<span class="c1">#  wget http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span>
+<span class="c1">#  yum makecache</span>
+<span class="c1">#  yum install docker-ce  -y  &amp;&amp; systemctl start docker &amp;&amp; systemctl enable docker</span>
+
+
+<span class="c1">#  vim /etc/docker/daemon.json</span>
+
+<span class="o">{</span>
+<span class="s2">"exec-opts"</span>: <span class="o">[</span><span class="s2">"native.cgroupdriver=systemd"</span><span class="o">]</span>,  
+<span class="s2">"registry-mirrors"</span>: <span class="o">[</span><span class="s2">"https://docker.mirrors.ustc.edu.cn"</span><span class="o">]</span>
+<span class="o">}</span>
+
+<span class="c1"># systemctl  restart  docker </span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1">#  curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose</span>
+
+<span class="c1"># chmod +x /usr/local/bin/docker-compose</span>
+
+<span class="c1"># wget  https://github.com/goharbor/harbor/releases/download/v2.2.3/harbor-offline-installer-v2.2.3.tgz</span>
+
+<span class="c1"># tar xf harbor-offline-installer-v2.2.3.tgz </span>
+<span class="c1"># cp harbor.yml.tmpl harbor.yml</span>
+
+<span class="c1"># ./prepare </span>
+<span class="c1"># ./install.sh  --with-trivy  --with-chartmuseum </span>
+</pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/1501625901938_.pic_hd.jpg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/1521625902561_.pic_hd.jpg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/1541625902778_.pic.jpg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/1561625902819_.pic.jpg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/1571625903101_.pic.jpg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/1581625903216_.pic.jpg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/15.50.15.png"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/15.49.51.png"/></p>
+<p>/projects/{project_name}/repositories/{repository_name}/artifacts/{reference}/additions/vulnerabilities  </p>
+<p>curl -X GET "http://172.16.116.5/api/v2.0/projects/library/repositories/fastjson/artifacts/1.2.24/additions/vulnerabilities" -H "accept: application/json" -H "X-Request-Id: 111"</p>
+<p><img alt="agent" class="img-fluid" src="../images/image.png"/></p>
+<p>K8S runtime 的监控</p>
+<p>Falco 由 Sysdig 于 2016 年创建，是第一个作为孵化级项目加入 CNCF 的运行时安全项目。Falco可以对Linux系统调用行为进行监控，主要是用的eBPF技术。Falco的主要功能如下：
+从内核运行时采集Linux系统调用。
+提供了一套强大的规则引擎，用于对Linux系统调用行为进行监控。
+当系统调用违反规则时，会触发相应的告警。</p>
+<div class="highlight"><pre><span></span>curl -s https://falco.org/repo/falcosecurity-3672BA8F.asc <span class="p">|</span> apt-key add -
+<span class="nb">echo</span> <span class="s2">"deb https://download.falco.org/packages/deb stable main"</span> <span class="p">|</span> tee -a /etc/apt/sources.list.d/falcosecurity.list
+
+apt-get update -y
+apt-get -y install linux-headers-<span class="k">$(</span>uname -r<span class="k">)</span>
+apt-get install -y falco
+</pre></div>
+<div class="highlight"><pre><span></span>rpm --import https://falco.org/repo/falcosecurity-3672BA8F.asc
+curl -s -o /etc/yum.repos.d/falcosecurity.repo https://falco.org/repo/falcosecurity-rpm.repo
+
+yum -y install kernel-devel-<span class="k">$(</span>uname -r<span class="k">)</span>
+
+yum -y install falco
+</pre></div>
+<p>https://falco.org/docs/getting-started/installation/</p>
+<p><img alt="agent" class="img-fluid" src="../images/imag1e.png"/></p>
+<div class="highlight"><pre><span></span>json_output: <span class="nb">true</span>
+json_include_output_property: <span class="nb">true</span>
+http_output:
+  enabled: <span class="nb">true</span>
+  url: <span class="s2">"http://localhost:2801"</span>
+</pre></div>
+<p>https://github.com/falcosecurity/falcosidekick.git</p>
+<p>```bash</p>
+<p>elasticsearch:
+   hostport: "http://10.10.116.177:9201" # http://{domain or ip}:{port}, if not empty, Elasticsearch output is enabled
+   index: "falco" # index (default: falco)
+   type: "event"
+   minimumpriority: "" # minimum priority of event for using this output, order is emergency|alert|critical|error|warning|notice|informational|debug or "" (default)
+   suffix: "daily" # date suffix for index rotation : daily (default), monthly, annually, none
+   mutualtls: false # if true, checkcert flag will be ignored (server cert will always be checked)
+   checkcert: true # check if ssl certificate of the output is valid (default: true)
+   username: "" # use this username to authenticate to Elasticsearch if the username is not empty (default: "")
+   password: "" # use this password to authenticate to Elasticsearch if the password is not empty (default: "")</p>
+<p>kafka:
+  hostport: "" # Apache Kafka Host:Port (ex: localhost:9092). Defaults to port 9092 if no port is specified after the domain, if not empty, Kafka output is enabled
+  topic: "" # Name of the topic, if not empty, Kafka output is enabled
+  # minimumpriority: "debug" # minimum priority of event for using this output, order is emergency|alert|critical|error|warning|notice|informational|debug or "" (default)</p>
+<p>```</p>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
