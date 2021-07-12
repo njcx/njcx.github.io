@@ -142,8 +142,11 @@ var _hmt = _hmt || [];
 <p><img alt="agent" class="img-fluid" src="../images/1581625903216_.pic.jpg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/15.50.15.png"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/15.49.51.png"/></p>
-<p>/projects/{project_name}/repositories/{repository_name}/artifacts/{reference}/additions/vulnerabilities  </p>
-<p>curl -X GET "http://172.16.116.5/api/v2.0/projects/library/repositories/fastjson/artifacts/1.2.24/additions/vulnerabilities" -H "accept: application/json" -H "X-Request-Id: 111"</p>
+<div class="highlight"><pre><span></span>/projects/<span class="o">{</span>project_name<span class="o">}</span>/repositories/<span class="o">{</span>repository_name<span class="o">}</span>/artifacts/<span class="o">{</span>reference<span class="o">}</span>/additions/vulnerabilities  
+
+
+curl -X GET <span class="s2">"http://172.16.116.5/api/v2.0/projects/library/repositories/fastjson/artifacts/1.2.24/additions/vulnerabilities"</span> -H <span class="s2">"accept: application/json"</span> -H <span class="s2">"X-Request-Id: 111"</span>
+</pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/image.png"/></p>
 <p>K8S runtime 的监控</p>
 <p>Falco 由 Sysdig 于 2016 年创建，是第一个作为孵化级项目加入 CNCF 的运行时安全项目。Falco可以对Linux系统调用行为进行监控，主要是用的eBPF技术。Falco的主要功能如下：
