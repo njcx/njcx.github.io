@@ -148,6 +148,27 @@ var _hmt = _hmt || [];
 curl -X GET <span class="s2">"http://172.16.116.5/api/v2.0/projects/library/repositories/fastjson/artifacts/1.2.24/additions/vulnerabilities"</span> -H <span class="s2">"accept: application/json"</span> -H <span class="s2">"X-Request-Id: 111"</span>
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/image.png"/></p>
+<p>k8s 基线</p>
+<p>https://github.com/aquasecurity/kube-bench</p>
+<div class="highlight"><pre><span></span>$ kubectl apply -f job.yaml
+job.batch/kube-bench created
+
+$ kubectl get pods
+NAME                      READY   STATUS              RESTARTS   AGE
+kube-bench-j76s9   <span class="m">0</span>/1     ContainerCreating   <span class="m">0</span>          3s
+
+<span class="c1"># Wait for a few seconds for the job to complete</span>
+$ kubectl get pods
+NAME                      READY   STATUS      RESTARTS   AGE
+kube-bench-j76s9   <span class="m">0</span>/1     Completed   <span class="m">0</span>          11s
+
+<span class="c1"># The results are held in the pod's logs</span>
+kubectl logs kube-bench-j76s9
+<span class="o">[</span>INFO<span class="o">]</span> <span class="m">1</span> Master Node Security Configuration
+<span class="o">[</span>INFO<span class="o">]</span> <span class="m">1</span>.1 API Server
+</pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG298.jpeg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG299.jpeg"/></p>
 <p>K8S runtime 的监控</p>
 <p>Falco 由 Sysdig 于 2016 年创建，是第一个作为孵化级项目加入 CNCF 的运行时安全项目。Falco可以对Linux系统调用行为进行监控，主要是用的eBPF技术。Falco的主要功能如下：
 从内核运行时采集Linux系统调用。
