@@ -209,9 +209,9 @@ http_output:
   url: <span class="s2">"http://localhost:2801"</span>
 </code></pre></div>
 <p>https://github.com/falcosecurity/falcosidekick.git</p>
-<p><img alt="agent" class="img-fluid" src="../images/WechatIMG171123.jpeg"/></p>
+<p>falcosidekick 是一个管道工具，接受 Falco的事件并将它们发送到不同的持久化工具中。我们使用falcosidekick把falco post 过来的数据写入es ，也可以写入kafka。如下图。</p>
 <div class="highlight"><pre><span></span><code>elasticsearch:
-   hostport: <span class="s2">"http://10.10.116.177:9201"</span> 
+   hostport: <span class="s2">"http://10.10.116.177:9200"</span> 
    index: <span class="s2">"falco"</span> 
    type: <span class="s2">"event"</span>
    minimumpriority: <span class="s2">""</span> 
@@ -227,6 +227,7 @@ kafka:
   topic: <span class="s2">""</span> 
   <span class="c1"># minimumpriority: "debug" </span>
 </code></pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG171123.jpeg"/></p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
