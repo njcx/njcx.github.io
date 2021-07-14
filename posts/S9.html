@@ -215,11 +215,37 @@ yum -y install kernel-devel-<span class="k">$(</span>uname -r<span class="k">)</
 yum -y install falco
 </code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/imag1e.png"/></p>
+<p>Falco规则文件是包含三种类型元素的YAML文件：</p>
+<p>Rules 、Macros、Lists</p>
+<p>Rules就是生成告警的条件以及一下描述性输出字符串。Macros 是可以在规则或者其他宏中重复使用的规则条件片段。Lists 类似Python 列表，定义了一个变量集合。</p>
+<p>Falco 使用了Sysdig， 在rule的 condition里面,任何 Sysdig 过滤器都可以在 Falco 中使用。</p>
+<p>参考如下：</p>
+<div class="highlight"><pre><span></span><code>https://github.com/draios/sysdig/wiki/sysdig-user-guide#filtering
+</code></pre></div>
+<p>这是一个rule的 condition条件示例，在容器内运行 bash shell 时发出警报：</p>
+<p>container.id != host and proc.name = bash</p>
+<p>第一个子句检查事件是否发生在容器中（Sysdig 事件有一个container字段，该字段等于"host"事件是否发生在host主机上）。第二个子句检查进程名称是否为bash。</p>
+<p>举个完整的列子</p>
+<div class="highlight"><pre><span></span><code>- list: my_programs
+  items: <span class="o">[</span>ls, cat,  bash<span class="o">]</span>
+
+- macro: access_file
+  condition: evt.type<span class="o">=</span>open
+
+- rule: program_accesses_file
+  desc: track whenever a <span class="nb">set</span> of programs opens a file
+  condition: proc.name <span class="k">in</span> <span class="o">(</span>my_programs<span class="o">)</span> and <span class="o">(</span>access_file<span class="o">)</span>
+  output: a tracked program opened a file <span class="o">(</span><span class="nv">user</span><span class="o">=</span>%user.name <span class="nv">command</span><span class="o">=</span>%proc.cmdline <span class="nv">file</span><span class="o">=</span>%fd.name<span class="o">)</span>
+  priority: INFO
+</code></pre></div>
+<p>下面，我们修改falco 的配置，/etc/falco/falco.yaml </p>
 <div class="highlight"><pre><span></span><code>json_output: <span class="nb">true</span>
 json_include_output_property: <span class="nb">true</span>
 http_output:
   enabled: <span class="nb">true</span>
   url: <span class="s2">"http://localhost:2801"</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>systemctl <span class="nb">enable</span> falco 
 </code></pre></div>
 <p>https://github.com/falcosecurity/falcosidekick.git</p>
 <p>falcosidekick 是一个管道工具，接受 Falco的事件并将它们发送到不同的持久化工具中。我们使用falcosidekick把falco post 过来的数据写入es ，也可以写入kafka。如下图。</p>
