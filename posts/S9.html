@@ -162,30 +162,30 @@ curl -X GET <span class="s2">"http://172.16.116.5/api/v2.0/projects/library/repo
 kubernetes CIS基准下载地址，如下</p>
 <p>https://www.cisecurity.org/benchmark/kubernetes/</p>
 <p>文件内容一共几大块</p>
-<div class="highlight"><pre><span></span><code><span class="n">master节点的服务</span><span class="o">:</span> <span class="n">apiserver</span><span class="err">，</span><span class="n">controller</span> <span class="n">manager</span><span class="err">，</span><span class="n">scheduler</span><span class="err">，</span><span class="n">etcd</span>
+<div class="highlight"><pre><span></span><code>    master节点的服务: apiserver，controller manager，scheduler，etcd
 
-<span class="n">node节点的服务</span><span class="o">:</span> <span class="n">kubelet</span><span class="o">,</span> <span class="n">proxy</span>
+    node节点的服务: kubelet, proxy
 
-<span class="err">安全控制</span><span class="o">:</span> <span class="n">RBAC</span><span class="o">,</span> <span class="n">pod</span> <span class="n">policy</span><span class="o">,</span> <span class="n">network</span> <span class="n">policy</span>
+    安全控制: RBAC, pod policy, network policy
 </code></pre></div>
 <p>该工具是使用Go语言完成，而测试文件则兼容于YAML格式，其测试结果也能支持JSON格式，方便使用者整合其他的自动化工具。在执行完测试任务后，系统除了告诉开发者Kubernetes未通过哪些测试外，也会给予如何改善的建议，例如移除K8s上某个不安全的配置设置建议，或者限制配置文件的权限等。下载地址如下</p>
 <p>https://github.com/aquasecurity/kube-bench</p>
-<div class="highlight"><pre><span></span><code><span class="err">$</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="n">apply</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">job</span><span class="p">.</span><span class="n">yaml</span><span class="w"></span>
-<span class="n">job</span><span class="p">.</span><span class="n">batch</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">bench</span><span class="w"> </span><span class="n">created</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code>$ kubectl apply -f job.yaml
+job.batch/kube-bench created
 
-<span class="err">$</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span><span class="w"></span>
-<span class="n">NAME</span><span class="w">                      </span><span class="n">READY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">              </span><span class="n">RESTARTS</span><span class="w">   </span><span class="n">AGE</span><span class="w"></span>
-<span class="n">kube</span><span class="o">-</span><span class="n">bench</span><span class="o">-</span><span class="n">j76s9</span><span class="w">   </span><span class="mi">0</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">ContainerCreating</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">3</span><span class="n">s</span><span class="w"></span>
+$ kubectl get pods
+NAME                      READY   STATUS              RESTARTS   AGE
+kube-bench-j76s9   <span class="m">0</span>/1     ContainerCreating   <span class="m">0</span>          3s
 
-<span class="err">#</span><span class="w"> </span><span class="n">Wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">few</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">complete</span><span class="w"></span>
-<span class="err">$</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span><span class="w"></span>
-<span class="n">NAME</span><span class="w">                      </span><span class="n">READY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">      </span><span class="n">RESTARTS</span><span class="w">   </span><span class="n">AGE</span><span class="w"></span>
-<span class="n">kube</span><span class="o">-</span><span class="n">bench</span><span class="o">-</span><span class="n">j76s9</span><span class="w">   </span><span class="mi">0</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">Completed</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">11</span><span class="n">s</span><span class="w"></span>
+<span class="c1"># Wait for a few seconds for the job to complete</span>
+$ kubectl get pods
+NAME                      READY   STATUS      RESTARTS   AGE
+kube-bench-j76s9   <span class="m">0</span>/1     Completed   <span class="m">0</span>          11s
 
-<span class="err">#</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">held</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">pod</span><span class="err">'</span><span class="n">s</span><span class="w"> </span><span class="n">logs</span><span class="w"></span>
-<span class="n">kubectl</span><span class="w"> </span><span class="n">logs</span><span class="w"> </span><span class="n">kube</span><span class="o">-</span><span class="n">bench</span><span class="o">-</span><span class="n">j76s9</span><span class="w"></span>
-<span class="o">[</span><span class="n">INFO</span><span class="o">]</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">Master</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">Security</span><span class="w"> </span><span class="n">Configuration</span><span class="w"></span>
-<span class="o">[</span><span class="n">INFO</span><span class="o">]</span><span class="w"> </span><span class="mf">1.1</span><span class="w"> </span><span class="n">API</span><span class="w"> </span><span class="n">Server</span><span class="w"></span>
+<span class="c1"># The results are held in the pod's logs</span>
+kubectl logs kube-bench-j76s9
+<span class="o">[</span>INFO<span class="o">]</span> <span class="m">1</span> Master Node Security Configuration
+<span class="o">[</span>INFO<span class="o">]</span> <span class="m">1</span>.1 API Server
 </code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG298.jpeg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG299.jpeg"/></p>
@@ -198,6 +198,8 @@ kubernetes CIS基准下载地址，如下</p>
 从内核运行时采集Linux系统调用。
 提供了一套强大的规则引擎，用于对Linux系统调用行为进行监控。
 当系统调用违反规则时，会触发相应的告警。</p>
+<p>安装文档地址如下：</p>
+<p>https://falco.org/docs/getting-started/installation/</p>
 <div class="highlight"><pre><span></span><code>curl -s https://falco.org/repo/falcosecurity-3672BA8F.asc <span class="p">|</span> apt-key add -
 <span class="nb">echo</span> <span class="s2">"deb https://download.falco.org/packages/deb stable main"</span> <span class="p">|</span> tee -a /etc/apt/sources.list.d/falcosecurity.list
 
@@ -212,7 +214,6 @@ yum -y install kernel-devel-<span class="k">$(</span>uname -r<span class="k">)</
 
 yum -y install falco
 </code></pre></div>
-<p>https://falco.org/docs/getting-started/installation/</p>
 <p><img alt="agent" class="img-fluid" src="../images/imag1e.png"/></p>
 <div class="highlight"><pre><span></span><code>json_output: <span class="nb">true</span>
 json_include_output_property: <span class="nb">true</span>
