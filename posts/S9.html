@@ -162,11 +162,11 @@ curl -X GET <span class="s2">"http://172.16.116.5/api/v2.0/projects/library/repo
 kubernetes CIS基准下载地址，如下</p>
 <p>https://www.cisecurity.org/benchmark/kubernetes/</p>
 <p>文件内容一共几大块</p>
-<div class="highlight"><pre><span></span><code>master节点的服务 apiserver，controller manager，scheduler，etcd
+<div class="highlight"><pre><span></span><code><span class="n">master节点的服务</span><span class="o">:</span> <span class="n">apiserver</span><span class="err">，</span><span class="n">controller</span> <span class="n">manager</span><span class="err">，</span><span class="n">scheduler</span><span class="err">，</span><span class="n">etcd</span>
 
-node节点的服务 kubelet, proxy
+<span class="n">node节点的服务</span><span class="o">:</span> <span class="n">kubelet</span><span class="o">,</span> <span class="n">proxy</span>
 
-安全控制: RBAC, pod policy, network policy
+<span class="err">安全控制</span><span class="o">:</span> <span class="n">RBAC</span><span class="o">,</span> <span class="n">pod</span> <span class="n">policy</span><span class="o">,</span> <span class="n">network</span> <span class="n">policy</span>
 </code></pre></div>
 <p>该工具是使用Go语言完成，而测试文件则兼容于YAML格式，其测试结果也能支持JSON格式，方便使用者整合其他的自动化工具。在执行完测试任务后，系统除了告诉开发者Kubernetes未通过哪些测试外，也会给予如何改善的建议，例如移除K8s上某个不安全的配置设置建议，或者限制配置文件的权限等。下载地址如下</p>
 <p>https://github.com/aquasecurity/kube-bench</p>
@@ -190,7 +190,7 @@ node节点的服务 kubelet, proxy
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG298.jpeg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG299.jpeg"/></p>
 <p>kube-hunter是也aquasec的开源工具，它们可以在Kubernetes集群中寻找安全问题。kube-bench主要用于让你的实践符合CIS的标准，而kube-hunter则关注你要暴露的漏洞。它们两个结合使用，可以为我们提供一个很好的发现安全问题的视角。kube-hunter 可以你的环境内部或外部运行扫描，</p>
-<div class="highlight"><pre><span></span><code>pip install kube-hunter
+<div class="highlight"><pre><span></span><code>pip3 install kube-hunter    //py3 环境
 </code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WeChatacd04043ac589270629b297a810ec9d3.png"/></p>
 <h4>k8s runtime 的监控</h4>
