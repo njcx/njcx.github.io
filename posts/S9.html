@@ -204,23 +204,23 @@ http_output:
   url: <span class="s2">"http://localhost:2801"</span>
 </code></pre></div>
 <p>https://github.com/falcosecurity/falcosidekick.git</p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG171123.jpeg"/></p>
 <div class="highlight"><pre><span></span><code>elasticsearch:
-   hostport: <span class="s2">"http://10.10.116.177:9201"</span> <span class="c1"># http://{domain or ip}:{port}, if not empty, Elasticsearch output is enabled</span>
-   index: <span class="s2">"falco"</span> <span class="c1"># index (default: falco)</span>
+   hostport: <span class="s2">"http://10.10.116.177:9201"</span> 
+   index: <span class="s2">"falco"</span> 
    type: <span class="s2">"event"</span>
-   minimumpriority: <span class="s2">""</span> <span class="c1"># minimum priority of event for using this output, order is emergency|alert|critical|error|warning|notice|informational|debug or "" (default)</span>
-   suffix: <span class="s2">"daily"</span> <span class="c1"># date suffix for index rotation : daily (default), monthly, annually, none</span>
-   mutualtls: <span class="nb">false</span> <span class="c1"># if true, checkcert flag will be ignored (server cert will always be checked)</span>
-   checkcert: <span class="nb">true</span> <span class="c1"># check if ssl certificate of the output is valid (default: true)</span>
-   username: <span class="s2">""</span> <span class="c1"># use this username to authenticate to Elasticsearch if the username is not empty (default: "")</span>
-   password: <span class="s2">""</span> <span class="c1"># use this password to authenticate to Elasticsearch if the password is not empty (default: "")</span>
-
+   minimumpriority: <span class="s2">""</span> 
+   suffix: <span class="s2">"daily"</span> 
+   mutualtls: <span class="nb">false</span> 
+   checkcert: <span class="nb">true</span> 
+   username: <span class="s2">""</span> 
+   password: <span class="s2">""</span> 
 
 
 kafka:
-  hostport: <span class="s2">""</span> <span class="c1"># Apache Kafka Host:Port (ex: localhost:9092). Defaults to port 9092 if no port is specified after the domain, if not empty, Kafka output is enabled</span>
-  topic: <span class="s2">""</span> <span class="c1"># Name of the topic, if not empty, Kafka output is enabled</span>
-  <span class="c1"># minimumpriority: "debug" # minimum priority of event for using this output, order is emergency|alert|critical|error|warning|notice|informational|debug or "" (default)</span>
+  hostport: <span class="s2">""</span> 
+  topic: <span class="s2">""</span> 
+  <span class="c1"># minimumpriority: "debug" </span>
 </code></pre></div>
   </div>
 </article>
