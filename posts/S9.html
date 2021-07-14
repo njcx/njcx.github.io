@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-08-28T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Tue 28 August 2018
+        二 28 八月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -107,7 +107,7 @@ var _hmt = _hmt || [];
 <p>1， images 镜像的安全问题</p>
 <p>2,  k8s 的配置和使用问题</p>
 <p>3， k8s 自身组件和操作系统及其依赖组件的安全问题</p>
-<div class="highlight"><pre><span></span><span class="c1">#  cd /etc/yum.repos.d/</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#  cd /etc/yum.repos.d/</span>
 <span class="c1">#  wget http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span>
 <span class="c1">#  yum makecache</span>
 <span class="c1">#  yum install docker-ce  -y  &amp;&amp; systemctl start docker &amp;&amp; systemctl enable docker</span>
@@ -121,8 +121,8 @@ var _hmt = _hmt || [];
 <span class="o">}</span>
 
 <span class="c1"># systemctl  restart  docker </span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="c1">#  curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">#  curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose</span>
 
 <span class="c1"># chmod +x /usr/local/bin/docker-compose</span>
 
@@ -133,7 +133,7 @@ var _hmt = _hmt || [];
 
 <span class="c1"># ./prepare </span>
 <span class="c1"># ./install.sh  --with-trivy  --with-chartmuseum </span>
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/1501625901938_.pic_hd.jpg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/1521625902561_.pic_hd.jpg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/1541625902778_.pic.jpg"/></p>
@@ -142,37 +142,37 @@ var _hmt = _hmt || [];
 <p><img alt="agent" class="img-fluid" src="../images/1581625903216_.pic.jpg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/15.50.15.png"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/15.49.51.png"/></p>
-<div class="highlight"><pre><span></span>/projects/<span class="o">{</span>project_name<span class="o">}</span>/repositories/<span class="o">{</span>repository_name<span class="o">}</span>/artifacts/<span class="o">{</span>reference<span class="o">}</span>/additions/vulnerabilities  
+<div class="highlight"><pre><span></span><code>/projects/<span class="o">{</span>project_name<span class="o">}</span>/repositories/<span class="o">{</span>repository_name<span class="o">}</span>/artifacts/<span class="o">{</span>reference<span class="o">}</span>/additions/vulnerabilities  
 
 
 curl -X GET <span class="s2">"http://172.16.116.5/api/v2.0/projects/library/repositories/fastjson/artifacts/1.2.24/additions/vulnerabilities"</span> -H <span class="s2">"accept: application/json"</span> -H <span class="s2">"X-Request-Id: 111"</span>
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/image.png"/></p>
 <p>k8s 基线</p>
 <p>https://github.com/aquasecurity/kube-bench</p>
-<div class="highlight"><pre><span></span>$ kubectl apply -f job.yaml
-job.batch/kube-bench created
+<div class="highlight"><pre><span></span><code><span class="err">$</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="n">apply</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">job</span><span class="p">.</span><span class="n">yaml</span><span class="w"></span>
+<span class="n">job</span><span class="p">.</span><span class="n">batch</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">bench</span><span class="w"> </span><span class="n">created</span><span class="w"></span>
 
-$ kubectl get pods
-NAME                      READY   STATUS              RESTARTS   AGE
-kube-bench-j76s9   <span class="m">0</span>/1     ContainerCreating   <span class="m">0</span>          3s
+<span class="err">$</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span><span class="w"></span>
+<span class="n">NAME</span><span class="w">                      </span><span class="n">READY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">              </span><span class="n">RESTARTS</span><span class="w">   </span><span class="n">AGE</span><span class="w"></span>
+<span class="n">kube</span><span class="o">-</span><span class="n">bench</span><span class="o">-</span><span class="n">j76s9</span><span class="w">   </span><span class="mi">0</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">ContainerCreating</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">3</span><span class="n">s</span><span class="w"></span>
 
-<span class="c1"># Wait for a few seconds for the job to complete</span>
-$ kubectl get pods
-NAME                      READY   STATUS      RESTARTS   AGE
-kube-bench-j76s9   <span class="m">0</span>/1     Completed   <span class="m">0</span>          11s
+<span class="err">#</span><span class="w"> </span><span class="n">Wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">few</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">complete</span><span class="w"></span>
+<span class="err">$</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span><span class="w"></span>
+<span class="n">NAME</span><span class="w">                      </span><span class="n">READY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">      </span><span class="n">RESTARTS</span><span class="w">   </span><span class="n">AGE</span><span class="w"></span>
+<span class="n">kube</span><span class="o">-</span><span class="n">bench</span><span class="o">-</span><span class="n">j76s9</span><span class="w">   </span><span class="mi">0</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">Completed</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">11</span><span class="n">s</span><span class="w"></span>
 
-<span class="c1"># The results are held in the pod's logs</span>
-kubectl logs kube-bench-j76s9
-<span class="o">[</span>INFO<span class="o">]</span> <span class="m">1</span> Master Node Security Configuration
-<span class="o">[</span>INFO<span class="o">]</span> <span class="m">1</span>.1 API Server
-</pre></div>
+<span class="err">#</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">held</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">pod</span><span class="err">'</span><span class="n">s</span><span class="w"> </span><span class="n">logs</span><span class="w"></span>
+<span class="n">kubectl</span><span class="w"> </span><span class="n">logs</span><span class="w"> </span><span class="n">kube</span><span class="o">-</span><span class="n">bench</span><span class="o">-</span><span class="n">j76s9</span><span class="w"></span>
+<span class="o">[</span><span class="n">INFO</span><span class="o">]</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">Master</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">Security</span><span class="w"> </span><span class="n">Configuration</span><span class="w"></span>
+<span class="o">[</span><span class="n">INFO</span><span class="o">]</span><span class="w"> </span><span class="mf">1.1</span><span class="w"> </span><span class="n">API</span><span class="w"> </span><span class="n">Server</span><span class="w"></span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG298.jpeg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG299.jpeg"/></p>
 <p>kube-bench和kube-hunter是aquasec的开源工具，它们可以在Kubernetes集群中寻找安全问题。它们在Kubernetes基础架构堆栈中分析安全状况的方法有所区别。kube-bench主要用于让你的实践符合CIS的标准，而kube-hunter则关注你要暴露的漏洞。它们两个结合使用，可以为我们确定合规性提供一个很好的视角。</p>
 <p>让我们先从kube-bench开始，它会根据CIS的安全性最佳实践检查Kubernetes是否部署。kube-bench可以运行在本地或在你的Kubernetes环境中作为容器。一旦部署完成，kube-bench会根据要执行的测试以及不同的Kubernetes版本，为你提供一些用于master或节点的配置文件。需要注意的是，配置文件会被写入YAML。那意味着你可以对它们进行调整以适应你的测试，或者当CIS或Kubernetes公开更多测试时直接采用它们即可。</p>
-<div class="highlight"><pre><span></span>pip install kube-hunter
-</pre></div>
+<div class="highlight"><pre><span></span><code>pip install kube-hunter
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WeChatacd04043ac589270629b297a810ec9d3.png"/></p>
 <p>kube-hunter会在你的环境内部或外部运行扫描功能，以让你了解在你的Kubernetes平台中的安全性漏洞。kube-hunter可以在集群内部或外部、在任何机器上作为一个容器运行。当你进入集群DNS或IP之后，kube-hunter就会开始查看你当前打开的端口、运行测试并查看是否存在任何漏洞。然后，你将会获得大量相关信息，可以帮助你确定下一步应该如何执行。</p>
 <p>kube-hunter的默认状态是“passive”，这意味着它将查找诸如Kubernetes SSL证书中的电子邮件地址之类的内容，并检查开放端口、代理服务和dashboard。在“active”状态中，kube-hunter将会查找其他弱点，并利用发现的弱点来进一步探索漏洞，因此它十分强大。虽然kube-hunter不会查看容器镜像内部(有其他工具可以专门查看此处)，但它可以运行可能暴露数据泄露或有危害的电子邮件地址的测试。</p>
@@ -181,30 +181,30 @@ kubectl logs kube-bench-j76s9
 从内核运行时采集Linux系统调用。
 提供了一套强大的规则引擎，用于对Linux系统调用行为进行监控。
 当系统调用违反规则时，会触发相应的告警。</p>
-<div class="highlight"><pre><span></span>curl -s https://falco.org/repo/falcosecurity-3672BA8F.asc <span class="p">|</span> apt-key add -
+<div class="highlight"><pre><span></span><code>curl -s https://falco.org/repo/falcosecurity-3672BA8F.asc <span class="p">|</span> apt-key add -
 <span class="nb">echo</span> <span class="s2">"deb https://download.falco.org/packages/deb stable main"</span> <span class="p">|</span> tee -a /etc/apt/sources.list.d/falcosecurity.list
 
 apt-get update -y
 apt-get -y install linux-headers-<span class="k">$(</span>uname -r<span class="k">)</span>
 apt-get install -y falco
-</pre></div>
-<div class="highlight"><pre><span></span>rpm --import https://falco.org/repo/falcosecurity-3672BA8F.asc
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>rpm --import https://falco.org/repo/falcosecurity-3672BA8F.asc
 curl -s -o /etc/yum.repos.d/falcosecurity.repo https://falco.org/repo/falcosecurity-rpm.repo
 
 yum -y install kernel-devel-<span class="k">$(</span>uname -r<span class="k">)</span>
 
 yum -y install falco
-</pre></div>
+</code></pre></div>
 <p>https://falco.org/docs/getting-started/installation/</p>
 <p><img alt="agent" class="img-fluid" src="../images/imag1e.png"/></p>
-<div class="highlight"><pre><span></span>json_output: <span class="nb">true</span>
+<div class="highlight"><pre><span></span><code>json_output: <span class="nb">true</span>
 json_include_output_property: <span class="nb">true</span>
 http_output:
   enabled: <span class="nb">true</span>
   url: <span class="s2">"http://localhost:2801"</span>
-</pre></div>
+</code></pre></div>
 <p>https://github.com/falcosecurity/falcosidekick.git</p>
-<div class="highlight"><pre><span></span>elasticsearch:
+<div class="highlight"><pre><span></span><code>elasticsearch:
    hostport: <span class="s2">"http://10.10.116.177:9201"</span> <span class="c1"># http://{domain or ip}:{port}, if not empty, Elasticsearch output is enabled</span>
    index: <span class="s2">"falco"</span> <span class="c1"># index (default: falco)</span>
    type: <span class="s2">"event"</span>
@@ -221,7 +221,7 @@ kafka:
   hostport: <span class="s2">""</span> <span class="c1"># Apache Kafka Host:Port (ex: localhost:9092). Defaults to port 9092 if no port is specified after the domain, if not empty, Kafka output is enabled</span>
   topic: <span class="s2">""</span> <span class="c1"># Name of the topic, if not empty, Kafka output is enabled</span>
   <span class="c1"># minimumpriority: "debug" # minimum priority of event for using this output, order is emergency|alert|critical|error|warning|notice|informational|debug or "" (default)</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

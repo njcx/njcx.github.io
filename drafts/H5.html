@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-04T13:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Mon 04 June 2018
+        一 04 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -104,17 +104,17 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>安装</h4>
 <p>地址 </p>
-<div class="highlight"><pre><span></span>https://downloads.lightbend.com/scala/2.12.6/scala-2.12.6.tgz
+<div class="highlight"><pre><span></span><code>https://downloads.lightbend.com/scala/2.12.6/scala-2.12.6.tgz
 
 http://mirrors.hust.edu.cn/apache/kafka/2.0.0/kafka_2.12-2.0.0.tgz
 
 http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz
-</pre></div>
+</code></pre></div>
 <p>下载并且解压</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span> /opt <span class="o">&amp;&amp;</span> download  ALL  <span class="o">&amp;&amp;</span> tar -zxvf  ALL
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> /opt <span class="o">&amp;&amp;</span> download  ALL  <span class="o">&amp;&amp;</span> tar -zxvf  ALL
+</code></pre></div>
 <p>配置环境变量</p>
-<div class="highlight"><pre><span></span><span class="nb">echo</span> -e <span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span> -e <span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
 <span class="s2">export JRE_HOME=\${JAVA_HOME}/jre \n\</span>
 <span class="s2">export CLASSPATH=.:\${JAVA_HOME}/lib:\${JRE_HOME}/lib \n\</span>
 <span class="s2">export PATH=\${JAVA_HOME}/bin:\$PATH \n\</span>
@@ -122,29 +122,29 @@ http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad
 <span class="s2">export SCALA_HOME=/opt/scala-2.12.6 \n\</span>
 <span class="s2">export PATH=\$PATH:\$SCALA_HOME/bin \n\</span>
 <span class="s2">"</span> &gt;&gt; /etc/profile <span class="o">&amp;&amp;</span> <span class="nb">source</span> /etc/profile
-</pre></div>
+</code></pre></div>
 <p>安装 kafka-manage</p>
 <p>配置sbt 国内源</p>
-<div class="highlight"><pre><span></span><span class="c1">#cd ~ &amp;&amp; vim .sbt/repositories</span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="k">[repositories]</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#cd ~ &amp;&amp; vim .sbt/repositories</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">[repositories]</span>
 <span class="na">local</span>
 <span class="na">aliyun: http://maven.aliyun.com/nexus/content/groups/public</span>
 <span class="na">typesafe: http://repo.typesafe.com/typesafe/ivy-releases/, [organization]/[module]/(scala_[scalaVersion]/)(sbt_[sbtVersion]/)[revision]/[type]s/[artifact](-[classifier]).[ext], bootOnly</span>
-</pre></div>
+</code></pre></div>
 <p>编译</p>
-<div class="highlight"><pre><span></span><span class="c1">#git clone https://github.com/yahoo/kafka-manager</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#git clone https://github.com/yahoo/kafka-manager</span>
 
 <span class="c1">#cd kafka-manager &amp;&amp; ./ sbt clean dist</span>
 
 <span class="c1"># cd target/universal/     可执行文件所在目录</span>
-</pre></div>
+</code></pre></div>
 <p>有点慢，搞杯茶喝喝，3杯茶都喝了,还是找个已经编译好的吧</p>
-<div class="highlight"><pre><span></span>git clone  https://github.com/njcx/kafka-manage-bin.git
-</pre></div>
+<div class="highlight"><pre><span></span><code>git clone  https://github.com/njcx/kafka-manage-bin.git
+</code></pre></div>
 <h4>ZooKeeper</h4>
 <p>默认端口2181</p>
-<div class="highlight"><pre><span></span><span class="c1"># cd /opt &amp;&amp; wget http://mirrors.hust.edu.cn/apache/zookeeper/stable/zookeeper-3.4.12.tar.gz</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># cd /opt &amp;&amp; wget http://mirrors.hust.edu.cn/apache/zookeeper/stable/zookeeper-3.4.12.tar.gz</span>
 
 <span class="c1"># tar -zxvf zookeeper-3.4.12.tar.gz</span>
 
@@ -153,17 +153,17 @@ http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad
 <span class="c1"># cp zoo_sample.cfg zoo.cfg &amp;&amp; cd ../bin</span>
 
 <span class="c1"># ./zkServer.sh start</span>
-</pre></div>
+</code></pre></div>
 <h4>Kafka</h4>
-<div class="highlight"><pre><span></span><span class="c1"># cd kafka_2.12-1.0.0/bin</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># cd kafka_2.12-1.0.0/bin</span>
 
 <span class="c1"># ./kafka-server-start.sh  -daemon ../config/server.properties</span>
-</pre></div>
+</code></pre></div>
 <h4>kafka-manage</h4>
-<div class="highlight"><pre><span></span><span class="c1"># cd /opt/kafka-manage-bin/bin</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># cd /opt/kafka-manage-bin/bin</span>
 
 <span class="c1"># nohup ./kafka-manager &gt;&gt; kafka-manager.log  2&gt;&amp;1 &amp;</span>
-</pre></div>
+</code></pre></div>
 <h4>管理</h4>
   </div>
 </article>

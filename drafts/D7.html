@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-04-12T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Wed 12 April 2017
+        三 12 四月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -106,24 +106,24 @@ var _hmt = _hmt || [];
 <p>Tornado全称Tornado Web Server，是一个用Python语言写成的Web服务器兼Web应用框架。作为Web框架，是一个轻量级的Web框架，其拥有异步非阻塞IO的处理方式。作为Web服务器，Tornado有较为出色的抗负载能力。得利于其非阻塞的方式和对 epoll 的运用，Tornado 每秒可以处理数以千计的连接，这意味着对于实时Web服务来说，Tornado 是一个理想的 Web 框架。无论做为一个HTTP Server 还是一个Web框架，Tornado都足够优秀。</p>
 <h4>安装</h4>
 <p>Tornado 是纯Python实现的，完美支持PyPy，在Jit 加持下性能更是如虎添翼，我个人在做Web开发的时候，就很喜欢用PyPy，性能差异可以直接感觉到，推荐大家试一试。 目前Tornado的版本是4.5.1，我们可以配置国内源，把下面内容写到 ～/.pip/pip.conf 文件中，我的系统是ubuntu16.04，其他linux发行版类似</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>global<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>global<span class="o">]</span>
 index-url <span class="o">=</span> http://pypi.douban.com/simple
 <span class="o">[</span>install<span class="o">]</span>
 trusted-host<span class="o">=</span>pypi.douban.com
-</pre></div>
+</code></pre></div>
 <p>安装方式：</p>
-<div class="highlight"><pre><span></span><span class="n">Python</span>
+<div class="highlight"><pre><span></span><code><span class="n">Python</span>
 <span class="o">&gt;</span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">pip</span> <span class="o">-</span><span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">tornado</span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="n">PyPy</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">PyPy</span>
 <span class="o">&gt;</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">wget</span> <span class="n">pypy</span> <span class="n">pypy</span><span class="o">-</span><span class="n">lib</span> <span class="n">pypy</span><span class="o">-</span><span class="n">dev</span> <span class="o">-</span><span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bootstrap</span><span class="o">.</span><span class="n">pypa</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">tornado</span>
-</pre></div>
-<div class="highlight"><pre><span></span>MySQL 数据库安装
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>MySQL 数据库安装
 &gt;apt-get install mysql-server libmysqlclient-dev -y
 &gt;pypy -m pip install mysql-python
 或者
 &gt;python -m pip install mysql-python
-</pre></div>
+</code></pre></div>
 <h4>模块</h4>
 <p>Tornado包含以下模块，和Django、Flask 不同，Tornado没有用二级目录作为模块的名字(Django、Flask喜欢把类和方法集中到__init__.py里面)，而是直接用Py文件作为模块</p>
 <ul>
@@ -177,7 +177,7 @@ trusted-host<span class="o">=</span>pypi.douban.com
 <p>tornado.util - 实用工具集</p>
 <h4>实践</h4>
 <p>简单的抛砖引玉，通过get传递参数并显示出来，pypy untitled2.py --port=8082,http://127.0.0.1:8082/?greeting=njcx</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado.web</span> <span class="kn">import</span> <span class="n">RequestHandler</span><span class="p">,</span><span class="n">Application</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">tornado.web</span> <span class="kn">import</span> <span class="n">RequestHandler</span><span class="p">,</span><span class="n">Application</span>
 <span class="kn">from</span> <span class="nn">tornado.httpserver</span> <span class="kn">import</span> <span class="n">HTTPServer</span>
 <span class="kn">from</span> <span class="nn">tornado.ioloop</span> <span class="kn">import</span> <span class="n">IOLoop</span>
 <span class="kn">from</span> <span class="nn">tornado.options</span> <span class="kn">import</span> <span class="n">define</span><span class="p">,</span><span class="n">options</span><span class="p">,</span><span class="n">parse_command_line</span>
@@ -194,7 +194,7 @@ trusted-host<span class="o">=</span>pypi.douban.com
     <span class="n">http_server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
     <span class="n">http_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
     <span class="n">IOLoop</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-05T13:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Tue 05 June 2018
+        二 05 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -103,16 +103,16 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
-<div class="highlight"><pre><span></span><span class="c1"># wget http://download.redis.io/releases/redis-4.0.11.tar.gz</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># wget http://download.redis.io/releases/redis-4.0.11.tar.gz</span>
 <span class="c1"># tar -zxvf redis-4.0.11.tar.gz</span>
 <span class="c1"># cd redis-4.0.11 &amp;&amp; make &amp;&amp; make install </span>
-</pre></div>
+</code></pre></div>
 <p>然后进入utils 目录</p>
-<div class="highlight"><pre><span></span>./install_server.sh
-</pre></div>
+<div class="highlight"><pre><span></span><code>./install_server.sh
+</code></pre></div>
 <p>redis 就把 服务添加到 /etc/init.d/目录了，并且 开机自动启动了，服务名称redis_6379 ，如果更改了默认端口，服务名称就是 redis_端口号。</p>
 <h4>配置</h4>
-<div class="highlight"><pre><span></span><span class="c1"># Redis配置文件样例</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Redis配置文件样例</span>
 
 <span class="c1"># Note on units: when memory size is needed, it is possible to specifiy</span>
 <span class="c1"># it in the usual form of 1k 5GB 4M and so forth:</span>
@@ -538,10 +538,10 @@ activerehashing yes
 <span class="c1"># 指定包含其他的配置文件，可以在同一主机上多个Redis实例之间使用同一份配置文件，而同时各实例又拥有自己的特定配置文件</span>
 <span class="c1"># include /path/to/local.conf</span>
 <span class="c1"># include /path/to/other.conf</span>
-</pre></div>
+</code></pre></div>
 <h4>redis 密码</h4>
-<div class="highlight"><pre><span></span><span class="c1"># requirepass foobared</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># requirepass foobared</span>
+</code></pre></div>
 <p>该字段注释去掉，后面就是密码</p>
 <h4>备份</h4>
 <p>127.0.0.1:6379&gt; SAVE</p>

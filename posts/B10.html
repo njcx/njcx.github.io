@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-03-21T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Tue 21 March 2017
+        二 21 三月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -116,27 +116,27 @@ var _hmt = _hmt || [];
 <li>普通字段属于对象</li>
 <li>静态字段属于类，对象只是拷贝静态字段，修改不影响静态字段原来的值，和Java不同</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">fathclass</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">fathclass</span><span class="p">:</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s1">'njcx'</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">age</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="o">=</span><span class="n">age</span>
     <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span>
 
-<span class="k">print</span> <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span>
+<span class="nb">print</span> <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span>
 
 <span class="n">day</span> <span class="o">=</span> <span class="n">fathclass</span><span class="p">(</span><span class="mi">18</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">day</span><span class="o">.</span><span class="n">name</span>
+<span class="nb">print</span> <span class="n">day</span><span class="o">.</span><span class="n">name</span>
 <span class="n">day</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'oldnjcx'</span>
 <span class="c1">#修改对象name</span>
-<span class="k">print</span> <span class="n">day</span><span class="o">.</span><span class="n">name</span>
-<span class="k">print</span> <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span>
+<span class="nb">print</span> <span class="n">day</span><span class="o">.</span><span class="n">name</span>
+<span class="nb">print</span> <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span>
 <span class="c1">#原来的name并没有发生改变</span>
 <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'youngnjcx'</span>
 <span class="c1">#通过类修改静态字段并不影响对象的静态字段</span>
-<span class="k">print</span> <span class="n">day</span><span class="o">.</span><span class="n">name</span>
-<span class="k">print</span> <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span>
-</pre></div>
+<span class="nb">print</span> <span class="n">day</span><span class="o">.</span><span class="n">name</span>
+<span class="nb">print</span> <span class="n">fathclass</span><span class="o">.</span><span class="n">name</span>
+</code></pre></div>
 <h4>2，方法</h4>
 <ul>
 <li>普通方法 由对象调用；至少一个self参数；执行普通方法时，自动将调用该方法的对象赋值给self；</li>
@@ -147,7 +147,7 @@ var _hmt = _hmt || [];
 <ul>
 <li>类方法用在模拟java定义多个构造函数的情况。 由于python类中只能有一个初始化方法，不能按照不同的情况初始化类</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="c1"># coding:utf-8</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># coding:utf-8</span>
 
 
 <span class="k">class</span> <span class="nc">Book</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -162,14 +162,14 @@ var _hmt = _hmt || [];
 
 <span class="n">book1</span> <span class="o">=</span> <span class="n">Book</span><span class="p">(</span><span class="s2">"python"</span><span class="p">)</span>
 <span class="n">book2</span> <span class="o">=</span> <span class="n">Book</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">"python and django"</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">book1</span><span class="o">.</span><span class="n">title</span>
-<span class="k">print</span> <span class="n">book2</span><span class="o">.</span><span class="n">title</span>
-</pre></div>
+<span class="nb">print</span> <span class="n">book1</span><span class="o">.</span><span class="n">title</span>
+<span class="nb">print</span> <span class="n">book2</span><span class="o">.</span><span class="n">title</span>
+</code></pre></div>
 <ul>
 <li>静态方法调用另一个静态方法，如果改用类方法调用静态方法，可以让cls代替类，
 让代码看起来精简一些。也防止类名修改了，不用在类定义中修改原来的类名</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="c1"># coding:utf-8</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># coding:utf-8</span>
 
 
 <span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -189,15 +189,15 @@ var _hmt = _hmt || [];
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">averag</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
 
 <span class="n">foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
-<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">static_method</span><span class="p">()</span>
-<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">class_method</span><span class="p">()</span>
-</pre></div>
+<span class="nb">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">static_method</span><span class="p">()</span>
+<span class="nb">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">class_method</span><span class="p">()</span>
+</code></pre></div>
 <ul>
 <li>继承类中的区别 从下面代码可以看出，如果子类继承父类的方法，子类覆盖了父类的静态方法，
 子类的实例继承了父类的static_method静态方法，调用该方法，还是调用的父类的方法和类属性。
 子类的实例继承了父类的class_method类方法，调用该方法，调用的是子类的方法和子类的类属性。</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="c1"># coding:utf-8</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># coding:utf-8</span>
 
 
 <span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -226,9 +226,9 @@ var _hmt = _hmt || [];
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mixes</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
 
 <span class="n">p</span> <span class="o">=</span> <span class="n">Son</span><span class="p">()</span>
-<span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">static_method</span><span class="p">()</span>
-<span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">class_method</span><span class="p">()</span>
-</pre></div>
+<span class="nb">print</span> <span class="n">p</span><span class="o">.</span><span class="n">static_method</span><span class="p">()</span>
+<span class="nb">print</span> <span class="n">p</span><span class="o">.</span><span class="n">class_method</span><span class="p">()</span>
+</code></pre></div>
 <h4>3,属性</h4>
 <ul>
 <li>
@@ -250,7 +250,7 @@ var _hmt = _hmt || [];
 <p>调用时，无需括号</p>
 </li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">fathclass</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">fathclass</span><span class="p">:</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s1">'njcx'</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">age</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="o">=</span><span class="n">age</span>
@@ -264,8 +264,8 @@ var _hmt = _hmt || [];
 
 <span class="n">son</span> <span class="o">=</span> <span class="n">fathclass</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
 
-<span class="k">print</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
-</pre></div>
+<span class="nb">print</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
+</code></pre></div>
 <p>一般 做动态属性，才用到@property</p>
 <p>2、属性的两种定义方式</p>
 <ul>
@@ -280,7 +280,7 @@ var _hmt = _hmt || [];
 <ul>
 <li>经典类</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">fathclass</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">fathclass</span><span class="p">:</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s1">'njcx'</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">age</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="o">=</span><span class="n">age</span>
@@ -301,13 +301,13 @@ var _hmt = _hmt || [];
 
 <span class="n">son</span> <span class="o">=</span> <span class="n">fathclass</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
 
-<span class="k">print</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
-<span class="k">print</span> <span class="n">son</span><span class="o">.</span><span class="n">aGe</span>
-</pre></div>
+<span class="nb">print</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
+<span class="nb">print</span> <span class="n">son</span><span class="o">.</span><span class="n">aGe</span>
+</code></pre></div>
 <ul>
 <li>新式类</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">fathclass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">fathclass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s1">'njcx'</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">age</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="o">=</span><span class="n">age</span>
@@ -321,23 +321,23 @@ var _hmt = _hmt || [];
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">grade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">'six'</span>
-    <span class="nd">@grade.setter</span>    
+    <span class="nd">@grade</span><span class="o">.</span><span class="n">setter</span>    
     <span class="k">def</span> <span class="nf">grade</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ge</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s1">'@price.setter'</span><span class="o">+</span><span class="n">ge</span>
+        <span class="nb">print</span> <span class="s1">'@price.setter'</span><span class="o">+</span><span class="n">ge</span>
 
-    <span class="nd">@grade.deleter</span>    
+    <span class="nd">@grade</span><span class="o">.</span><span class="n">deleter</span>    
     <span class="k">def</span> <span class="nf">grade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s1">'@price.setter'</span>
+        <span class="nb">print</span> <span class="s1">'@price.setter'</span>
 
     <span class="c1"># 装饰器</span>
     <span class="n">aGe</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
     <span class="c1">#property对象</span>
 
 <span class="n">son</span> <span class="o">=</span> <span class="n">fathclass</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
+<span class="nb">print</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
 <span class="n">son</span><span class="o">.</span><span class="n">grade</span> <span class="o">=</span> <span class="s1">'five'</span>
 <span class="k">del</span> <span class="n">son</span><span class="o">.</span><span class="n">grade</span>
-</pre></div>
+</code></pre></div>
 <h4>静态字段</h4>
 <h4>property的构造方法中有个四个参数</h4>
 <ul>
@@ -354,7 +354,7 @@ var _hmt = _hmt || [];
 <p>第四个参数是字符串，调用 对象.属性.<strong>doc</strong> ，此参数是该属性的描述信息</p>
 </li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">get_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">'njcx'</span>
@@ -369,11 +369,11 @@ var _hmt = _hmt || [];
 
 <span class="n">obj</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
 
-<span class="k">print</span> <span class="n">obj</span><span class="o">.</span><span class="n">BAR</span>              
+<span class="nb">print</span> <span class="n">obj</span><span class="o">.</span><span class="n">BAR</span>              
 <span class="n">obj</span><span class="o">.</span><span class="n">BAR</span> <span class="o">=</span> <span class="s2">"alex"</span>    
 <span class="k">del</span> <span class="n">Foo</span><span class="o">.</span><span class="n">BAR</span>          
 <span class="n">obj</span><span class="o">.</span><span class="n">BAR</span><span class="o">.</span><span class="vm">__doc__</span>
-</pre></div>
+</code></pre></div>
 <h2>以上就是个人总结B篇内容</h2>
   </div>
 </article>

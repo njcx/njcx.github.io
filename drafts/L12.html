@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-07-04T19:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Wed 04 July 2018
+        三 04 七月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -107,50 +107,50 @@ var _hmt = _hmt || [];
 <ul>
 <li>先做一个CentOS 7.3 x64 的模板</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="c1">#cd /opt</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#cd /opt</span>
 
 <span class="c1"># yum install wget java-1.8.0-openjdk  java-1.8.0-openjdk-devel -y</span>
 <span class="c1"># wget  https://downloads.lightbend.com/scala/2.12.8/scala-2.12.8.tgz</span>
 <span class="c1"># wget  http://mirrors.hust.edu.cn/apache/kafka/2.1.0/kafka_2.12-2.1.0.tgz</span>
 <span class="c1"># tar -zxvf kafka_2.12-2.1.0.tgz &amp;&amp; tar -zxvf scala-2.12.8.tgz</span>
 <span class="c1"># rm -rf kafka_2.12-2.1.0.tgz  scala-2.12.8.tgz</span>
-</pre></div>
+</code></pre></div>
 <p>然后，添加scala的环境变量</p>
-<div class="highlight"><pre><span></span>vim /etc/profile
-</pre></div>
+<div class="highlight"><pre><span></span><code>vim /etc/profile
+</code></pre></div>
 <p>填入</p>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SCALA_HOME</span><span class="o">=</span>/opt/scala-2.12.8
+<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">SCALA_HOME</span><span class="o">=</span>/opt/scala-2.12.8
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SCALA_HOME</span>/bin
-</pre></div>
-<div class="highlight"><pre><span></span><span class="nb">source</span>  /etc/profile
-</pre></div>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">source</span>  /etc/profile
+</code></pre></div>
 <p>然后，把宿主机的key 加入 ssh的 authorized_keys，目前这个模板就做好了</p>
 <ul>
 <li>把模板拷贝4份</li>
 </ul>
 <p>IP如下，对应加入hostname</p>
-<div class="highlight"><pre><span></span><span class="m">172</span>.16.202.139    kafka1
+<div class="highlight"><pre><span></span><code><span class="m">172</span>.16.202.139    kafka1
 <span class="m">172</span>.16.202.141    kafka2
 <span class="m">172</span>.16.202.140    kafka3
 <span class="m">172</span>.16.202.142    kafka4
-</pre></div>
+</code></pre></div>
 <p>然后加入宿主机的hosts文件里面，这样安装就OK了，宿主机就可以很方便的通过主机名访问对应的主机了</p>
 <h4>配置</h4>
 <p>zk集群 搭建的记录如下</p>
 <p><a href="https://www.njcx.bid/posts/M2.html">zookeeper 集群搭建</a></p>
 <p>然后，进入 kafka的配置conf文件夹，修改vim server.properties</p>
-<div class="highlight"><pre><span></span>broker.id<span class="o">=</span><span class="m">2</span>
+<div class="highlight"><pre><span></span><code>broker.id<span class="o">=</span><span class="m">2</span>
 <span class="nv">listeners</span><span class="o">=</span>PLAINTEXT://172.16.202.141:9092
 message.max.byte<span class="o">=</span><span class="m">5242880</span>
 default.replication.factor<span class="o">=</span><span class="m">2</span>
 replica.fetch.max.bytes<span class="o">=</span><span class="m">5242880</span>
 zookeeper.connect<span class="o">=</span><span class="m">172</span>.16.202.144:2181,172.16.202.143:2181,172.16.202.145:2181
-</pre></div>
+</code></pre></div>
 <p>这里主要修改 broker.id 和 listeners 的ip，然后进入bin目录里面</p>
-<div class="highlight"><pre><span></span>./kafka-server-start.sh -daemon ../config/server.properties
-</pre></div>
+<div class="highlight"><pre><span></span><code>./kafka-server-start.sh -daemon ../config/server.properties
+</code></pre></div>
 <p>集群就启动了，我们进 zk 任何一个节点，</p>
-<div class="highlight"><pre><span></span><span class="c1"># ./zkCli.sh</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># ./zkCli.sh</span>
 
 <span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> <span class="m">8</span><span class="o">]</span> ls /brokers/ids
 <span class="o">[</span><span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>, <span class="m">4</span><span class="o">]</span>
@@ -168,10 +168,10 @@ zookeeper.connect<span class="o">=</span><span class="m">172</span>.16.202.144:2
 <span class="nv">dataLength</span> <span class="o">=</span> <span class="m">198</span>
 <span class="nv">numChildren</span> <span class="o">=</span> <span class="m">0</span>
 <span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> <span class="m">10</span><span class="o">]</span>
-</pre></div>
+</code></pre></div>
 <p>可以看到4个节点</p>
 <h4>测试</h4>
-<div class="highlight"><pre><span></span><span class="c1">#./ kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test_topic</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#./ kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test_topic</span>
 
 创建 test_topic
 
@@ -190,18 +190,18 @@ zookeeper.connect<span class="o">=</span><span class="m">172</span>.16.202.144:2
 <span class="c1"># ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic  test_topic --from-beginning (新版本kafka .90版本之后)</span>
 
 创建消费者（新版本）  
-</pre></div>
+</code></pre></div>
 <h4>高可用HA</h4>
 <h4>监控</h4>
 <p>推荐使用</p>
-<div class="highlight"><pre><span></span>kafka-eagle
+<div class="highlight"><pre><span></span><code>kafka-eagle
 
 https://github.com/smartloli/kafka-eagle/archive/v1.2.8.tar.gz
-</pre></div>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">KE_HOME</span><span class="o">=</span>/opt/kafka_eagle
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">KE_HOME</span><span class="o">=</span>/opt/kafka_eagle
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$KE_HOME</span>/bin
-</pre></div>
-<div class="highlight"><pre><span></span><span class="c1">######################################</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">######################################</span>
 <span class="c1"># multi zookeeper&amp;kafka cluster list</span>
 <span class="c1">######################################</span>
 kafka.eagle.zk.cluster.alias<span class="o">=</span>cluster1
@@ -277,7 +277,7 @@ kafka.eagle.driver<span class="o">=</span>org.sqlite.JDBC
 kafka.eagle.url<span class="o">=</span>jdbc:sqlite:/opt/kafka_eagle/db/ke.db
 kafka.eagle.username<span class="o">=</span>root
 kafka.eagle.password<span class="o">=</span>root
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

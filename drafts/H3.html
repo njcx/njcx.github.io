@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-02T13:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 02 June 2018
+        六 02 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -106,25 +106,25 @@ var _hmt = _hmt || [];
 <p>Go语言是谷歌与09年开源的一门编译型编程语言，其专门针对多处理器系统应用程序的编程进行了优化，支持并行进程，自动垃圾回收。Docker就是go语言所编写。</p>
 <h4>安装</h4>
 <p>mac 电脑安装</p>
-<div class="highlight"><pre><span></span>brew install golang
-</pre></div>
+<div class="highlight"><pre><span></span><code>brew install golang
+</code></pre></div>
 <p>ubuntu</p>
-<div class="highlight"><pre><span></span>sudo apt-get install golang -y
-</pre></div>
+<div class="highlight"><pre><span></span><code>sudo apt-get install golang -y
+</code></pre></div>
 <p>CentOS </p>
-<div class="highlight"><pre><span></span>yum install golang -y
-</pre></div>
+<div class="highlight"><pre><span></span><code>yum install golang -y
+</code></pre></div>
 <h4>向世界打招呼</h4>
-<div class="highlight"><pre><span></span>package main 
+<div class="highlight"><pre><span></span><code>package main 
 
 import <span class="s2">"fmt"</span>
 
 func main<span class="o">()</span> <span class="o">{</span>
     fmt.Println<span class="o">(</span><span class="s2">"Hello world!"</span><span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>注释</h4>
-<div class="highlight"><pre><span></span>// 单行注释
+<div class="highlight"><pre><span></span><code>// 单行注释
 
 /*
  我是多行注释
@@ -133,14 +133,14 @@ func main<span class="o">()</span> <span class="o">{</span>
  我是多行注释
  我是多行注释
  */
-</pre></div>
+</code></pre></div>
 <h4>数据结构</h4>
 <ul>
 <li>布尔型</li>
 </ul>
-<div class="highlight"><pre><span></span>    var b <span class="nv">bool</span> <span class="o">=</span> <span class="nb">true</span>
+<div class="highlight"><pre><span></span><code>    var b <span class="nv">bool</span> <span class="o">=</span> <span class="nb">true</span>
     c :<span class="o">=</span> <span class="nb">false</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>数字类型
 整型 int 和浮点型 float32、float64，Go 语言支持整型和浮点型数字，支持复数，位运算采用补码。<ul>
@@ -182,30 +182,30 @@ IEEE-754 64位浮点型数</li>
 </li>
 </ul>
 <p>变量</p>
-<div class="highlight"><pre><span></span>var <span class="nv">a</span> <span class="o">=</span> <span class="m">1</span>
+<div class="highlight"><pre><span></span><code>var <span class="nv">a</span> <span class="o">=</span> <span class="m">1</span>
 
 var b <span class="nv">int</span> <span class="o">=</span> <span class="m">2</span>
 
 c :<span class="o">=</span><span class="m">3</span>
-</pre></div>
+</code></pre></div>
 <p>常量</p>
-<div class="highlight"><pre><span></span>const identifier <span class="o">[</span>type<span class="o">]</span> <span class="o">=</span> value
+<div class="highlight"><pre><span></span><code>const identifier <span class="o">[</span>type<span class="o">]</span> <span class="o">=</span> value
 
 显式类型定义： const b <span class="nv">string</span> <span class="o">=</span> <span class="s2">"abc"</span>
 隐式类型定义： const <span class="nv">b</span> <span class="o">=</span> <span class="s2">"abc"</span>
 
 多个类型定义： const c_name1, <span class="nv">c_name2</span> <span class="o">=</span> value1, value2
-</pre></div>
+</code></pre></div>
 <ul>
 <li>字符串类型</li>
 </ul>
-<div class="highlight"><pre><span></span>    var b <span class="nv">string</span> <span class="o">=</span> <span class="s2">"demo"</span>
+<div class="highlight"><pre><span></span><code>    var b <span class="nv">string</span> <span class="o">=</span> <span class="s2">"demo"</span>
     c :<span class="o">=</span>  <span class="s2">"godemo"</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>数组类型</li>
 </ul>
-<div class="highlight"><pre><span></span>//第一种
+<div class="highlight"><pre><span></span><code>//第一种
 var arr <span class="o">[</span><span class="m">2</span><span class="o">]</span>int
     arr<span class="o">[</span><span class="m">0</span><span class="o">]=</span><span class="m">1</span>
     arr<span class="o">[</span><span class="m">1</span><span class="o">]=</span><span class="m">2</span>
@@ -224,20 +224,20 @@ arr :<span class="o">=</span> <span class="o">[</span>...<span class="o">]</span
 <span class="o">{</span>索引1:元素1,索引2:元素2,...<span class="o">}</span>
 var <span class="nv">arr</span> <span class="o">=</span> <span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>:1,0:2<span class="o">}</span>
 arr :<span class="o">=</span> <span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>:1,0:2<span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>切片类型</li>
 </ul>
 <p>切片就是动态数组</p>
-<div class="highlight"><pre><span></span>var identifier <span class="o">[]</span><span class="nb">type</span>
-</pre></div>
-<div class="highlight"><pre><span></span>s :<span class="o">=[]</span> int <span class="o">{</span><span class="m">1</span>,2,3 <span class="o">}</span> 
-</pre></div>
+<div class="highlight"><pre><span></span><code>var identifier <span class="o">[]</span><span class="nb">type</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>s :<span class="o">=[]</span> int <span class="o">{</span><span class="m">1</span>,2,3 <span class="o">}</span> 
+</code></pre></div>
 <p>切片也可以通过make 创建，其中，len 是数组的长度并且也是切片的初始长度，cap 是切片容量</p>
-<div class="highlight"><pre><span></span>s :<span class="o">=</span>make<span class="o">([]</span>int,len,cap<span class="o">)</span> 
-</pre></div>
+<div class="highlight"><pre><span></span><code>s :<span class="o">=</span>make<span class="o">([]</span>int,len,cap<span class="o">)</span> 
+</code></pre></div>
 <p>切片使用的例子</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="s2">"fmt"</span>
 
@@ -274,9 +274,9 @@ func main<span class="o">()</span> <span class="o">{</span>
 func printSlice<span class="o">(</span>x <span class="o">[]</span>int<span class="o">){</span>
    fmt.Printf<span class="o">(</span><span class="s2">"len=%d cap=%d slice=%v\n"</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>执行以上代码输出结果为：</p>
-<div class="highlight"><pre><span></span><span class="nv">len</span><span class="o">=</span><span class="m">9</span> <span class="nv">cap</span><span class="o">=</span><span class="m">9</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span><span class="o">]</span>
+<div class="highlight"><pre><span></span><code><span class="nv">len</span><span class="o">=</span><span class="m">9</span> <span class="nv">cap</span><span class="o">=</span><span class="m">9</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span><span class="o">]</span>
 <span class="nv">numbers</span> <span class="o">==</span> <span class="o">[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span><span class="o">]</span>
 numbers<span class="o">[</span><span class="m">1</span>:4<span class="o">]</span> <span class="o">==</span> <span class="o">[</span><span class="m">1</span> <span class="m">2</span> <span class="m">3</span><span class="o">]</span>
 numbers<span class="o">[</span>:3<span class="o">]</span> <span class="o">==</span> <span class="o">[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span><span class="o">]</span>
@@ -284,10 +284,10 @@ numbers<span class="o">[</span><span class="m">4</span>:<span class="o">]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">0</span> <span class="nv">cap</span><span class="o">=</span><span class="m">5</span> <span class="nv">slice</span><span class="o">=[]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">2</span> <span class="nv">cap</span><span class="o">=</span><span class="m">9</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span><span class="o">]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">3</span> <span class="nv">cap</span><span class="o">=</span><span class="m">7</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">2</span> <span class="m">3</span> <span class="m">4</span><span class="o">]</span>
-</pre></div>
+</code></pre></div>
 <p>如果想增加切片的容量，我们必须创建一个新的更大的切片并把原分片的内容都拷贝过来。
 下面的代码描述了从拷贝切片的 copy 方法和向切片追加新元素的 append 方法。</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="s2">"fmt"</span>
 
@@ -318,27 +318,27 @@ func main<span class="o">()</span> <span class="o">{</span>
 func printSlice<span class="o">(</span>x <span class="o">[]</span>int<span class="o">){</span>
    fmt.Printf<span class="o">(</span><span class="s2">"len=%d cap=%d slice=%v\n"</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>以上代码执行输出结果为：</p>
-<div class="highlight"><pre><span></span><span class="nv">len</span><span class="o">=</span><span class="m">0</span> <span class="nv">cap</span><span class="o">=</span><span class="m">0</span> <span class="nv">slice</span><span class="o">=[]</span>
+<div class="highlight"><pre><span></span><code><span class="nv">len</span><span class="o">=</span><span class="m">0</span> <span class="nv">cap</span><span class="o">=</span><span class="m">0</span> <span class="nv">slice</span><span class="o">=[]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">1</span> <span class="nv">cap</span><span class="o">=</span><span class="m">1</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="o">]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">2</span> <span class="nv">cap</span><span class="o">=</span><span class="m">2</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span><span class="o">]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">5</span> <span class="nv">cap</span><span class="o">=</span><span class="m">6</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span><span class="o">]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">5</span> <span class="nv">cap</span><span class="o">=</span><span class="m">12</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span><span class="o">]</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>指针类型（Pointer）</li>
 </ul>
 <p>指针类型就是一个变量，里面存的是另一个变量的地址</p>
-<div class="highlight"><pre><span></span>var b *int
+<div class="highlight"><pre><span></span><code>var b *int
 
 <span class="nv">b</span> <span class="o">=</span> <span class="p">&amp;</span>a
 
 var b *int <span class="o">=</span> <span class="p">&amp;</span>a
 
 b :<span class="o">=</span> <span class="p">&amp;</span>a
-</pre></div>
-<div class="highlight"><pre><span></span>package main 
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>package main 
 
 import <span class="s2">"fmt"</span>
 
@@ -350,26 +350,26 @@ func main<span class="o">(){</span>
 
     fmt.Println<span class="o">(</span>*b<span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>结构体类型(struct)</li>
 </ul>
 <p>定义结构体</p>
-<div class="highlight"><pre><span></span><span class="nb">type</span> struct_variable_type struct <span class="o">{</span>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span> struct_variable_type struct <span class="o">{</span>
    member definition<span class="p">;</span>
    member definition<span class="p">;</span>
    ...
    member definition<span class="p">;</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>列子</p>
-<div class="highlight"><pre><span></span><span class="nb">type</span> Books struct <span class="o">{</span>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span> Books struct <span class="o">{</span>
    title string
    author string
    subject string
    book_id int
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>如果要访问结构体成员，需要使用点号 . 操作符，格式为：</p>
 <p>结构体.成员名</p>
 <p>定义指向结构体的指针类似于其他指针变量，格式如下：</p>
@@ -381,16 +381,16 @@ func main<span class="o">(){</span>
 <ul>
 <li>Channel 类型</li>
 </ul>
-<div class="highlight"><pre><span></span>ch :<span class="o">=</span> chan int // 定义一个chan
+<div class="highlight"><pre><span></span><code>ch :<span class="o">=</span> chan int // 定义一个chan
 ch :<span class="o">=</span> make<span class="o">(</span>chan int<span class="o">)</span>  //定义一个chan
 ch &lt;- v    // 把 v 发送到通道 ch
 v :<span class="o">=</span> &lt;-ch  // 从 ch 接收数据
            // 并把值赋给 v
-</pre></div>
+</code></pre></div>
 <ul>
 <li>接口类型（interface）</li>
 </ul>
-<div class="highlight"><pre><span></span>/* 定义接口 */
+<div class="highlight"><pre><span></span><code>/* 定义接口 */
 <span class="nb">type</span> interface_name interface <span class="o">{</span>
    method_name1 <span class="o">[</span>return_type<span class="o">]</span>
    method_name2 <span class="o">[</span>return_type<span class="o">]</span>
@@ -412,11 +412,11 @@ func <span class="o">(</span>struct_name_variable struct_name<span class="o">)</
 func <span class="o">(</span>struct_name_variable struct_name<span class="o">)</span> method_namen<span class="o">()</span> <span class="o">[</span>return_type<span class="o">]</span> <span class="o">{</span>
    /* 方法实现*/
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Map 类型</li>
 </ul>
-<div class="highlight"><pre><span></span>/* 声明变量，默认 map 是 nil */
+<div class="highlight"><pre><span></span><code>/* 声明变量，默认 map 是 nil */
 var map_variable map<span class="o">[</span>key_data_type<span class="o">]</span>value_data_type
 
 /* 使用 make 函数 */
@@ -424,19 +424,19 @@ map_variable :<span class="o">=</span> make<span class="o">(</span>map<span clas
 
 / * map 初始化 * /
 var <span class="nv">map_variable</span> <span class="o">=</span> map<span class="o">[</span>string<span class="o">]</span>string<span class="o">{</span><span class="s2">"key1"</span>: <span class="s2">"value1"</span>,<span class="s2">"key2"</span>: <span class="s2">"value2"</span>,<span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>类型转换</li>
 </ul>
-<div class="highlight"><pre><span></span>Go 语言类型转换基本格式如下：
+<div class="highlight"><pre><span></span><code>Go 语言类型转换基本格式如下：
     type_name<span class="o">(</span>expression<span class="o">)</span>
     type_name 为类型，expression 为表达式。
-</pre></div>
+</code></pre></div>
 <ul>
 <li>range</li>
 </ul>
 <p>range 关键字用于 for 循环中迭代数组(array)、切片(slice)、通道(channel)或集合(map)的元素。在数组和切片中它返回元素的索引和索引对应的值，在map 中返回 key 和 value。</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 import <span class="s2">"fmt"</span>
 func main<span class="o">()</span> <span class="o">{</span>
     //这是我们使用range去求一个slice的和。使用数组跟这个很类似
@@ -462,46 +462,46 @@ func main<span class="o">()</span> <span class="o">{</span>
         fmt.Println<span class="o">(</span>i, c<span class="o">)</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>运算符</h4>
 <p>算术运算符</p>
-<div class="highlight"><pre><span></span>+   相加  
+<div class="highlight"><pre><span></span><code>+   相加  
 -   相减  
 *   相乘  
 /   相除  
 %   求余  
 ++  自增  
 --  自减  
-</pre></div>
+</code></pre></div>
 <p>关系运算符</p>
-<div class="highlight"><pre><span></span><span class="o">==</span>  检查两个值是否相等，如果相等返回 True 否则返回 False。
+<div class="highlight"><pre><span></span><code><span class="o">==</span>  检查两个值是否相等，如果相等返回 True 否则返回 False。
 !<span class="o">=</span>  检查两个值是否不相等，如果不相等返回 True 否则返回 False。
 &gt;   检查左边值是否大于右边值，如果是返回 True 否则返回 False。
 &gt;<span class="o">=</span>  检查左边值是否大于等于右边值，如果是返回 True 否则返回 False。
 &lt;<span class="o">=</span>  检查左边值是否小于等于右边值，如果是返回 True 否则返回 False。
-</pre></div>
+</code></pre></div>
 <p>逻辑运算符</p>
-<div class="highlight"><pre><span></span><span class="o">&amp;&amp;</span>  逻辑 AND 运算符。 如果两边的操作数都是 True，则条件 True，否则为 False。
+<div class="highlight"><pre><span></span><code><span class="o">&amp;&amp;</span>  逻辑 AND 运算符。 如果两边的操作数都是 True，则条件 True，否则为 False。
 <span class="o">||</span>  逻辑 OR 运算符。 如果两边的操作数有一个 True，则条件 True，否则为 False。
 !   逻辑 NOT 运算符。 如果条件为 True，则逻辑 NOT 条件 False，否则为 True。
-</pre></div>
+</code></pre></div>
 <p>赋值运算符</p>
-<div class="highlight"><pre><span></span><span class="o">=</span>   简单的赋值运算符，将一个表达式的值赋给一个左值
+<div class="highlight"><pre><span></span><code><span class="o">=</span>   简单的赋值运算符，将一个表达式的值赋给一个左值
 +<span class="o">=</span>  相加后再赋值  <span class="nv">C</span> <span class="o">+=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C + A
 -<span class="o">=</span>  相减后再赋值  C -<span class="o">=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C - A
 *<span class="o">=</span>  相乘后再赋值  C *<span class="o">=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C * A
 /<span class="o">=</span>  相除后再赋值  C /<span class="o">=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C / A
 %<span class="o">=</span>  求余后再赋值   C %<span class="o">=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C % A
-</pre></div>
+</code></pre></div>
 <p>指针相关运算符</p>
-<div class="highlight"><pre><span></span><span class="p">&amp;</span>   返回变量存储地址    <span class="p">&amp;</span>a<span class="p">;</span> 将给出变量的实际地址。
+<div class="highlight"><pre><span></span><code><span class="p">&amp;</span>   返回变量存储地址    <span class="p">&amp;</span>a<span class="p">;</span> 将给出变量的实际地址。
 *   指针变量。   *a<span class="p">;</span> 是一个指针变量
-</pre></div>
+</code></pre></div>
 <h4>控制语句</h4>
 <ul>
 <li>条件语句</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">if</span> 布尔表达式 <span class="o">{</span>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> 布尔表达式 <span class="o">{</span>
    /* 在布尔表达式为 <span class="nb">true</span> 时执行 */
 <span class="o">}</span>
 
@@ -517,9 +517,9 @@ func main<span class="o">()</span> <span class="o">{</span>
       /* 在布尔表达式 <span class="m">2</span> 为 <span class="nb">true</span> 时执行 */
    <span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>for 循环</p>
-<div class="highlight"><pre><span></span>Go语言的For循环有3中形式，只有其中的一种使用分号。
+<div class="highlight"><pre><span></span><code>Go语言的For循环有3中形式，只有其中的一种使用分号。
 
 和 C 语言的 <span class="k">for</span> 一样：
 
@@ -533,14 +533,14 @@ func main<span class="o">()</span> <span class="o">{</span>
 init： 一般为赋值表达式，给控制变量赋初值；
 condition： 关系表达式或逻辑表达式，循环控制条件；
 post： 一般为赋值表达式，给控制变量增量或减量。
-</pre></div>
+</code></pre></div>
 <p>for 循环的 range 格式可以对 slice、map、数组、字符串等进行迭代循环。格式如下：</p>
-<div class="highlight"><pre><span></span><span class="k">for</span> key, value :<span class="o">=</span> range oldMap <span class="o">{</span>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> key, value :<span class="o">=</span> range oldMap <span class="o">{</span>
     newMap<span class="o">[</span>key<span class="o">]</span> <span class="o">=</span> value
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>for 例子</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="s2">"fmt"</span>
 
@@ -565,9 +565,9 @@ func main<span class="o">()</span> <span class="o">{</span>
       fmt.Printf<span class="o">(</span><span class="s2">"第 %d 位 x 的值 = %d\n"</span>, i,x<span class="o">)</span>
    <span class="o">}</span>   
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>for 无限循环</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="s2">"fmt"</span>
 
@@ -576,9 +576,9 @@ func main<span class="o">()</span> <span class="o">{</span>
         fmt.Printf<span class="o">(</span><span class="s2">"这是无限循环。\n"</span><span class="o">)</span><span class="p">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>break 语句</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="s2">"fmt"</span>
 
@@ -596,9 +596,9 @@ func main<span class="o">()</span> <span class="o">{</span>
       <span class="o">}</span>
    <span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>continue 语句</p>
-<div class="highlight"><pre><span></span>import <span class="s2">"fmt"</span>
+<div class="highlight"><pre><span></span><code>import <span class="s2">"fmt"</span>
 
 func main<span class="o">()</span> <span class="o">{</span>
    /* 定义局部变量 */
@@ -615,15 +615,15 @@ func main<span class="o">()</span> <span class="o">{</span>
       a++<span class="p">;</span>     
    <span class="o">}</span>  
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>函数</h4>
 <p>函数定义 </p>
-<div class="highlight"><pre><span></span>func function_name<span class="o">(</span> <span class="o">[</span>parameter list<span class="o">]</span> <span class="o">)</span> <span class="o">[</span>return_types<span class="o">]</span> <span class="o">{</span>
+<div class="highlight"><pre><span></span><code>func function_name<span class="o">(</span> <span class="o">[</span>parameter list<span class="o">]</span> <span class="o">)</span> <span class="o">[</span>return_types<span class="o">]</span> <span class="o">{</span>
    函数体
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>以下实例为 max() 函数的代码，该函数传入两个整型参数 num1 和 num2，并返回这两个参数的最大值：</p>
-<div class="highlight"><pre><span></span>/* 函数返回两个数的最大值 */
+<div class="highlight"><pre><span></span><code>/* 函数返回两个数的最大值 */
 func max<span class="o">(</span>num1, num2 int<span class="o">)</span> int <span class="o">{</span>
    /* 声明局部变量 */
    var result int
@@ -635,9 +635,9 @@ func max<span class="o">(</span>num1, num2 int<span class="o">)</span> int <span
    <span class="o">}</span>
    <span class="k">return</span> result 
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>向函数传递数组</p>
-<div class="highlight"><pre><span></span>形参设定数组大小：
+<div class="highlight"><pre><span></span><code>形参设定数组大小：
 
 void myFunction<span class="o">(</span>param <span class="o">[</span><span class="m">10</span><span class="o">]</span>int<span class="o">)</span>
 <span class="o">{</span>
@@ -648,9 +648,9 @@ void myFunction<span class="o">(</span>param <span class="o">[</span><span class
 void myFunction<span class="o">(</span>param <span class="o">[]</span>int<span class="o">)</span>
 <span class="o">{</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>列子</p>
-<div class="highlight"><pre><span></span>func main<span class="o">()</span> <span class="o">{</span>
+<div class="highlight"><pre><span></span><code>func main<span class="o">()</span> <span class="o">{</span>
     var <span class="nv">array</span> <span class="o">=</span> <span class="o">[]</span>int<span class="o">{</span><span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>, <span class="m">4</span>, <span class="m">5</span><span class="o">}</span>
     /* 未定义长度的数组只能传给不限制数组长度的函数 */
     setArray<span class="o">(</span>array<span class="o">)</span>
@@ -666,9 +666,9 @@ func setArray<span class="o">(</span>params <span class="o">[]</span>int<span cl
 func setArray2<span class="o">(</span>params <span class="o">[</span><span class="m">5</span><span class="o">]</span>int<span class="o">)</span> <span class="o">{</span>
     fmt.Println<span class="o">(</span><span class="s2">"params array length of setArray2 is : "</span>, len<span class="o">(</span>params<span class="o">))</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>函数可以作为值</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="o">(</span>
    <span class="s2">"fmt"</span>
@@ -685,9 +685,9 @@ func main<span class="o">(){</span>
    fmt.Println<span class="o">(</span>getSquareRoot<span class="o">(</span><span class="m">9</span><span class="o">))</span>
 
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>闭包</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="s2">"fmt"</span>
 
@@ -713,8 +713,8 @@ func main<span class="o">(){</span>
    fmt.Println<span class="o">(</span>nextNumber1<span class="o">())</span>
    fmt.Println<span class="o">(</span>nextNumber1<span class="o">())</span>
 <span class="o">}</span>
-</pre></div>
-<div class="highlight"><pre><span></span>package main
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="s2">"fmt"</span>
 func main<span class="o">()</span> <span class="o">{</span>
@@ -732,8 +732,8 @@ func add<span class="o">(</span>x1, x2 int<span class="o">)</span> func<span cla
         <span class="k">return</span> i,x1+x2
     <span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
-<div class="highlight"><pre><span></span>package main
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>package main
 import <span class="s2">"fmt"</span>
 func main<span class="o">()</span> <span class="o">{</span>
     add_func :<span class="o">=</span> add<span class="o">(</span><span class="m">1</span>,2<span class="o">)</span>
@@ -749,9 +749,9 @@ func add<span class="o">(</span>x1, x2 int<span class="o">)</span> func<span cla
        <span class="k">return</span> i,x1+x2,x3+x4
     <span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>接口</h4>
-<div class="highlight"><pre><span></span>Go 语言提供了另外一种数据类型即接口，它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。
+<div class="highlight"><pre><span></span><code>Go 语言提供了另外一种数据类型即接口，它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。
 
 实例
 /* 定义接口 */
@@ -776,9 +776,9 @@ func <span class="o">(</span>struct_name_variable struct_name<span class="o">)</
 func <span class="o">(</span>struct_name_variable struct_name<span class="o">)</span> method_namen<span class="o">()</span> <span class="o">[</span>return_type<span class="o">]</span> <span class="o">{</span>
    /* 方法实现*/
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>例子</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="o">(</span>
     <span class="s2">"fmt"</span>
@@ -812,10 +812,10 @@ func main<span class="o">()</span> <span class="o">{</span>
     phone.call<span class="o">()</span>
 
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>面向对象</h4>
 <p>面向对象的方法</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 
 import <span class="o">(</span>
    <span class="s2">"fmt"</span>  
@@ -837,21 +837,21 @@ func <span class="o">(</span>c Circle<span class="o">)</span> getArea<span class
   //c.radius 即为 Circle 类型对象中的属性
   <span class="k">return</span> <span class="m">3</span>.14 * c.radius * c.radius
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>GO IO</h4>
 <h4>GO异常处理</h4>
 <p>这里会提到3个关键词， defer, panic, recover
 defer就是用来添加函数结束时执行的语句，Go中的defer是动态的。</p>
-<div class="highlight"><pre><span></span>func f<span class="o">()</span> <span class="o">(</span>result int<span class="o">)</span> <span class="o">{</span>
+<div class="highlight"><pre><span></span><code>func f<span class="o">()</span> <span class="o">(</span>result int<span class="o">)</span> <span class="o">{</span>
 
   deferfunc<span class="o">()</span> <span class="o">{</span>
     result++
   <span class="o">}()</span>
   return0
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>上面函数返回1，因为defer中添加了一个函数，在函数返回前改变了命名返回值的值。是不是很好用呢。但是，要注意的是，如果我们的defer语句没有执行，那么defer的函数就不会添加，如果把上面的程序改成这样：</p>
-<div class="highlight"><pre><span></span>    func f<span class="o">()</span> <span class="o">(</span>result int<span class="o">)</span> <span class="o">{</span>
+<div class="highlight"><pre><span></span><code>    func f<span class="o">()</span> <span class="o">(</span>result int<span class="o">)</span> <span class="o">{</span>
 
       return0
       deferfunc<span class="o">()</span> <span class="o">{</span>
@@ -859,9 +859,9 @@ defer就是用来添加函数结束时执行的语句，Go中的defer是动态�
       <span class="o">}()</span>
       return0
     <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>然后，我们在defer里面用recover捕获panic，完成go的异常处理</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package main
 import <span class="s2">"fmt"</span>
 func main<span class="o">(){</span>
     defer func<span class="o">(){</span> // 必须要先声明defer，否则不能捕获到panic异常
@@ -879,10 +879,10 @@ func f<span class="o">(){</span>
     fmt.Println<span class="o">(</span><span class="s2">"b"</span><span class="o">)</span>
     fmt.Println<span class="o">(</span><span class="s2">"f"</span><span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>GO 并发</h4>
 <h4>标准库</h4>
-<div class="highlight"><pre><span></span>archive         
+<div class="highlight"><pre><span></span><code>archive         
      tar            tar包实现了tar格式压缩文件的存取.
      zip            zip包提供了zip档案文件的读写服务.
 bufio           bufio 包实现了带缓存的I/O操作.
@@ -914,7 +914,7 @@ crypto          crypto包搜集了常用的密码（算法）常量.
      sha1           sha1包实现了SHA1哈希算法，参见RFC <span class="m">3174</span>.
      sha256         sha256包实现了SHA224和SHA256哈希算法，参见FIPS <span class="m">180</span>-4.
      sha512         sha512包实现了SHA384和SHA512哈希算法，参见FIPS <span class="m">180</span>-2.
-     subtle         Package subtle implements functions that are often useful in cryptographic code but require careful thought to use correctly.
+     subtle         Package subtle implements functions that are often useful <span class="k">in</span> cryptographic code but require careful thought to use correctly.
      tls            tls包实现了TLS <span class="m">1</span>.2，细节参见RFC <span class="m">5246</span>.
      x509           x509包解析X.509编码的证书和密钥.
           pkix          pkix包提供了共享的、低层次的结构体，用于ASN.1解析和X.509证书、CRL、OCSP的序列化.
@@ -922,9 +922,9 @@ database
      sql            sql 包提供了通用的SQL（或类SQL）数据库接口.
           driver            driver包定义了应被数据库驱动实现的接口，这些接口会被sql包使用.
 debug           
-     dwarf          Package dwarf provides access to DWARF debugging information loaded from executable files, as defined in the DWARF <span class="m">2</span>.0 Standard at http://dwarfstd.org/doc/dwarf-2.0.0.pdf
+     dwarf          Package dwarf provides access to DWARF debugging information loaded from executable files, as defined <span class="k">in</span> the DWARF <span class="m">2</span>.0 Standard at http://dwarfstd.org/doc/dwarf-2.0.0.pdf
      elf            Package elf implements access to ELF object files.
-     gosym          Package gosym implements access to the Go symbol and line number tables embedded in Go binaries generated by the gc compilers.
+     gosym          Package gosym implements access to the Go symbol and line number tables embedded <span class="k">in</span> Go binaries generated by the gc compilers.
      macho          Package macho implements access to Mach-O object files.
      pe         Package pe implements access to PE <span class="o">(</span>Microsoft Windows Portable Executable<span class="o">)</span> files.
      plan9obj           Package plan9obj implements access to Plan <span class="m">9</span> a.out object files.
@@ -1033,7 +1033,7 @@ unicode         unicode 包提供了一些测试Unicode码点属性的数据和�
      utf16          utf16 包实现了对UTF-16序列的编码和解码。
      utf8           utf8 包实现了支持UTF-8文本编码的函数和常量.
 unsafe
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

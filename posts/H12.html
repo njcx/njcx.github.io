@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-05T09:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Tue 05 June 2018
+        二 05 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -104,7 +104,7 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>安装</h4>
 <p>下载 elk 组件备用</p>
-<div class="highlight"><pre><span></span>https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.0-linux-x86_64.tar.gz
+<div class="highlight"><pre><span></span><code>https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.0-linux-x86_64.tar.gz
 https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.2.0-linux-x86_64.tar.gz
 https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-6.2.0-linux-x86_64.tar.gz
 https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-6.2.0-linux-x86_64.tar.gz
@@ -113,7 +113,7 @@ https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.0.tar.gz
 https://artifacts.elastic.co/downloads/kibana/kibana-6.2.0-linux-x86_64.tar.gz
 https://artifacts.elastic.co/downloads/logstash/logstash-6.2.0.tar.gz
 https://artifacts.elastic.co/downloads/kibana-plugins/x-pack-6.2.0.zip/x-pack-6.2.0.zip
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Packetbeat： 网络数据（收集网络流量数据）</li>
 <li>Metricbeat： 指标 （收集系统、进程和文件系统级别的 CPU 和内存使用情况等数据）</li>
@@ -127,86 +127,86 @@ https://artifacts.elastic.co/downloads/kibana-plugins/x-pack-6.2.0.zip/x-pack-6.
 </ul>
 <p>安装jdk 和 scala
 (scala 和 kafka备用，可不装)</p>
-<div class="highlight"><pre><span></span>https://downloads.lightbend.com/scala/2.12.6/scala-2.12.6.tgz
+<div class="highlight"><pre><span></span><code>https://downloads.lightbend.com/scala/2.12.6/scala-2.12.6.tgz
 http://mirrors.hust.edu.cn/apache/kafka/2.0.0/kafka_2.12-2.0.0.tgz
 http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz
-</pre></div>
-<div class="highlight"><pre><span></span><span class="nb">cd</span> /opt <span class="o">&amp;&amp;</span> download  ALL  <span class="o">&amp;&amp;</span> tar -zxvf  ALL
-</pre></div>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> /opt <span class="o">&amp;&amp;</span> download  ALL  <span class="o">&amp;&amp;</span> tar -zxvf  ALL
+</code></pre></div>
 <p>配置环境变量</p>
-<div class="highlight"><pre><span></span><span class="nb">echo</span> -e <span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span> -e <span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
 <span class="s2">export JRE_HOME=\${JAVA_HOME}/jre \n\</span>
 <span class="s2">export CLASSPATH=.:\${JAVA_HOME}/lib:\${JRE_HOME}/lib \n\</span>
 <span class="s2">export PATH=\${JAVA_HOME}/bin:\$PATH \n\</span>
 <span class="s2">export SCALA_HOME=/opt/scala-2.12.6 \n\</span>
 <span class="s2">export PATH=\$PATH:\$SCALA_HOME/bin \n\</span>
 <span class="s2">"</span> &gt;&gt; /etc/profile <span class="o">&amp;&amp;</span> <span class="nb">source</span> /etc/profile
-</pre></div>
+</code></pre></div>
 <h4>配置 elasticsearch</h4>
 <p>两个节点：
 172.16.131.134（master）
 172.16.131.133（slave）</p>
 <p>添加hosts文件</p>
-<div class="highlight"><pre><span></span><span class="m">172</span>.16.131.133 slave_1
+<div class="highlight"><pre><span></span><code><span class="m">172</span>.16.131.133 slave_1
 <span class="m">172</span>.16.131.134 master
-</pre></div>
+</code></pre></div>
 <p>vim /etc/security/limits.conf</p>
-<div class="highlight"><pre><span></span>* soft nofile <span class="m">65536</span>
+<div class="highlight"><pre><span></span><code>* soft nofile <span class="m">65536</span>
 * hard nofile <span class="m">131072</span>
 * soft nproc <span class="m">2048</span>
 * hard nproc <span class="m">4096</span>
-</pre></div>
+</code></pre></div>
 <p>vim /etc/sysctl.conf </p>
-<div class="highlight"><pre><span></span>vm.max_map_count <span class="o">=</span> <span class="m">655360</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code>vm.max_map_count <span class="o">=</span> <span class="m">655360</span>
+</code></pre></div>
 <p>sysctl -p</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>root@localhost local<span class="o">]</span><span class="c1"># groupadd elk</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>root@localhost local<span class="o">]</span><span class="c1"># groupadd elk</span>
 <span class="o">[</span>root@localhost local<span class="o">]</span><span class="c1"># useradd -g elk elk</span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="o">[</span>root@localhost local<span class="o">]</span><span class="c1"># cd /opt </span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>root@localhost local<span class="o">]</span><span class="c1"># cd /opt </span>
 <span class="o">[</span>root@localhost local<span class="o">]</span><span class="c1"># chown -R elk:elk elasticsearch-6.2.0</span>
-</pre></div>
+</code></pre></div>
 <p>master 节点: 其他同上，es配置如下</p>
-<div class="highlight"><pre><span></span>cluster.name: elasticsearch
+<div class="highlight"><pre><span></span><code>cluster.name: elasticsearch
 node.name: master
 node.master: <span class="nb">true</span>  <span class="c1"># 意思是该节点为主节点</span>
 node.data: <span class="nb">false</span>  <span class="c1"># 表示这不是数据节点</span>
 network.host: <span class="m">0</span>.0.0.0  <span class="c1"># 监听全部ip</span>
 http.port: <span class="m">9200</span>  <span class="c1"># es服务的端口号</span>
 discovery.zen.ping.unicast.hosts:<span class="o">[</span><span class="s1">'172.16.131.133'</span>,<span class="s1">'172.16.131.134'</span><span class="o">]</span>
-</pre></div>
+</code></pre></div>
 <p>slave节点： 其他同上，es配置如下</p>
-<div class="highlight"><pre><span></span>cluster.name: elasticsearch
+<div class="highlight"><pre><span></span><code>cluster.name: elasticsearch
 node.name: slave_1
 node.master: <span class="nb">false</span> <span class="c1"># 意思是该节点不是主节点</span>
 node.data: <span class="nb">true</span>  <span class="c1"># 表示这是数据节点</span>
 network.host: <span class="m">0</span>.0.0.0  <span class="c1"># 监听全部ip</span>
 http.port: <span class="m">9200</span>  <span class="c1"># es服务的端口号</span>
 discovery.zen.ping.unicast.hosts:<span class="o">[</span><span class="s1">'172.16.131.133'</span>,<span class="s1">'172.16.131.134'</span><span class="o">]</span>
-</pre></div>
+</code></pre></div>
 <p>关闭防火墙（生产环境不应该关闭）</p>
-<div class="highlight"><pre><span></span>systemctl status firewalld.service
+<div class="highlight"><pre><span></span><code>systemctl status firewalld.service
 systemctl stop firewalld.service
 systemctl disable firewalld.service
-</pre></div>
+</code></pre></div>
 <p>./elasticsearch -d 启动两个节点</p>
 <p>测试</p>
-<div class="highlight"><pre><span></span>curl -GET <span class="m">0</span>.0.0.0:9200/_cat/health?v
+<div class="highlight"><pre><span></span><code>curl -GET <span class="m">0</span>.0.0.0:9200/_cat/health?v
 
 curl -GET <span class="m">0</span>.0.0.0:9200/_cat/indices?v
 
 curl -GET <span class="m">0</span>.0.0.0:9200/_cluster/health?pretty
 
 curl -GET <span class="m">0</span>.0.0.0:9200/_cluster/state?pretty
-</pre></div>
+</code></pre></div>
 <h4>配置  kibna</h4>
-<div class="highlight"><pre><span></span>server.port: <span class="m">8080</span>
+<div class="highlight"><pre><span></span><code>server.port: <span class="m">8080</span>
 server.host: <span class="s2">"172.16.131.134"</span>
 elasticsearch.url: <span class="s2">"http://localhost:9200"</span>
 logging.dest: /opt/kibana-6.1.2-linux-x86_64/log/kibana.log
 elasticsearch.username: <span class="s2">"kibana"</span>
 elasticsearch.password: <span class="s2">"kibanapassword"</span>
-</pre></div>
+</code></pre></div>
 <p>./kibana &amp; 启动</p>
 <ul>
 <li>Discover   //搜索</li>
@@ -219,15 +219,15 @@ elasticsearch.password: <span class="s2">"kibanapassword"</span>
 <p>/usr/share/logstash/bin/logstash-plugin install x-pack file:///opt/x-pack-6.2.0.zip</p>
 <p>xpack.monitoring.elasticsearch.url: "http://ip:9200"</p>
 <h5>配置logstash</h5>
-<div class="highlight"><pre><span></span>xpack.monitoring.elasticsearch.url: <span class="s2">"http://ip:9200"</span>
+<div class="highlight"><pre><span></span><code>xpack.monitoring.elasticsearch.url: <span class="s2">"http://ip:9200"</span>
 xpack.monitoring.elasticsearch.username: logstash_system
 xpack.monitoring.elasticsearch.password: <span class="nb">pwd</span>
-</pre></div>
+</code></pre></div>
 <h1>x-pack</h1>
-<div class="highlight"><pre><span></span>curl -u elastic:pwd  -XPUT <span class="s1">'http://127.0.0.1:9200/_xpack/license'</span> -H <span class="s2">"Content-Type: application/json"</span> -d @license.json
-</pre></div>
+<div class="highlight"><pre><span></span><code>curl -u elastic:pwd  -XPUT <span class="s1">'http://127.0.0.1:9200/_xpack/license'</span> -H <span class="s2">"Content-Type: application/json"</span> -d @license.json
+</code></pre></div>
 <p>license.json</p>
-<div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">"license"</span>:<span class="o">{</span><span class="s2">"uid"</span>:<span class="s2">"f19eabab-77ae-4ccd-b90c-f20e5605e625"</span>,
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s2">"license"</span>:<span class="o">{</span><span class="s2">"uid"</span>:<span class="s2">"f19eabab-77ae-4ccd-b90c-f20e5605e625"</span>,
 <span class="s2">"type"</span>:<span class="s2">"platinum"</span>,
 <span class="s2">"issue_date_in_millis"</span>:1542153600000,
 <span class="s2">"expiry_date_in_millis"</span>:2524579200999,
@@ -236,8 +236,8 @@ xpack.monitoring.elasticsearch.password: <span class="nb">pwd</span>
 <span class="s2">"issuer"</span>:<span class="s2">"WebForm"</span>,
 <span class="s2">"signature"</span>:<span class="s2">"AAAAAwAAAA1neEkkwW17TBDufpgpAAABmC9ZN0hjZDBGYnVyRXpCOW5Bb3FjZDAxOWpSbTVoMVZwUzRxVk1PSmkxaktJRVl5MUYvUWh3bHZVUTllbXNPbzBUemtnbWpBbmlWRmRZb25KNFlBR2x0TXc2K2p1Y1VtMG1UQU9TRGZVSGRwaEJGUjE3bXd3LzRqZ05iLzRteWFNekdxRGpIYlFwYkJiNUs0U1hTVlJKNVlXekMrSlVUdFIvV0FNeWdOYnlESDc3MWhlY3hSQmdKSjJ2ZTcvYlBFOHhPQlV3ZHdDQ0tHcG5uOElCaDJ4K1hob29xSG85N0kvTWV3THhlQk9NL01VMFRjNDZpZEVXeUtUMXIyMlIveFpJUkk2WUdveEZaME9XWitGUi9WNTZVQW1FMG1DenhZU0ZmeXlZakVEMjZFT2NvOWxpZGlqVmlHNC8rWVVUYzMwRGVySHpIdURzKzFiRDl4TmM1TUp2VTBOUlJZUlAyV0ZVL2kvVk10L0NsbXNFYVZwT3NSU082dFNNa2prQ0ZsclZ4NTltbU1CVE5lR09Bck93V2J1Y3c9PQAAAQAERQE/JDSC3INTJO4W5B1Hs7Ug+A9crNoVzQJOgjIdzP/U+A8XRc7Fb1APo+aCD+a6x4Sl+7/2p4HjjdF5G/n5GJYTMpOZ0CBOnq3VghGlmZsyWktqR8kiVPmt1J3a0TS2J8Np0s1ZCBsGhUXoy7CG1vTErUOjeJg2AgR3McXCm/WTzLjEVM/GZ1/u0qzEsxEUXGbRAFDLfQ9q9v6sIxUSybV42zLJKSTZJb/AJluGy0vQpLmRnEccKfKpzWGCYRaJg00K+LI6xs1RA8NJuXaahcwVBF+Osxi+/CWPdgXnlkJTcjKr6WzVjC7VNYOdVXu4sp3NefiinRWmfPGFYOQH"</span>,
 <span class="s2">"start_date_in_millis"</span>:1542153600000<span class="o">}}</span>
-</pre></div>
-<div class="highlight"><pre><span></span>wget https://artifacts.elastic.co/downloads/logstash/logstash-6.2.0.rpm
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>wget https://artifacts.elastic.co/downloads/logstash/logstash-6.2.0.rpm
 
 wget --no-cookies --header <span class="s2">"Cookie: oraclelicense=accept-securebackup-cookie;"</span> http://download.oracle.com/otn-pub/java/jdk/8u191-b12/2787e4a523244c269598db4e85c51e0c/jdk-8u191-linux-x64.tar.gz
 
@@ -248,7 +248,7 @@ wget --no-cookies --header <span class="s2">"Cookie: oraclelicense=accept-secure
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
 
 ln -s /opt/jdk1.8.0_191/bin/java /usr/bin/java
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

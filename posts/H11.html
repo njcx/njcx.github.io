@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-05T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Tue 05 June 2018
+        二 05 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -108,7 +108,7 @@ var _hmt = _hmt || [];
 ethtool -i eth0
 删除以前的网卡驱动：
 rmmod e1000e </p>
-<div class="highlight"><pre><span></span>&gt; &gt; wget https://www.bro.org/downloads/bro-2.5.5.tar.gz
+<div class="highlight"><pre><span></span><code>&gt; &gt; wget https://www.bro.org/downloads/bro-2.5.5.tar.gz
 &gt; &gt; tar -zxvf bro-2.5.5.tar.gz
 &gt; &gt; yum install cmake make gcc gcc-c++ flex bison libpcap-devel openssl-devel python-devel swig zlib-devel -y
 &gt; &gt; 
@@ -154,21 +154,21 @@ ip addr 查看网卡
 &gt; &gt; 
 &gt; &gt; <span class="nb">echo</span> <span class="s2">"/opt/pfring/lib"</span> &gt;&gt; /etc/ld.so.conf
 &gt; &gt; ldconfig
-</pre></div>
+</code></pre></div>
 <h4>验证</h4>
-<div class="highlight"><pre><span></span>./bro -N Bro::PF_RING
-</pre></div>
+<div class="highlight"><pre><span></span><code>./bro -N Bro::PF_RING
+</code></pre></div>
 <p>打印如下，代表安装正常</p>
-<div class="highlight"><pre><span></span>Bro::PF_RING - Packet acquisition via PF_RING <span class="o">(</span>dynamic, version <span class="m">1</span>.0<span class="o">)</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code>Bro::PF_RING - Packet acquisition via PF_RING <span class="o">(</span>dynamic, version <span class="m">1</span>.0<span class="o">)</span>
+</code></pre></div>
 <h4>使用</h4>
-<div class="highlight"><pre><span></span><span class="o">[</span>bro<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>bro<span class="o">]</span>
 <span class="nv">type</span><span class="o">=</span>standalone
 <span class="nv">host</span><span class="o">=</span>localhost
 <span class="nv">interface</span><span class="o">=</span>pf_ring::ens33
-</pre></div>
+</code></pre></div>
 <p>在网卡前面加个 pf_ring::, 即可使用</p>
-<div class="highlight"><pre><span></span><span class="c1">#./broctl</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#./broctl</span>
 
 Welcome to BroControl <span class="m">1</span>.7
 
@@ -177,7 +177,7 @@ Type <span class="s2">"help"</span> <span class="k">for</span> help.
 <span class="o">[</span>BroControl<span class="o">]</span> &gt; install
 
 <span class="o">[</span>BroControl<span class="o">]</span> &gt; start
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
