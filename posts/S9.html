@@ -245,7 +245,8 @@ http_output:
   enabled: <span class="nb">true</span>
   url: <span class="s2">"http://localhost:2801"</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>systemctl <span class="nb">enable</span> falco 
+<p>启动falco</p>
+<div class="highlight"><pre><span></span><code>systemctl <span class="nb">enable</span> falco  <span class="o">&amp;&amp;</span>  systemctl start falco
 </code></pre></div>
 <p>https://github.com/falcosecurity/falcosidekick.git</p>
 <p>falcosidekick 是一个管道工具，接受 Falco的事件并将它们发送到不同的持久化工具中。我们使用falcosidekick把falco post 过来的数据写入es ，也可以写入kafka。如下图。</p>
