@@ -148,11 +148,13 @@ var _hmt = _hmt || [];
 <p>然后，我们把images 推到上面去：</p>
 <p><img alt="agent" class="img-fluid" src="../images/1571625903101_.pic.jpg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/15.50.15.png"/></p>
+<p>Vmware Harbor 提供了一个API 接口，这样我们就可以与SOC 集成，查看images 的安全情况。</p>
 <div class="highlight"><pre><span></span><code>/projects/<span class="o">{</span>project_name<span class="o">}</span>/repositories/<span class="o">{</span>repository_name<span class="o">}</span>/artifacts/<span class="o">{</span>reference<span class="o">}</span>/additions/vulnerabilities  
 
 
 curl -X GET <span class="s2">"http://172.16.116.5/api/v2.0/projects/library/repositories/fastjson/artifacts/1.2.24/additions/vulnerabilities"</span> -H <span class="s2">"accept: application/json"</span> -H <span class="s2">"X-Request-Id: 111"</span>
 </code></pre></div>
+<p>结果如下图：</p>
 <p><img alt="agent" class="img-fluid" src="../images/image.png"/></p>
 <p>k8s 基线</p>
 <p>https://github.com/aquasecurity/kube-bench</p>
