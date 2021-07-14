@@ -132,16 +132,20 @@ var _hmt = _hmt || [];
 <span class="c1"># chmod +x /usr/local/bin/docker-compose</span>
 
 <span class="c1"># wget  https://github.com/goharbor/harbor/releases/download/v2.2.3/harbor-offline-installer-v2.2.3.tgz</span>
-
-<span class="c1"># tar xf harbor-offline-installer-v2.2.3.tgz </span>
+</code></pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/1521625902561_.pic_hd.jpg"/></p>
+<p>修改 harbor.yml配置文件，生存环境请用https，这里仅用于测试</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># tar xf harbor-offline-installer-v2.2.3.tgz </span>
 <span class="c1"># cp harbor.yml.tmpl harbor.yml</span>
 
 <span class="c1"># ./prepare </span>
 <span class="c1"># ./install.sh  --with-trivy  --with-chartmuseum </span>
 </code></pre></div>
+<p>安装过程如图：</p>
 <p><img alt="agent" class="img-fluid" src="../images/1501625901938_.pic_hd.jpg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/1521625902561_.pic_hd.jpg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/1541625902778_.pic.jpg"/></p>
+<p>然后，我们把images 推到上面去：</p>
 <p><img alt="agent" class="img-fluid" src="../images/1561625902819_.pic.jpg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/1571625903101_.pic.jpg"/></p>
 <p><img alt="agent" class="img-fluid" src="../images/1581625903216_.pic.jpg"/></p>
