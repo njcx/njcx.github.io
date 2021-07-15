@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-05-27T12:21:00+03:00">
         <i class="fa fa-clock-o"></i>
-        六 27 五月 2017
+        Sat 27 May 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -105,7 +105,7 @@ var _hmt = _hmt || [];
     <h4>安装</h4>
 <p><a href="https://www.njcx.bid/posts/H14.html">点这里</a></p>
 <h4>rootkit_trojans.txt内容</h4>
-<div class="highlight"><pre><span></span><code><span class="c1"># Released under the same license as OSSEC.</span>
+<div class="highlight"><pre><span></span><span class="c1"># Released under the same license as OSSEC.</span>
 <span class="c1"># More details at the LICENSE file included with OSSEC or online</span>
 <span class="c1"># at: https://github.com/ossec/ossec-hids/blob/master/LICENSE</span>
 <span class="c1">#</span>
@@ -168,8 +168,8 @@ apachectl   !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<sp
 sshd        !check_global_passwd<span class="p">|</span>panasonic<span class="p">|</span>satori<span class="p">|</span>vejeta<span class="p">|</span><span class="se">\.</span>ark<span class="p">|</span>/hash<span class="se">\.</span>zk<span class="p">|</span>bash<span class="p">|</span>/dev<span class="o">[</span>a-s<span class="o">]</span><span class="p">|</span>/dev<span class="o">[</span>A-Z<span class="o">]</span>/!
 syslogd     !bash<span class="p">|</span>/usr/lib/pt07<span class="p">|</span>/dev/<span class="o">[</span>^cln<span class="o">]]</span><span class="p">|</span>syslogs<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h!
 xinetd      !bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h!
-<span class="k">in</span>.telnetd  !cterm100<span class="p">|</span>vt350<span class="p">|</span>VT100<span class="p">|</span>ansi-term<span class="p">|</span>bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev<span class="o">[</span>A-R<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>a-z<span class="o">]</span>/!
-<span class="k">in</span>.fingerd  !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>cterm100<span class="p">|</span>/dev/!
+in.telnetd  !cterm100<span class="p">|</span>vt350<span class="p">|</span>VT100<span class="p">|</span>ansi-term<span class="p">|</span>bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev<span class="o">[</span>A-R<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>a-z<span class="o">]</span>/!
+in.fingerd  !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>cterm100<span class="p">|</span>/dev/!
 identd      !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
 init        !bash<span class="p">|</span>/dev/h
 tcpd        !bash<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>p1r0c4<span class="p">|</span>hack<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span>!
@@ -214,9 +214,9 @@ killall     !/dev/<span class="o">[</span>^t%<span class="o">]</span><span class
 /etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*bitdefender.com! Anti-virus site on the hosts file
 /etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*antivirus.com! Anti-virus site on the hosts file
 /etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*sans.org! Security site on the hosts file
-</code></pre></div>
+</pre></div>
 <h4>check_rc_trojans.c</h4>
-<div class="highlight"><pre><span></span><code><span class="cm">/* Copyright (C) 2009 Trend Micro Inc.</span>
+<div class="highlight"><pre><span></span><span class="cm">/* Copyright (C) 2009 Trend Micro Inc.</span>
 <span class="cm"> * All right reserved.</span>
 <span class="cm"> *</span>
 <span class="cm"> * This program is a free software; you can redistribute it</span>
@@ -334,16 +334,16 @@ killall     !/dev/<span class="o">[</span>^t%<span class="o">]</span><span class
         <span class="n">notify_rk</span><span class="p">(</span><span class="n">ALERT_OK</span><span class="p">,</span> <span class="n">op_msg</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div>
+</pre></div>
 <p>从相应的源码看，agent是读取文件内容，然后匹配正则，（特征：#!/bin/sh）可以看下面的ps 样本,为什么又有host呢，它会把相应的域名指向其他ip，主要是阻止访问对应网站</p>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
 
-<span class="k">for</span> arg <span class="k">in</span> <span class="s2">"</span><span class="nv">$*</span><span class="s2">"</span><span class="p">;</span><span class="k">do</span>
+<span class="k">for</span> arg in <span class="s2">"</span><span class="nv">$*</span><span class="s2">"</span><span class="p">;</span><span class="k">do</span>
 
 ips <span class="nv">$arg</span><span class="p">|</span>grep -v <span class="s2">"589a2ec0c1"</span><span class="p">|</span>grep -v <span class="s2">"4b74cd2dba"</span><span class="p">|</span>grep -v <span class="s2">"ips"</span><span class="p">|</span>grep -v <span class="s2">"grep"</span>
 
 <span class="k">done</span><span class="p">;</span><span class="nb">exit</span>
-</code></pre></div>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

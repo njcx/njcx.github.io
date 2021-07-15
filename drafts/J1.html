@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-07-01T19:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        日 01 七月 2018
+        Sun 01 July 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -105,47 +105,47 @@ var _hmt = _hmt || [];
     <h4>介绍</h4>
 <h4>安装</h4>
 <p>服务端：172.16.131.134</p>
-<div class="highlight"><pre><span></span><code>yum install -y epel-release
+<div class="highlight"><pre><span></span>yum install -y epel-release
 yum install -y salt-master salt-minion
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>service salt-master start
+</pre></div>
+<div class="highlight"><pre><span></span>service salt-master start
 service salt-minion start
 chkconfig salt-master on
 chkconfig salt-minion on
 setenforce <span class="m">0</span>
-</code></pre></div>
+</pre></div>
 <p>客服端：172.16.131.136</p>
-<div class="highlight"><pre><span></span><code>yum install -y epel-release
+<div class="highlight"><pre><span></span>yum install -y epel-release
 yum install -y salt-minion
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>service salt-minion start
+</pre></div>
+<div class="highlight"><pre><span></span>service salt-minion start
 chkconfig salt-minion on
 setenforce <span class="m">0</span>
-</code></pre></div>
+</pre></div>
 <h4>配置</h4>
 <p>vim /etc/salt/minion</p>
-<div class="highlight"><pre><span></span><code>master: <span class="m">172</span>.16.131.134
-</code></pre></div>
+<div class="highlight"><pre><span></span>master: <span class="m">172</span>.16.131.134
+</pre></div>
 <p>vim /etc/salt/master</p>
 <p><code>bash
  auto_accept: True //这样服务端就可以自动接收key</code></p>
 <p>service salt-minion restart</p>
 <p>service salt-master restart</p>
 <p>使用 salt-key -L 即可查看</p>
-<div class="highlight"><pre><span></span><code>Accepted Keys:
+<div class="highlight"><pre><span></span>Accepted Keys:
 master
 slave_1
 Denied Keys:
 Unaccepted Keys:
-</code></pre></div>
+</pre></div>
 <p>测试  salt '*' test.ping </p>
-<div class="highlight"><pre><span></span><code>slave_1:
+<div class="highlight"><pre><span></span>slave_1:
     True
 master:
     True
-</code></pre></div>
+</pre></div>
 <p>测试 salt '*' cmd.run "df -h"</p>
-<div class="highlight"><pre><span></span><code>    Filesystem               Size  Used Avail Use% Mounted on
+<div class="highlight"><pre><span></span>    Filesystem               Size  Used Avail Use% Mounted on
     /dev/mapper/centos-root   17G  <span class="m">5</span>.0G   13G  <span class="m">30</span>% /
     devtmpfs                 871M     <span class="m">0</span>  871M   <span class="m">0</span>% /dev
     tmpfs                    883M   12K  883M   <span class="m">1</span>% /dev/shm
@@ -162,7 +162,7 @@ master:
     tmpfs                    883M     <span class="m">0</span>  883M   <span class="m">0</span>% /sys/fs/cgroup
     /dev/sda1               1014M  130M  885M  <span class="m">13</span>% /boot
     tmpfs                    177M     <span class="m">0</span>  177M   <span class="m">0</span>% /run/user/0
-</code></pre></div>
+</pre></div>
 <p>如上，只是简单的测试，还有比较有趣的 grains，pillar</p>
   </div>
 </article>

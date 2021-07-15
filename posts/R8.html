@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-08-08T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        三 08 八月 2018
+        Wed 08 August 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -125,20 +125,20 @@ var _hmt = _hmt || [];
 <p>每个Node运行kube-proxy服务，负责将访问service的TCP/UDP数据流转发到后端的容器。如果有多个副本会实现负载均衡。</p>
 <h4>安装</h4>
 <p>一共3个节点，</p>
-<div class="highlight"><pre><span></span><code><span class="m">10</span>.10.252.215   master   
+<div class="highlight"><pre><span></span><span class="m">10</span>.10.252.215   master   
 <span class="m">10</span>.10.252.214   node1 
 <span class="m">10</span>.10.252.213   node2  
-</code></pre></div>
+</pre></div>
 <p>除了初始化，软件安装一致</p>
 <p>k8s repo</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>k8s<span class="o">]</span>
+<div class="highlight"><pre><span></span><span class="o">[</span>k8s<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>k8s
 <span class="nv">enabled</span><span class="o">=</span><span class="m">1</span>
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
-</code></pre></div>
+</pre></div>
 <p>base.repo</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>base<span class="o">]</span>
+<div class="highlight"><pre><span></span><span class="o">[</span>base<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Base
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os&amp;infra=$infra</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.ustc.edu.cn/centos/<span class="nv">$releasever</span>/os/<span class="nv">$basearch</span>/
@@ -169,8 +169,8 @@ var _hmt = _hmt || [];
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
 <span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-</code></pre></div>
-<div class="highlight"><pre><span></span><code> <span class="nb">cd</span> /etc/yum.repos.d/
+</pre></div>
+<div class="highlight"><pre><span></span> <span class="nb">cd</span> /etc/yum.repos.d/
  wget http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
  vim k8s.repo
 yum makecache
@@ -213,13 +213,13 @@ kubeadm init --kubernetes-version<span class="o">=</span><span class="m">1</span
 
 
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>node1 node2 执行
+</pre></div>
+<div class="highlight"><pre><span></span>node1 node2 执行
 
  kubeadm join <span class="m">10</span>.10.252.215:6443 --token u3toqk.8j7fnn0lmajgvnvq     --discovery-token-ca-cert-hash sha256:49b37a021f9223d2f3af10d71a5ca47cc34e12d2c20147adfc61a6a4b90c4b97 
-</code></pre></div>
+</pre></div>
 <p>master 生成join语句脚本备用</p>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
 <span class="k">if</span> <span class="o">[</span> <span class="nv">$EUID</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span><span class="k">then</span>
     <span class="nb">echo</span> <span class="s2">"You must be root (or sudo) to run this script"</span>
@@ -237,7 +237,7 @@ kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 
 <span class="nb">echo</span> <span class="s2">"Refer the following command to join kubernetes cluster:"</span>
 <span class="nb">echo</span> <span class="s2">"kubeadm join </span><span class="nv">$1</span><span class="s2">:6443 --token </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2"> --discovery-token-ca-cert-hash sha256:</span><span class="si">${</span><span class="nv">cert_hash</span><span class="si">}</span><span class="s2">"</span>
-</code></pre></div>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

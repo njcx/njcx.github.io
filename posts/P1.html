@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-07T03:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        四 07 六月 2018
+        Thu 07 June 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -103,16 +103,16 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>介绍</h4>
-<div class="highlight"><pre><span></span><code>https://docs.microsoft.com/zh-cn/sysinternals/downloads/sysmon
-</code></pre></div>
+<div class="highlight"><pre><span></span>https://docs.microsoft.com/zh-cn/sysinternals/downloads/sysmon
+</pre></div>
 <p>Sysmon是微软的一款免费的轻量级系统监控工具。它通过系统服务和驱动程序实现记录进程创建，网络连接以及文件创建时间更改的详细信息，并把相关的信息写入并展示在windows的日志事件里。我们可以通过读取Windows的日志，了解Windows的安全状态。</p>
 <p>Sysmon安装后分为用户态系统服务，驱动两部分，用户态通过ETW(Event Tracing for Windows)实现对网络数据记录，通过EventLog对驱动返回的数据进行解析，驱动部分则通过进、线程，模块的回调函数收集进程相关的信息，通过Minifilter文件过滤驱动和注册表回调函数记录访问文件、注册表的数据。</p>
 <p>从功能上来讲，Sysmon是一款优秀的HIDS、EDR的主机入侵检测引擎，其依托于Windows内核层进、线程，模块，注册表回调，及文件过滤驱动针对相应的行为进行实时的增、删、改信息收集并通过ETW存储并展示于Windows日志。</p>
 <h4>安装</h4>
 <p>下载地址</p>
-<div class="highlight"><pre><span></span><code>https://download.sysinternals.com/files/Sysmon.zip
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>    Install:    Sysmon.exe -i &lt;configfile&gt;
+<div class="highlight"><pre><span></span>https://download.sysinternals.com/files/Sysmon.zip
+</pre></div>
+<div class="highlight"><pre><span></span>    Install:    Sysmon.exe -i &lt;configfile&gt;
     <span class="o">[</span>-h &lt;<span class="o">[</span>sha1<span class="p">|</span>md5<span class="p">|</span>sha256<span class="p">|</span>imphash<span class="p">|</span>*<span class="o">]</span>,...&gt;<span class="o">]</span> <span class="o">[</span>-n <span class="o">[</span>&lt;process,...&gt;<span class="o">]]</span>
     <span class="o">[</span>-l <span class="o">(</span>&lt;process,...&gt;<span class="o">)]</span>
 
@@ -121,7 +121,7 @@ var _hmt = _hmt || [];
                    <span class="o">[</span>-l <span class="o">[</span>&lt;process,...&gt;<span class="o">]]]</span>
 
     Uninstall:  Sysmon.exe -u
-</code></pre></div>
+</pre></div>
 <p>-c 更新或显示配置</p>
 <p>-h 指定hash记录的算法</p>
 <p>-i 安装，可用xml文件来更新配置文件</p>
@@ -136,7 +136,7 @@ var _hmt = _hmt || [];
 <p>sysmon -c xxx.xml
 注：安装需要管理员权限并重启，windows 7 或者以上，服务器系统windows server 2012 及以上。   </p>
 <p>配置样例</p>
-<div class="highlight"><pre><span></span><code> &lt;Sysmon <span class="nv">schemaversion</span><span class="o">=</span><span class="s2">"4.21"</span>&gt;
+<div class="highlight"><pre><span></span> &lt;Sysmon <span class="nv">schemaversion</span><span class="o">=</span><span class="s2">"4.21"</span>&gt;
 &lt;!-- Capture all hashes --&gt;
 &lt;HashAlgorithms&gt;*&lt;/HashAlgorithms&gt; &lt;!--哈希配置<span class="o">(</span>默认使用sha1<span class="o">)</span> --&gt;
 &lt;EventFiltering&gt; &lt;!--事件筛选--&gt;
@@ -161,15 +161,15 @@ var _hmt = _hmt || [];
 &lt;/EventFiltering&gt;
 &lt;/Sysmon&gt;
  -- 配置条目直接位于Sysmon 标签下, 过滤器位于 EventFiltering 标签下 
-</code></pre></div>
+</pre></div>
 <p>一些配置规则</p>
-<div class="highlight"><pre><span></span><code> https://github.com/sametsazak/sysmon.git
+<div class="highlight"><pre><span></span> https://github.com/sametsazak/sysmon.git
 
  https://github.com/SwiftOnSecurity/sysmon-config
 
  https://github.com/ion-storm/sysmon-config
-</code></pre></div>
-<div class="highlight"><pre><span></span><code> ProcessCreate            进程创建
+</pre></div>
+<div class="highlight"><pre><span></span> ProcessCreate            进程创建
  FileCreateTime           文件创建时间更改
  NetworkConnect           检测到网络连接
  ProcessTerminate         进程终止
@@ -189,14 +189,14 @@ var _hmt = _hmt || [];
  WmiEvent                 检测到WmiEventConsumer活动 -- WmiEventConsumer activity detected
  WmiEvent                 检测到WmiEventConsumerToFilter活动 -- WmiEventConsumerToFilter activity 
  DnsQuery                 DNS查询
-</code></pre></div>
+</pre></div>
 <p>我们可以使用 winlogbeat采集到elk，也可以使用wazuh完成数据日志采集，然后用来分析</p>
 <p>我们也可以使用一些工具辅助我们分析，如下：</p>
 <p>Sysmon View：Sysmon日志可视化工具</p>
 <p>Sysmon Shell：Sysmon配置文件生成工具</p>
 <p>Sysmon Box：Sysmon和网络捕获日志记录工具</p>
-<div class="highlight"><pre><span></span><code>https://github.com/nshalabi/SysmonTools
-</code></pre></div>
+<div class="highlight"><pre><span></span>https://github.com/nshalabi/SysmonTools
+</pre></div>
 <p>#### 防御</p>
 <p>#### 绕过</p>
 <p>阻断Sysmon​：</p>
@@ -218,8 +218,8 @@ var _hmt = _hmt || [];
 </li>
 </ol>
 <p>下面这个工具，也可以达到类似的功能</p>
-<div class="highlight"><pre><span></span><code>https://github.com/bats3c/Ghost-In-The-Logs
-</code></pre></div>
+<div class="highlight"><pre><span></span>https://github.com/bats3c/Ghost-In-The-Logs
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

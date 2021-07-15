@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-05-29T13:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        二 29 五月 2018
+        Tue 29 May 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -141,10 +141,10 @@ var _hmt = _hmt || [];
 <li>PATH(HTTP)</li>
 </ul>
 <p>通过bro抓取分析Url里面的特征</p>
-<div class="highlight"><pre><span></span><code>/etc/passwd?format<span class="o">=</span>%<span class="p">&amp;</span><span class="nv">xss</span><span class="o">=</span><span class="s2">"&gt;&lt;script&gt;alert('GoLismero');&lt;/script&gt;&amp;traversal=../../&amp;sql=' OR 1;</span>
-</code></pre></div>
+<div class="highlight"><pre><span></span>/etc/passwd?format<span class="o">=</span>%<span class="p">&amp;</span><span class="nv">xss</span><span class="o">=</span><span class="s2">"&gt;&lt;script&gt;alert('GoLismero');&lt;/script&gt;&amp;traversal=../../&amp;sql=' OR 1;</span>
+</pre></div>
 <p>对应的规则</p>
-<div class="highlight"><pre><span></span><code>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER1"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><span></span>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER1"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
         <span class="nt">&lt;rule_name&gt;</span>GoLismero Scanner<span class="nt">&lt;/rule_name&gt;</span>
         <span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
         <span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
@@ -158,15 +158,15 @@ var _hmt = _hmt || [];
         <span class="nt">&lt;action/&gt;</span>
         <span class="nt">&lt;desc</span> <span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>检测到GoLismero扫描<span class="nt">&lt;/desc&gt;</span>
     <span class="nt">&lt;/rule&gt;</span>
-</code></pre></div>
+</pre></div>
 <ul>
 <li>UA(HTTP)</li>
 </ul>
 <p>通过bro分析http请求中的UA头</p>
-<div class="highlight"><pre><span></span><code> Mozilla/5.0 <span class="o">(</span>compatible, GoLismero/2.0 The Web Knife<span class="p">;</span> +https://github.com/golismero/golismero<span class="o">)</span>
-</code></pre></div>
+<div class="highlight"><pre><span></span> Mozilla/5.0 <span class="o">(</span>compatible, GoLismero/2.0 The Web Knife<span class="p">;</span> +https://github.com/golismero/golismero<span class="o">)</span>
+</pre></div>
 <p>对应的规则</p>
-<div class="highlight"><pre><span></span><code>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER2"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><span></span>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER2"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
         <span class="nt">&lt;rule_name&gt;</span>GoLismero Traffic<span class="nt">&lt;/rule_name&gt;</span>
         <span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
         <span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
@@ -181,11 +181,11 @@ var _hmt = _hmt || [];
         <span class="nt">&lt;action/&gt;</span>
         <span class="nt">&lt;desc</span> <span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>GoLismero Scanner<span class="nt">&lt;/desc&gt;</span>
     <span class="nt">&lt;/rule&gt;</span>
-</code></pre></div>
+</pre></div>
 <ul>
 <li>看看header里面有没有其他字段</li>
 </ul>
-<div class="highlight"><pre><span></span><code>GET / HTTP/1.1
+<div class="highlight"><pre><span></span>GET / HTTP/1.1
 Accept: text/html,application/xhtml+xml,application/xml<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.9,image/webp,image/apng,*/*<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.8
 Accept-Encoding: gzip, deflate, br
 Accept-Language: zh-CN,zh<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.9
@@ -196,9 +196,9 @@ X-Scanner: Netsparker
 
 Upgrade-Insecure-Requests: <span class="m">1</span>
 User-Agent: <span class="m">68</span>.0.3440.106 
-</code></pre></div>
+</pre></div>
 <p>对应规则</p>
-<div class="highlight"><pre><span></span><code>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER7"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><span></span>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER7"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
         <span class="nt">&lt;rule_name&gt;</span>Netsparker Scanner<span class="nt">&lt;/rule_name&gt;</span>
         <span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
         <span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
@@ -212,12 +212,12 @@ User-Agent: <span class="m">68</span>.0.3440.106
         <span class="nt">&lt;action/&gt;</span>
         <span class="nt">&lt;desc</span> <span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>Netsparker Scanner<span class="nt">&lt;/desc&gt;</span>
     <span class="nt">&lt;/rule&gt;</span>
-</code></pre></div>
+</pre></div>
 <ul>
 <li>端口扫描</li>
 </ul>
 <p>来自bro  conn.log 的conn_state字段</p>
-<div class="highlight"><pre><span></span><code>S0  看到连接尝试，没有响应。
+<div class="highlight"><pre><span></span>S0  看到连接尝试，没有响应。
 S1  已建立连接，未终止。
 SF  正常建立和终止。
 REJ 连接尝试被拒绝。
@@ -230,7 +230,7 @@ RSTRH   响应者发送了一个SYN ACK后跟一个RST，未见过发起人的SY
 SH  发起者发送了一个SYN后跟一个FIN，我们从未看到来自响应者的SYN ACK，连接是“半”打开状态。
 SHR 响应者发送了一个SYN ACK后跟一个FIN，我们从未看到来自发起者的SYN。
 OTH 没有看到SYN，没有关闭全部连接。
-</code></pre></div>
+</pre></div>
 <p>3次握手，建立tcp连接</p>
 <p><img alt="ml1" class="img-fluid" src="../images/7b652.png"/></p>
 <p>4次挥手，断开连接</p>

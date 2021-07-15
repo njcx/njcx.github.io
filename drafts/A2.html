@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2016-01-02T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        六 02 一月 2016
+        Sat 02 January 2016
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -109,13 +109,13 @@ var _hmt = _hmt || [];
 </ul>
 <p><img alt="mysql1" class="img-fluid" src="../images/mysql1.png"/></p>
 <h2>安装mysql</h2>
-<div class="highlight"><pre><span></span><code> apt-get install -y mysql-server
-</code></pre></div>
+<div class="highlight"><pre><span></span> apt-get install -y mysql-server
+</pre></div>
 <h2>配置</h2>
-<div class="highlight"><pre><span></span><code>mysql&gt;create user repl<span class="p">;</span> //创建新用户
+<div class="highlight"><pre><span></span>mysql&gt;create user repl<span class="p">;</span> //创建新用户
 //repl用户必须具有REPLICATION SLAVE权限，除此之外没有必要添加不必要的权限，密码为mysql。说明一下192.168.0.%，这个配置是指明repl用户所在服务器，这里%是通配符，表示192.168.0.0-192.168.0.255的Server都可以以repl用户登陆主服务器。当然你也可以指定固定Ip。
 mysql&gt; GRANT REPLICATION SLAVE ON *.* TO <span class="s1">'repl'</span>@<span class="s1">'192.168.122.%'</span> IDENTIFIED BY <span class="s1">'123456'</span><span class="p">;</span>
-</code></pre></div>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-08-12T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        日 12 八月 2018
+        Sun 12 August 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -151,7 +151,7 @@ etcd的重点是利用raft算法做分布式一致性，强调各个节点之间
 <li>HOST_3=172.19.0.14</li>
 </ul>
 <p>先在所有机器上面执行</p>
-<div class="highlight"><pre><span></span><code><span class="nv">TOKEN</span><span class="o">=</span>etcd-token-test-njcx
+<div class="highlight"><pre><span></span><span class="nv">TOKEN</span><span class="o">=</span>etcd-token-test-njcx
 <span class="nv">CLUSTER_STATE</span><span class="o">=</span>new
 <span class="nv">NAME_1</span><span class="o">=</span>machine-1
 <span class="nv">NAME_2</span><span class="o">=</span>machine-2
@@ -162,46 +162,46 @@ etcd的重点是利用raft算法做分布式一致性，强调各个节点之间
 <span class="nv">CLUSTER</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_1</span><span class="si">}</span>:2380,<span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_2</span><span class="si">}</span>:2380,<span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_3</span><span class="si">}</span>:2380
 mkdir -p /var/lib/etcd
 <span class="nv">ETCD_DATA</span><span class="o">=</span>/var/lib/etcd
-</code></pre></div>
+</pre></div>
 <p>然后在HOST_1 执行</p>
-<div class="highlight"><pre><span></span><code><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span>
+<div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span>
 <span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_1</span><span class="si">}</span>
 etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span> --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
     --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
     --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
     --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
     --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
-</code></pre></div>
+</pre></div>
 <p>然后在HOST_2 执行</p>
-<div class="highlight"><pre><span></span><code><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span>
+<div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span>
 <span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_2</span><span class="si">}</span>
 etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span> --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
     --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
     --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
     --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
     --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
-</code></pre></div>
+</pre></div>
 <p>然后在HOST_3 执行</p>
-<div class="highlight"><pre><span></span><code><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span>
+<div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span>
 <span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_3</span><span class="si">}</span>
 etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span> --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
     --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
     --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
     --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
     --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
-</code></pre></div>
+</pre></div>
 <p>然后，在任何一个机器上面</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">ETCDCTL_API</span><span class="o">=</span><span class="m">3</span>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ETCDCTL_API</span><span class="o">=</span><span class="m">3</span>
 <span class="nv">HOST_1</span><span class="o">=</span><span class="m">172</span>.19.0.12
 <span class="nv">HOST_2</span><span class="o">=</span><span class="m">172</span>.19.0.13
 <span class="nv">HOST_3</span><span class="o">=</span><span class="m">172</span>.19.0.14
 <span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379,<span class="nv">$HOST_2</span>:2379,<span class="nv">$HOST_3</span>:2379
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> member list
+</pre></div>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> member list
 8e9e05c52164694d, started, default, http://localhost:2380, http://0.0.0.0:2379, <span class="nb">false</span>
-</code></pre></div>
+</pre></div>
 <p>put 和get操作</p>
-<div class="highlight"><pre><span></span><code>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web1 value1
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web1 value1
 OK
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web2 value2
 OK
@@ -217,9 +217,9 @@ web2
 value2
 web3
 value3
-</code></pre></div>
+</pre></div>
 <p>删除操作</p>
-<div class="highlight"><pre><span></span><code>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put key myvalue
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put key myvalue
 OK
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> del key
 <span class="m">1</span>
@@ -229,9 +229,9 @@ OK
 OK
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> del k --prefix
 <span class="m">1</span>
-</code></pre></div>
+</pre></div>
 <p>监听key的变化</p>
-<div class="highlight"><pre><span></span><code>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> watch stock1
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> watch stock1
 PUT
 stock1
 <span class="m">1000</span>
@@ -250,18 +250,18 @@ stock2
 ok
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put stock2 <span class="m">20</span>
 ok
-</code></pre></div>
+</pre></div>
 <p>TTL</p>
-<div class="highlight"><pre><span></span><code>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease grant <span class="m">30</span>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease grant <span class="m">30</span>
 <span class="c1"># lease 2be7547fbc6a5afa granted with TTL(30s)</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put sample value --lease<span class="o">=</span>2be7547fbc6a5afa
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease keep-alive 2be7547fbc6a5afa      <span class="c1">#到期自动续期，会阻塞</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease revoke 2be7547fbc6a5afa          <span class="c1">#直接销毁</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
-</code></pre></div>
+</pre></div>
 <p>事务写</p>
-<div class="highlight"><pre><span></span><code>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put user1 bad
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put user1 bad
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> txn --interactive
 compares:
 value<span class="o">(</span><span class="s2">"user1"</span><span class="o">)</span> <span class="o">=</span> <span class="s2">"bad"</span>  
@@ -271,9 +271,9 @@ del user1
 
 failure requests <span class="o">(</span>get, put, delete<span class="o">)</span>:
 put user1 good
-</code></pre></div>
+</pre></div>
 <p>认证</p>
-<div class="highlight"><pre><span></span><code>./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role add root                                 <span class="c1">#创建角色root</span>
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role add root                                 <span class="c1">#创建角色root</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role grant-permission root readwrite  foo     <span class="c1">#只给foo读写权限（foo是key）</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role get root
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user add root                                 <span class="c1">#创建用户root</span>
@@ -284,25 +284,25 @@ put user1 good
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> get foo
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 get foo
 ./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 get foo1
-</code></pre></div>
+</pre></div>
 <p>分布式锁</p>
-<div class="highlight"><pre><span></span><code>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
+<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
 <span class="c1"># 启动另一个shell，上面会退出</span>
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
-</code></pre></div>
+</pre></div>
 <p>查看etcd集群状态</p>
-<div class="highlight"><pre><span></span><code>./etcdctl --write-out<span class="o">=</span>table --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint status       <span class="c1">#查看集群状态</span>
+<div class="highlight"><pre><span></span>./etcdctl --write-out<span class="o">=</span>table --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint status       <span class="c1">#查看集群状态</span>
 
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint health                         <span class="c1">#查看节点健康状态</span>
-</code></pre></div>
+</pre></div>
 <p>备份与恢复</p>
 <p>只能从一个etcd节点请求快照，因此--endpoints标志应仅包含一个端点。</p>
-<div class="highlight"><pre><span></span><code><span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379
+<div class="highlight"><pre><span></span><span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379
 
 ./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> snapshot save my.db
 
 ./etcdctl snapshot restore my.db -data-dir /var/lib/etcd
-</code></pre></div>
+</pre></div>
 <h4>Etcd在HIDS-Agent配置管理和健康监测上的应用</h4>
 <p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。</p>
 <p>HIDS-Agent 有如下需求：</p>
@@ -312,7 +312,7 @@ put user1 good
 <li>3， 规则下发(比如，恶意程序扫描)</li>
 </ul>
 <p>获取配置</p>
-<div class="highlight"><pre><span></span><code>    <span class="nx">cli</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">clientv3</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span>
+<div class="highlight"><pre><span></span>    <span class="nx">cli</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">clientv3</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span>
         <span class="nx">Endpoints</span><span class="p">:</span>   <span class="nx">etcD</span><span class="p">,</span>
         <span class="nx">DialTimeout</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
     <span class="p">})</span>
@@ -342,9 +342,9 @@ put user1 good
 
     <span class="nx">a</span><span class="p">.</span><span class="nx">Kafka</span> <span class="p">=</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">NewKafkaProducer</span><span class="p">(</span><span class="nx">kafkaHost</span><span class="p">,</span> <span class="nx">kafkaTopic</span><span class="p">)</span>
     <span class="nx">a</span><span class="p">.</span><span class="nx">Mutex</span> <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span><span class="p">)</span>
-</code></pre></div>
+</pre></div>
 <p>单独起一个goroutine，利用ttl做 agent 存活检测，如果key不在了，则认为agent下线了，这里用keep-alive也可以的</p>
-<div class="highlight"><pre><span></span><code><span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">cli</span> <span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">cli</span> <span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span> <span class="p">{</span>
 
         <span class="k">for</span> <span class="p">{</span>
             <span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Grant</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">TODO</span><span class="p">(),</span> <span class="mi">60</span><span class="p">)</span>
@@ -362,9 +362,9 @@ put user1 good
         <span class="p">}</span>
         <span class="nx">cli</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
     <span class="p">}(</span><span class="nx">cli</span><span class="p">)</span>
-</code></pre></div>
+</pre></div>
 <p>配置更新以及规则下发可以用 watch 实现</p>
-<div class="highlight"><pre><span></span><code><span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">cli</span> <span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">cli</span> <span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">for</span> <span class="p">{</span>
         <span class="nx">rch</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Watch</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span> <span class="s">"/hids/kafka/host"</span><span class="p">)</span>
         <span class="k">for</span> <span class="nx">wresp</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">rch</span> <span class="p">{</span>
@@ -382,7 +382,7 @@ put user1 good
 
         <span class="p">}</span>
     <span class="p">}(</span><span class="nx">cli</span><span class="p">)</span>
-</code></pre></div>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

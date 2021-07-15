@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-07-23T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        一 23 七月 2018
+        Mon 23 July 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -103,15 +103,15 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
-<div class="highlight"><pre><span></span><code><span class="c1">#  yum install numactl-devel  numactl  net-tools pciutils kernel-devel </span>
+<div class="highlight"><pre><span></span><span class="c1">#  yum install numactl-devel  numactl  net-tools pciutils kernel-devel </span>
 <span class="c1">#  wget http://fast.dpdk.org/rel/dpdk-18.11.tar.xz</span>
 <span class="c1">#  tar xvJf  dpdk-18.11.tar.xz </span>
-</code></pre></div>
+</pre></div>
 <p>下面这一步，很重要，可以避免很多错误</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># export  RTE_SDK=/opt/dpdk-18.11/</span>
+<div class="highlight"><pre><span></span><span class="c1"># export  RTE_SDK=/opt/dpdk-18.11/</span>
 <span class="c1"># export  RTE_TARGET=x86_64-native-linuxapp-gcc</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">#  cd /opt/dpdk-18.11/usertools</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1">#  cd /opt/dpdk-18.11/usertools</span>
 <span class="c1"># ./dpdk-setup.sh</span>
 
 这里我们选择 
@@ -155,9 +155,9 @@ No <span class="s1">'Mempool'</span> devices <span class="nv">detected</span>
 
 No <span class="s1">'Compress'</span> devices <span class="nv">detected</span>
 <span class="o">==============================</span>
-</code></pre></div>
+</pre></div>
 <p>手动安装，绑定网卡（备选）</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># make config T=x86_64-native-linuxapp-gcc</span>
+<div class="highlight"><pre><span></span><span class="c1"># make config T=x86_64-native-linuxapp-gcc</span>
 <span class="c1"># make</span>
 <span class="c1"># make install T=x86_64-native-linuxapp-gcc</span>
 
@@ -173,9 +173,9 @@ No <span class="s1">'Compress'</span> devices <span class="nv">detected</span>
 <span class="c1"># mkdir -p /mnt/huge</span>
 <span class="c1"># mount -t hugetlbfs nodev /mnt/huge</span>
 <span class="c1"># echo 1024&gt;/sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages</span>
-</code></pre></div>
+</pre></div>
 <h4>测试</h4>
-<div class="highlight"><pre><span></span><code> <span class="c1">#cd dpdk-18.11/examples/helloworld</span>
+<div class="highlight"><pre><span></span> <span class="c1">#cd dpdk-18.11/examples/helloworld</span>
  <span class="c1"># make</span>
  <span class="c1">#./build/helloworld</span>
 
@@ -184,7 +184,7 @@ No <span class="s1">'Compress'</span> devices <span class="nv">detected</span>
 EAL: Detected <span class="m">1</span> lcore<span class="o">(</span>s<span class="o">)</span>
 EAL: Detected <span class="m">1</span> NUMA nodes
 EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
-EAL: No free hugepages reported <span class="k">in</span> hugepages-1048576kB
+EAL: No free hugepages reported in hugepages-1048576kB
 EAL: Probing VFIO support...
 EAL: PCI device <span class="m">0000</span>:02:01.0 on NUMA socket -1
 EAL:   Invalid NUMA socket, default to <span class="m">0</span>
@@ -196,7 +196,7 @@ EAL: PCI device <span class="m">0000</span>:02:06.0 on NUMA socket -1
 EAL:   Invalid NUMA socket, default to <span class="m">0</span>
 EAL:   probe driver: <span class="m">8086</span>:100f net_e1000_em
 hello from core <span class="m">0</span>
-</code></pre></div>
+</pre></div>
 <p>安装到这里，就结束了</p>
   </div>
 </article>

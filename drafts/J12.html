@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-04-16T11:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        日 16 四月 2017
+        Sun 16 April 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -106,35 +106,35 @@ var _hmt = _hmt || [];
 <p>Flask是一个使用 Python 编写的轻量级 Web 应用框架。其 WSGI 工具箱采用Werkzeug ，模板引擎则使用 Jinja2 。Flask使用 BSD 授权。Flask也被称为“microframework” ，因为它使用简单的核心，用 extension 增加其他功能。Flask没有默认使用的数据库、窗体验证工具。然而，Flask保留了扩增的弹性，可以用Flask-extension加入这些功能：ORM、窗体验证工具、文件上传、各种开放式身份验证技术。最新版本为1.0.2</p>
 <h4>安装</h4>
 <p>把下面字样保存成requirements.txt</p>
-<div class="highlight"><pre><span></span><code><span class="nv">Flask</span><span class="o">==</span><span class="m">1</span>.0.2
+<div class="highlight"><pre><span></span><span class="nv">Flask</span><span class="o">==</span><span class="m">1</span>.0.2
 Flask-Login<span class="o">==</span><span class="m">0</span>.4.1
 Flask-Script<span class="o">==</span><span class="m">2</span>.0.6
 Flask-SQLAlchemy<span class="o">==</span><span class="m">2</span>.3.2
 Flask-WTF<span class="o">==</span><span class="m">0</span>.14.2
 Flask-Migrate<span class="o">==</span><span class="m">2</span>.3.0
 Flask-Mail<span class="o">==</span><span class="m">0</span>.9.1
-</code></pre></div>
+</pre></div>
 <p>这样就可以在虚拟环境里面安装了</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># pip install virtualenv</span>
+<div class="highlight"><pre><span></span><span class="c1"># pip install virtualenv</span>
 <span class="c1"># python -m virtualenv flaskenv</span>
 <span class="c1"># source  flaskenv/bin/activate</span>
 <span class="c1"># pip install -r requirements.txt</span>
-</code></pre></div>
+</pre></div>
 <h4>使用</h4>
 <p>老规矩，Hello World!</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
     <span class="k">return</span> <span class="s1">'Hello World!'</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'0.0.0.0'</span><span class="p">)</span>
-</code></pre></div>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'0.0.0.0'</span><span class="p">)</span>
+</pre></div>
 <h4>搭建上线</h4>
   </div>
 </article>

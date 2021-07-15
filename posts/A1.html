@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2016-01-01T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        五 01 一月 2016
+        Fri 01 January 2016
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -109,7 +109,7 @@ var _hmt = _hmt || [];
 </ul>
 <h2>配置</h2>
 <p>MASTER</p>
-<div class="highlight"><pre><span></span><code>vrrp_instance VI_1 <span class="o">{</span>
+<div class="highlight"><pre><span></span>vrrp_instance VI_1 <span class="o">{</span>
             state MASTER            <span class="c1"># 状态实际MASTER</span>
             interface eth0            <span class="c1"># 监听网卡切换</span>
             virtual_router_id <span class="m">51</span>
@@ -227,20 +227,20 @@ var _hmt = _hmt || [];
                 <span class="o">}</span>
             <span class="o">}</span>
         <span class="o">}</span>
-</code></pre></div>
+</pre></div>
 <p>BACKUP</p>
-<div class="highlight"><pre><span></span><code>        vrrp_instance VI_1 <span class="o">{</span>
+<div class="highlight"><pre><span></span>        vrrp_instance VI_1 <span class="o">{</span>
             state BACKP            <span class="c1"># 状态实际BACKUP</span>
             ...
             priority <span class="m">99</span>                <span class="c1"># 优先级99（比MASTER优先级100低）</span>
             ...
         <span class="o">}</span>
-</code></pre></div>
+</pre></div>
 <p>realserver</p>
-<div class="highlight"><pre><span></span><code> <span class="c1">#!/bin/bash</span>
+<div class="highlight"><pre><span></span> <span class="c1">#!/bin/bash</span>
         <span class="nv">VIP</span><span class="o">=</span><span class="m">172</span>.28.14.227
         . /etc/rc.d/init.d/functions
-        <span class="k">case</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="k">in</span>
+        <span class="k">case</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> in
         start<span class="o">)</span>
             <span class="nb">echo</span> <span class="m">1</span> &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore
             <span class="nb">echo</span> <span class="m">2</span> &gt; /proc/sys/net/ipv4/conf/lo/arp_announce
@@ -265,7 +265,7 @@ var _hmt = _hmt || [];
             <span class="nb">exit</span> <span class="m">1</span>
         <span class="k">esac</span>
         <span class="nb">exit</span> <span class="m">0</span>
-</code></pre></div>
+</pre></div>
 <h2>测试</h2>
 <p>把两个web server 页面设置不同实测.</p>
   </div>

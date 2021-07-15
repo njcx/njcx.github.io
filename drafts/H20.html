@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-07-01T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        日 01 七月 2018
+        Sun 01 July 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -120,26 +120,26 @@ Topology处理的最小的消息单位是一个Tuple，也就是一个任意对�
 <h4>安装</h4>
 <p>版本 ：apache-storm-1.1.1 ,jdk-8u181,zookeeper-3.4.10</p>
 <p>目录 ： /opt </p>
-<div class="highlight"><pre><span></span><code>wget https://archive.apache.org/dist/storm/apache-storm-1.1.1/apache-storm-1.1.1.tar.gz
+<div class="highlight"><pre><span></span>wget https://archive.apache.org/dist/storm/apache-storm-1.1.1/apache-storm-1.1.1.tar.gz
 
 wget http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz
 
 wget http://ftp.kddilabs.jp/infosystems/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
-</code></pre></div>
+</pre></div>
 <p>tar -zxvf apache-storm-1.1.1.tar.gz &amp;&amp; tar -zxvf jdk-8u181-linux-x64.tar.gz &amp;&amp; tar -zxvf zookeeper-3.4.10.tar.gz</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span> -e <span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> -e <span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
 <span class="s2">export JRE_HOME=\${JAVA_HOME}/jre \n\</span>
 <span class="s2">export CLASSPATH=.:\${JAVA_HOME}/lib:\${JRE_HOME}/lib \n\</span>
 <span class="s2">export PATH=\${JAVA_HOME}/bin:\$PATH \n\</span>
 <span class="s2">"</span> &gt;&gt; /etc/profile <span class="o">&amp;&amp;</span> <span class="nb">source</span> /etc/profile
-</code></pre></div>
+</pre></div>
 <h4>zk配置</h4>
 <p>3台机器</p>
-<div class="highlight"><pre><span></span><code><span class="m">172</span>.16.131.134 master       Zookeeper （有） Nimbus（有） Supervisor（无）
+<div class="highlight"><pre><span></span><span class="m">172</span>.16.131.134 master       Zookeeper （有） Nimbus（有） Supervisor（无）
 <span class="m">172</span>.16.131.133 slave_1      Zookeeper （有） Nimbus <span class="o">(</span>无<span class="o">)</span> Supervisor（有）
 <span class="m">172</span>.16.131.135 slave_2      Zookeeper （有） Nimbus （无）Supervisor（有
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nv">tickTime</span><span class="o">=</span><span class="m">2000</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="nv">tickTime</span><span class="o">=</span><span class="m">2000</span>
 <span class="c1"># The number of ticks that the initial</span>
 <span class="c1"># synchronization phase can take</span>
 <span class="nv">initLimit</span><span class="o">=</span><span class="m">10</span>
@@ -156,11 +156,11 @@ wget http://ftp.kddilabs.jp/infosystems/apache/zookeeper/zookeeper-3.4.10/zookee
 server.1<span class="o">=</span><span class="m">172</span>.16.131.134:2888:3888
 server.2<span class="o">=</span><span class="m">172</span>.16.131.133:2888:3888
 server.3<span class="o">=</span><span class="m">172</span>.16.131.135:2888:3888
-</code></pre></div>
+</pre></div>
 <p>在zookeeper-3.4.10目录里面创建log data 目录</p>
-<div class="highlight"><pre><span></span><code>mkdir log <span class="o">&amp;&amp;</span> mkdir data
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="m">134</span> /data
+<div class="highlight"><pre><span></span>mkdir log <span class="o">&amp;&amp;</span> mkdir data
+</pre></div>
+<div class="highlight"><pre><span></span><span class="m">134</span> /data
 <span class="nb">echo</span> <span class="s1">'1'</span> &gt; data/myid
 
 <span class="m">133</span> /data
@@ -168,14 +168,14 @@ server.3<span class="o">=</span><span class="m">172</span>.16.131.135:2888:3888
 
 <span class="m">135</span> /data
 <span class="nb">echo</span> <span class="s1">'3'</span> &gt; data/myid
-</code></pre></div>
+</pre></div>
 <p>在3台机器上的bin目录里面启动</p>
-<div class="highlight"><pre><span></span><code>./zkServer.sh start
+<div class="highlight"><pre><span></span>./zkServer.sh start
 ./zkServer.sh status
-</code></pre></div>
+</pre></div>
 <h4>storm配置</h4>
 <p>vim conf/storm.yaml</p>
-<div class="highlight"><pre><span></span><code>storm.zookeeper.servers:
+<div class="highlight"><pre><span></span>storm.zookeeper.servers:
      - <span class="s2">"172.16.131.134"</span>
      - <span class="s2">"172.16.131.133"</span>
      - <span class="s2">"172.16.131.135"</span>
@@ -189,16 +189,16 @@ supervisor.slots.ports:
     - <span class="m">6701</span>
     - <span class="m">6702</span>
     - <span class="m">6703</span>
-</code></pre></div>
+</pre></div>
 <p>然后，在slave_1 和 slave_2上再复制同样的配置
 在master节点</p>
-<div class="highlight"><pre><span></span><code>./storm ui <span class="p">&amp;</span>
+<div class="highlight"><pre><span></span>./storm ui <span class="p">&amp;</span>
 ./storm nimbus <span class="p">&amp;</span>
-</code></pre></div>
+</pre></div>
 <p>在 slave节点上</p>
-<div class="highlight"><pre><span></span><code> ./storm ui <span class="p">&amp;</span>
+<div class="highlight"><pre><span></span> ./storm ui <span class="p">&amp;</span>
  ./storm supervisor <span class="p">&amp;</span>
-</code></pre></div>
+</pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

