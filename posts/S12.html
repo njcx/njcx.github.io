@@ -208,6 +208,20 @@ curl -o /etc/falco_bak/falco_update.tar.gz <span class="si">${</span><span class
 tar -xzvf /etc/falco_bak/falco_update.tar.gz -C /etc <span class="o">&amp;&amp;</span> systemctl restart falco
 </pre></div>
 <p>把规则falco_update.tar.gz，提前准备好，使用saltstack 推下去即可.</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>root@localhost ~<span class="o">]</span>$ cat /srv/salt/top.sls   
+base:
+  <span class="s1">'*'</span>:
+    - exec_shell_install
+
+<span class="o">[</span>root@localhost ~<span class="o">]</span>$ cat /srv/salt/exec_shell_install.sls   
+
+exec_shell_install:                                      
+  cmd.script:                                
+    - source: salt://falco_install.sh                           
+    - user: root                               
+
+<span class="o">[</span>root@localhost ~<span class="o">]</span>$ salt <span class="s1">'*'</span> state.highstate  
+</pre></div>
 <h4>可视化</h4>
   </div>
 </article>
