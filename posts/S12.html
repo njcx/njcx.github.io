@@ -142,6 +142,10 @@ yum -y install falco
   output: a tracked program opened a file <span class="o">(</span><span class="nv">user</span><span class="o">=</span>%user.name <span class="nv">command</span><span class="o">=</span>%proc.cmdline <span class="nv">file</span><span class="o">=</span>%fd.name<span class="o">)</span>
   priority: INFO
 </pre></div>
+<p>web应用进程java，php，apache，httpd，tomcat 中运行其他进程falco demo，图片来自，字节沙龙</p>
+<p><img alt="agent" class="img-fluid" src="../images/WeChat75bf2513db53caf1119297cd792517bc.png"/></p>
+<p>web应用进程java，php，apache，httpd，tomcat 中读取查看敏感文件falco demo，图片来自，字节沙龙</p>
+<p><img alt="agent" class="img-fluid" src="../images/WeChat4321cd4e842d96ac351039ceee990d69.png"/></p>
 <p>下面，我们修改falco 的配置，/etc/falco/falco.yaml </p>
 <div class="highlight"><pre><span></span>json_output: <span class="nb">true</span>
 json_include_output_property: <span class="nb">true</span>
@@ -173,10 +177,11 @@ kafka:
 </pre></div>
 <p><img alt="agent" class="img-fluid" src="../images/WechatIMG171123.jpeg"/></p>
 <h4>批量部署&amp;更新规则</h4>
+<p>我们在生产环境中需要批量部署和更新规则需求，所以我们可以使用saltstack 或者 ansible 下发对应shell脚本来完成我们的需求。</p>
 <p>批量部署</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
-<span class="k">if</span> <span class="o">[</span>  -n <span class="s2">"</span><span class="k">$(</span>uname -a <span class="p">|</span> grep Ubuntu<span class="k">)</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+<span class="k">if</span> <span class="o">[</span>  -n <span class="s2">"</span><span class="k">$(</span>uname -a <span class="p">|</span> grep Ubuntu<span class="k">)</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>       <span class="c1"># 按实际情况修改</span>
         curl -s https://falco.org/repo/falcosecurity-3672BA8F.asc <span class="p">|</span> apt-key add -
         <span class="nb">echo</span> <span class="s2">"deb https://download.falco.org/packages/deb stable main"</span> <span class="p">|</span> tee -a /etc/apt/sources.list.d/falcosecurity.list
         apt-get update -y
@@ -207,7 +212,7 @@ systemctl <span class="nb">enable</span> falco <span class="o">&amp;&amp;</span>
 curl -o /etc/falco_bak/falco_update.tar.gz <span class="si">${</span><span class="nv">URL</span><span class="si">}</span>  <span class="o">&amp;&amp;</span> rm -rf /etc/falco 
 tar -xzvf /etc/falco_bak/falco_update.tar.gz -C /etc <span class="o">&amp;&amp;</span> systemctl restart falco
 </pre></div>
-<p>把规则falco_update.tar.gz，提前准备好，使用saltstack 推下去即可.</p>
+<p>把规则falco_update.tar.gz，提前准备好，使用saltstack 推下去即可.saltstack demo 如下：</p>
 <div class="highlight"><pre><span></span><span class="o">[</span>root@localhost ~<span class="o">]</span>$ cat /srv/salt/top.sls   
 base:
   <span class="s1">'*'</span>:
@@ -223,6 +228,7 @@ exec_shell_install:
 <span class="o">[</span>root@localhost ~<span class="o">]</span>$ salt <span class="s1">'*'</span> state.highstate  
 </pre></div>
 <h4>可视化</h4>
+<p><img alt="agent" class="img-fluid" src="../images/kibana11.png"/></p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
