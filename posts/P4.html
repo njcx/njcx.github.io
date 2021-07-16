@@ -209,7 +209,26 @@ Flood;
 DPDK利用线程的CPU亲和绑定机制使得特定任务能够被指定在某个特定的
 核上执行,这样可避免线程在不同核之间频繁转换而导致的因cache miss和cache
 write back造成的性能损失。</p>
-<p>开源的抗D工具：</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">packetcapture</span><span class="p">(</span><span class="k">struct</span> <span class="n">pconfig</span><span class="o">*</span> <span class="n">config</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">uint16_t</span> <span class="n">nb_rx</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">nb_rx_enqueued</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">rte_mbuf</span> <span class="o">*</span><span class="n">buffer</span><span class="p">[</span><span class="n">DPDKCAP_CAPTURE_BURST_SIZE</span><span class="p">];</span>
+     <span class="n">config</span><span class="o">-&gt;</span><span class="n">isRunning</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(;;){</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">unlikely</span><span class="p">(</span><span class="o">!</span><span class="n">config</span><span class="o">-&gt;</span><span class="n">isRunning</span><span class="p">)){</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">nb_rx</span> <span class="o">=</span> <span class="n">rte_eth_rx_burst</span><span class="p">(</span><span class="n">config</span><span class="o">-&gt;</span><span class="n">port</span><span class="p">,</span> <span class="n">config</span><span class="o">-&gt;</span><span class="n">queue</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">DPDKCAP_CAPTURE_BURST_SIZE</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">likely</span><span class="p">(</span><span class="n">nb_rx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)){</span>
+            <span class="n">nb_rx_enqueued</span> <span class="o">=</span> <span class="n">rte_ring_enqueue_burst</span><span class="p">(</span><span class="n">config</span><span class="o">-&gt;</span><span class="n">ring</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">buffer</span><span class="p">,</span> <span class="n">nb_rx</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>开源的基于DPDK的 抗D工具：</p>
 <div class="highlight"><pre><span></span>https://github.com/AltraMayor/gatekeeper
 </pre></div>
 <h4>使用XDP进行DDOS</h4>
