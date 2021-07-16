@@ -262,7 +262,11 @@ int xdp_prog<span class="o">(</span>struct xdp_md *ctx<span class="o">)</span> <
     <span class="k">return</span> XDP_PASS<span class="p">;</span>
 <span class="o">}</span>
 </pre></div>
-<p>XDP的程序在这里的主要作用是完成early drop ，而不是识别，相当于执行者，通过我们的分析工具下发拦截指令，并实施拦截。</p>
+<p>XDP的程序在这里的主要作用是完成early drop ，而不是识别，相当于执行者，通过我们的分析工具下发拦截指令，并实施拦截。大体的玩法就是：</p>
+<div class="highlight"><pre><span></span>1, 自研的模块负责识别DDOS攻击包
+2, 自研的规则下发拦截规则，完成告警并记录
+3, XDP负责阻止黑名单里的IP继续访问
+</pre></div>
 <p>DDOS大体介绍了一遍，了解即可，上面都是脏活累活即可，交给专门做防DDoS的厂商去做，一般都直接使用CDN和高防即可，比如，知道创宇的加速乐，腾讯云的大禹等等。</p>
   </div>
 </article>
