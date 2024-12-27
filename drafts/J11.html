@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>环境变量、源和软件包名记录 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/drafts/J11.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="环境变量和软件包名以及依赖（方便粘贴）">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.anquanke.com/member/154147" target="_blank">安全客</a></li>
+                <li class="list-inline-item"><a href="https://www.freebuf.com/column/1481" target="_blank">Freebuf</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>环境变量、源和软件包名记录
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2017-04-14T22:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Fri 14 April 2017
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/za-xiang.html">杂项</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/huan-jing-bian-liang-he-ruan-jian-bao-ming.html">#环境变量和软件包名</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>环境变量</h4>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">JAVA_HOME</span><span class="o">=</span>/opt/jdk1.8.0_181
+<span class="nb">export</span><span class="w"> </span><span class="nv">JRE_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/jre
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLASSPATH</span><span class="o">=</span>.:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/lib:<span class="si">${</span><span class="nv">JRE_HOME</span><span class="si">}</span>/lib
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">SCALA_HOME</span><span class="o">=</span>/opt/scala-2.12.6
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SCALA_HOME</span>/bin
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAVEN_HOME</span><span class="o">=</span>/opt/apache-maven-3.5.4
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">MAVEN_HOME</span><span class="si">}</span>/bin:<span class="si">${</span><span class="nv">PATH</span><span class="si">}</span>
+
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_HOME</span><span class="o">=</span>/opt/hadoop-2.7.7/
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HADOOP_HOME</span>/bin
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HADOOP_HOME</span>/sbin
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_MAPRED_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_COMMON_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_HDFS_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">YARN_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_COMMON_LIB_NATIVE_DIR</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>/lib/native
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_OPTS</span><span class="o">=</span><span class="s2">"-Djava.library.path=</span><span class="nv">$HADOOP_HOME</span><span class="s2">/lib"</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
+</code></pre></div>
+<h4>源</h4>
+<p>pip 源</p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>global<span class="o">]</span>
+index-url<span class="w"> </span><span class="o">=</span><span class="w"> </span>https://pypi.tuna.tsinghua.edu.cn/simple
+</code></pre></div>
+<p>CentOS7 （清华）</p>
+<p>记得备份</p>
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>/etc/yum.repos.d/CentOS-Base.repo<span class="w">  </span>/etc/yum.repos.d/CentOS-Base.repo.bak
+
+cp<span class="w"> </span>/etc/yum.repos.d/epel.repo<span class="w">  </span>/etc/yum.repos.d/epel.repo.bak
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>base<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Base
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/os/<span class="nv">$basearch</span>/
+<span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os</span>
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+<span class="c1">#released updates</span>
+<span class="o">[</span>updates<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Updates
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/updates/<span class="nv">$basearch</span>/
+<span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=updates</span>
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+<span class="c1">#additional packages that may be useful</span>
+<span class="o">[</span>extras<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Extras
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/extras/<span class="nv">$basearch</span>/
+<span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=extras</span>
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+<span class="c1">#additional packages that extend functionality of existing packages</span>
+<span class="o">[</span>centosplus<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Plus
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/centosplus/<span class="nv">$basearch</span>/
+<span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=centosplus</span>
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>epel<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>Extra<span class="w"> </span>Packages<span class="w"> </span><span class="k">for</span><span class="w"> </span>Enterprise<span class="w"> </span>Linux<span class="w"> </span><span class="m">7</span><span class="w"> </span>-<span class="w"> </span><span class="nv">$basearch</span>
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/epel/7/<span class="nv">$basearch</span>
+<span class="c1">#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&amp;arch=$basearch</span>
+<span class="nv">failovermethod</span><span class="o">=</span>priority
+<span class="nv">enabled</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+
+<span class="o">[</span>epel-debuginfo<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>Extra<span class="w"> </span>Packages<span class="w"> </span><span class="k">for</span><span class="w"> </span>Enterprise<span class="w"> </span>Linux<span class="w"> </span><span class="m">7</span><span class="w"> </span>-<span class="w"> </span><span class="nv">$basearch</span><span class="w"> </span>-<span class="w"> </span>Debug
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/epel/7/<span class="nv">$basearch</span>/debug
+<span class="c1">#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-7&amp;arch=$basearch</span>
+<span class="nv">failovermethod</span><span class="o">=</span>priority
+<span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+
+<span class="o">[</span>epel-source<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>Extra<span class="w"> </span>Packages<span class="w"> </span><span class="k">for</span><span class="w"> </span>Enterprise<span class="w"> </span>Linux<span class="w"> </span><span class="m">7</span><span class="w"> </span>-<span class="w"> </span><span class="nv">$basearch</span><span class="w"> </span>-<span class="w"> </span>Source
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/epel/7/SRPMS
+<span class="c1">#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-source-7&amp;arch=$basearch</span>
+<span class="nv">failovermethod</span><span class="o">=</span>priority
+<span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+</code></pre></div>
+<p>CentOS7 阿里源</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-o<span class="w"> </span>/etc/yum.repos.d/CentOS-Base.repo<span class="w"> </span>http://mirrors.aliyun.com/repo/Centos-7.repo
+
+curl<span class="w"> </span>-o<span class="w"> </span>/etc/yum.repos.d/epel.repo<span class="w"> </span>http://mirrors.aliyun.com/repo/epel-7.repo
+</code></pre></div>
+<p>kali linux </p>
+<div class="highlight"><pre><span></span><code><span class="c1">#阿里云</span>
+deb<span class="w"> </span>http://mirrors.aliyun.com/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>non-free<span class="w"> </span>contrib<span class="w"> </span>
+deb-src<span class="w"> </span>http://mirrors.aliyun.com/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>non-free<span class="w"> </span>contrib<span class="w"> </span>
+
+<span class="c1">#清华大学 </span>
+deb<span class="w"> </span>http://mirrors.tuna.tsinghua.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
+deb-src<span class="w"> </span>https://mirrors.tuna.tsinghua.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
+
+<span class="c1">#浙江大学 </span>
+deb<span class="w"> </span>http://mirrors.zju.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
+deb-src<span class="w"> </span>http://mirrors.zju.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
+</code></pre></div>
+<p>mysql 源</p>
+<div class="highlight"><pre><span></span><code>rpm<span class="w"> </span>-ivh<span class="w"> </span>https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+</code></pre></div>
+<h4>软件包</h4>
+<div class="highlight"><pre><span></span><code>yum<span class="w"> </span>groupinstall<span class="w"> </span>development<span class="w"> </span>tools
+
+yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>pcre<span class="w"> </span>pcre-devel<span class="w"> </span>zlip<span class="w"> </span>zlib-devel<span class="w"> </span>openssl<span class="w"> </span>openssl-devel<span class="w"> </span>
+
+yum<span class="w"> </span>install<span class="w"> </span>python-devel<span class="w"> </span>python-pip<span class="w"> </span>python-virtualenv
+
+
+yum<span class="w"> </span>install<span class="w"> </span>mongodb-server<span class="w"> </span>mariadb-server<span class="w"> </span>
+
+yum<span class="w"> </span>install<span class="w"> </span>redis<span class="w"> </span>
+
+yum<span class="w"> </span>install<span class="w"> </span>python36<span class="w"> </span>python36-devel
+</code></pre></div>
+<h4>nodejs</h4>
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://npm.taobao.org/mirrors/node/v10.14.2/node-v10.14.2-linux-x64.tar.gz<span class="w"> </span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">NODE_HOME</span><span class="o">=</span>/root/node-v10.14.2-linux-x64
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$NODE_HOME</span>/bin
+<span class="nb">export</span><span class="w"> </span><span class="nv">NODE_PATH</span><span class="o">=</span><span class="nv">$NODE_HOME</span>/lib/node_modules
+</code></pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

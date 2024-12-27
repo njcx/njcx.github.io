@@ -8,9 +8,9 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>MongoDB学习笔记(A) | nJcx's Blog
+  <title>使用PyPy性能调优 | nJcx's Blog
 </title>
-  <link rel="canonical" href="https://www.njcx.bid/drafts/C5.html">
+  <link rel="canonical" href="https://www.njcx.bid/drafts/C3.html">
 
 
   <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="记录一下自己学到的东西">
+<meta name="description" content="介绍一下PyPy，记录一下Python的性能调优的方式">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,136 +79,62 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>MongoDB学习笔记(A)
+      <h1>使用PyPy性能调优
 </h1>
       <hr>
 <article class="article">
   <header>
     <ul class="list-inline">
-      <li class="list-inline-item text-muted" title="2018-06-02T23:20:00+03:00">
+      <li class="list-inline-item text-muted" title="2017-04-01T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 02 June 2018
+        Sat 01 April 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
-        <a href="https://www.njcx.bid/category/shu-ju-ku.html">数据库</a>
+        <a href="https://www.njcx.bid/category/python.html">Python</a>
       </li>
       <li class="list-inline-item">
         <i class="fa fa-user-o"></i>
         <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
       <li class="list-inline-item">
         <i class="fa fa-files-o"></i>
-        <a href="https://www.njcx.bid/tag/mongodb.html">#MongoDB</a>      </li>
+        <a href="https://www.njcx.bid/tag/python.html">#Python</a>      </li>
     </ul>
   </header>
   <div class="content">
     <h4>介绍</h4>
-<p>Mongodb的3大元素:数据库(db),集合(collection),文档(document),"数据库"还是对应关系数据库中的"数据库",其中"集合"就是对应关系数据库中的"表"，"文档"对应"记录"。</p>
-<table class="table-striped table-hover table">
-<thead>
-<tr>
-<th style="text-align: center;">RDBMS</th>
-<th style="text-align: center;">MongoDB</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;">Database</td>
-<td style="text-align: center;">Database</td>
-</tr>
-<tr>
-<td style="text-align: center;">Table</td>
-<td style="text-align: center;">Collection</td>
-</tr>
-<tr>
-<td style="text-align: center;">Tuple/Row</td>
-<td style="text-align: center;">Document</td>
-</tr>
-<tr>
-<td style="text-align: center;">column</td>
-<td style="text-align: center;">Field</td>
-</tr>
-<tr>
-<td style="text-align: center;">Table Join</td>
-<td style="text-align: center;">Embedded Documents</td>
-</tr>
-<tr>
-<td style="text-align: center;">Primary Key</td>
-<td style="text-align: center;">Primary Key (Default key _id provided by mongodb itself)</td>
-</tr>
-</tbody>
-</table>
-<p>数据库服务器和客户端</p>
-<table class="table-striped table-hover table">
-<thead>
-<tr>
-<th style="text-align: center;">mysql</th>
-<th style="text-align: center;">oracle</th>
-<th style="text-align: center;">mongodb</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;">Mysqld</td>
-<td style="text-align: center;">Oracle</td>
-<td style="text-align: center;">mongod</td>
-</tr>
-<tr>
-<td style="text-align: center;">mysql</td>
-<td style="text-align: center;">sqlplus</td>
-<td style="text-align: center;">mongo</td>
-</tr>
-</tbody>
-</table>
+<p>PyPy是Python语言的动态编译器，PyPy提供了JIT编译器和沙盒功能，运行速度大部分情况下比CPython要快，以及可以安全的运行一些不被信任的代码。PyPy分两部分，rPython实现的Python(前端部分)和一个rPython的编译器（后端部分）,由于rPython是Python的严格子集，因此PyPy Python解释器可以在另一个Python实现之上运行,只不过比较慢而已.那什么是JIT呢？通常，程序有两种运行方式：静态编译与动态解释。静态编译的程序在执行前全部被翻译为机器码，而解释执行的则是一句一句边运行边翻译。即时编译器则混合了这二者，一句一句编译源代码，但是会将翻译过的代码缓存起来以降低性能损耗。相对于静态编译代码，即时编译的代码可以处理延迟并增强安全性。即时编译器有两种类型，一是字节码翻译，二是动态编译翻译。其中，PyPy是字节码翻译，CPython的字节码只会加快导入加载速度，并不会加快运行速度。</p>
 <h4>安装</h4>
-<div class="highlight"><pre><span></span><code>centos/rhce<span class="w"> </span>:<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>mongodb-server<span class="w"> </span>-y
-
-debian/ubuntu<span class="w"> </span>:<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>mongodb-server<span class="w"> </span>-y
+<p>PyPy安装，一般我推荐使用包管理工具安装，因为我试了一下编译，我编译了4个小时，成功的把我的电脑编译死机了，如果，生产环境是centos的话，还是比较推荐编译的，centos 源里面的软件真心老。</p>
+<div class="highlight"><pre><span></span><code>debian/ubuntu：<span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>pypy<span class="w"> </span>pypy-dev<span class="w"> </span>pypy-lib<span class="w"> </span>-y
 </code></pre></div>
-<h4>使用</h4>
+<div class="highlight"><pre><span></span><code>red<span class="w"> </span>hat/centos<span class="w"> </span>:<span class="w"> </span>yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>pypy-libs<span class="w"> </span>pypy<span class="w"> </span>pypy-devel
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">ubuntu</span> <span class="n">ppa</span><span class="p">:</span>
+<span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="n">ppa</span><span class="p">:</span><span class="n">pypy</span><span class="o">/</span><span class="n">ppa</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+</code></pre></div>
+<h4>使用以及注意事项</h4>
+<p>PyPy毕竟不是亲娘生的，相比CPython，PyPy对C拓展支持存在兼容性问题，如果项目使用的是纯Python写的，那么就可以大胆使用PyPy了，主流的web框架不会存在问题，主要是一些CPU密集型类库容易出问题，比如一些科学计算的库，因为这种类型的库一般含有C源码，不过，这种兼容性现在在慢慢改善。PyPy的解释器一般位于/usr/bin/pypy,使用pip的时候，可以通过 pypy -m pip install xxx</p>
+<h4>性能测试</h4>
+<p>由于PyPy加持JIT，会在频繁使用循环和多次调用同一个函数的时候爆发出异样的风采，下面简单测一下性能</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">8</span><span class="p">):</span>
+    <span class="k">continue</span>
+<span class="nb">print</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span>
+</code></pre></div>
+<p>循环10**8次，然后统计时间</p>
+<p><img alt="pypy" class="img-fluid" src="../images/pypy.png"/></p>
+<p>可以看出CPython被吊打了</p>
+<h4>未来展望</h4>
+<p>由于CPython存在历史遗留问题（C API），导致PyPy对C拓展支持存在兼容性问题，我们应该做什么呢？
+我们可以在在粘结代码中推进新工具的使用 ( cffi, bitey)，在公共库中停止对CPython的底层属性（C API，C扩展）的依赖。作为替代，采用有如下功能的中间工具：</p>
 <ul>
-<li>创建数据库</li>
+<li>cffi - 简化对C库的应用</li>
+<li>cython - 编写可移植的C扩展，Cython已经有CPython和PyPy后端。</li>
 </ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>use<span class="w"> </span>njcx
-switched<span class="w"> </span>to<span class="w"> </span>db<span class="w"> </span>njcx
-&gt;<span class="w"> </span>db
-njcx
-&gt;<span class="w"> </span>
-</code></pre></div>
-<ul>
-<li>查看数据库</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>show<span class="w"> </span>dbs
-</code></pre></div>
-<ul>
-<li>删除数据库</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>use<span class="w"> </span>njcx
-switched<span class="w"> </span>to<span class="w"> </span>db<span class="w"> </span>njcx
-&gt;<span class="w"> </span>db
-njcx
-&gt;<span class="w"> </span>db.dropDatabase<span class="o">()</span>
-</code></pre></div>
-<ul>
-<li>创建集合(插入自动创建)</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>db.njcx.insert<span class="o">({</span><span class="s2">"name"</span>:<span class="s2">"njcx"</span><span class="o">})</span>
-</code></pre></div>
-<ul>
-<li>创建集合(db.createCollection(name, options))</li>
-</ul>
-<p>name 指定集合名称,opt 指定有关内存大小和索引选项(可选)</p>
-<p>capped           Boolean  （可选）如果为true，则启用封顶集合。封顶集合是固定大小的集合，会自动覆盖最早的条目，当它达到其最大大小。如果指定true，则需要也指定尺寸参数。</p>
-<p>autoIndexID     Boolean （可选）如果为true，自动创建索引_id字段的默认值是false。</p>
-<p>size            number  （可选）指定最大大小字节封顶集合。如果封顶如果是 true，那么你还需要指定这个字段。</p>
-<p>max             number  （可选）指定封顶集合允许在文件的最大数量。</p>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>db.createCollection<span class="o">(</span><span class="s2">"tudou"</span>,<span class="w"> </span><span class="o">{</span><span class="w"> </span>capped<span class="w"> </span>:<span class="w"> </span>true,<span class="w"> </span>autoIndexID<span class="w"> </span>:<span class="w"> </span>true,<span class="w"> </span>size<span class="w"> </span>:<span class="w"> </span><span class="m">6142800</span>,<span class="w"> </span>max<span class="w"> </span>:<span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="o">)</span>
-</code></pre></div>
-<ul>
-<li>删除集合</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>db.njcx.drop<span class="o">()</span>
-</code></pre></div>
+<p>由于，CPython的 C拓展 API存在跨版本不兼容问题，已经成了历史问题了，面向未来，我们更推荐使用 cffi 的使用，此外，ctypes的表现不如cffi那么好,PyPy官方更推荐使用cffi。很多人说，PyPy是Python的未来，但是，未来谁又说的清呢？</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
