@@ -8,9 +8,9 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>杂项 Articles | nJcx's Blog
+  <title>Django、Flask 0day合集 | nJcx's Blog
 </title>
-  <link rel="canonical" href="https://www.njcx.bid/category/za-xiang.html">
+  <link rel="canonical" href="https://www.njcx.bid/drafts/L7.html">
 
 
   <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="Linux重度用户，Python从业人员，个人小博客，欢迎访问">
+<meta name="description" content="Django、Flask 0day合集">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,33 +79,122 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>杂项 Articles
+      <h1>Django、Flask 0day合集
 </h1>
       <hr>
-<article class="row teaser">
-  <header class="col-sm-4 text-muted">
-    <ul>
-      <li title="2017-04-14T22:20:00+03:00">
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2017-06-06T15:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Fri 14 April 2017
+        Tue 06 June 2017
       </li>
-      <li>
+      <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
-        <a href="https://www.njcx.bid/category/za-xiang.html">杂项</a>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
       </li>
-      <li>
+      <li class="list-inline-item">
         <i class="fa fa-user-o"></i>
         <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/django-flask-0day.html">#django、flask 0day</a>      </li>
     </ul>
   </header>
-  <div class="col-sm-8">
-    <h4 class="title"><a href="https://www.njcx.bid/posts/J11.html">环境变量、源和软件包名记录</a></h4>
-    <div class="content">
-      环境变量和软件包名以及依赖（方便粘贴）
-    </div>
+  <div class="content">
+    <ul>
+<li>
+<p>Django任意代码执行漏洞 </p>
+<ul>
+<li>django &lt; 1.6</li>
+<li>http://blog.nsfocus.net/django-code-execution-vulnerability/</li>
+</ul>
+</li>
+<li>
+<p>Django的两个url跳转漏洞分析:CVE-2017-7233&amp;7234</p>
+<ul>
+<li>django </li>
+<li>https://mp.weixin.qq.com/s?__biz=MzI4MzI4MDg1NA==&amp;mid=2247483817&amp;idx=1&amp;sn=5a1fd58b65edf4b88d2f455a486b97bd</li>
+</ul>
+</li>
+<li>
+<p>Django is_safe_url() URL跳转过滤函数Bypass（CVE-2017-7233）</p>
+<ul>
+<li>django</li>
+<li>https://mp.weixin.qq.com/s?__biz=MzI4MzI4MDg1NA==&amp;sn=5a1fd58b65edf4b88d2f455a486b97bd</li>
+</ul>
+</li>
+<li>
+<p>Django-UEditor 1.9.143 任意文件上传漏洞</p>
+<ul>
+<li>Django-UEditor 1.9.143</li>
+<li>https://github.com/zhangfisher/DjangoUeditor/issues/47</li>
+</ul>
+</li>
+<li>
+<p>django-epiceditor（CVE-2017-6591） XSS</p>
+<ul>
+<li>django==1.10.6 django-epiceditor==0.2.3</li>
+<li>http://morningchen.com/2017/03/09/Cross-site-scripting-vulnerability-in-django-epiceditor/</li>
+</ul>
+</li>
+<li>
+<p>Django CSRF Bypass (CVE-2016-7401)</p>
+<ul>
+<li>Django 1.9.x &lt; 1.9.10</li>
+<li>Django 1.8.x &lt; 1.8.15</li>
+<li>https://www.seebug.org/vuldb/ssvid-92447</li>
+</ul>
+</li>
+<li>
+<p>django CMS 3.3.0 - (Editor Snippet) 存储型 XSS</p>
+<ul>
+<li>https://www.exploit-db.com/exploits/40129/</li>
+</ul>
+</li>
+<li>
+<p>django logout 函数 dos拒绝服务攻击（CVE: 2015-5963）</p>
+<ul>
+<li>Fix: Update/1.8.4/1.7.10/1.4.22/Add @login_required()</li>
+<li>http://blog.knownsec.com/2015/08/django-logout-function-denial-of-service/</li>
+</ul>
+</li>
+<li>
+<p>django 的目录遍历漏洞(任意文件读取)</p>
+<ul>
+<li>django</li>
+<li>http://www.lijiejie.com/python-django-directory-traversal/</li>
+</ul>
+</li>
+<li>
+<p>flask  Werkzeug 调试模式 命令执行</p>
+<ul>
+<li>https://www.seebug.org/vuldb/ssvid-89266</li>
+</ul>
+</li>
+<li>
+<p>flask 的jinjia2 服务端模板注入（SSTI）</p>
+<ul>
+<li>https://blog.csdn.net/lansatiankongxxc/article/details/78764726</li>
+<li>https://www.freebuf.com/articles/web/88768.html</li>
+</ul>
+</li>
+</ul>
   </div>
 </article>
-    </div>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
   </div>
 
   <footer class="footer">

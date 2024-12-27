@@ -8,9 +8,9 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>MongoDB学习笔记(A) | nJcx's Blog
+  <title>Rootkit的检测工具使用介绍 | nJcx's Blog
 </title>
-  <link rel="canonical" href="https://www.njcx.bid/drafts/C5.html">
+  <link rel="canonical" href="https://www.njcx.bid/drafts/K3.html">
 
 
   <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="记录一下自己学到的东西">
+<meta name="description" content="rootkit的检测工具使用介绍">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,135 +79,55 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>MongoDB学习笔记(A)
+      <h1>Rootkit的检测工具使用介绍
 </h1>
       <hr>
 <article class="article">
   <header>
     <ul class="list-inline">
-      <li class="list-inline-item text-muted" title="2018-06-02T23:20:00+03:00">
+      <li class="list-inline-item text-muted" title="2017-05-27T14:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 02 June 2018
+        Sat 27 May 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
-        <a href="https://www.njcx.bid/category/shu-ju-ku.html">数据库</a>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
       </li>
       <li class="list-inline-item">
         <i class="fa fa-user-o"></i>
         <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
       <li class="list-inline-item">
         <i class="fa fa-files-o"></i>
-        <a href="https://www.njcx.bid/tag/mongodb.html">#MongoDB</a>      </li>
+        <a href="https://www.njcx.bid/tag/rootkit.html">#rootkit</a>      </li>
     </ul>
   </header>
   <div class="content">
     <h4>介绍</h4>
-<p>Mongodb的3大元素:数据库(db),集合(collection),文档(document),"数据库"还是对应关系数据库中的"数据库",其中"集合"就是对应关系数据库中的"表"，"文档"对应"记录"。</p>
-<table class="table-hover table table-striped">
-<thead>
-<tr>
-<th style="text-align: center;">RDBMS</th>
-<th style="text-align: center;">MongoDB</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;">Database</td>
-<td style="text-align: center;">Database</td>
-</tr>
-<tr>
-<td style="text-align: center;">Table</td>
-<td style="text-align: center;">Collection</td>
-</tr>
-<tr>
-<td style="text-align: center;">Tuple/Row</td>
-<td style="text-align: center;">Document</td>
-</tr>
-<tr>
-<td style="text-align: center;">column</td>
-<td style="text-align: center;">Field</td>
-</tr>
-<tr>
-<td style="text-align: center;">Table Join</td>
-<td style="text-align: center;">Embedded Documents</td>
-</tr>
-<tr>
-<td style="text-align: center;">Primary Key</td>
-<td style="text-align: center;">Primary Key (Default key _id provided by mongodb itself)</td>
-</tr>
-</tbody>
-</table>
-<p>数据库服务器和客户端</p>
-<table class="table-hover table table-striped">
-<thead>
-<tr>
-<th style="text-align: center;">mysql</th>
-<th style="text-align: center;">oracle</th>
-<th style="text-align: center;">mongodb</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;">Mysqld</td>
-<td style="text-align: center;">Oracle</td>
-<td style="text-align: center;">mongod</td>
-</tr>
-<tr>
-<td style="text-align: center;">mysql</td>
-<td style="text-align: center;">sqlplus</td>
-<td style="text-align: center;">mongo</td>
-</tr>
-</tbody>
-</table>
-<h4>安装</h4>
-<div class="highlight"><pre><span></span><code>centos/rhce<span class="w"> </span>:<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>mongodb-server<span class="w"> </span>-y
+<p>chkrootkit和rootkit hunter</p>
+<h4>chkrootkit安装</h4>
+<div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>gcc<span class="w"> </span>gcc-c++<span class="w"> </span>net-snmp-utils<span class="w"> </span>net-tools<span class="w"> </span>make<span class="w"> </span>glibc-static<span class="w"> </span>-y
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-LS<span class="w"> </span>ftp://ftp.pangeia.com.br/pub/seg/pac/chkrootkit.tar.gz<span class="w"> </span><span class="p">|</span><span class="w">  </span>tar<span class="w"> </span>zx<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>chkrootkit-0.52<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>sense
+</code></pre></div>
+<h4>chkrootkit使用</h4>
+<div class="highlight"><pre><span></span><code>./chkrootkit<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>INFECTED
+</code></pre></div>
+<p>我测试了一下，新安装的centos7.3，居然,额</p>
+<div class="highlight"><pre><span></span><code>Searching<span class="w"> </span><span class="k">for</span><span class="w"> </span>Linux.Xor.DDoS<span class="w"> </span>...<span class="w"> </span>INFECTED:<span class="w"> </span>Possible<span class="w"> </span>Malicious<span class="w"> </span>Linux.Xor.DDoS<span class="w"> </span>installed
+</code></pre></div>
+<h4>rootkit hunter 安装</h4>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-LS<span class="w">  </span>https://nchc.dl.sourceforge.net/project/rkhunter/rkhunter/1.4.6/rkhunter-1.4.6.tar.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>tar<span class="w"> </span>zx<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>rkhunter-1.4.6<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sh<span class="w"> </span>installer.sh<span class="w"> </span>--layout<span class="w"> </span>default<span class="w"> </span>--install
+</code></pre></div>
+<h4>rootkit hunter 使用</h4>
+<div class="highlight"><pre><span></span><code>/usr/local/bin/rkhunter<span class="w"> </span>--propupd
 
-debian/ubuntu<span class="w"> </span>:<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>mongodb-server<span class="w"> </span>-y
-</code></pre></div>
-<h4>使用</h4>
-<ul>
-<li>创建数据库</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>use<span class="w"> </span>njcx
-switched<span class="w"> </span>to<span class="w"> </span>db<span class="w"> </span>njcx
-&gt;<span class="w"> </span>db
-njcx
-&gt;<span class="w"> </span>
-</code></pre></div>
-<ul>
-<li>查看数据库</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>show<span class="w"> </span>dbs
-</code></pre></div>
-<ul>
-<li>删除数据库</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>use<span class="w"> </span>njcx
-switched<span class="w"> </span>to<span class="w"> </span>db<span class="w"> </span>njcx
-&gt;<span class="w"> </span>db
-njcx
-&gt;<span class="w"> </span>db.dropDatabase<span class="o">()</span>
-</code></pre></div>
-<ul>
-<li>创建集合(插入自动创建)</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>db.njcx.insert<span class="o">({</span><span class="s2">"name"</span>:<span class="s2">"njcx"</span><span class="o">})</span>
-</code></pre></div>
-<ul>
-<li>创建集合(db.createCollection(name, options))</li>
-</ul>
-<p>name 指定集合名称,opt 指定有关内存大小和索引选项(可选)</p>
-<p>capped           Boolean  （可选）如果为true，则启用封顶集合。封顶集合是固定大小的集合，会自动覆盖最早的条目，当它达到其最大大小。如果指定true，则需要也指定尺寸参数。</p>
-<p>autoIndexID     Boolean （可选）如果为true，自动创建索引_id字段的默认值是false。</p>
-<p>size            number  （可选）指定最大大小字节封顶集合。如果封顶如果是 true，那么你还需要指定这个字段。</p>
-<p>max             number  （可选）指定封顶集合允许在文件的最大数量。</p>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>db.createCollection<span class="o">(</span><span class="s2">"tudou"</span>,<span class="w"> </span><span class="o">{</span><span class="w"> </span>capped<span class="w"> </span>:<span class="w"> </span>true,<span class="w"> </span>autoIndexID<span class="w"> </span>:<span class="w"> </span>true,<span class="w"> </span>size<span class="w"> </span>:<span class="w"> </span><span class="m">6142800</span>,<span class="w"> </span>max<span class="w"> </span>:<span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="o">)</span>
-</code></pre></div>
-<ul>
-<li>删除集合</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>db.njcx.drop<span class="o">()</span>
+<span class="c1"># 更新整个文件属性数据库</span>
+
+/usr/local/bin/rkhunter<span class="w"> </span>-c<span class="w">  </span>--sk<span class="w"> </span>--rwo
+
+<span class="c1">#  -c                                  --check </span>
+<span class="c1">#  --rwo, --report-warnings-only       --Show only warning messages</span>
+<span class="c1">#  --sk,                               --skip-keypress</span>
 </code></pre></div>
   </div>
 </article>
