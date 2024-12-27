@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Kubernetes集群安装 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/drafts/R8.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Kubernetes集群安装~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.anquanke.com/member/154147" target="_blank">安全客</a></li>
+                <li class="list-inline-item"><a href="https://www.freebuf.com/column/1481" target="_blank">Freebuf</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Kubernetes集群安装
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-08-08T20:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Wed 08 August 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/k8s.html">#K8S</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>介绍</h4>
+<p><img alt="k8s" class="img-fluid" src="../images/timg.jpeg"/></p>
+<p>API Server</p>
+<p>提供HTTP/HTTPS RESTful API,是Cluster前端接口，各种客户端工具以及Kubernetes其他组件可以通过它管理Cluster的各种资源。
+它提供了对集群各种资源访问和控制的REST API,管理员可以通过kubectl或者第三方客户端生成HTTP请求，发送给API Server。或者是集群内部的服务通过API Server对集群进行控制操作（比如dashborad）。
+集群内部的各种资源，如Pod、Node会定期给API Server发送自身的状态数据。而Master中的Controller Manager和Scheduler也是通过API Server与etcd进行交互，将系统的状态存入etcd数据库或者从etcd中读出系统状态。</p>
+<p>Scheduler</p>
+<p>Scheduler负责决定将Pod放在哪个Node上。会对各个节点的负载、性能、数据考虑最优的Node。</p>
+<p>Controller Manager</p>
+<p>负责管理Cluster资源，保证资源处于预期状态。Controller Manager由多种controller组成：replication controller、endpoints controller、namespace controller、service accounts controller等。
+不同的controller管理不同的资源。Controller Manager作为集群内部管理控制中心，负责集群内的Node、Pod副本、EndPoint、命名空间、服务账号、资源定额等管理。当某个Node意外宕机了，Controller Manager会及时发现此故障并执行自动修复流程，确保集群始终处于预期的工作状态。</p>
+<p>etcd</p>
+<p>etcd保存Cluster配置信息和各种资源的状态信息。当数据发生变化时，etcd会快速通知Kubernetes相关组件。</p>
+<p>Pod网络</p>
+<p>Pod要能够相互通信，Cluster必须部署Pod网络，flannel是其中之一。</p>
+<p>Node节点</p>
+<p>Node运行组件有：kubelet、kube-proxy、Pod网络（flannel）</p>
+<p>kubelet</p>
+<p>kubelet是Node的agent，Scheduler会将Pod配置信息发送给该节点的kubelet，kubelet根据这些信息创建和运行容器，并向Master报告运行状态。</p>
+<p>kube-proxy</p>
+<p>每个Node运行kube-proxy服务，负责将访问service的TCP/UDP数据流转发到后端的容器。如果有多个副本会实现负载均衡。</p>
+<h4>安装</h4>
+<p>一共3个节点，</p>
+<div class="highlight"><pre><span></span><code><span class="m">10</span>.10.252.215<span class="w">   </span>master<span class="w">   </span>
+<span class="m">10</span>.10.252.214<span class="w">   </span>node1<span class="w"> </span>
+<span class="m">10</span>.10.252.213<span class="w">   </span>node2<span class="w">  </span>
+</code></pre></div>
+<p>除了初始化，软件安装一致</p>
+<p>k8s repo</p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>k8s<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>k8s
+<span class="nv">enabled</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+</code></pre></div>
+<p>base.repo</p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>base<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Base
+<span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os&amp;infra=$infra</span>
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.ustc.edu.cn/centos/<span class="nv">$releasever</span>/os/<span class="nv">$basearch</span>/
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+<span class="c1">#released updates</span>
+<span class="o">[</span>updates<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Updates
+<span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=updates&amp;infra=$infra</span>
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.ustc.edu.cn/centos/<span class="nv">$releasever</span>/updates/<span class="nv">$basearch</span>/
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+<span class="c1">#additional packages that may be useful</span>
+<span class="o">[</span>extras<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Extras
+<span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=extras&amp;infra=$infra</span>
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.ustc.edu.cn/centos/<span class="nv">$releasever</span>/extras/<span class="nv">$basearch</span>/
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+<span class="c1">#additional packages that extend functionality of existing packages</span>
+<span class="o">[</span>centosplus<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Plus
+<span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=centosplus&amp;infra=$infra</span>
+<span class="nv">baseurl</span><span class="o">=</span>https://mirrors.ustc.edu.cn/centos/<span class="nv">$releasever</span>/centosplus/<span class="nv">$basearch</span>/
+<span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/etc/yum.repos.d/
+<span class="w"> </span>wget<span class="w"> </span>http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+<span class="w"> </span>vim<span class="w"> </span>k8s.repo
+yum<span class="w"> </span>makecache
+<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>docker-ce<span class="w">  </span>kubelet<span class="w"> </span>kubeadm<span class="w"> </span>kubectl<span class="w"> </span>-y
+
+cat<span class="w"> </span>/etc/docker/daemon.json
+
+<span class="o">{</span>
+<span class="s2">"exec-opts"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"native.cgroupdriver=systemd"</span><span class="o">]</span>,<span class="w">  </span>
+<span class="s2">"registry-mirrors"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"https://docker.mirrors.ustc.edu.cn"</span><span class="o">]</span>
+<span class="o">}</span>
+
+
+cat<span class="w"> </span>&gt;<span class="w"> </span>/etc/sysctl.d/k8s.conf<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<span class="s">net.bridge.bridge-nf-call-ip6tables = 1</span>
+<span class="s">net.bridge.bridge-nf-call-iptables = 1</span>
+<span class="s">EOF</span>
+
+<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"1"</span><span class="w"> </span>&gt;/proc/sys/net/bridge/bridge-nf-call-iptables
+
+<span class="w"> </span>setenforce<span class="w"> </span><span class="m">0</span>
+<span class="w"> </span>swapoff<span class="w"> </span>-a
+
+
+systemctl<span class="w"> </span>restart<span class="w"> </span>docker<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>docker<span class="w"> </span>
+<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>kubelet<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>kubelet
+
+
+
+master<span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>上面内容一致
+
+
+master执行
+
+kubeadm<span class="w"> </span>init<span class="w"> </span>--kubernetes-version<span class="o">=</span><span class="m">1</span>.19.0<span class="w"> </span>--apiserver-advertise-address<span class="o">=</span><span class="m">10</span>.10.252.215<span class="w"> </span>--image-repository<span class="w"> </span>registry.aliyuncs.com/google_containers<span class="w"> </span>--service-cidr<span class="o">=</span><span class="m">10</span>.10.0.0/16<span class="w"> </span>--pod-network-cidr<span class="o">=</span><span class="m">10</span>.244.0.0/16
+
+<span class="w">  </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/.kube
+<span class="w">  </span>sudo<span class="w"> </span>cp<span class="w"> </span>-i<span class="w"> </span>/etc/kubernetes/admin.conf<span class="w"> </span><span class="nv">$HOME</span>/.kube/config
+<span class="w"> </span>sudo<span class="w"> </span>chown<span class="w"> </span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>:<span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="w"> </span><span class="nv">$HOME</span>/.kube/config
+
+
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://docs.projectcalico.org/manifests/calico.yaml
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>node1<span class="w"> </span>node2<span class="w"> </span>执行
+
+<span class="w"> </span>kubeadm<span class="w"> </span>join<span class="w"> </span><span class="m">10</span>.10.252.215:6443<span class="w"> </span>--token<span class="w"> </span>u3toqk.8j7fnn0lmajgvnvq<span class="w">     </span>--discovery-token-ca-cert-hash<span class="w"> </span>sha256:49b37a021f9223d2f3af10d71a5ca47cc34e12d2c20147adfc61a6a4b90c4b97<span class="w"> </span>
+</code></pre></div>
+<p>master 生成join语句脚本备用</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$EUID</span><span class="w"> </span>-ne<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"You must be root (or sudo) to run this script"</span>
+<span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="k">fi</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$#</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Usage: </span><span class="nv">$0</span><span class="s2"> [master-hostname | master-ip-address]"</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" e.g.: </span><span class="nv">$0</span><span class="s2"> api.k8s.hiko.im"</span>
+<span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="p">;</span>
+<span class="k">fi</span>
+
+<span class="nv">token</span><span class="o">=</span><span class="sb">`</span>kubeadm<span class="w"> </span>token<span class="w"> </span>create<span class="sb">`</span>
+<span class="nv">cert_hash</span><span class="o">=</span><span class="sb">`</span>openssl<span class="w"> </span>x509<span class="w"> </span>-pubkey<span class="w"> </span>-in<span class="w"> </span>/etc/kubernetes/pki/ca.crt<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>rsa<span class="w"> </span>-pubin<span class="w"> </span>-outform<span class="w"> </span>der<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>dgst<span class="w"> </span>-sha256<span class="w"> </span>-hex<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">'s/^.* //'</span><span class="sb">`</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Refer the following command to join kubernetes cluster:"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"kubeadm join </span><span class="nv">$1</span><span class="s2">:6443 --token </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2"> --discovery-token-ca-cert-hash sha256:</span><span class="si">${</span><span class="nv">cert_hash</span><span class="si">}</span><span class="s2">"</span>
+</code></pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

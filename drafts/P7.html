@@ -8,9 +8,9 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>MongoDB学习笔记(A) | nJcx's Blog
+  <title>流量日志审计中常用的聚类算法（DBSCAN） | nJcx's Blog
 </title>
-  <link rel="canonical" href="https://www.njcx.bid/drafts/C5.html">
+  <link rel="canonical" href="https://www.njcx.bid/drafts/P7.html">
 
 
   <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="记录一下自己学到的东西">
+<meta name="description" content="流量日志审计中常用的聚类算法（DBSCAN）~">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,136 +79,48 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>MongoDB学习笔记(A)
+      <h1>流量日志审计中常用的聚类算法（DBSCAN）
 </h1>
       <hr>
 <article class="article">
   <header>
     <ul class="list-inline">
-      <li class="list-inline-item text-muted" title="2018-06-02T23:20:00+03:00">
+      <li class="list-inline-item text-muted" title="2018-07-05T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 02 June 2018
+        Thu 05 July 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
-        <a href="https://www.njcx.bid/category/shu-ju-ku.html">数据库</a>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
       </li>
       <li class="list-inline-item">
         <i class="fa fa-user-o"></i>
         <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
       <li class="list-inline-item">
         <i class="fa fa-files-o"></i>
-        <a href="https://www.njcx.bid/tag/mongodb.html">#MongoDB</a>      </li>
+        <a href="https://www.njcx.bid/tag/dbscan.html">#DBSCAN</a>      </li>
     </ul>
   </header>
   <div class="content">
-    <h4>介绍</h4>
-<p>Mongodb的3大元素:数据库(db),集合(collection),文档(document),"数据库"还是对应关系数据库中的"数据库",其中"集合"就是对应关系数据库中的"表"，"文档"对应"记录"。</p>
-<table class="table table-hover table-striped">
-<thead>
-<tr>
-<th style="text-align: center;">RDBMS</th>
-<th style="text-align: center;">MongoDB</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;">Database</td>
-<td style="text-align: center;">Database</td>
-</tr>
-<tr>
-<td style="text-align: center;">Table</td>
-<td style="text-align: center;">Collection</td>
-</tr>
-<tr>
-<td style="text-align: center;">Tuple/Row</td>
-<td style="text-align: center;">Document</td>
-</tr>
-<tr>
-<td style="text-align: center;">column</td>
-<td style="text-align: center;">Field</td>
-</tr>
-<tr>
-<td style="text-align: center;">Table Join</td>
-<td style="text-align: center;">Embedded Documents</td>
-</tr>
-<tr>
-<td style="text-align: center;">Primary Key</td>
-<td style="text-align: center;">Primary Key (Default key _id provided by mongodb itself)</td>
-</tr>
-</tbody>
-</table>
-<p>数据库服务器和客户端</p>
-<table class="table table-hover table-striped">
-<thead>
-<tr>
-<th style="text-align: center;">mysql</th>
-<th style="text-align: center;">oracle</th>
-<th style="text-align: center;">mongodb</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;">Mysqld</td>
-<td style="text-align: center;">Oracle</td>
-<td style="text-align: center;">mongod</td>
-</tr>
-<tr>
-<td style="text-align: center;">mysql</td>
-<td style="text-align: center;">sqlplus</td>
-<td style="text-align: center;">mongo</td>
-</tr>
-</tbody>
-</table>
-<h4>安装</h4>
-<div class="highlight"><pre><span></span><code>centos/rhce<span class="w"> </span>:<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>mongodb-server<span class="w"> </span>-y
-
-debian/ubuntu<span class="w"> </span>:<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>mongodb-server<span class="w"> </span>-y
-</code></pre></div>
-<h4>使用</h4>
-<ul>
-<li>创建数据库</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>use<span class="w"> </span>njcx
-switched<span class="w"> </span>to<span class="w"> </span>db<span class="w"> </span>njcx
-&gt;<span class="w"> </span>db
-njcx
-&gt;<span class="w"> </span>
-</code></pre></div>
-<ul>
-<li>查看数据库</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>show<span class="w"> </span>dbs
-</code></pre></div>
-<ul>
-<li>删除数据库</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>use<span class="w"> </span>njcx
-switched<span class="w"> </span>to<span class="w"> </span>db<span class="w"> </span>njcx
-&gt;<span class="w"> </span>db
-njcx
-&gt;<span class="w"> </span>db.dropDatabase<span class="o">()</span>
-</code></pre></div>
-<ul>
-<li>创建集合(插入自动创建)</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>db.njcx.insert<span class="o">({</span><span class="s2">"name"</span>:<span class="s2">"njcx"</span><span class="o">})</span>
-</code></pre></div>
-<ul>
-<li>创建集合(db.createCollection(name, options))</li>
-</ul>
-<p>name 指定集合名称,opt 指定有关内存大小和索引选项(可选)</p>
-<p>capped           Boolean  （可选）如果为true，则启用封顶集合。封顶集合是固定大小的集合，会自动覆盖最早的条目，当它达到其最大大小。如果指定true，则需要也指定尺寸参数。</p>
-<p>autoIndexID     Boolean （可选）如果为true，自动创建索引_id字段的默认值是false。</p>
-<p>size            number  （可选）指定最大大小字节封顶集合。如果封顶如果是 true，那么你还需要指定这个字段。</p>
-<p>max             number  （可选）指定封顶集合允许在文件的最大数量。</p>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>db.createCollection<span class="o">(</span><span class="s2">"tudou"</span>,<span class="w"> </span><span class="o">{</span><span class="w"> </span>capped<span class="w"> </span>:<span class="w"> </span>true,<span class="w"> </span>autoIndexID<span class="w"> </span>:<span class="w"> </span>true,<span class="w"> </span>size<span class="w"> </span>:<span class="w"> </span><span class="m">6142800</span>,<span class="w"> </span>max<span class="w"> </span>:<span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="o">)</span>
-</code></pre></div>
-<ul>
-<li>删除集合</li>
-</ul>
-<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>db.njcx.drop<span class="o">()</span>
-</code></pre></div>
+    <h4>算法介绍</h4>
+<p>DBSCAN（Density-Based Spatial Clustering of Applications with Noise，具有噪声的基于密度的聚类方法）是一种基于密度的空间聚类算法。 该算法将具有足够密度的区域划分为簇，并在具有噪声的空间数据库中发现任意形状的簇，它将簇定义为密度相连的点的最大集合。与KMeans算法不同，它不需要确定聚类的数量，而是基于数据推测聚类的数目，它能够针对任意形状产生聚类。</p>
+<p>DBSCAN算法需要首先确定两个参数：</p>
+<p>1， Eps:在一个点周围邻近区域的半径</p>
+<p>2， MinPts:邻近区域内至少包含点的个数</p>
+<p>DBSCAN算法将数据点分为三类：</p>
+<p>1.核心点：在半径Eps内含有超过MinPts数目的点。</p>
+<p>2.边界点：在半径Eps内点的数量小于MinPts,但是落在核心点的邻域内的点。</p>
+<p>3.噪音点：既不是核心点也不是边界点的点。</p>
+<p><img alt="ml2" class="img-fluid" src="../images/2018072516361747.png"/></p>
+<p>结合2中内容，DBSCAN的一般步骤是：（在已知Eps和MinPts的前提下）</p>
+<p>任意选择一个点（既没有指定到一个类也没有特定为外围点），计算它的NBHD(p,epsilon)密度空间判断是否为核心点。如果是，在该点周围建立一个簇，否则，设定为噪音点。
+遍历其他点，直到建立一个簇。把directly-reachable的点加入到簇中，接着把density-reachable的点也加进来。如果标记为外围的点被加进来，修改状态为边界点。
+重复步骤1和2，直到所有的点满足在簇中（核心点或边界点）或者为噪音点</p>
+<p>DBSCAN的主要优点有：</p>
+<p>1， 可以对任意形状的稠密数据集进行聚类，相对的，K-Means之类的聚类算法一般只适用于凸数据集。</p>
+<p>2， 可以在聚类的同时发现异常点，对数据集中的异常点不敏感。</p>
+<p>3， 聚类结果没有偏倚，相对的，K-Means之类的聚类算法初始值对聚类结果有很大影响。</p>
+<h4>应用</h4>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
