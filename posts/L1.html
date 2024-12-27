@@ -105,7 +105,7 @@ var _hmt = _hmt || [];
     <h4>安装</h4>
 <p><a href="https://www.njcx.bid/posts/H14.html">点这里</a></p>
 <h4>rootkit_trojans.txt内容</h4>
-<div class="highlight"><pre><span></span><span class="c1"># Released under the same license as OSSEC.</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Released under the same license as OSSEC.</span>
 <span class="c1"># More details at the LICENSE file included with OSSEC or online</span>
 <span class="c1"># at: https://github.com/ossec/ossec-hids/blob/master/LICENSE</span>
 <span class="c1">#</span>
@@ -116,107 +116,107 @@ var _hmt = _hmt || [];
 
 
 <span class="c1"># Common binaries and public trojan entries</span>
-ls          !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>dev/<span class="o">[</span>^clu<span class="o">]</span><span class="p">|</span><span class="se">\.</span>tmp/lsfile<span class="p">|</span>duarawkz<span class="p">|</span>/prof<span class="p">|</span>/security<span class="p">|</span>file<span class="se">\.</span>h!
-env         !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="p">|</span>^/bin/.*sh!
-<span class="nb">echo</span>        !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-chown       !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-chmod       !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-chgrp       !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-cat         !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-bash        !proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>hijkz<span class="o">]</span>!
-sh          !proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>hijkz<span class="o">]</span>!
-uname       !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>^/bin/.*sh!
-date        !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cln<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-du          !w0rm<span class="p">|</span>/prof<span class="p">|</span>file<span class="se">\.</span>h!
-df          !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^clurdv<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-login       !elite<span class="p">|</span>SucKIT<span class="p">|</span>xlogin<span class="p">|</span>vejeta<span class="p">|</span>porcao<span class="p">|</span>lets_log<span class="p">|</span>sukasuk!
-passwd      !bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/ttyo<span class="p">|</span>/dev/<span class="o">[</span>A-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>b-s,uvxz<span class="o">]</span>!
-mingetty    !bash<span class="p">|</span>Dimensioni<span class="p">|</span>pacchetto!
-chfn        !bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/ttyo<span class="p">|</span>/dev/<span class="o">[</span>A-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>a-s,uvxz<span class="o">]</span>!
-chsh        !bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/ttyo<span class="p">|</span>/dev/<span class="o">[</span>A-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>a-s,uvxz<span class="o">]</span>!
-mail        !bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^nu<span class="o">]</span>!
-su          !/dev/<span class="o">[</span>d-s,abuvxz<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>A-D<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>F-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>satori<span class="p">|</span>vejeta<span class="p">|</span>conf<span class="se">\.</span>inv!
-sudo        !satori<span class="p">|</span>vejeta<span class="p">|</span>conf<span class="se">\.</span>inv!
-crond       !/dev/<span class="o">[</span>^nt<span class="o">]</span><span class="p">|</span>bash!
-gpm         !bash<span class="p">|</span>mingetty!
-ifconfig    !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev/tux<span class="p">|</span>session.null<span class="p">|</span>/dev/<span class="o">[</span>^cludisopt<span class="o">]</span>!
-diff        !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-md5sum      !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="p">|</span>^/bin/.*sh!
-hdparm      !bash<span class="p">|</span>/dev/ida!
-ldd         !/dev/<span class="o">[</span>^n<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>libshow.so<span class="p">|</span>libproc.a!
+ls<span class="w">          </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>dev/<span class="o">[</span>^clu<span class="o">]</span><span class="p">|</span><span class="se">\.</span>tmp/lsfile<span class="p">|</span>duarawkz<span class="p">|</span>/prof<span class="p">|</span>/security<span class="p">|</span>file<span class="se">\.</span>h!
+env<span class="w">         </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="p">|</span>^/bin/.*sh!
+<span class="nb">echo</span><span class="w">        </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+chown<span class="w">       </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+chmod<span class="w">       </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+chgrp<span class="w">       </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+cat<span class="w">         </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cl<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+bash<span class="w">        </span>!proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>hijkz<span class="o">]</span>!
+sh<span class="w">          </span>!proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>hijkz<span class="o">]</span>!
+uname<span class="w">       </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>^/bin/.*sh!
+date<span class="w">        </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^cln<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+du<span class="w">          </span>!w0rm<span class="p">|</span>/prof<span class="p">|</span>file<span class="se">\.</span>h!
+df<span class="w">          </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^clurdv<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+login<span class="w">       </span>!elite<span class="p">|</span>SucKIT<span class="p">|</span>xlogin<span class="p">|</span>vejeta<span class="p">|</span>porcao<span class="p">|</span>lets_log<span class="p">|</span>sukasuk!
+passwd<span class="w">      </span>!bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/ttyo<span class="p">|</span>/dev/<span class="o">[</span>A-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>b-s,uvxz<span class="o">]</span>!
+mingetty<span class="w">    </span>!bash<span class="p">|</span>Dimensioni<span class="p">|</span>pacchetto!
+chfn<span class="w">        </span>!bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/ttyo<span class="p">|</span>/dev/<span class="o">[</span>A-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>a-s,uvxz<span class="o">]</span>!
+chsh<span class="w">        </span>!bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/ttyo<span class="p">|</span>/dev/<span class="o">[</span>A-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>a-s,uvxz<span class="o">]</span>!
+mail<span class="w">        </span>!bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^nu<span class="o">]</span>!
+su<span class="w">          </span>!/dev/<span class="o">[</span>d-s,abuvxz<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>A-D<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>F-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>satori<span class="p">|</span>vejeta<span class="p">|</span>conf<span class="se">\.</span>inv!
+sudo<span class="w">        </span>!satori<span class="p">|</span>vejeta<span class="p">|</span>conf<span class="se">\.</span>inv!
+crond<span class="w">       </span>!/dev/<span class="o">[</span>^nt<span class="o">]</span><span class="p">|</span>bash!
+gpm<span class="w">         </span>!bash<span class="p">|</span>mingetty!
+ifconfig<span class="w">    </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev/tux<span class="p">|</span>session.null<span class="p">|</span>/dev/<span class="o">[</span>^cludisopt<span class="o">]</span>!
+diff<span class="w">        </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+md5sum<span class="w">      </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="p">|</span>^/bin/.*sh!
+hdparm<span class="w">      </span>!bash<span class="p">|</span>/dev/ida!
+ldd<span class="w">         </span>!/dev/<span class="o">[</span>^n<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>libshow.so<span class="p">|</span>libproc.a!
 
 
 <span class="c1"># Trojan entries for troubleshooting binaries</span>
-grep        !bash<span class="p">|</span>givemer!
-egrep       !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="p">|</span>^/bin/.*sh!
-find        !bash<span class="p">|</span>/dev/<span class="o">[</span>^tnlcs<span class="o">]</span><span class="p">|</span>/prof<span class="p">|</span>/home/virus<span class="p">|</span>file<span class="se">\.</span>h!
-lsof        !/prof<span class="p">|</span>/dev/<span class="o">[</span>^apcmnfk<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev/ttyo<span class="p">|</span>/dev/ttyp!
-netstat     !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev/<span class="o">[</span>^aik<span class="o">]</span><span class="p">|</span>/prof<span class="p">|</span>grep<span class="p">|</span>addr<span class="se">\.</span>h!
-top         !/dev/<span class="o">[</span>^npi3st%<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/prof/!
-ps          !/dev/ttyo<span class="p">|</span><span class="se">\.</span>1proc<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash<span class="p">|</span>^/bin/sh!
-tcpdump     !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^bu<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-pidof       !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^f<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-fuser       !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>a-dtz<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-w           !uname -a<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash!
+grep<span class="w">        </span>!bash<span class="p">|</span>givemer!
+egrep<span class="w">       </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="p">|</span>^/bin/.*sh!
+find<span class="w">        </span>!bash<span class="p">|</span>/dev/<span class="o">[</span>^tnlcs<span class="o">]</span><span class="p">|</span>/prof<span class="p">|</span>/home/virus<span class="p">|</span>file<span class="se">\.</span>h!
+lsof<span class="w">        </span>!/prof<span class="p">|</span>/dev/<span class="o">[</span>^apcmnfk<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev/ttyo<span class="p">|</span>/dev/ttyp!
+netstat<span class="w">     </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev/<span class="o">[</span>^aik<span class="o">]</span><span class="p">|</span>/prof<span class="p">|</span>grep<span class="p">|</span>addr<span class="se">\.</span>h!
+top<span class="w">         </span>!/dev/<span class="o">[</span>^npi3st%<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/prof/!
+ps<span class="w">          </span>!/dev/ttyo<span class="p">|</span><span class="se">\.</span>1proc<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash<span class="p">|</span>^/bin/sh!
+tcpdump<span class="w">     </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^bu<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+pidof<span class="w">       </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^f<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+fuser<span class="w">       </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>a-dtz<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+w<span class="w">           </span>!uname<span class="w"> </span>-a<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash!
 
 
 <span class="c1"># Trojan entries for common daemons</span>
-sendmail    !bash<span class="p">|</span>fuck!
-named       !bash<span class="p">|</span>blah<span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>^/bin/sh!
-inetd       !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^un%<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-apachectl   !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-sshd        !check_global_passwd<span class="p">|</span>panasonic<span class="p">|</span>satori<span class="p">|</span>vejeta<span class="p">|</span><span class="se">\.</span>ark<span class="p">|</span>/hash<span class="se">\.</span>zk<span class="p">|</span>bash<span class="p">|</span>/dev<span class="o">[</span>a-s<span class="o">]</span><span class="p">|</span>/dev<span class="o">[</span>A-Z<span class="o">]</span>/!
-syslogd     !bash<span class="p">|</span>/usr/lib/pt07<span class="p">|</span>/dev/<span class="o">[</span>^cln<span class="o">]]</span><span class="p">|</span>syslogs<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h!
-xinetd      !bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h!
-in.telnetd  !cterm100<span class="p">|</span>vt350<span class="p">|</span>VT100<span class="p">|</span>ansi-term<span class="p">|</span>bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev<span class="o">[</span>A-R<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>a-z<span class="o">]</span>/!
-in.fingerd  !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>cterm100<span class="p">|</span>/dev/!
-identd      !bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
-init        !bash<span class="p">|</span>/dev/h
-tcpd        !bash<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>p1r0c4<span class="p">|</span>hack<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span>!
-rlogin      !p1r0c4<span class="p">|</span>r00t<span class="p">|</span>bash<span class="p">|</span>/dev/<span class="o">[</span>^nt<span class="o">]</span>!
+sendmail<span class="w">    </span>!bash<span class="p">|</span>fuck!
+named<span class="w">       </span>!bash<span class="p">|</span>blah<span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>^/bin/sh!
+inetd<span class="w">       </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^un%<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+apachectl<span class="w">   </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+sshd<span class="w">        </span>!check_global_passwd<span class="p">|</span>panasonic<span class="p">|</span>satori<span class="p">|</span>vejeta<span class="p">|</span><span class="se">\.</span>ark<span class="p">|</span>/hash<span class="se">\.</span>zk<span class="p">|</span>bash<span class="p">|</span>/dev<span class="o">[</span>a-s<span class="o">]</span><span class="p">|</span>/dev<span class="o">[</span>A-Z<span class="o">]</span>/!
+syslogd<span class="w">     </span>!bash<span class="p">|</span>/usr/lib/pt07<span class="p">|</span>/dev/<span class="o">[</span>^cln<span class="o">]]</span><span class="p">|</span>syslogs<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h!
+xinetd<span class="w">      </span>!bash<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h!
+<span class="k">in</span>.telnetd<span class="w">  </span>!cterm100<span class="p">|</span>vt350<span class="p">|</span>VT100<span class="p">|</span>ansi-term<span class="p">|</span>bash<span class="p">|</span>^/bin/sh<span class="p">|</span>/dev<span class="o">[</span>A-R<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>a-z<span class="o">]</span>/!
+<span class="k">in</span>.fingerd<span class="w">  </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>cterm100<span class="p">|</span>/dev/!
+identd<span class="w">      </span>!bash<span class="p">|</span>^/bin/sh<span class="p">|</span>file<span class="se">\.</span>h<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span><span class="p">|</span>^/bin/.*sh!
+init<span class="w">        </span>!bash<span class="p">|</span>/dev/h
+tcpd<span class="w">        </span>!bash<span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>p1r0c4<span class="p">|</span>hack<span class="p">|</span>/dev/<span class="o">[</span>^n<span class="o">]</span>!
+rlogin<span class="w">      </span>!p1r0c4<span class="p">|</span>r00t<span class="p">|</span>bash<span class="p">|</span>/dev/<span class="o">[</span>^nt<span class="o">]</span>!
 
 
 <span class="c1"># Kill trojan</span>
-killall     !/dev/<span class="o">[</span>^t%<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash<span class="p">|</span>tmp!
-<span class="nb">kill</span>        !/dev/<span class="o">[</span>ab,d-k,m-z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>F-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>A-D<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash<span class="p">|</span>tmp!
+killall<span class="w">     </span>!/dev/<span class="o">[</span>^t%<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash<span class="p">|</span>tmp!
+<span class="nb">kill</span><span class="w">        </span>!/dev/<span class="o">[</span>ab,d-k,m-z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>F-Z<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span>A-D<span class="o">]</span><span class="p">|</span>/dev/<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span><span class="p">|</span>proc<span class="se">\.</span>h<span class="p">|</span>bash<span class="p">|</span>tmp!
 
 
 <span class="c1"># Rootkit entries</span>
-/etc/rc.d/rc.sysinit    !enyelkmHIDE! enye-sec Rootkit
+/etc/rc.d/rc.sysinit<span class="w">    </span>!enyelkmHIDE!<span class="w"> </span>enye-sec<span class="w"> </span>Rootkit
 
 
 <span class="c1"># ZK rootkit (http://honeyblog.org/junkyard/reports/redhat-compromise2.pdf)</span>
-/etc/sysconfig/console/load.zk   !/bin/sh! ZK rootkit
-/etc/sysconfig/console/load.zk   !usr/bin/run! ZK rootkit
+/etc/sysconfig/console/load.zk<span class="w">   </span>!/bin/sh!<span class="w"> </span>ZK<span class="w"> </span>rootkit
+/etc/sysconfig/console/load.zk<span class="w">   </span>!usr/bin/run!<span class="w"> </span>ZK<span class="w"> </span>rootkit
 
 <span class="c1"># Modified /etc/hosts entries</span>
 <span class="c1"># Idea taken from:</span>
 <span class="c1"># http://blog.tenablesecurity.com/2006/12/detecting_compr.html</span>
 <span class="c1"># http://www.sophos.com/security/analyses/trojbagledll.html</span>
 <span class="c1"># http://www.f-secure.com/v-descs/fantibag_b.shtml</span>
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*avp.ch!Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*avp.ru!Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*awaps.net! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*ca.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*mcafee.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*microsoft.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*f-secure.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*sophos.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*symantec.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*my-etrust.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*nai.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*networkassociates.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*viruslist.ru! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*kaspersky! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*symantecliveupdate.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*grisoft.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*clamav.net! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*bitdefender.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*antivirus.com! Anti-virus site on the hosts file
-/etc/hosts  !^<span class="o">[</span>^#<span class="o">]</span>*sans.org! Security site on the hosts file
-</pre></div>
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*avp.ch!Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*avp.ru!Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*awaps.net!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*ca.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*mcafee.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*microsoft.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*f-secure.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*sophos.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*symantec.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*my-etrust.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*nai.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*networkassociates.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*viruslist.ru!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*kaspersky!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*symantecliveupdate.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*grisoft.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*clamav.net!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*bitdefender.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*antivirus.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+/etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*sans.org!<span class="w"> </span>Security<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
+</code></pre></div>
 <h4>check_rc_trojans.c</h4>
-<div class="highlight"><pre><span></span><span class="cm">/* Copyright (C) 2009 Trend Micro Inc.</span>
+<div class="highlight"><pre><span></span><code><span class="cm">/* Copyright (C) 2009 Trend Micro Inc.</span>
 <span class="cm"> * All right reserved.</span>
 <span class="cm"> *</span>
 <span class="cm"> * This program is a free software; you can redistribute it</span>
@@ -225,125 +225,125 @@ killall     !/dev/<span class="o">[</span>^t%<span class="o">]</span><span class
 <span class="cm"> * Foundation</span>
 <span class="cm"> */</span>
 
-<span class="cp">#include</span> <span class="cpf">"shared.h"</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">"rootcheck.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"shared.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rootcheck.h"</span>
 
 
 <span class="cm">/* Read the file pointer specified (rootkit_trojans)</span>
 <span class="cm"> * and check if any trojan entry is in the configured files</span>
 <span class="cm"> */</span>
-<span class="kt">void</span> <span class="nf">check_rc_trojans</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">basedir</span><span class="p">,</span> <span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">)</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">check_rc_trojans</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">basedir</span><span class="p">,</span><span class="w"> </span><span class="kt">FILE</span><span class="w"> </span><span class="o">*</span><span class="n">fp</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_errors</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="n">OS_SIZE_1024</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
-    <span class="kt">char</span> <span class="n">file_path</span><span class="p">[</span><span class="n">OS_SIZE_1024</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
-    <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="o">*</span><span class="n">string_to_look</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">_errors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">buf</span><span class="p">[</span><span class="n">OS_SIZE_1024</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">file_path</span><span class="p">[</span><span class="n">OS_SIZE_1024</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">string_to_look</span><span class="p">;</span>
 
 <span class="cp">#ifndef WIN32</span>
-    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">(</span><span class="n">all_paths</span><span class="p">[])</span> <span class="o">=</span> <span class="p">{</span><span class="s">"bin"</span><span class="p">,</span> <span class="s">"sbin"</span><span class="p">,</span> <span class="s">"usr/bin"</span><span class="p">,</span> <span class="s">"usr/sbin"</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">};</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">all_paths</span><span class="p">[])</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"bin"</span><span class="p">,</span><span class="w"> </span><span class="s">"sbin"</span><span class="p">,</span><span class="w"> </span><span class="s">"usr/bin"</span><span class="p">,</span><span class="w"> </span><span class="s">"usr/sbin"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">};</span>
 <span class="cp">#else</span>
-    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">(</span><span class="n">all_paths</span><span class="p">[])</span> <span class="o">=</span> <span class="p">{</span><span class="s">"C:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">"</span><span class="p">,</span> <span class="s">"D:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">"</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">};</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">all_paths</span><span class="p">[])</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"C:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="s">"D:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">};</span>
 <span class="cp">#endif</span>
 
-    <span class="n">debug1</span><span class="p">(</span><span class="s">"%s: DEBUG: Starting on check_rc_trojans"</span><span class="p">,</span> <span class="n">ARGV0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">debug1</span><span class="p">(</span><span class="s">"%s: DEBUG: Starting on check_rc_trojans"</span><span class="p">,</span><span class="w"> </span><span class="n">ARGV0</span><span class="p">);</span>
 
-    <span class="k">while</span> <span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">OS_SIZE_1024</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kt">char</span> <span class="o">*</span><span class="n">nbuf</span><span class="p">;</span>
-        <span class="kt">char</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="n">fp</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">nbuf</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
 
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="cm">/* Remove end of line */</span>
-        <span class="n">nbuf</span> <span class="o">=</span> <span class="n">strchr</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="sc">'\n'</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">nbuf</span><span class="p">)</span> <span class="p">{</span>
-            <span class="o">*</span><span class="n">nbuf</span> <span class="o">=</span> <span class="sc">'\0'</span><span class="p">;</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="cm">/* Remove end of line */</span>
+<span class="w">        </span><span class="n">nbuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strchr</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">nbuf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="o">*</span><span class="n">nbuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
 
-        <span class="n">nbuf</span> <span class="o">=</span> <span class="n">normalize_string</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+<span class="w">        </span><span class="n">nbuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize_string</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">nbuf</span> <span class="o">==</span> <span class="sc">'\0'</span> <span class="o">||</span> <span class="o">*</span><span class="n">nbuf</span> <span class="o">==</span> <span class="sc">'#'</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">continue</span><span class="p">;</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">nbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'\0'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">*</span><span class="n">nbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'#'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
 
-        <span class="cm">/* File now may be valid */</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="n">nbuf</span><span class="p">;</span>
+<span class="w">        </span><span class="cm">/* File now may be valid */</span>
+<span class="w">        </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nbuf</span><span class="p">;</span>
 
-        <span class="n">string_to_look</span> <span class="o">=</span> <span class="n">strchr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="sc">'!'</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">string_to_look</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">continue</span><span class="p">;</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="n">string_to_look</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strchr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="sc">'!'</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">string_to_look</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
 
-        <span class="o">*</span><span class="n">string_to_look</span> <span class="o">=</span> <span class="sc">'\0'</span><span class="p">;</span>
-        <span class="n">string_to_look</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="o">*</span><span class="n">string_to_look</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">        </span><span class="n">string_to_look</span><span class="o">++</span><span class="p">;</span>
 
-        <span class="n">message</span> <span class="o">=</span> <span class="n">strchr</span><span class="p">(</span><span class="n">string_to_look</span><span class="p">,</span> <span class="sc">'!'</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">message</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">continue</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="sc">'\0'</span><span class="p">;</span>
-        <span class="n">message</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strchr</span><span class="p">(</span><span class="n">string_to_look</span><span class="p">,</span><span class="w"> </span><span class="sc">'!'</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="o">*</span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">        </span><span class="n">message</span><span class="o">++</span><span class="p">;</span>
 
-        <span class="n">string_to_look</span> <span class="o">=</span> <span class="n">normalize_string</span><span class="p">(</span><span class="n">string_to_look</span><span class="p">);</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="n">normalize_string</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="n">normalize_string</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+<span class="w">        </span><span class="n">string_to_look</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize_string</span><span class="p">(</span><span class="n">string_to_look</span><span class="p">);</span>
+<span class="w">        </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize_string</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+<span class="w">        </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize_string</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">file</span> <span class="o">==</span> <span class="sc">'\0'</span> <span class="o">||</span> <span class="o">*</span><span class="n">string_to_look</span> <span class="o">==</span> <span class="sc">'\0'</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">continue</span><span class="p">;</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'\0'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">*</span><span class="n">string_to_look</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
 
-        <span class="n">_total</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_total</span><span class="o">++</span><span class="p">;</span>
 
-        <span class="cm">/* Try with all possible paths */</span>
-        <span class="k">while</span> <span class="p">(</span><span class="n">all_paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">file</span> <span class="o">!=</span> <span class="sc">'/'</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">snprintf</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">OS_SIZE_1024</span><span class="p">,</span> <span class="s">"%s/%s/%s"</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span>
-                         <span class="n">all_paths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                         <span class="n">file</span><span class="p">);</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="n">strncpy</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">OS_SIZE_1024</span><span class="p">);</span>
-                <span class="n">file_path</span><span class="p">[</span><span class="n">OS_SIZE_1024</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="sc">'\0'</span><span class="p">;</span>
-            <span class="p">}</span>
+<span class="w">        </span><span class="cm">/* Try with all possible paths */</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">all_paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">'/'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">snprintf</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="s">"%s/%s/%s"</span><span class="p">,</span><span class="w"> </span><span class="n">basedir</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">all_paths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+<span class="w">                         </span><span class="n">file</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">strncpy</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">);</span>
+<span class="w">                </span><span class="n">file_path</span><span class="p">[</span><span class="n">OS_SIZE_1024</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
 
-            <span class="cm">/* Check if entry is found */</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">is_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">os_string</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">string_to_look</span><span class="p">))</span> <span class="p">{</span>
-                <span class="kt">char</span> <span class="n">op_msg</span><span class="p">[</span><span class="n">OS_SIZE_1024</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
-                <span class="n">_errors</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="w">            </span><span class="cm">/* Check if entry is found */</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">os_string</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="w"> </span><span class="n">string_to_look</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="kt">char</span><span class="w"> </span><span class="n">op_msg</span><span class="p">[</span><span class="n">OS_SIZE_1024</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<span class="w">                </span><span class="n">_errors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-                <span class="n">snprintf</span><span class="p">(</span><span class="n">op_msg</span><span class="p">,</span> <span class="n">OS_SIZE_1024</span><span class="p">,</span> <span class="s">"Trojaned version of file "</span>
-                         <span class="s">"'%s' detected. Signature used: '%s' (%s)."</span><span class="p">,</span>
-                         <span class="n">file_path</span><span class="p">,</span>
-                         <span class="n">string_to_look</span><span class="p">,</span>
-                         <span class="o">*</span><span class="n">message</span> <span class="o">==</span> <span class="sc">'\0'</span> <span class="o">?</span>
-                         <span class="s">"Generic"</span> <span class="o">:</span> <span class="n">message</span><span class="p">);</span>
+<span class="w">                </span><span class="n">snprintf</span><span class="p">(</span><span class="n">op_msg</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="s">"Trojaned version of file "</span>
+<span class="w">                         </span><span class="s">"'%s' detected. Signature used: '%s' (%s)."</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">file_path</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">string_to_look</span><span class="p">,</span>
+<span class="w">                         </span><span class="o">*</span><span class="n">message</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'\0'</span><span class="w"> </span><span class="o">?</span>
+<span class="w">                         </span><span class="s">"Generic"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">message</span><span class="p">);</span>
 
-                <span class="n">notify_rk</span><span class="p">(</span><span class="n">ALERT_ROOTKIT_FOUND</span><span class="p">,</span> <span class="n">op_msg</span><span class="p">);</span>
-            <span class="p">}</span>
+<span class="w">                </span><span class="n">notify_rk</span><span class="p">(</span><span class="n">ALERT_ROOTKIT_FOUND</span><span class="p">,</span><span class="w"> </span><span class="n">op_msg</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
 
-            <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">file</span> <span class="o">==</span> <span class="sc">'/'</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">break</span><span class="p">;</span>
-            <span class="p">}</span>
-            <span class="n">i</span><span class="o">++</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">continue</span><span class="p">;</span>
-    <span class="p">}</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'/'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="n">_errors</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kt">char</span> <span class="n">op_msg</span><span class="p">[</span><span class="n">OS_SIZE_1024</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
-        <span class="n">snprintf</span><span class="p">(</span><span class="n">op_msg</span><span class="p">,</span> <span class="n">OS_SIZE_1024</span><span class="p">,</span> <span class="s">"No binaries with any trojan detected. "</span>
-                 <span class="s">"Analyzed %d files."</span><span class="p">,</span> <span class="n">_total</span><span class="p">);</span>
-        <span class="n">notify_rk</span><span class="p">(</span><span class="n">ALERT_OK</span><span class="p">,</span> <span class="n">op_msg</span><span class="p">);</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_errors</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="n">op_msg</span><span class="p">[</span><span class="n">OS_SIZE_1024</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<span class="w">        </span><span class="n">snprintf</span><span class="p">(</span><span class="n">op_msg</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="s">"No binaries with any trojan detected. "</span>
+<span class="w">                 </span><span class="s">"Analyzed %d files."</span><span class="p">,</span><span class="w"> </span><span class="n">_total</span><span class="p">);</span>
+<span class="w">        </span><span class="n">notify_rk</span><span class="p">(</span><span class="n">ALERT_OK</span><span class="p">,</span><span class="w"> </span><span class="n">op_msg</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>从相应的源码看，agent是读取文件内容，然后匹配正则，（特征：#!/bin/sh）可以看下面的ps 样本,为什么又有host呢，它会把相应的域名指向其他ip，主要是阻止访问对应网站</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 
-<span class="k">for</span> arg in <span class="s2">"</span><span class="nv">$*</span><span class="s2">"</span><span class="p">;</span><span class="k">do</span>
+<span class="k">for</span><span class="w"> </span>arg<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">"</span><span class="nv">$*</span><span class="s2">"</span><span class="p">;</span><span class="k">do</span>
 
-ips <span class="nv">$arg</span><span class="p">|</span>grep -v <span class="s2">"589a2ec0c1"</span><span class="p">|</span>grep -v <span class="s2">"4b74cd2dba"</span><span class="p">|</span>grep -v <span class="s2">"ips"</span><span class="p">|</span>grep -v <span class="s2">"grep"</span>
+ips<span class="w"> </span><span class="nv">$arg</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"589a2ec0c1"</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"4b74cd2dba"</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"ips"</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"grep"</span>
 
 <span class="k">done</span><span class="p">;</span><span class="nb">exit</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

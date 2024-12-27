@@ -141,96 +141,96 @@ var _hmt = _hmt || [];
 <li>PATH(HTTP)</li>
 </ul>
 <p>通过bro抓取分析Url里面的特征</p>
-<div class="highlight"><pre><span></span>/etc/passwd?format<span class="o">=</span>%<span class="p">&amp;</span><span class="nv">xss</span><span class="o">=</span><span class="s2">"&gt;&lt;script&gt;alert('GoLismero');&lt;/script&gt;&amp;traversal=../../&amp;sql=' OR 1;</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code>/etc/passwd?format<span class="o">=</span>%<span class="p">&amp;</span><span class="nv">xss</span><span class="o">=</span><span class="s2">"&gt;&lt;script&gt;alert('GoLismero');&lt;/script&gt;&amp;traversal=../../&amp;sql=' OR 1;</span>
+</code></pre></div>
 <p>对应的规则</p>
-<div class="highlight"><pre><span></span>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER1"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;rule_name&gt;</span>GoLismero Scanner<span class="nt">&lt;/rule_name&gt;</span>
-        <span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
-        <span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
-        <span class="nt">&lt;threshold/&gt;</span>
-        <span class="nt">&lt;freq_designate/&gt;</span>
-        <span class="nt">&lt;pre_check</span> <span class="na">part=</span><span class="s">"path"</span><span class="nt">&gt;</span>GoLismero<span class="nt">&lt;/pre_check&gt;</span>
-        <span class="nt">&lt;check_list&gt;</span>
-            <span class="nt">&lt;path</span> <span class="na">type=</span><span class="s">"INCL"</span><span class="nt">&gt;</span><span class="cp">&lt;![CDATA[GoLismero]]&gt;</span>/<span class="nt">&lt;/path&gt;</span>
-        <span class="nt">&lt;/check_list&gt;</span>
-        <span class="nt">&lt;alert_email/&gt;</span>
-        <span class="nt">&lt;action/&gt;</span>
-        <span class="nt">&lt;desc</span> <span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>检测到GoLismero扫描<span class="nt">&lt;/desc&gt;</span>
-    <span class="nt">&lt;/rule&gt;</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">&lt;rule</span><span class="w"> </span><span class="na">rule_id=</span><span class="s">"NIDS_SCANNER1"</span><span class="w"> </span><span class="na">type=</span><span class="s">"Detection"</span><span class="w"> </span><span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;rule_name&gt;</span>GoLismero<span class="w"> </span>Scanner<span class="nt">&lt;/rule_name&gt;</span>
+<span class="w">        </span><span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
+<span class="w">        </span><span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
+<span class="w">        </span><span class="nt">&lt;threshold/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;freq_designate/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;pre_check</span><span class="w"> </span><span class="na">part=</span><span class="s">"path"</span><span class="nt">&gt;</span>GoLismero<span class="nt">&lt;/pre_check&gt;</span>
+<span class="w">        </span><span class="nt">&lt;check_list&gt;</span>
+<span class="w">            </span><span class="nt">&lt;path</span><span class="w"> </span><span class="na">type=</span><span class="s">"INCL"</span><span class="nt">&gt;</span><span class="cp">&lt;![CDATA[GoLismero]]&gt;</span>/<span class="nt">&lt;/path&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/check_list&gt;</span>
+<span class="w">        </span><span class="nt">&lt;alert_email/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;action/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>检测到GoLismero扫描<span class="nt">&lt;/desc&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/rule&gt;</span>
+</code></pre></div>
 <ul>
 <li>UA(HTTP)</li>
 </ul>
 <p>通过bro分析http请求中的UA头</p>
-<div class="highlight"><pre><span></span> Mozilla/5.0 <span class="o">(</span>compatible, GoLismero/2.0 The Web Knife<span class="p">;</span> +https://github.com/golismero/golismero<span class="o">)</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="w"> </span>Mozilla/5.0<span class="w"> </span><span class="o">(</span>compatible,<span class="w"> </span>GoLismero/2.0<span class="w"> </span>The<span class="w"> </span>Web<span class="w"> </span>Knife<span class="p">;</span><span class="w"> </span>+https://github.com/golismero/golismero<span class="o">)</span>
+</code></pre></div>
 <p>对应的规则</p>
-<div class="highlight"><pre><span></span>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER2"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;rule_name&gt;</span>GoLismero Traffic<span class="nt">&lt;/rule_name&gt;</span>
-        <span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
-        <span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
-        <span class="nt">&lt;threshold/&gt;</span>
-        <span class="nt">&lt;freq_designate/&gt;</span>
-        <span class="nt">&lt;pre_check</span> <span class="na">part=</span><span class="s">"type"</span><span class="nt">&gt;</span>http<span class="nt">&lt;/pre_check&gt;</span>
-        <span class="nt">&lt;check_list&gt;</span>
-            <span class="nt">&lt;http.request.headers.user-agent</span> <span class="na">type=</span><span class="s">"REGEX"</span><span class="nt">&gt;</span>
-                <span class="cp">&lt;![CDATA[GoLismero]]&gt;</span><span class="nt">&lt;/http.request.headers.user-agent&gt;</span>
-        <span class="nt">&lt;/check_list&gt;</span>
-        <span class="nt">&lt;alert_email/&gt;</span>
-        <span class="nt">&lt;action/&gt;</span>
-        <span class="nt">&lt;desc</span> <span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>GoLismero Scanner<span class="nt">&lt;/desc&gt;</span>
-    <span class="nt">&lt;/rule&gt;</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">&lt;rule</span><span class="w"> </span><span class="na">rule_id=</span><span class="s">"NIDS_SCANNER2"</span><span class="w"> </span><span class="na">type=</span><span class="s">"Detection"</span><span class="w"> </span><span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;rule_name&gt;</span>GoLismero<span class="w"> </span>Traffic<span class="nt">&lt;/rule_name&gt;</span>
+<span class="w">        </span><span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
+<span class="w">        </span><span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
+<span class="w">        </span><span class="nt">&lt;threshold/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;freq_designate/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;pre_check</span><span class="w"> </span><span class="na">part=</span><span class="s">"type"</span><span class="nt">&gt;</span>http<span class="nt">&lt;/pre_check&gt;</span>
+<span class="w">        </span><span class="nt">&lt;check_list&gt;</span>
+<span class="w">            </span><span class="nt">&lt;http.request.headers.user-agent</span><span class="w"> </span><span class="na">type=</span><span class="s">"REGEX"</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="cp">&lt;![CDATA[GoLismero]]&gt;</span><span class="nt">&lt;/http.request.headers.user-agent&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/check_list&gt;</span>
+<span class="w">        </span><span class="nt">&lt;alert_email/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;action/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>GoLismero<span class="w"> </span>Scanner<span class="nt">&lt;/desc&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/rule&gt;</span>
+</code></pre></div>
 <ul>
 <li>看看header里面有没有其他字段</li>
 </ul>
-<div class="highlight"><pre><span></span>GET / HTTP/1.1
-Accept: text/html,application/xhtml+xml,application/xml<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.9,image/webp,image/apng,*/*<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.8
-Accept-Encoding: gzip, deflate, br
-Accept-Language: zh-CN,zh<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.9
-Cache-Control: max-age<span class="o">=</span><span class="m">0</span>
-Connection: keep-alive
+<div class="highlight"><pre><span></span><code>GET<span class="w"> </span>/<span class="w"> </span>HTTP/1.1
+Accept:<span class="w"> </span>text/html,application/xhtml+xml,application/xml<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.9,image/webp,image/apng,*/*<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.8
+Accept-Encoding:<span class="w"> </span>gzip,<span class="w"> </span>deflate,<span class="w"> </span>br
+Accept-Language:<span class="w"> </span>zh-CN,zh<span class="p">;</span><span class="nv">q</span><span class="o">=</span><span class="m">0</span>.9
+Cache-Control:<span class="w"> </span>max-age<span class="o">=</span><span class="m">0</span>
+Connection:<span class="w"> </span>keep-alive
 
-X-Scanner: Netsparker
+X-Scanner:<span class="w"> </span>Netsparker
 
-Upgrade-Insecure-Requests: <span class="m">1</span>
-User-Agent: <span class="m">68</span>.0.3440.106 
-</pre></div>
+Upgrade-Insecure-Requests:<span class="w"> </span><span class="m">1</span>
+User-Agent:<span class="w"> </span><span class="m">68</span>.0.3440.106<span class="w"> </span>
+</code></pre></div>
 <p>对应规则</p>
-<div class="highlight"><pre><span></span>    <span class="nt">&lt;rule</span> <span class="na">rule_id=</span><span class="s">"NIDS_SCANNER7"</span> <span class="na">type=</span><span class="s">"Detection"</span> <span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;rule_name&gt;</span>Netsparker Scanner<span class="nt">&lt;/rule_name&gt;</span>
-        <span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
-        <span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
-        <span class="nt">&lt;threshold/&gt;</span>
-        <span class="nt">&lt;freq_designate/&gt;</span>
-        <span class="nt">&lt;pre_check</span> <span class="na">part=</span><span class="s">"http.request.headers.X-Scanner"</span><span class="nt">&gt;</span>Netsparker<span class="nt">&lt;/pre_check&gt;</span>
-        <span class="nt">&lt;check_list&gt;</span>
-            <span class="nt">&lt;http.request.headers.X-Scanner</span> <span class="na">type=</span><span class="s">"INCL"</span><span class="nt">&gt;</span><span class="cp">&lt;![CDATA[Netsparker]]&gt;</span><span class="nt">&lt;/http.request.headers.X-Scanner&gt;</span>
-        <span class="nt">&lt;/check_list&gt;</span>
-        <span class="nt">&lt;alert_email/&gt;</span>
-        <span class="nt">&lt;action/&gt;</span>
-        <span class="nt">&lt;desc</span> <span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>Netsparker Scanner<span class="nt">&lt;/desc&gt;</span>
-    <span class="nt">&lt;/rule&gt;</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">&lt;rule</span><span class="w"> </span><span class="na">rule_id=</span><span class="s">"NIDS_SCANNER7"</span><span class="w"> </span><span class="na">type=</span><span class="s">"Detection"</span><span class="w"> </span><span class="na">auther_IPA=</span><span class="s">""</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;rule_name&gt;</span>Netsparker<span class="w"> </span>Scanner<span class="nt">&lt;/rule_name&gt;</span>
+<span class="w">        </span><span class="nt">&lt;harm_level&gt;</span>medium<span class="nt">&lt;/harm_level&gt;</span>
+<span class="w">        </span><span class="nt">&lt;block&gt;</span>False<span class="nt">&lt;/block&gt;</span>
+<span class="w">        </span><span class="nt">&lt;threshold/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;freq_designate/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;pre_check</span><span class="w"> </span><span class="na">part=</span><span class="s">"http.request.headers.X-Scanner"</span><span class="nt">&gt;</span>Netsparker<span class="nt">&lt;/pre_check&gt;</span>
+<span class="w">        </span><span class="nt">&lt;check_list&gt;</span>
+<span class="w">            </span><span class="nt">&lt;http.request.headers.X-Scanner</span><span class="w"> </span><span class="na">type=</span><span class="s">"INCL"</span><span class="nt">&gt;</span><span class="cp">&lt;![CDATA[Netsparker]]&gt;</span><span class="nt">&lt;/http.request.headers.X-Scanner&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/check_list&gt;</span>
+<span class="w">        </span><span class="nt">&lt;alert_email/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;action/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">affected_target=</span><span class="s">"Web Application"</span><span class="nt">&gt;</span>Netsparker<span class="w"> </span>Scanner<span class="nt">&lt;/desc&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/rule&gt;</span>
+</code></pre></div>
 <ul>
 <li>端口扫描</li>
 </ul>
 <p>来自bro  conn.log 的conn_state字段</p>
-<div class="highlight"><pre><span></span>S0  看到连接尝试，没有响应。
-S1  已建立连接，未终止。
-SF  正常建立和终止。
-REJ 连接尝试被拒绝。
-S2  已建立连接，并且看到发起人关闭尝试（但没有来自响应者的回复）。
-S3  建立连接并通过响应者查看关闭尝试（但没有来自发起者的回复）。
-RSTO    建立连接，发起者中止（发送RST）。
-RSTR    响应者发送了RST。
-RSTOS0  发起者发送了一个SYN后跟一个RST，未看到来自响应者的SYN-ACK。
-RSTRH   响应者发送了一个SYN ACK后跟一个RST，未见过发起人的SYN。
-SH  发起者发送了一个SYN后跟一个FIN，我们从未看到来自响应者的SYN ACK，连接是“半”打开状态。
-SHR 响应者发送了一个SYN ACK后跟一个FIN，我们从未看到来自发起者的SYN。
-OTH 没有看到SYN，没有关闭全部连接。
-</pre></div>
+<div class="highlight"><pre><span></span><code>S0<span class="w">  </span>看到连接尝试，没有响应。
+S1<span class="w">  </span>已建立连接，未终止。
+SF<span class="w">  </span>正常建立和终止。
+REJ<span class="w"> </span>连接尝试被拒绝。
+S2<span class="w">  </span>已建立连接，并且看到发起人关闭尝试（但没有来自响应者的回复）。
+S3<span class="w">  </span>建立连接并通过响应者查看关闭尝试（但没有来自发起者的回复）。
+RSTO<span class="w">    </span>建立连接，发起者中止（发送RST）。
+RSTR<span class="w">    </span>响应者发送了RST。
+RSTOS0<span class="w">  </span>发起者发送了一个SYN后跟一个RST，未看到来自响应者的SYN-ACK。
+RSTRH<span class="w">   </span>响应者发送了一个SYN<span class="w"> </span>ACK后跟一个RST，未见过发起人的SYN。
+SH<span class="w">  </span>发起者发送了一个SYN后跟一个FIN，我们从未看到来自响应者的SYN<span class="w"> </span>ACK，连接是“半”打开状态。
+SHR<span class="w"> </span>响应者发送了一个SYN<span class="w"> </span>ACK后跟一个FIN，我们从未看到来自发起者的SYN。
+OTH<span class="w"> </span>没有看到SYN，没有关闭全部连接。
+</code></pre></div>
 <p>3次握手，建立tcp连接</p>
 <p><img alt="ml1" class="img-fluid" src="../images/7b652.png"/></p>
 <p>4次挥手，断开连接</p>

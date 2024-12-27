@@ -103,18 +103,18 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <p>centos6.9自带的Python版本是2.6.6,版本太老了，目前Python的2.x版本最新是Python2.7.13，最好的方法是下载Python2.7.13的源码自己编译。先搞定centos的编译环境搭建以及相关依赖的处理：</p>
-<div class="highlight"><pre><span></span><span class="m">1</span>: yum install gcc gcc-c++ gcc-g77 flex bison autoconf automake bzip2-devel zlib-devel ncurses-devel libjpeg-devel libpng-devel libtiff-devel freetype-devel pam-devel openssl-devel libxml2-devel gettext-devel pcre-devel
+<div class="highlight"><pre><span></span><code><span class="m">1</span>:<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>gcc<span class="w"> </span>gcc-c++<span class="w"> </span>gcc-g77<span class="w"> </span>flex<span class="w"> </span>bison<span class="w"> </span>autoconf<span class="w"> </span>automake<span class="w"> </span>bzip2-devel<span class="w"> </span>zlib-devel<span class="w"> </span>ncurses-devel<span class="w"> </span>libjpeg-devel<span class="w"> </span>libpng-devel<span class="w"> </span>libtiff-devel<span class="w"> </span>freetype-devel<span class="w"> </span>pam-devel<span class="w"> </span>openssl-devel<span class="w"> </span>libxml2-devel<span class="w"> </span>gettext-devel<span class="w"> </span>pcre-devel
 
-<span class="m">2</span>：可以直接yum groupinstall <span class="s2">"Development tools"</span>
-</pre></div>
+<span class="m">2</span>：可以直接yum<span class="w"> </span>groupinstall<span class="w"> </span><span class="s2">"Development tools"</span>
+</code></pre></div>
 <p>然后下载Python2.7.13的源码自己编译：</p>
-<div class="highlight"><pre><span></span>&gt; wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz <span class="o">&amp;&amp;</span> tar zxvf Python-2.7.13.tgz <span class="o">&amp;&amp;</span> <span class="nb">cd</span> Python-2.7.13
+<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>wget<span class="w"> </span>https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>tar<span class="w"> </span>zxvf<span class="w"> </span>Python-2.7.13.tgz<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>Python-2.7.13
 
-&gt; ./configure <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> make install
-</pre></div>
+&gt;<span class="w"> </span>./configure<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>install
+</code></pre></div>
 <p>很多教程说，编译安装Python会导致yum不能用，但是我没有遇到，所以就不用处理那个问题了。下面我们把pip安装上去，</p>
-<div class="highlight"><pre><span></span>wget wget https://bootstrap.pypa.io/get-pip.py <span class="o">&amp;&amp;</span> python get-pip.py
-</pre></div>
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>wget<span class="w"> </span>https://bootstrap.pypa.io/get-pip.py<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>get-pip.py
+</code></pre></div>
 <p>这样，就行了</p>
   </div>
 </article>

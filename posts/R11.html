@@ -151,7 +151,7 @@ etcd的重点是利用raft算法做分布式一致性，强调各个节点之间
 <li>HOST_3=172.19.0.14</li>
 </ul>
 <p>先在所有机器上面执行</p>
-<div class="highlight"><pre><span></span><span class="nv">TOKEN</span><span class="o">=</span>etcd-token-test-njcx
+<div class="highlight"><pre><span></span><code><span class="nv">TOKEN</span><span class="o">=</span>etcd-token-test-njcx
 <span class="nv">CLUSTER_STATE</span><span class="o">=</span>new
 <span class="nv">NAME_1</span><span class="o">=</span>machine-1
 <span class="nv">NAME_2</span><span class="o">=</span>machine-2
@@ -160,85 +160,85 @@ etcd的重点是利用raft算法做分布式一致性，强调各个节点之间
 <span class="nv">HOST_2</span><span class="o">=</span><span class="m">172</span>.19.0.13
 <span class="nv">HOST_3</span><span class="o">=</span><span class="m">172</span>.19.0.14
 <span class="nv">CLUSTER</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_1</span><span class="si">}</span>:2380,<span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_2</span><span class="si">}</span>:2380,<span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">HOST_3</span><span class="si">}</span>:2380
-mkdir -p /var/lib/etcd
+mkdir<span class="w"> </span>-p<span class="w"> </span>/var/lib/etcd
 <span class="nv">ETCD_DATA</span><span class="o">=</span>/var/lib/etcd
-</pre></div>
+</code></pre></div>
 <p>然后在HOST_1 执行</p>
-<div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span>
+<div class="highlight"><pre><span></span><code><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_1</span><span class="si">}</span>
 <span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_1</span><span class="si">}</span>
-etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span> --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
-    --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
-    --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
-    --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
-    --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
-</pre></div>
+etcd<span class="w"> </span>--data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span><span class="w"> </span>--name<span class="w"> </span><span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--initial-advertise-peer-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380<span class="w"> </span>--listen-peer-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--advertise-client-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379<span class="w"> </span>--listen-client-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--initial-cluster<span class="w"> </span><span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--initial-cluster-state<span class="w"> </span><span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span><span class="w"> </span>--initial-cluster-token<span class="w"> </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
+</code></pre></div>
 <p>然后在HOST_2 执行</p>
-<div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span>
+<div class="highlight"><pre><span></span><code><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_2</span><span class="si">}</span>
 <span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_2</span><span class="si">}</span>
-etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span> --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
-    --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
-    --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
-    --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
-    --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
-</pre></div>
+etcd<span class="w"> </span>--data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span><span class="w"> </span>--name<span class="w"> </span><span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--initial-advertise-peer-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380<span class="w"> </span>--listen-peer-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--advertise-client-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379<span class="w"> </span>--listen-client-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--initial-cluster<span class="w"> </span><span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--initial-cluster-state<span class="w"> </span><span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span><span class="w"> </span>--initial-cluster-token<span class="w"> </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
+</code></pre></div>
 <p>然后在HOST_3 执行</p>
-<div class="highlight"><pre><span></span><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span>
+<div class="highlight"><pre><span></span><code><span class="nv">THIS_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">NAME_3</span><span class="si">}</span>
 <span class="nv">THIS_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_3</span><span class="si">}</span>
-etcd --data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span> --name <span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span> <span class="se">\</span>
-    --initial-advertise-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 --listen-peer-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380 <span class="se">\</span>
-    --advertise-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 --listen-client-urls http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379 <span class="se">\</span>
-    --initial-cluster <span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span> <span class="se">\</span>
-    --initial-cluster-state <span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span> --initial-cluster-token <span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
-</pre></div>
+etcd<span class="w"> </span>--data-dir<span class="o">=</span><span class="si">${</span><span class="nv">ETCD_DATA</span><span class="si">}</span><span class="w"> </span>--name<span class="w"> </span><span class="si">${</span><span class="nv">THIS_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--initial-advertise-peer-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380<span class="w"> </span>--listen-peer-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2380<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--advertise-client-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379<span class="w"> </span>--listen-client-urls<span class="w"> </span>http://<span class="si">${</span><span class="nv">THIS_IP</span><span class="si">}</span>:2379<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--initial-cluster<span class="w"> </span><span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--initial-cluster-state<span class="w"> </span><span class="si">${</span><span class="nv">CLUSTER_STATE</span><span class="si">}</span><span class="w"> </span>--initial-cluster-token<span class="w"> </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span>
+</code></pre></div>
 <p>然后，在任何一个机器上面</p>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ETCDCTL_API</span><span class="o">=</span><span class="m">3</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">ETCDCTL_API</span><span class="o">=</span><span class="m">3</span>
 <span class="nv">HOST_1</span><span class="o">=</span><span class="m">172</span>.19.0.12
 <span class="nv">HOST_2</span><span class="o">=</span><span class="m">172</span>.19.0.13
 <span class="nv">HOST_3</span><span class="o">=</span><span class="m">172</span>.19.0.14
 <span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379,<span class="nv">$HOST_2</span>:2379,<span class="nv">$HOST_3</span>:2379
-</pre></div>
-<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> member list
-8e9e05c52164694d, started, default, http://localhost:2380, http://0.0.0.0:2379, <span class="nb">false</span>
-</pre></div>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>member<span class="w"> </span>list
+8e9e05c52164694d,<span class="w"> </span>started,<span class="w"> </span>default,<span class="w"> </span>http://localhost:2380,<span class="w"> </span>http://0.0.0.0:2379,<span class="w"> </span><span class="nb">false</span>
+</code></pre></div>
 <p>put 和get操作</p>
-<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web1 value1
+<div class="highlight"><pre><span></span><code>./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>web1<span class="w"> </span>value1
 OK
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web2 value2
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>web2<span class="w"> </span>value2
 OK
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put web3 value3
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>web3<span class="w"> </span>value3
 OK
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get web3
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>get<span class="w"> </span>web3
 web3
 value3
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get web --prefix
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>get<span class="w"> </span>web<span class="w"> </span>--prefix
 web1
 value1
 web2
 value2
 web3
 value3
-</pre></div>
+</code></pre></div>
 <p>删除操作</p>
-<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put key myvalue
+<div class="highlight"><pre><span></span><code>./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>key<span class="w"> </span>myvalue
 OK
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> del key
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>del<span class="w"> </span>key
 <span class="m">1</span>
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put k1 value1
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>k1<span class="w"> </span>value1
 OK
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put k2 value2
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>k2<span class="w"> </span>value2
 OK
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> del k --prefix
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>del<span class="w"> </span>k<span class="w"> </span>--prefix
 <span class="m">1</span>
-</pre></div>
+</code></pre></div>
 <p>监听key的变化</p>
-<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> watch stock1
+<div class="highlight"><pre><span></span><code>./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>watch<span class="w"> </span>stock1
 PUT
 stock1
 <span class="m">1000</span>
 
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put stock1 <span class="m">1000</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>stock1<span class="w"> </span><span class="m">1000</span>
 ok
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> watch stock --prefix
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>watch<span class="w"> </span>stock<span class="w"> </span>--prefix
 PUT
 stock1
 <span class="m">10</span>
@@ -246,63 +246,63 @@ PUT
 stock2
 <span class="m">20</span>
 
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put stock1 <span class="m">10</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>stock1<span class="w"> </span><span class="m">10</span>
 ok
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put stock2 <span class="m">20</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>stock2<span class="w"> </span><span class="m">20</span>
 ok
-</pre></div>
+</code></pre></div>
 <p>TTL</p>
-<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease grant <span class="m">30</span>
+<div class="highlight"><pre><span></span><code>./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>lease<span class="w"> </span>grant<span class="w"> </span><span class="m">30</span>
 <span class="c1"># lease 2be7547fbc6a5afa granted with TTL(30s)</span>
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put sample value --lease<span class="o">=</span>2be7547fbc6a5afa
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease keep-alive 2be7547fbc6a5afa      <span class="c1">#到期自动续期，会阻塞</span>
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lease revoke 2be7547fbc6a5afa          <span class="c1">#直接销毁</span>
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> get sample
-</pre></div>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>sample<span class="w"> </span>value<span class="w"> </span>--lease<span class="o">=</span>2be7547fbc6a5afa
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>get<span class="w"> </span>sample
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>lease<span class="w"> </span>keep-alive<span class="w"> </span>2be7547fbc6a5afa<span class="w">      </span><span class="c1">#到期自动续期，会阻塞</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>lease<span class="w"> </span>revoke<span class="w"> </span>2be7547fbc6a5afa<span class="w">          </span><span class="c1">#直接销毁</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>get<span class="w"> </span>sample
+</code></pre></div>
 <p>事务写</p>
-<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> put user1 bad
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> txn --interactive
+<div class="highlight"><pre><span></span><code>./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>put<span class="w"> </span>user1<span class="w"> </span>bad
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>txn<span class="w"> </span>--interactive
 compares:
-value<span class="o">(</span><span class="s2">"user1"</span><span class="o">)</span> <span class="o">=</span> <span class="s2">"bad"</span>  
+value<span class="o">(</span><span class="s2">"user1"</span><span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"bad"</span><span class="w">  </span>
 
-success requests <span class="o">(</span>get, put, delete<span class="o">)</span>:
-del user1  
+success<span class="w"> </span>requests<span class="w"> </span><span class="o">(</span>get,<span class="w"> </span>put,<span class="w"> </span>delete<span class="o">)</span>:
+del<span class="w"> </span>user1<span class="w">  </span>
 
-failure requests <span class="o">(</span>get, put, delete<span class="o">)</span>:
-put user1 good
-</pre></div>
+failure<span class="w"> </span>requests<span class="w"> </span><span class="o">(</span>get,<span class="w"> </span>put,<span class="w"> </span>delete<span class="o">)</span>:
+put<span class="w"> </span>user1<span class="w"> </span>good
+</code></pre></div>
 <p>认证</p>
-<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role add root                                 <span class="c1">#创建角色root</span>
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role grant-permission root readwrite  foo     <span class="c1">#只给foo读写权限（foo是key）</span>
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> role get root
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user add root                                 <span class="c1">#创建用户root</span>
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user grant-role root root                     <span class="c1">#把用户添加到root 角色里面</span>
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> user get root
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> auth <span class="nb">enable</span>                                   <span class="c1">#激活认证</span>
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 put foo bar
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> get foo
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 get foo
-./etcdctl --endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span> --user<span class="o">=</span>root:123 get foo1
-</pre></div>
+<div class="highlight"><pre><span></span><code>./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>role<span class="w"> </span>add<span class="w"> </span>root<span class="w">                                 </span><span class="c1">#创建角色root</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>role<span class="w"> </span>grant-permission<span class="w"> </span>root<span class="w"> </span>readwrite<span class="w">  </span>foo<span class="w">     </span><span class="c1">#只给foo读写权限（foo是key）</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>role<span class="w"> </span>get<span class="w"> </span>root
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>user<span class="w"> </span>add<span class="w"> </span>root<span class="w">                                 </span><span class="c1">#创建用户root</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>user<span class="w"> </span>grant-role<span class="w"> </span>root<span class="w"> </span>root<span class="w">                     </span><span class="c1">#把用户添加到root 角色里面</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>user<span class="w"> </span>get<span class="w"> </span>root
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>auth<span class="w"> </span><span class="nb">enable</span><span class="w">                                   </span><span class="c1">#激活认证</span>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>--user<span class="o">=</span>root:123<span class="w"> </span>put<span class="w"> </span>foo<span class="w"> </span>bar
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>get<span class="w"> </span>foo
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>--user<span class="o">=</span>root:123<span class="w"> </span>get<span class="w"> </span>foo
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="si">${</span><span class="nv">ENDPOINTS</span><span class="si">}</span><span class="w"> </span>--user<span class="o">=</span>root:123<span class="w"> </span>get<span class="w"> </span>foo1
+</code></pre></div>
 <p>分布式锁</p>
-<div class="highlight"><pre><span></span>./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
+<div class="highlight"><pre><span></span><code>./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>lock<span class="w"> </span>mutex1
 <span class="c1"># 启动另一个shell，上面会退出</span>
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> lock mutex1
-</pre></div>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>lock<span class="w"> </span>mutex1
+</code></pre></div>
 <p>查看etcd集群状态</p>
-<div class="highlight"><pre><span></span>./etcdctl --write-out<span class="o">=</span>table --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint status       <span class="c1">#查看集群状态</span>
+<div class="highlight"><pre><span></span><code>./etcdctl<span class="w"> </span>--write-out<span class="o">=</span>table<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>endpoint<span class="w"> </span>status<span class="w">       </span><span class="c1">#查看集群状态</span>
 
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> endpoint health                         <span class="c1">#查看节点健康状态</span>
-</pre></div>
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>endpoint<span class="w"> </span>health<span class="w">                         </span><span class="c1">#查看节点健康状态</span>
+</code></pre></div>
 <p>备份与恢复</p>
 <p>只能从一个etcd节点请求快照，因此--endpoints标志应仅包含一个端点。</p>
-<div class="highlight"><pre><span></span><span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379
+<div class="highlight"><pre><span></span><code><span class="nv">ENDPOINTS</span><span class="o">=</span><span class="nv">$HOST_1</span>:2379
 
-./etcdctl --endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span> snapshot save my.db
+./etcdctl<span class="w"> </span>--endpoints<span class="o">=</span><span class="nv">$ENDPOINTS</span><span class="w"> </span>snapshot<span class="w"> </span>save<span class="w"> </span>my.db
 
-./etcdctl snapshot restore my.db -data-dir /var/lib/etcd
-</pre></div>
+./etcdctl<span class="w"> </span>snapshot<span class="w"> </span>restore<span class="w"> </span>my.db<span class="w"> </span>-data-dir<span class="w"> </span>/var/lib/etcd
+</code></pre></div>
 <h4>Etcd在HIDS-Agent配置管理和健康监测上的应用</h4>
 <p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。</p>
 <p>HIDS-Agent 有如下需求：</p>
@@ -312,77 +312,77 @@ put user1 good
 <li>3， 规则下发(比如，恶意程序扫描)</li>
 </ul>
 <p>获取配置</p>
-<div class="highlight"><pre><span></span>    <span class="nx">cli</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">clientv3</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span>
-        <span class="nx">Endpoints</span><span class="p">:</span>   <span class="nx">etcD</span><span class="p">,</span>
-        <span class="nx">DialTimeout</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
-    <span class="p">})</span>
-    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"connect failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-        <span class="k">return</span>
-    <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nx">cli</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">Endpoints</span><span class="p">:</span><span class="w">   </span><span class="nx">etcD</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">DialTimeout</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"connect failed, err:"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span>
+<span class="w">    </span><span class="p">}</span>
 
-    <span class="nx">ctx</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nx">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-    <span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="s">"/hids/kafka/host"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"get kafka_host failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-        <span class="k">return</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span><span class="w"> </span><span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cli</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">"/hids/kafka/host"</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"get kafka_host failed, err:"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span>
+<span class="w">    </span><span class="p">}</span>
 
-    <span class="nx">resp1</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="s">"/hids/kafka/topic"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"get kafka_topic failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-        <span class="k">return</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="nx">resp1</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cli</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">"/hids/kafka/topic"</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"get kafka_topic failed, err:"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span>
+<span class="w">    </span><span class="p">}</span>
 
-    <span class="nx">ev</span> <span class="o">:=</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">Kvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="nx">kafkaHost</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">Value</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">ev</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Kvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="w">    </span><span class="nx">kafkaHost</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">string</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">Value</span><span class="p">)</span>
 
-    <span class="nx">ev1</span> <span class="o">:=</span> <span class="nx">resp1</span><span class="p">.</span><span class="nx">Kvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="nx">kafkaTopic</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">ev1</span><span class="p">.</span><span class="nx">Value</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">ev1</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">resp1</span><span class="p">.</span><span class="nx">Kvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="w">    </span><span class="nx">kafkaTopic</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">string</span><span class="p">(</span><span class="nx">ev1</span><span class="p">.</span><span class="nx">Value</span><span class="p">)</span>
 
-    <span class="nx">a</span><span class="p">.</span><span class="nx">Kafka</span> <span class="p">=</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">NewKafkaProducer</span><span class="p">(</span><span class="nx">kafkaHost</span><span class="p">,</span> <span class="nx">kafkaTopic</span><span class="p">)</span>
-    <span class="nx">a</span><span class="p">.</span><span class="nx">Mutex</span> <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span><span class="p">)</span>
-</pre></div>
+<span class="w">    </span><span class="nx">a</span><span class="p">.</span><span class="nx">Kafka</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">kafka</span><span class="p">.</span><span class="nx">NewKafkaProducer</span><span class="p">(</span><span class="nx">kafkaHost</span><span class="p">,</span><span class="w"> </span><span class="nx">kafkaTopic</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">a</span><span class="p">.</span><span class="nx">Mutex</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">new</span><span class="p">(</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span><span class="p">)</span>
+</code></pre></div>
 <p>单独起一个goroutine，利用ttl做 agent 存活检测，如果key不在了，则认为agent下线了，这里用keep-alive也可以的</p>
-<div class="highlight"><pre><span></span><span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">cli</span> <span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="k">go</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">cli</span><span class="w"> </span><span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 
-        <span class="k">for</span> <span class="p">{</span>
-            <span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Grant</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">TODO</span><span class="p">(),</span> <span class="mi">60</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-                <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"etcd client leasegrant failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-                <span class="k">return</span>
-            <span class="p">}</span>
-            <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Put</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">TODO</span><span class="p">(),</span> <span class="s">"/hids/alivehost/"</span><span class="o">+</span><span class="nx">host</span><span class="o">+</span><span class="s">"--"</span><span class="o">+</span><span class="nx">LocalIP</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Format</span><span class="p">(</span><span class="s">"2006-01-02 15:04:05"</span><span class="p">),</span>
-                <span class="nx">clientv3</span><span class="p">.</span><span class="nx">WithLease</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">ID</span><span class="p">))</span>
-            <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-                <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"etcd client leaseput failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-                <span class="k">return</span>
-            <span class="p">}</span>
-            <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-        <span class="p">}</span>
-        <span class="nx">cli</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
-    <span class="p">}(</span><span class="nx">cli</span><span class="p">)</span>
-</pre></div>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cli</span><span class="p">.</span><span class="nx">Grant</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">TODO</span><span class="p">(),</span><span class="w"> </span><span class="mi">60</span><span class="p">)</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"etcd client leasegrant failed, err:"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">                </span><span class="k">return</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">cli</span><span class="p">.</span><span class="nx">Put</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">TODO</span><span class="p">(),</span><span class="w"> </span><span class="s">"/hids/alivehost/"</span><span class="o">+</span><span class="nx">host</span><span class="o">+</span><span class="s">"--"</span><span class="o">+</span><span class="nx">LocalIP</span><span class="p">,</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Format</span><span class="p">(</span><span class="s">"2006-01-02 15:04:05"</span><span class="p">),</span>
+<span class="w">                </span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">WithLease</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">ID</span><span class="p">))</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"etcd client leaseput failed, err:"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">                </span><span class="k">return</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="nx">cli</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+<span class="w">    </span><span class="p">}(</span><span class="nx">cli</span><span class="p">)</span>
+</code></pre></div>
 <p>配置更新以及规则下发可以用 watch 实现</p>
-<div class="highlight"><pre><span></span><span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">cli</span> <span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">for</span> <span class="p">{</span>
-        <span class="nx">rch</span> <span class="o">:=</span> <span class="nx">cli</span><span class="p">.</span><span class="nx">Watch</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span> <span class="s">"/hids/kafka/host"</span><span class="p">)</span>
-        <span class="k">for</span> <span class="nx">wresp</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">rch</span> <span class="p">{</span>
-            <span class="nx">err</span> <span class="p">=</span> <span class="nx">wresp</span><span class="p">.</span><span class="nx">Err</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-                    <span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"etcd client watch failed, err:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-            <span class="p">}</span>
-            <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ev</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">wresp</span><span class="p">.</span><span class="nx">Events</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="nb">string</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">Kv</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span><span class="o">==</span> <span class="s">"PUT"</span> <span class="p">{</span>
-                <span class="nx">a</span><span class="p">.</span><span class="nx">Kafka</span> <span class="p">=</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">NewKafkaProducer</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">Kv</span><span class="p">.</span><span class="nx">Value</span><span class="p">),</span> <span class="nx">kafkaTopic</span><span class="p">)</span>
-                <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="k">go</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">cli</span><span class="w"> </span><span class="o">*</span><span class="nx">clientv3</span><span class="p">.</span><span class="nx">Client</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">rch</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cli</span><span class="p">.</span><span class="nx">Watch</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span><span class="w"> </span><span class="s">"/hids/kafka/host"</span><span class="p">)</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nx">wresp</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">rch</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">wresp</span><span class="p">.</span><span class="nx">Err</span><span class="p">()</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nx">a</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s">"etcd client watch failed, err:"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">ev</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">wresp</span><span class="p">.</span><span class="nx">Events</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nb">string</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">Kv</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span><span class="o">==</span><span class="w"> </span><span class="s">"PUT"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">a</span><span class="p">.</span><span class="nx">Kafka</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">kafka</span><span class="p">.</span><span class="nx">NewKafkaProducer</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">Kv</span><span class="p">.</span><span class="nx">Value</span><span class="p">),</span><span class="w"> </span><span class="nx">kafkaTopic</span><span class="p">)</span>
+<span class="w">                </span><span class="p">}</span>
 
-            <span class="p">}</span>
-        <span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
 
-        <span class="p">}</span>
-    <span class="p">}(</span><span class="nx">cli</span><span class="p">)</span>
-</pre></div>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}(</span><span class="nx">cli</span><span class="p">)</span>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

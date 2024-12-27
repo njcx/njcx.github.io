@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Linux环境微隔离之Netfilter | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/drafts/S7.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Linux环境微隔离之Netfilter ~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.anquanke.com/member/154147" target="_blank">安全客</a></li>
+                <li class="list-inline-item"><a href="https://www.freebuf.com/column/1481" target="_blank">Freebuf</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Linux环境微隔离之Netfilter
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-08-22T20:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        Wed 22 August 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/wei-ge-chi.html">#微隔离</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>介绍</h4>
+<p>Linux 内核从1.1版本开始，就已经具备包过滤功能。在2.0内核中，开始采用Ipfwadm(Alan Cox开发)来操作内核的包过滤规则,其代码主要来自Freebsd。到2.2版本时，Linux内核采用了 Ipchains来控制内核的包过滤规则。发展到2.4.x时，Ipchains被一个全新的包过滤管理工具Iptables所替代。新发布的2.6版内核也在安全方面进行了改进。</p>
+<p>Linux提供的防火墙软件包内置于Linux内核中，是一种基于包过滤型的防火墙实现技术。其中心思想是根据网络层IP包头中的源地址、目的地址及包类型等信息来控制包的流向。更彻底的过滤则是检查包中的源端口、目的端口以及连接状态等信息。 Netfilter是Linux核心中一个通用架构，用于扩展各种服务的结构化底层服务。</p>
+<p>Netfilter/iptables 项目由 Rusty Russe 创建于1998年，并于 1999 年建立了 Netfilter Core team，并在此后负责维护此项目，同时也于2000年3月合并进了 linux 2.3.x 版本的 linux 内核。Netfilter/iptables 有三部分组成，分别是Netfilter 框架/Iptables(内核空间)/Iptables 命令行工具(用户空间)。</p>
+<p>Netfilter 是一个由Linux 内核提供的框架，可以进行多种网络相关的自定义操作。它提供一系列的表（tables），每个表由若干链（chains）组成，而每条链中可以由一条或数条规则（rule）组成。它可以和其它模块（如iptables模块和nat模块）结合起来实现包过滤功能。Iptables是一个管理内核包过滤的工具，可以加入、插入或删除核心包过滤表格中的规则。实际上真正来执行这些过滤规则的是Netfilter 。</p>
+<p>Netfilter 在 Linux 内核中表现为一系列的hook, 并允许Linux 内核模块注册为回调函数，Linux内核模块通过回调函数操作网络报文。一共有5个钩子，如下</p>
+<div class="highlight"><pre><span></span><code>---&gt;<span class="o">[</span>NF_IP_PRE_ROUTING<span class="o">]</span>---&gt;<span class="o">[</span>ROUTE<span class="o">]</span>---&gt;<span class="o">[</span>NF_IP_FORWARD<span class="o">]</span>---&gt;<span class="o">[</span>NF_IP_POST_ROUTING<span class="o">]</span>---&gt;
+<span class="w">                              </span><span class="p">|</span><span class="w">                        </span>^
+<span class="w">                              </span><span class="p">|</span><span class="w">                        </span><span class="p">|</span>
+<span class="w">                              </span><span class="p">|</span><span class="w">                     </span><span class="o">[</span>ROUTE<span class="o">]</span>
+<span class="w">                              </span>v<span class="w">                        </span><span class="p">|</span>
+<span class="w">                       </span><span class="o">[</span>NF_IP_LOCAL_IN<span class="o">]</span><span class="w">        </span><span class="o">[</span>NF_IP_LOCAL_OUT<span class="o">]</span>
+<span class="w">                              </span><span class="p">|</span><span class="w">                        </span>^
+<span class="w">                              </span><span class="p">|</span><span class="w">                        </span><span class="p">|</span>
+<span class="w">                              </span>v<span class="w">                        </span><span class="p">|</span>
+</code></pre></div>
+<p>Netfilter Hook的意义:</p>
+<div class="highlight"><pre><span></span><code>NF_IP_PRE_ROUTING:<span class="w"> </span>位于路由之前，报文一致性检查之后（报文一致性检查包括:<span class="w"> </span>报文版本、报文长度和checksum）。
+NF_IP_LOCAL_IN:<span class="w"> </span>位于报文经过路由之后，并且目的是本机的。
+NF_IP_FORWARD：位于在报文路由之后，目的地非本机的。
+NF_IP_LOCAL_OUT:<span class="w"> </span>由本机发出去的报文，并且在路由之前。
+NF_IP_POST_ROUTING:<span class="w"> </span>所有即将离开本机的报文。
+</code></pre></div>
+<p>Linux 内核模块可以注册到任何的hook，注册的回调函数也必需指定优先级。当一个报文通过hook的时候，hook将会依据优先级调用回调函数。注册的回调函数，可以有五种返回，每种返回代表对报文不同的操作:</p>
+<div class="highlight"><pre><span></span><code>NF_ACCEPT:<span class="w"> </span>继续正常处理此报文，即允许报文通过。
+NF_DROP:<span class="w"> </span>丢弃此报文，不再进行继续处理，即拒绝此报文。
+NF_STOLEN:<span class="w"> </span>取走这个报文，不再继续处理。
+NF_QUEUE:<span class="w"> </span>报文进行重新排队，可以将报文发到用户空间的程序，进行修改或者决定是拒绝或者允许。
+NF_REPEAT:<span class="w"> </span>报文重新调用hook。
+</code></pre></div>
+<p>Iptables 是基于Netfilter框架实现的报文选择系统，其可以用于报文的过滤、网络地址转换和报文修改等功能。Iptables 本质上是包含了5个规则表，而规则表则包含了一些列的报文的匹配规则以及操作目标。以下对每个规则表进行了简单说明：</p>
+<div class="highlight"><pre><span></span><code>Filter<span class="w"> </span>Table:<span class="w"> </span>是一个默认的规则表，用于报文的过滤。他注册了三个链:<span class="w"> </span>INPUT、FORWARD和OUTPUT。
+NAT<span class="w"> </span>Table:<span class="w"> </span>主要用于NAT转换，注册了四个链：PREROUTING、INPUT、OUTPUT和POSTROUTING。
+Mangle<span class="w"> </span>Table:<span class="w"> </span>主要用于报文的修改，一共注册了五个链:<span class="w"> </span>PREROUTING、OUTPUT、INPUT、FORWARD和POSTROUTING
+Raw<span class="w"> </span>Table:<span class="w"> </span>可以对报文不进行链路跟踪，其优先级在hook中注册很高，注册了两个链:<span class="w"> </span>PREROUTING和OUTPUT
+Security<span class="w"> </span>Table:<span class="w"> </span>用于强制网络接入控制，注册了三个链：INPUT、OUTPUT<span class="w"> </span>和<span class="w"> </span>FORWARD
+操作目标指的是否允许报文通过，如果允许即为ACCEPT，拒绝则为DROP。
+</code></pre></div>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

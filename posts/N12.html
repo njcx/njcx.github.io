@@ -103,31 +103,31 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
-<div class="highlight"><pre><span></span> git clone https://github.com/ntop/PF_RING.git 
- <span class="nb">cd</span> PF_RING-7.4.0-stable/
- yum install numactl-devel libnuma-dev
- <span class="nv">UNAME</span><span class="o">=</span><span class="k">$(</span>uname -r<span class="k">)</span>
- yum install gcc kernel-devel-<span class="si">${</span><span class="nv">UNAME</span><span class="p">%.*</span><span class="si">}</span>
- make
- make install
- <span class="nb">cd</span> /lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/kernel/net/pf_ring
- insmod pf_ring.ko <span class="nv">min_num_slots</span><span class="o">=</span><span class="m">8192</span> <span class="nv">quick_mode</span><span class="o">=</span><span class="m">1</span>
- <span class="nb">cd</span>  /lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/kernel/drivers/net/ethernet/intel/igb
- xz -d igb.ko.xz 
- rmmod igb <span class="p">;</span> insmod igb.ko 
- ethtool -i eno5
- dmesg <span class="p">|</span> grep Ethernet
- cat /proc/net/pf_ring/infocat /proc/net/pf_ring/info
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ntop/PF_RING.git<span class="w"> </span>
+<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>PF_RING-7.4.0-stable/
+<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>numactl-devel<span class="w"> </span>libnuma-dev
+<span class="w"> </span><span class="nv">UNAME</span><span class="o">=</span><span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
+<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>gcc<span class="w"> </span>kernel-devel-<span class="si">${</span><span class="nv">UNAME</span><span class="p">%.*</span><span class="si">}</span>
+<span class="w"> </span>make
+<span class="w"> </span>make<span class="w"> </span>install
+<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/lib/modules/<span class="sb">`</span>uname<span class="w"> </span>-r<span class="sb">`</span>/kernel/net/pf_ring
+<span class="w"> </span>insmod<span class="w"> </span>pf_ring.ko<span class="w"> </span><span class="nv">min_num_slots</span><span class="o">=</span><span class="m">8192</span><span class="w"> </span><span class="nv">quick_mode</span><span class="o">=</span><span class="m">1</span>
+<span class="w"> </span><span class="nb">cd</span><span class="w">  </span>/lib/modules/<span class="sb">`</span>uname<span class="w"> </span>-r<span class="sb">`</span>/kernel/drivers/net/ethernet/intel/igb
+<span class="w"> </span>xz<span class="w"> </span>-d<span class="w"> </span>igb.ko.xz<span class="w"> </span>
+<span class="w"> </span>rmmod<span class="w"> </span>igb<span class="w"> </span><span class="p">;</span><span class="w"> </span>insmod<span class="w"> </span>igb.ko<span class="w"> </span>
+<span class="w"> </span>ethtool<span class="w"> </span>-i<span class="w"> </span>eno5
+<span class="w"> </span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Ethernet
+<span class="w"> </span>cat<span class="w"> </span>/proc/net/pf_ring/infocat<span class="w"> </span>/proc/net/pf_ring/info
+</code></pre></div>
 <p>到这里PF_RING模块，以及网卡驱动已经安装好了</p>
 <p>然后 </p>
-<div class="highlight"><pre><span></span><span class="c1"># yum remove libpcap  libpcap-devel </span>
+<div class="highlight"><pre><span></span><code><span class="c1"># yum remove libpcap  libpcap-devel </span>
 <span class="c1"># cd PF_RING-7.4.0-stable/userland/libpcap</span>
 <span class="c1"># make install</span>
-</pre></div>
+</code></pre></div>
 <p>安装高版本Packetbeat，</p>
-<div class="highlight"><pre><span></span>packetbeat.interfaces.type: pcap
-</pre></div>
+<div class="highlight"><pre><span></span><code>packetbeat.interfaces.type:<span class="w"> </span>pcap
+</code></pre></div>
 <p>即可</p>
   </div>
 </article>

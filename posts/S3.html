@@ -116,43 +116,43 @@ var _hmt = _hmt || [];
 <p>RADIUS 协议还规定了重传机制。如果 NAS 向某个 RADIUS 服务器提交请求没有收到返回信息，那么可以要求备份 RADIUS 服务器重传。由于有多个备份 RADIUS 服务器，因此 NAS 进行重传的时候，可以采用轮询的方法。如果备份 RADIUS 服务器的密钥和以前 RADIUS 服务器的密钥不同，则需要重新进行认证。　　由于 RADIUS 协议简单明确，可扩充，因此得到了广泛应用，包括普通电话上网、 ADSL 上网、小区宽带上网、 IP 电话、 VPDN （Virtual Private Dialup Networks ，基于拨号用户的虚拟专用拨号网业务）、移动电话预付费等业务。最近 IEEE提出了 802.1x 标准，这是一种基于端口的标准，用于对无线网络的接入认证，在认证时也采用 RADIUS 协议。
 　　 </p>
 <p>安装</p>
-<div class="highlight"><pre><span></span><span class="c1"># radius 安装</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># radius 安装</span>
 
-yum -y install freeradius freeradius-utils  freeradius-ldap
-</pre></div>
-<div class="highlight"><pre><span></span><span class="c1"># ldap 安装</span>
+yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>freeradius<span class="w"> </span>freeradius-utils<span class="w">  </span>freeradius-ldap
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># ldap 安装</span>
 
 
-yum install -y openldap openldap-clients openldap-servers
+yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>openldap<span class="w"> </span>openldap-clients<span class="w"> </span>openldap-servers
 
 <span class="c1"># 复制一个默认配置到指定目录下,并授权，这一步一定要做，然后再启动服务，不然生产密码时会报错</span>
 
-cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
+cp<span class="w"> </span>/usr/share/openldap-servers/DB_CONFIG.example<span class="w"> </span>/var/lib/ldap/DB_CONFIG
 
 <span class="c1"># 授权给ldap用户,此用户yum安装时便会自动创建</span>
 
-chown -R ldap. /var/lib/ldap/DB_CONFIG
+chown<span class="w"> </span>-R<span class="w"> </span>ldap.<span class="w"> </span>/var/lib/ldap/DB_CONFIG
 
 <span class="c1"># 启动服务，先启动服务，配置后面再进行修改</span>
-systemctl start slapd
-systemctl <span class="nb">enable</span> slapd
+systemctl<span class="w"> </span>start<span class="w"> </span>slapd
+systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>slapd
 
 <span class="c1"># 查看状态，正常启动则ok</span>
-systemctl status slapd
-</pre></div>
+systemctl<span class="w"> </span>status<span class="w"> </span>slapd
+</code></pre></div>
 <p>安装openldap后，会有三个命令用于修改配置文件，分别为ldapadd, ldapmodify, ldapdelete，顾名思义就是添加，修改和删除。而需要修改或增加配置时，则需要先写一个ldif后缀的配置文件，然后通过命令将写的配置更新到slapd.d目录下的配置文件中去，完整的配置过程如下，跟着我做就可以了：</p>
-<div class="highlight"><pre><span></span><span class="c1"># 生成管理员密码,记录下这个密码，后面需要用到</span>
-slappasswd -s <span class="m">123456</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># 生成管理员密码,记录下这个密码，后面需要用到</span>
+slappasswd<span class="w"> </span>-s<span class="w"> </span><span class="m">123456</span>
 <span class="o">{</span>SSHA<span class="o">}</span>LSgYPTUW4zjGtIVtuZ8cRUqqFRv1tWpE
 <span class="c1"># 新增修改密码文件,ldif为后缀，文件名随意，不要在/etc/openldap/slapd.d/目录下创建类似文件</span>
 <span class="c1"># 生成的文件为需要通过命令去动态修改ldap现有配置，如下，我在家目录下，创建文件</span>
-<span class="nb">cd</span> ~
-vim changepwd.ldif
+<span class="nb">cd</span><span class="w"> </span>~
+vim<span class="w"> </span>changepwd.ldif
 ----------------------------------------------------------------------
-dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">0</span><span class="o">}</span>config,cn<span class="o">=</span>config
-changetype: modify
-add: olcRootPW
-olcRootPW: <span class="o">{</span>SSHA<span class="o">}</span>LSgYPTUW4zjGtIVtuZ8cRUqqFRv1tWpE
+dn:<span class="w"> </span><span class="nv">olcDatabase</span><span class="o">={</span><span class="m">0</span><span class="o">}</span>config,cn<span class="o">=</span>config
+changetype:<span class="w"> </span>modify
+add:<span class="w"> </span>olcRootPW
+olcRootPW:<span class="w"> </span><span class="o">{</span>SSHA<span class="o">}</span>LSgYPTUW4zjGtIVtuZ8cRUqqFRv1tWpE
 ----------------------------------------------------------------------
 <span class="c1"># 这里解释一下这个文件的内容：</span>
 <span class="c1"># 第一行执行配置文件，这里就表示指定为 cn=config/olcDatabase={0}config 文件。你到/etc/openldap/slapd.d/目录下就能找到此文件</span>
@@ -161,113 +161,113 @@ olcRootPW: <span class="o">{</span>SSHA<span class="o">}</span>LSgYPTUW4zjGtIVtu
 <span class="c1"># 第四行指定 olcRootPW 配置项的值</span>
 <span class="c1"># 在执行下面的命令前，你可以先查看原本的olcDatabase={0}config文件，里面是没有olcRootPW这个项的，执行命令后，你再看就会新增了olcRootPW项，而且内容是我们文件中指定的值加密后的字符串</span>
 <span class="c1"># 执行命令，修改ldap配置，通过-f执行文件</span>
-ldapadd -Y EXTERNAL -H ldapi:/// -f changepwd.ldif
-</pre></div>
-<div class="highlight"><pre><span></span><span class="c1"># 我们需要向 LDAP 中导入一些基本的 Schema。这些 Schema 文件位于 /etc/openldap/schema/ 目录中，schema控制着条目拥有哪些对象类和属性，可以自行选择需要的进行导入，</span>
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>changepwd.ldif
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># 我们需要向 LDAP 中导入一些基本的 Schema。这些 Schema 文件位于 /etc/openldap/schema/ 目录中，schema控制着条目拥有哪些对象类和属性，可以自行选择需要的进行导入，</span>
 <span class="c1"># 依次执行下面的命令，导入基础的一些配置,我这里将所有的都导入一下，其中core.ldif是默认已经加载了的，不用导入</span>
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/nis.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/collective.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/corba.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/duaconf.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/dyngroup.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/java.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/misc.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/openldap.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/pmi.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/ppolicy.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/cosine.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/nis.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/inetorgperson.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/collective.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/corba.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/duaconf.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/dyngroup.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/java.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/misc.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/openldap.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/pmi.ldif
+ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/ppolicy.ldif
 ————————————————
 
 
 
 <span class="c1"># 修改域名，新增changedomain.ldif, 这里我自定义的域名为 njcx.com，管理员用户账号为admin。</span>
 <span class="c1"># 如果要修改，则修改文件中相应的dc=njcx,dc=com为自己的域名</span>
-vim changedomain.ldif
+vim<span class="w"> </span>changedomain.ldif
 -------------------------------------------------------------------------
-dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">1</span><span class="o">}</span>monitor,cn<span class="o">=</span>config
-changetype: modify
-replace: olcAccess
-olcAccess: <span class="o">{</span><span class="m">0</span><span class="o">}</span>to * by dn.base<span class="o">=</span><span class="s2">"gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth"</span> <span class="nb">read</span> by dn.base<span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span> <span class="nb">read</span> by * none
+dn:<span class="w"> </span><span class="nv">olcDatabase</span><span class="o">={</span><span class="m">1</span><span class="o">}</span>monitor,cn<span class="o">=</span>config
+changetype:<span class="w"> </span>modify
+replace:<span class="w"> </span>olcAccess
+olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">0</span><span class="o">}</span>to<span class="w"> </span>*<span class="w"> </span>by<span class="w"> </span>dn.base<span class="o">=</span><span class="s2">"gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth"</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>by<span class="w"> </span>dn.base<span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span>none
 
-dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
-changetype: modify
-replace: olcSuffix
-olcSuffix: <span class="nv">dc</span><span class="o">=</span>njcx,dc<span class="o">=</span>com
+dn:<span class="w"> </span><span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
+changetype:<span class="w"> </span>modify
+replace:<span class="w"> </span>olcSuffix
+olcSuffix:<span class="w"> </span><span class="nv">dc</span><span class="o">=</span>njcx,dc<span class="o">=</span>com
 
-dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
-changetype: modify
-replace: olcRootDN
-olcRootDN: <span class="nv">cn</span><span class="o">=</span>admin,dc<span class="o">=</span>njcx,dc<span class="o">=</span>com
+dn:<span class="w"> </span><span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
+changetype:<span class="w"> </span>modify
+replace:<span class="w"> </span>olcRootDN
+olcRootDN:<span class="w"> </span><span class="nv">cn</span><span class="o">=</span>admin,dc<span class="o">=</span>njcx,dc<span class="o">=</span>com
 
-dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
-changetype: modify
-replace: olcRootPW
-olcRootPW: <span class="o">{</span>SSHA<span class="o">}</span>LSgYPTUW4zjGtIVtuZ8cRUqqFRv1tWpE
+dn:<span class="w"> </span><span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
+changetype:<span class="w"> </span>modify
+replace:<span class="w"> </span>olcRootPW
+olcRootPW:<span class="w"> </span><span class="o">{</span>SSHA<span class="o">}</span>LSgYPTUW4zjGtIVtuZ8cRUqqFRv1tWpE
 
-dn: <span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
-changetype: modify
-add: olcAccess
-olcAccess: <span class="o">{</span><span class="m">0</span><span class="o">}</span>to <span class="nv">attrs</span><span class="o">=</span>userPassword,shadowLastChange by <span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span> write by anonymous auth by self write by * none
-olcAccess: <span class="o">{</span><span class="m">1</span><span class="o">}</span>to dn.base<span class="o">=</span><span class="s2">""</span> by * <span class="nb">read</span>
-olcAccess: <span class="o">{</span><span class="m">2</span><span class="o">}</span>to * by <span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span> write by * <span class="nb">read</span>
+dn:<span class="w"> </span><span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
+changetype:<span class="w"> </span>modify
+add:<span class="w"> </span>olcAccess
+olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">0</span><span class="o">}</span>to<span class="w"> </span><span class="nv">attrs</span><span class="o">=</span>userPassword,shadowLastChange<span class="w"> </span>by<span class="w"> </span><span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span><span class="w"> </span>write<span class="w"> </span>by<span class="w"> </span>anonymous<span class="w"> </span>auth<span class="w"> </span>by<span class="w"> </span>self<span class="w"> </span>write<span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span>none
+olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">1</span><span class="o">}</span>to<span class="w"> </span>dn.base<span class="o">=</span><span class="s2">""</span><span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span><span class="nb">read</span>
+olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">2</span><span class="o">}</span>to<span class="w"> </span>*<span class="w"> </span>by<span class="w"> </span><span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span><span class="w"> </span>write<span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span><span class="nb">read</span>
 -------------------------------------------------------------------------
 
 
 <span class="c1"># 执行命令，修改配置</span>
-ldapmodify -Y EXTERNAL -H ldapi:/// -f changedomain.ldif
-</pre></div>
-<div class="highlight"><pre><span></span># 新增add-memberof.ldif, #开启memberof支持并新增用户支持memberof配置
-vim add-memberof.ldif
--------------------------------------------------------------
-dn: cn=module{0},cn=config
-cn: modulle{0}
-objectClass: olcModuleList
-objectclass: top
-olcModuleload: memberof.la
-olcModulePath: /usr/lib64/openldap
+ldapmodify<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>changedomain.ldif
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># 新增add</span><span class="nb">-</span><span class="c">memberof</span><span class="nt">.</span><span class="c">ldif</span><span class="nt">,</span><span class="c"> #开启memberof支持并新增用户支持memberof配置</span>
+<span class="c">vim add</span><span class="nb">-</span><span class="c">memberof</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="nb">-------------------------------------------------------------</span>
+<span class="c">dn: cn=module{0}</span><span class="nt">,</span><span class="c">cn=config</span>
+<span class="c">cn: modulle{0}</span>
+<span class="c">objectClass: olcModuleList</span>
+<span class="c">objectclass: top</span>
+<span class="c">olcModuleload: memberof</span><span class="nt">.</span><span class="c">la</span>
+<span class="c">olcModulePath: /usr/lib64/openldap</span>
 
-dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
-objectClass: olcConfig
-objectClass: olcMemberOf
-objectClass: olcOverlayConfig
-objectClass: top
-olcOverlay: memberof
-olcMemberOfDangling: ignore
-olcMemberOfRefInt: TRUE
-olcMemberOfGroupOC: groupOfUniqueNames
-olcMemberOfMemberAD: uniqueMember
-olcMemberOfMemberOfAD: memberOf
--------------------------------------------------------------
+<span class="c">dn: olcOverlay={0}memberof</span><span class="nt">,</span><span class="c">olcDatabase={2}hdb</span><span class="nt">,</span><span class="c">cn=config</span>
+<span class="c">objectClass: olcConfig</span>
+<span class="c">objectClass: olcMemberOf</span>
+<span class="c">objectClass: olcOverlayConfig</span>
+<span class="c">objectClass: top</span>
+<span class="c">olcOverlay: memberof</span>
+<span class="c">olcMemberOfDangling: ignore</span>
+<span class="c">olcMemberOfRefInt: TRUE</span>
+<span class="c">olcMemberOfGroupOC: groupOfUniqueNames</span>
+<span class="c">olcMemberOfMemberAD: uniqueMember</span>
+<span class="c">olcMemberOfMemberOfAD: memberOf</span>
+<span class="nb">-------------------------------------------------------------</span>
 
-# 新增refint1.ldif文件
-vim refint1.ldif
--------------------------------------------------------------
-dn: cn=module{0},cn=config
-add: olcmoduleload
-olcmoduleload: refint
--------------------------------------------------------------
+<span class="c"># 新增refint1</span><span class="nt">.</span><span class="c">ldif文件</span>
+<span class="c">vim refint1</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="nb">-------------------------------------------------------------</span>
+<span class="c">dn: cn=module{0}</span><span class="nt">,</span><span class="c">cn=config</span>
+<span class="c">add: olcmoduleload</span>
+<span class="c">olcmoduleload: refint</span>
+<span class="nb">-------------------------------------------------------------</span>
 
-# 新增refint2.ldif文件
-vim refint2.ldif
--------------------------------------------------------------
-dn: olcOverlay=refint,olcDatabase={2}hdb,cn=config
-objectClass: olcConfig
-objectClass: olcOverlayConfig
-objectClass: olcRefintConfig
-objectClass: top
-olcOverlay: refint
-olcRefintAttribute: memberof uniqueMember  manager owner
--------------------------------------------------------------
+<span class="c"># 新增refint2</span><span class="nt">.</span><span class="c">ldif文件</span>
+<span class="c">vim refint2</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="nb">-------------------------------------------------------------</span>
+<span class="c">dn: olcOverlay=refint</span><span class="nt">,</span><span class="c">olcDatabase={2}hdb</span><span class="nt">,</span><span class="c">cn=config</span>
+<span class="c">objectClass: olcConfig</span>
+<span class="c">objectClass: olcOverlayConfig</span>
+<span class="c">objectClass: olcRefintConfig</span>
+<span class="c">objectClass: top</span>
+<span class="c">olcOverlay: refint</span>
+<span class="c">olcRefintAttribute: memberof uniqueMember  manager owner</span>
+<span class="nb">-------------------------------------------------------------</span>
 
-# 依次执行下面命令，加载配置，顺序不能错
-ldapadd -Q -Y EXTERNAL -H ldapi:/// -f add-memberof.ldif
-ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f refint1.ldif
-ldapadd -Q -Y EXTERNAL -H ldapi:/// -f refint2.ldif
-————————————————
-</pre></div>
+<span class="c"># 依次执行下面命令，加载配置，顺序不能错</span>
+<span class="c">ldapadd </span><span class="nb">-</span><span class="c">Q </span><span class="nb">-</span><span class="c">Y EXTERNAL </span><span class="nb">-</span><span class="c">H ldapi:/// </span><span class="nb">-</span><span class="c">f add</span><span class="nb">-</span><span class="c">memberof</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="c">ldapmodify </span><span class="nb">-</span><span class="c">Q </span><span class="nb">-</span><span class="c">Y EXTERNAL </span><span class="nb">-</span><span class="c">H ldapi:/// </span><span class="nb">-</span><span class="c">f refint1</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="c">ldapadd </span><span class="nb">-</span><span class="c">Q </span><span class="nb">-</span><span class="c">Y EXTERNAL </span><span class="nb">-</span><span class="c">H ldapi:/// </span><span class="nb">-</span><span class="c">f refint2</span><span class="nt">.</span><span class="c">ldif</span>
+<span class="c">————————————————</span>
+</code></pre></div>
 <p>到此，配置修改完了，在上述基础上，我们来创建一个叫做 njcx company 的组织，并在其下创建一个 admin 的组织角色（该组织角色内的用户具有管理整个 LDAP 的权限）和 People 和 Group 两个组织单元：</p>
-<div class="highlight"><pre><span></span># 新增配置文件
+<div class="highlight"><pre><span></span><code># 新增配置文件
 vim base.ldif
 ----------------------------------------------------------
 dn: dc=njcx,dc=com
@@ -292,145 +292,145 @@ cn: Group
 # 执行命令，添加配置, 这里要注意修改域名为自己配置的域名，然后需要输入上面我们生成的密码
 ldapadd -x -D cn=admin,dc=njcx,dc=com -W -f base.ldif
 ————————————————
-</pre></div>
+</code></pre></div>
 <p>通过以上的所有步骤，我们就设置好了一个 LDAP 目录树：其中基准 dc=njcx,dc=com 是该树的根节点，其下有一个管理域 cn=admin,dc=njcx,dc=com 和两个组织单元 ou=People,dc=njcx,dc=com 及 ou=Group,dc=njcx,dc=com。</p>
 <p>打通 radius 和 ldap</p>
 <p>/etc/raddb/mods-available/ldap文件</p>
-<div class="highlight"><pre><span></span>ldap <span class="o">{</span>
-    <span class="nv">server</span> <span class="o">=</span> <span class="s1">'111.111.111.111'</span>
-    <span class="nv">port</span> <span class="o">=</span> <span class="m">389</span>
-    <span class="nv">identity</span> <span class="o">=</span> <span class="s1">'ou=People,dc=njcx,dc=com'</span>
-    <span class="nv">password</span> <span class="o">=</span> <span class="m">123456</span>
-    <span class="nv">base_dn</span> <span class="o">=</span> <span class="s1">'dc=njcx,dc=com'</span>
-    sasl <span class="o">{</span>
-    <span class="o">}</span>
-    update <span class="o">{</span>
-        control:Password-With-Header    +<span class="o">=</span> <span class="s1">'userPassword'</span>
-        control:            +<span class="o">=</span> <span class="s1">'radiusControlAttribute'</span>
-        request:            +<span class="o">=</span> <span class="s1">'radiusRequestAttribute'</span>
-        reply:              +<span class="o">=</span> <span class="s1">'radiusReplyAttribute'</span>
-    <span class="o">}</span>
-    user <span class="o">{</span>
-        <span class="nv">base_dn</span> <span class="o">=</span> <span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
-        <span class="nv">filter</span> <span class="o">=</span> <span class="s2">"(uid=%{%{Stripped-User-Name}:-%{User-Name}})"</span>
-        sasl <span class="o">{</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    group <span class="o">{</span>
-        <span class="nv">base_dn</span> <span class="o">=</span> <span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
-        <span class="nv">filter</span> <span class="o">=</span> <span class="s1">'(objectClass=posixGroup)'</span>
-        <span class="nv">membership_attribute</span> <span class="o">=</span> <span class="s1">'memberOf'</span>
-    <span class="o">}</span>
-    profile <span class="o">{</span>
-    <span class="o">}</span>
-    client <span class="o">{</span>
-        <span class="nv">base_dn</span> <span class="o">=</span> <span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
-        <span class="nv">filter</span> <span class="o">=</span> <span class="s1">'(objectClass=radiusClient)'</span>
-        template <span class="o">{</span>
-        <span class="o">}</span>
-        attribute <span class="o">{</span>
-            <span class="nv">ipaddr</span>              <span class="o">=</span> <span class="s1">'radiusClientIdentifier'</span>
-            <span class="nv">secret</span>              <span class="o">=</span> <span class="s1">'radiusClientSecret'</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    accounting <span class="o">{</span>
-        <span class="nv">reference</span> <span class="o">=</span> <span class="s2">"%{tolower:type.%{Acct-Status-Type}}"</span>
-        <span class="nb">type</span> <span class="o">{</span>
-            start <span class="o">{</span>
-                update <span class="o">{</span>
-                    description :<span class="o">=</span> <span class="s2">"Online at %S"</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-            interim-update <span class="o">{</span>
-                update <span class="o">{</span>
-                    description :<span class="o">=</span> <span class="s2">"Last seen at %S"</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-            stop <span class="o">{</span>
-                update <span class="o">{</span>
-                    description :<span class="o">=</span> <span class="s2">"Offline at %S"</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    post-auth <span class="o">{</span>
-        update <span class="o">{</span>
-            description :<span class="o">=</span> <span class="s2">"Authenticated at %S"</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    options <span class="o">{</span>
-        <span class="nv">chase_referrals</span> <span class="o">=</span> yes
-        <span class="nv">rebind</span> <span class="o">=</span> yes
-        <span class="nv">res_timeout</span> <span class="o">=</span> <span class="m">10</span>
-        <span class="nv">srv_timelimit</span> <span class="o">=</span> <span class="m">3</span>
-        <span class="nv">net_timeout</span> <span class="o">=</span> <span class="m">1</span>
-        <span class="nv">idle</span> <span class="o">=</span> <span class="m">60</span>
-        <span class="nv">probes</span> <span class="o">=</span> <span class="m">3</span>
-        <span class="nv">interval</span> <span class="o">=</span> <span class="m">3</span>
-        <span class="nv">ldap_debug</span> <span class="o">=</span> 0x0028
-    <span class="o">}</span>
-    tls <span class="o">{</span>
-    <span class="o">}</span>
-    pool <span class="o">{</span>
-        <span class="nv">start</span> <span class="o">=</span> <span class="si">${</span><span class="nv">thread</span><span class="p">[pool].start_servers</span><span class="si">}</span>
-        <span class="nv">min</span> <span class="o">=</span> <span class="si">${</span><span class="nv">thread</span><span class="p">[pool].min_spare_servers</span><span class="si">}</span>
-        <span class="nv">max</span> <span class="o">=</span> <span class="si">${</span><span class="nv">thread</span><span class="p">[pool].max_servers</span><span class="si">}</span>
-        <span class="nv">spare</span> <span class="o">=</span> <span class="si">${</span><span class="nv">thread</span><span class="p">[pool].max_spare_servers</span><span class="si">}</span>
-        <span class="nv">uses</span> <span class="o">=</span> <span class="m">0</span>
-        <span class="nv">retry_delay</span> <span class="o">=</span> <span class="m">30</span>
-        <span class="nv">lifetime</span> <span class="o">=</span> <span class="m">0</span>
-        <span class="nv">idle_timeout</span> <span class="o">=</span> <span class="m">60</span>
-    <span class="o">}</span>
+<div class="highlight"><pre><span></span><code>ldap<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nv">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'111.111.111.111'</span>
+<span class="w">    </span><span class="nv">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">389</span>
+<span class="w">    </span><span class="nv">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ou=People,dc=njcx,dc=com'</span>
+<span class="w">    </span><span class="nv">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">123456</span>
+<span class="w">    </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'dc=njcx,dc=com'</span>
+<span class="w">    </span>sasl<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>update<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>control:Password-With-Header<span class="w">    </span>+<span class="o">=</span><span class="w"> </span><span class="s1">'userPassword'</span>
+<span class="w">        </span>control:<span class="w">            </span>+<span class="o">=</span><span class="w"> </span><span class="s1">'radiusControlAttribute'</span>
+<span class="w">        </span>request:<span class="w">            </span>+<span class="o">=</span><span class="w"> </span><span class="s1">'radiusRequestAttribute'</span>
+<span class="w">        </span>reply:<span class="w">              </span>+<span class="o">=</span><span class="w"> </span><span class="s1">'radiusReplyAttribute'</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>user<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
+<span class="w">        </span><span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"(uid=%{%{Stripped-User-Name}:-%{User-Name}})"</span>
+<span class="w">        </span>sasl<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>group<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
+<span class="w">        </span><span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'(objectClass=posixGroup)'</span>
+<span class="w">        </span><span class="nv">membership_attribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'memberOf'</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>profile<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>client<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
+<span class="w">        </span><span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'(objectClass=radiusClient)'</span>
+<span class="w">        </span>template<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>attribute<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="nv">ipaddr</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s1">'radiusClientIdentifier'</span>
+<span class="w">            </span><span class="nv">secret</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s1">'radiusClientSecret'</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>accounting<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"%{tolower:type.%{Acct-Status-Type}}"</span>
+<span class="w">        </span><span class="nb">type</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>start<span class="w"> </span><span class="o">{</span>
+<span class="w">                </span>update<span class="w"> </span><span class="o">{</span>
+<span class="w">                    </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">"Online at %S"</span>
+<span class="w">                </span><span class="o">}</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">            </span>interim-update<span class="w"> </span><span class="o">{</span>
+<span class="w">                </span>update<span class="w"> </span><span class="o">{</span>
+<span class="w">                    </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">"Last seen at %S"</span>
+<span class="w">                </span><span class="o">}</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">            </span>stop<span class="w"> </span><span class="o">{</span>
+<span class="w">                </span>update<span class="w"> </span><span class="o">{</span>
+<span class="w">                    </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">"Offline at %S"</span>
+<span class="w">                </span><span class="o">}</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>post-auth<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>update<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">"Authenticated at %S"</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>options<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">chase_referrals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>yes
+<span class="w">        </span><span class="nv">rebind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>yes
+<span class="w">        </span><span class="nv">res_timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>
+<span class="w">        </span><span class="nv">srv_timelimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">        </span><span class="nv">net_timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+<span class="w">        </span><span class="nv">idle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
+<span class="w">        </span><span class="nv">probes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">        </span><span class="nv">interval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">        </span><span class="nv">ldap_debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x0028
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>tls<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>pool<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="si">${</span><span class="nv">thread</span><span class="p">[pool].start_servers</span><span class="si">}</span>
+<span class="w">        </span><span class="nv">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="si">${</span><span class="nv">thread</span><span class="p">[pool].min_spare_servers</span><span class="si">}</span>
+<span class="w">        </span><span class="nv">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="si">${</span><span class="nv">thread</span><span class="p">[pool].max_servers</span><span class="si">}</span>
+<span class="w">        </span><span class="nv">spare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="si">${</span><span class="nv">thread</span><span class="p">[pool].max_spare_servers</span><span class="si">}</span>
+<span class="w">        </span><span class="nv">uses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">        </span><span class="nv">retry_delay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span>
+<span class="w">        </span><span class="nv">lifetime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">        </span><span class="nv">idle_timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
+<span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
-<div class="highlight"><pre><span></span> /etc/raddb/sites-available/site_ldap文件内容如下
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="w"> </span>/etc/raddb/sites-available/site_ldap文件内容如下
 
-cat  /etc/raddb/sites-available/site_ldap
-server site_ldap <span class="o">{</span>
-    listen <span class="o">{</span>
-         <span class="nv">ipaddr</span> <span class="o">=</span> <span class="m">0</span>.0.0.0
-         <span class="nv">port</span> <span class="o">=</span> <span class="m">1833</span>
-         <span class="nb">type</span> <span class="o">=</span> auth
-     <span class="o">}</span>
-     authorize <span class="o">{</span>
-         update <span class="o">{</span>
-             control:Auth-Type :<span class="o">=</span> ldap
-             <span class="o">}</span>
-         <span class="o">}</span>
-     authenticate <span class="o">{</span>
-         Auth-Type ldap <span class="o">{</span>
-             ldap
-             <span class="o">}</span>
-         <span class="o">}</span>
-     post-auth <span class="o">{</span>
-         Post-Auth-Type Reject <span class="o">{</span>
-             <span class="o">}</span>
-         <span class="o">}</span>
- <span class="o">}</span>
- 
-</pre></div>
+cat<span class="w">  </span>/etc/raddb/sites-available/site_ldap
+server<span class="w"> </span>site_ldap<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>listen<span class="w"> </span><span class="o">{</span>
+<span class="w">         </span><span class="nv">ipaddr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>.0.0.0
+<span class="w">         </span><span class="nv">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1833</span>
+<span class="w">         </span><span class="nb">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>auth
+<span class="w">     </span><span class="o">}</span>
+<span class="w">     </span>authorize<span class="w"> </span><span class="o">{</span>
+<span class="w">         </span>update<span class="w"> </span><span class="o">{</span>
+<span class="w">             </span>control:Auth-Type<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>ldap
+<span class="w">             </span><span class="o">}</span>
+<span class="w">         </span><span class="o">}</span>
+<span class="w">     </span>authenticate<span class="w"> </span><span class="o">{</span>
+<span class="w">         </span>Auth-Type<span class="w"> </span>ldap<span class="w"> </span><span class="o">{</span>
+<span class="w">             </span>ldap
+<span class="w">             </span><span class="o">}</span>
+<span class="w">         </span><span class="o">}</span>
+<span class="w">     </span>post-auth<span class="w"> </span><span class="o">{</span>
+<span class="w">         </span>Post-Auth-Type<span class="w"> </span>Reject<span class="w"> </span><span class="o">{</span>
+<span class="w">             </span><span class="o">}</span>
+<span class="w">         </span><span class="o">}</span>
+<span class="w"> </span><span class="o">}</span>
+<span class="w"> </span>
+</code></pre></div>
 <p>ln -s /etc/raddb/sites-available/site_ldap  /etc/raddb/sites-enabled/</p>
 <p>修改/etc/raddb/sites-enabled/default的配置信息，如果你的ldap是注释状态，你需要把注释去掉，保存退出。</p>
 <p>重启systemctl restart radiusd</p>
 <p>思科交换机配置</p>
 <p>本例采用的Cisco交换机，要开启aaa，配置radius服务器和认证组，并在端口启用dot1x认证和guest vlan，具体配置如下：</p>
 <p>交换机全局配置</p>
-<div class="highlight"><pre><span></span><span class="nb">enable</span> aaa new-model
-aaa authentication dot1x default group radius
-aaa authorization network default group radius
-dot1x system-auth-control
-dot1x guest-vlan supplicant
-radius-server host <span class="m">192</span>.168.2.16 auth-port <span class="m">1812</span> acct-port <span class="m">1813</span> timeout <span class="m">3</span>
-radius-server retransmit <span class="m">2</span>
-radius-server key <span class="m">7</span> cisco
-radius-server vsa send authentication        <span class="c1">#如果需要802.1x指定端口vlan需要配置这个</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">enable</span><span class="w"> </span>aaa<span class="w"> </span>new-model
+aaa<span class="w"> </span>authentication<span class="w"> </span>dot1x<span class="w"> </span>default<span class="w"> </span>group<span class="w"> </span>radius
+aaa<span class="w"> </span>authorization<span class="w"> </span>network<span class="w"> </span>default<span class="w"> </span>group<span class="w"> </span>radius
+dot1x<span class="w"> </span>system-auth-control
+dot1x<span class="w"> </span>guest-vlan<span class="w"> </span>supplicant
+radius-server<span class="w"> </span>host<span class="w"> </span><span class="m">192</span>.168.2.16<span class="w"> </span>auth-port<span class="w"> </span><span class="m">1812</span><span class="w"> </span>acct-port<span class="w"> </span><span class="m">1813</span><span class="w"> </span>timeout<span class="w"> </span><span class="m">3</span>
+radius-server<span class="w"> </span>retransmit<span class="w"> </span><span class="m">2</span>
+radius-server<span class="w"> </span>key<span class="w"> </span><span class="m">7</span><span class="w"> </span>cisco
+radius-server<span class="w"> </span>vsa<span class="w"> </span>send<span class="w"> </span>authentication<span class="w">        </span><span class="c1">#如果需要802.1x指定端口vlan需要配置这个</span>
+</code></pre></div>
 <p>端口配置，interface G1/0/1</p>
-<div class="highlight"><pre><span></span><span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport mode access</span>
+<div class="highlight"><pre><span></span><code><span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport mode access</span>
 <span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport access vlan 10       #配置该端口默认为vlan10</span>
 <span class="o">(</span>config-if<span class="o">)</span><span class="c1"># dot1x port-control auto</span>
 <span class="o">(</span>config-if<span class="o">)</span><span class="c1"># authentication event no-response action authorize vlan 771 #配置guest vlan，当检测到该机器没加入域，则将其划到vlan 771中</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

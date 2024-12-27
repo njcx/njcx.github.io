@@ -104,8 +104,8 @@ var _hmt = _hmt || [];
   <div class="content">
     <p>渗透使用跳板已经是默认的了，那么最小化攻击日志，也是必须的。你是VPN也好，3389也罢，ssh中转，代理都行。直接连接攻击目标并且留下大量日志，是愚蠢的</p>
 <h4>Windows 痕迹清理</h4>
-<div class="highlight"><pre><span></span>https://github.com/hlldz/Invoke-Phant0m.git
-</pre></div>
+<div class="highlight"><pre><span></span><code>https://github.com/hlldz/Invoke-Phant0m.git
+</code></pre></div>
 <p>Windows的日志文件通常有应用程序日志，安全日志、系统日志、DNS服务器日志、FTP日志、WWW日志等等。
 应用程序日志文件：%systemroot%\system32\config\AppEvent.EVT;</p>
 <p>安全日志文件：%systemroot%\system32\config\SecEvent.EVT;</p>
@@ -114,50 +114,50 @@ var _hmt = _hmt || [];
 <p>Internet信息服务FTP日志默认位置：%systemroot%\system32\logfiles\msftpsvc1\，默认每天一个日志;</p>
 <p>Internet信息服务WWW日志默认位置：%systemroot%\system32\logfiles\w3svc1\，默认每天一个日志;</p>
 <p>Scheduler服务日志默认位置：%sys temroot%\schedlgu.txt;</p>
-<div class="highlight"><pre><span></span>@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\c</span>onfig<span class="se">\*</span>.evt
-@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\l</span>ogfiles<span class="se">\*</span>.*
-@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\*</span>.log
-@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\*</span>.txt
-@del c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\W</span>inevt<span class="se">\L</span>ogs<span class="se">\*</span>.evt
-@del c:<span class="se">\%</span>systemroot%<span class="se">\*</span>.evt
-@del c:<span class="se">\%</span>systemroot%<span class="se">\*</span>.log
-@del cl.bat
-</pre></div>
+<div class="highlight"><pre><span></span><code>@del<span class="w"> </span>c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\c</span>onfig<span class="se">\*</span>.evt
+@del<span class="w"> </span>c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\l</span>ogfiles<span class="se">\*</span>.*
+@del<span class="w"> </span>c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\*</span>.log
+@del<span class="w"> </span>c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\*</span>.txt
+@del<span class="w"> </span>c:<span class="se">\%</span>systemroot%<span class="se">\s</span>ystem32<span class="se">\W</span>inevt<span class="se">\L</span>ogs<span class="se">\*</span>.evt
+@del<span class="w"> </span>c:<span class="se">\%</span>systemroot%<span class="se">\*</span>.evt
+@del<span class="w"> </span>c:<span class="se">\%</span>systemroot%<span class="se">\*</span>.log
+@del<span class="w"> </span>cl.bat
+</code></pre></div>
 <h4>Linux痕迹清理</h4>
-<div class="highlight"><pre><span></span><span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># echo &gt; /var/log/wtmp //此文件默认打开时乱码，可查到ip等信息</span>
-<span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># last //此时即查不到用户登录信息</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># echo &gt; /var/log/wtmp //此文件默认打开时乱码，可查到ip等信息</span>
+<span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># last //此时即查不到用户登录信息</span>
 
-<span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># echo &gt; /var/log/btmp //此文件默认打开时乱码，可查到登陆失败信息</span>
-<span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># lastb //查不到登陆失败信息</span>
+<span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># echo &gt; /var/log/btmp //此文件默认打开时乱码，可查到登陆失败信息</span>
+<span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># lastb //查不到登陆失败信息</span>
 
 
-<span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># history -c //清空历史执行命令</span>
+<span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># history -c //清空历史执行命令</span>
 修改/etc/profile，把HISTSIZE改为想记录的条数
-<span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># echo &gt; ./.bash_history //或清空用户目录下的这个文件即可</span>
+<span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># echo &gt; ./.bash_history //或清空用户目录下的这个文件即可</span>
 
 
-<span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># vi /root/history //新建记录文件</span>
-<span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># history -c //清除记录 </span>
-<span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># history -r /root/history.txt //导入记录 </span>
-<span class="o">[</span>root@localhost root<span class="o">]</span><span class="c1"># history //查询导入结果</span>
+<span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># vi /root/history //新建记录文件</span>
+<span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># history -c //清除记录 </span>
+<span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># history -r /root/history.txt //导入记录 </span>
+<span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># history //查询导入结果</span>
 
 
 清空命令记录
 
-<span class="m">1</span>）echo <span class="s2">"'"</span> &gt; log.txt
-<span class="m">2</span>）echo &gt; log.txt ，这种文件里会存在空格
-<span class="m">3</span>）cat /dev/null &gt; log.txt
+<span class="m">1</span>）echo<span class="w"> </span><span class="s2">"'"</span><span class="w"> </span>&gt;<span class="w"> </span>log.txt
+<span class="m">2</span>）echo<span class="w"> </span>&gt;<span class="w"> </span>log.txt<span class="w"> </span>，这种文件里会存在空格
+<span class="m">3</span>）cat<span class="w"> </span>/dev/null<span class="w"> </span>&gt;<span class="w"> </span>log.txt
 
 
 
 不记录历史命令
-<span class="nb">unset</span> HISTORY HISTFILE HISTSAVE HISTZONE HISTORY HISTLOG<span class="p">;</span>
+<span class="nb">unset</span><span class="w"> </span>HISTORY<span class="w"> </span>HISTFILE<span class="w"> </span>HISTSAVE<span class="w"> </span>HISTZONE<span class="w"> </span>HISTORY<span class="w"> </span>HISTLOG<span class="p">;</span>
 
-<span class="nb">export</span> <span class="nv">HISTFILE</span><span class="o">=</span>/dev/null<span class="p">;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HISTFILE</span><span class="o">=</span>/dev/null<span class="p">;</span>
 
-<span class="nb">export</span> <span class="nv">HISTSIZE</span><span class="o">=</span><span class="m">0</span><span class="p">;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HISTSIZE</span><span class="o">=</span><span class="m">0</span><span class="p">;</span>
 
-<span class="nb">export</span> <span class="nv">HISTFILESIZE</span><span class="o">=</span><span class="m">0</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HISTFILESIZE</span><span class="o">=</span><span class="m">0</span>
 
 
 此方法仅在交互的shell中有效，并且会使上下箭头重复最近命令这功能失效。还有一种方法就是在进入主机的时候就备份一下.bash_history，当退出的时候就把备份的文件还原一下。
@@ -166,10 +166,10 @@ var _hmt = _hmt || [];
 
 一般需要清理的日志有：lastlog、utmp<span class="o">(</span>utmpx<span class="o">)</span>、wtmp<span class="o">(</span>wtmpx<span class="o">)</span>、messages、syslog、sulog
 
-web日志的清理：access.log 和auth.log 位置在/var/log/
+web日志的清理：access.log<span class="w"> </span>和auth.log<span class="w"> </span>位置在/var/log/
 
 shell记录：.sh_history<span class="o">(</span>ksh<span class="o">)</span>，.history<span class="o">(</span>csh<span class="o">)</span>，或.bash_history<span class="o">(</span>bash<span class="o">)</span>等
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

@@ -106,41 +106,41 @@ var _hmt = _hmt || [];
 <p>Go语言是谷歌与09年开源的一门编译型编程语言，其专门针对多处理器系统应用程序的编程进行了优化，支持并行进程，自动垃圾回收。Docker就是go语言所编写。</p>
 <h4>安装</h4>
 <p>mac 电脑安装</p>
-<div class="highlight"><pre><span></span>brew install golang
-</pre></div>
+<div class="highlight"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>golang
+</code></pre></div>
 <p>ubuntu</p>
-<div class="highlight"><pre><span></span>sudo apt-get install golang -y
-</pre></div>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>golang<span class="w"> </span>-y
+</code></pre></div>
 <p>CentOS </p>
-<div class="highlight"><pre><span></span>yum install golang -y
-</pre></div>
+<div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>golang<span class="w"> </span>-y
+</code></pre></div>
 <h4>向世界打招呼</h4>
-<div class="highlight"><pre><span></span>package main 
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main<span class="w"> </span>
 
-import <span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">"fmt"</span>
 
-func main<span class="o">()</span> <span class="o">{</span>
-    fmt.Println<span class="o">(</span><span class="s2">"Hello world!"</span><span class="o">)</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"Hello world!"</span><span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>注释</h4>
-<div class="highlight"><pre><span></span>// 单行注释
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>单行注释
 
 /*
- 我是多行注释
- 我是多行注释
- 我是多行注释
- 我是多行注释
- 我是多行注释
- */
-</pre></div>
+<span class="w"> </span>我是多行注释
+<span class="w"> </span>我是多行注释
+<span class="w"> </span>我是多行注释
+<span class="w"> </span>我是多行注释
+<span class="w"> </span>我是多行注释
+<span class="w"> </span>*/
+</code></pre></div>
 <h4>数据结构</h4>
 <ul>
 <li>布尔型</li>
 </ul>
-<div class="highlight"><pre><span></span>    var b <span class="nv">bool</span> <span class="o">=</span> <span class="nb">true</span>
-    c :<span class="o">=</span> <span class="nb">false</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="w">    </span>var<span class="w"> </span>b<span class="w"> </span><span class="nv">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
+<span class="w">    </span>c<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="nb">false</span>
+</code></pre></div>
 <ul>
 <li>数字类型
 整型 int 和浮点型 float32、float64，Go 语言支持整型和浮点型数字，支持复数，位运算采用补码。<ul>
@@ -182,194 +182,194 @@ IEEE-754 64位浮点型数</li>
 </li>
 </ul>
 <p>变量</p>
-<div class="highlight"><pre><span></span>var <span class="nv">a</span> <span class="o">=</span> <span class="m">1</span>
+<div class="highlight"><pre><span></span><code>var<span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
 
-var b <span class="nv">int</span> <span class="o">=</span> <span class="m">2</span>
+var<span class="w"> </span>b<span class="w"> </span><span class="nv">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
 
-c :<span class="o">=</span><span class="m">3</span>
-</pre></div>
+c<span class="w"> </span>:<span class="o">=</span><span class="m">3</span>
+</code></pre></div>
 <p>常量</p>
-<div class="highlight"><pre><span></span>const identifier <span class="o">[</span>type<span class="o">]</span> <span class="o">=</span> value
+<div class="highlight"><pre><span></span><code>const<span class="w"> </span>identifier<span class="w"> </span><span class="o">[</span>type<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>value
 
-显式类型定义： const b <span class="nv">string</span> <span class="o">=</span> <span class="s2">"abc"</span>
-隐式类型定义： const <span class="nv">b</span> <span class="o">=</span> <span class="s2">"abc"</span>
+显式类型定义：<span class="w"> </span>const<span class="w"> </span>b<span class="w"> </span><span class="nv">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"abc"</span>
+隐式类型定义：<span class="w"> </span>const<span class="w"> </span><span class="nv">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"abc"</span>
 
-多个类型定义： const c_name1, <span class="nv">c_name2</span> <span class="o">=</span> value1, value2
-</pre></div>
+多个类型定义：<span class="w"> </span>const<span class="w"> </span>c_name1,<span class="w"> </span><span class="nv">c_name2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>value1,<span class="w"> </span>value2
+</code></pre></div>
 <ul>
 <li>字符串类型</li>
 </ul>
-<div class="highlight"><pre><span></span>    var b <span class="nv">string</span> <span class="o">=</span> <span class="s2">"demo"</span>
-    c :<span class="o">=</span>  <span class="s2">"godemo"</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="w">    </span>var<span class="w"> </span>b<span class="w"> </span><span class="nv">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"demo"</span>
+<span class="w">    </span>c<span class="w"> </span>:<span class="o">=</span><span class="w">  </span><span class="s2">"godemo"</span>
+</code></pre></div>
 <ul>
 <li>数组类型</li>
 </ul>
-<div class="highlight"><pre><span></span>//第一种
-var arr <span class="o">[</span><span class="m">2</span><span class="o">]</span>int
-    arr<span class="o">[</span><span class="m">0</span><span class="o">]=</span><span class="m">1</span>
-    arr<span class="o">[</span><span class="m">1</span><span class="o">]=</span><span class="m">2</span>
+<div class="highlight"><pre><span></span><code>//第一种
+var<span class="w"> </span>arr<span class="w"> </span><span class="o">[</span><span class="m">2</span><span class="o">]</span>int
+<span class="w">    </span>arr<span class="o">[</span><span class="m">0</span><span class="o">]=</span><span class="m">1</span>
+<span class="w">    </span>arr<span class="o">[</span><span class="m">1</span><span class="o">]=</span><span class="m">2</span>
 
 //第二种
 
-var <span class="nv">arr</span> <span class="o">=</span> <span class="o">[</span><span class="m">2</span><span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>
-arr :<span class="o">=</span> <span class="o">[</span><span class="m">2</span><span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>
+var<span class="w"> </span><span class="nv">arr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="m">2</span><span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>
+arr<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="m">2</span><span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>
 
 //第三种
 
-var <span class="nv">arr</span> <span class="o">=</span> <span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>
-arr :<span class="o">=</span> <span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>
+var<span class="w"> </span><span class="nv">arr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>
+arr<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>
 
 //第四种
 <span class="o">{</span>索引1:元素1,索引2:元素2,...<span class="o">}</span>
-var <span class="nv">arr</span> <span class="o">=</span> <span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>:1,0:2<span class="o">}</span>
-arr :<span class="o">=</span> <span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>:1,0:2<span class="o">}</span>
-</pre></div>
+var<span class="w"> </span><span class="nv">arr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>:1,0:2<span class="o">}</span>
+arr<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>:1,0:2<span class="o">}</span>
+</code></pre></div>
 <ul>
 <li>切片类型</li>
 </ul>
 <p>切片就是动态数组</p>
-<div class="highlight"><pre><span></span>var identifier <span class="o">[]</span><span class="nb">type</span>
-</pre></div>
-<div class="highlight"><pre><span></span>s :<span class="o">=[]</span> int <span class="o">{</span><span class="m">1</span>,2,3 <span class="o">}</span> 
-</pre></div>
+<div class="highlight"><pre><span></span><code>var<span class="w"> </span>identifier<span class="w"> </span><span class="o">[]</span><span class="nb">type</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>s<span class="w"> </span>:<span class="o">=[]</span><span class="w"> </span>int<span class="w"> </span><span class="o">{</span><span class="m">1</span>,2,3<span class="w"> </span><span class="o">}</span><span class="w"> </span>
+</code></pre></div>
 <p>切片也可以通过make 创建，其中，len 是数组的长度并且也是切片的初始长度，cap 是切片容量</p>
-<div class="highlight"><pre><span></span>s :<span class="o">=</span>make<span class="o">([]</span>int,len,cap<span class="o">)</span> 
-</pre></div>
+<div class="highlight"><pre><span></span><code>s<span class="w"> </span>:<span class="o">=</span>make<span class="o">([]</span>int,len,cap<span class="o">)</span><span class="w"> </span>
+</code></pre></div>
 <p>切片使用的例子</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">"fmt"</span>
 
-func main<span class="o">()</span> <span class="o">{</span>
-   /* 创建切片 */
-   numbers :<span class="o">=</span> <span class="o">[]</span>int<span class="o">{</span><span class="m">0</span>,1,2,3,4,5,6,7,8<span class="o">}</span>   
-   printSlice<span class="o">(</span>numbers<span class="o">)</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>创建切片<span class="w"> </span>*/
+<span class="w">   </span>numbers<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[]</span>int<span class="o">{</span><span class="m">0</span>,1,2,3,4,5,6,7,8<span class="o">}</span><span class="w">   </span>
+<span class="w">   </span>printSlice<span class="o">(</span>numbers<span class="o">)</span>
 
-   /* 打印原始切片 */
-   fmt.Println<span class="o">(</span><span class="s2">"numbers =="</span>, numbers<span class="o">)</span>
+<span class="w">   </span>/*<span class="w"> </span>打印原始切片<span class="w"> </span>*/
+<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">"numbers =="</span>,<span class="w"> </span>numbers<span class="o">)</span>
 
-   /* 打印子切片从索引1<span class="o">(</span>包含<span class="o">)</span> 到索引4<span class="o">(</span>不包含<span class="o">)</span>*/
-   fmt.Println<span class="o">(</span><span class="s2">"numbers[1:4] =="</span>, numbers<span class="o">[</span><span class="m">1</span>:4<span class="o">])</span>
+<span class="w">   </span>/*<span class="w"> </span>打印子切片从索引1<span class="o">(</span>包含<span class="o">)</span><span class="w"> </span>到索引4<span class="o">(</span>不包含<span class="o">)</span>*/
+<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">"numbers[1:4] =="</span>,<span class="w"> </span>numbers<span class="o">[</span><span class="m">1</span>:4<span class="o">])</span>
 
-   /* 默认下限为 <span class="m">0</span>*/
-   fmt.Println<span class="o">(</span><span class="s2">"numbers[:3] =="</span>, numbers<span class="o">[</span>:3<span class="o">])</span>
+<span class="w">   </span>/*<span class="w"> </span>默认下限为<span class="w"> </span><span class="m">0</span>*/
+<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">"numbers[:3] =="</span>,<span class="w"> </span>numbers<span class="o">[</span>:3<span class="o">])</span>
 
-   /* 默认上限为 len<span class="o">(</span>s<span class="o">)</span>*/
-   fmt.Println<span class="o">(</span><span class="s2">"numbers[4:] =="</span>, numbers<span class="o">[</span><span class="m">4</span>:<span class="o">])</span>
+<span class="w">   </span>/*<span class="w"> </span>默认上限为<span class="w"> </span>len<span class="o">(</span>s<span class="o">)</span>*/
+<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">"numbers[4:] =="</span>,<span class="w"> </span>numbers<span class="o">[</span><span class="m">4</span>:<span class="o">])</span>
 
-   numbers1 :<span class="o">=</span> make<span class="o">([]</span>int,0,5<span class="o">)</span>
-   printSlice<span class="o">(</span>numbers1<span class="o">)</span>
+<span class="w">   </span>numbers1<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">([]</span>int,0,5<span class="o">)</span>
+<span class="w">   </span>printSlice<span class="o">(</span>numbers1<span class="o">)</span>
 
-   /* 打印子切片从索引  <span class="m">0</span><span class="o">(</span>包含<span class="o">)</span> 到索引 <span class="m">2</span><span class="o">(</span>不包含<span class="o">)</span> */
-   number2 :<span class="o">=</span> numbers<span class="o">[</span>:2<span class="o">]</span>
-   printSlice<span class="o">(</span>number2<span class="o">)</span>
+<span class="w">   </span>/*<span class="w"> </span>打印子切片从索引<span class="w">  </span><span class="m">0</span><span class="o">(</span>包含<span class="o">)</span><span class="w"> </span>到索引<span class="w"> </span><span class="m">2</span><span class="o">(</span>不包含<span class="o">)</span><span class="w"> </span>*/
+<span class="w">   </span>number2<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>numbers<span class="o">[</span>:2<span class="o">]</span>
+<span class="w">   </span>printSlice<span class="o">(</span>number2<span class="o">)</span>
 
-   /* 打印子切片从索引 <span class="m">2</span><span class="o">(</span>包含<span class="o">)</span> 到索引 <span class="m">5</span><span class="o">(</span>不包含<span class="o">)</span> */
-   number3 :<span class="o">=</span> numbers<span class="o">[</span><span class="m">2</span>:5<span class="o">]</span>
-   printSlice<span class="o">(</span>number3<span class="o">)</span>
+<span class="w">   </span>/*<span class="w"> </span>打印子切片从索引<span class="w"> </span><span class="m">2</span><span class="o">(</span>包含<span class="o">)</span><span class="w"> </span>到索引<span class="w"> </span><span class="m">5</span><span class="o">(</span>不包含<span class="o">)</span><span class="w"> </span>*/
+<span class="w">   </span>number3<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>numbers<span class="o">[</span><span class="m">2</span>:5<span class="o">]</span>
+<span class="w">   </span>printSlice<span class="o">(</span>number3<span class="o">)</span>
 
 <span class="o">}</span>
 
-func printSlice<span class="o">(</span>x <span class="o">[]</span>int<span class="o">){</span>
-   fmt.Printf<span class="o">(</span><span class="s2">"len=%d cap=%d slice=%v\n"</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
+func<span class="w"> </span>printSlice<span class="o">(</span>x<span class="w"> </span><span class="o">[]</span>int<span class="o">){</span>
+<span class="w">   </span>fmt.Printf<span class="o">(</span><span class="s2">"len=%d cap=%d slice=%v\n"</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>执行以上代码输出结果为：</p>
-<div class="highlight"><pre><span></span><span class="nv">len</span><span class="o">=</span><span class="m">9</span> <span class="nv">cap</span><span class="o">=</span><span class="m">9</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span><span class="o">]</span>
-<span class="nv">numbers</span> <span class="o">==</span> <span class="o">[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span><span class="o">]</span>
-numbers<span class="o">[</span><span class="m">1</span>:4<span class="o">]</span> <span class="o">==</span> <span class="o">[</span><span class="m">1</span> <span class="m">2</span> <span class="m">3</span><span class="o">]</span>
-numbers<span class="o">[</span>:3<span class="o">]</span> <span class="o">==</span> <span class="o">[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span><span class="o">]</span>
-numbers<span class="o">[</span><span class="m">4</span>:<span class="o">]</span> <span class="o">==</span> <span class="o">[</span><span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span><span class="o">]</span>
-<span class="nv">len</span><span class="o">=</span><span class="m">0</span> <span class="nv">cap</span><span class="o">=</span><span class="m">5</span> <span class="nv">slice</span><span class="o">=[]</span>
-<span class="nv">len</span><span class="o">=</span><span class="m">2</span> <span class="nv">cap</span><span class="o">=</span><span class="m">9</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span><span class="o">]</span>
-<span class="nv">len</span><span class="o">=</span><span class="m">3</span> <span class="nv">cap</span><span class="o">=</span><span class="m">7</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">2</span> <span class="m">3</span> <span class="m">4</span><span class="o">]</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="nv">len</span><span class="o">=</span><span class="m">9</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">9</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="m">8</span><span class="o">]</span>
+<span class="nv">numbers</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="m">8</span><span class="o">]</span>
+numbers<span class="o">[</span><span class="m">1</span>:4<span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">[</span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="o">]</span>
+numbers<span class="o">[</span>:3<span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="o">]</span>
+numbers<span class="o">[</span><span class="m">4</span>:<span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">[</span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="m">8</span><span class="o">]</span>
+<span class="nv">len</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[]</span>
+<span class="nv">len</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">9</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="o">]</span>
+<span class="nv">len</span><span class="o">=</span><span class="m">3</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">7</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="o">]</span>
+</code></pre></div>
 <p>如果想增加切片的容量，我们必须创建一个新的更大的切片并把原分片的内容都拷贝过来。
 下面的代码描述了从拷贝切片的 copy 方法和向切片追加新元素的 append 方法。</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">"fmt"</span>
 
-func main<span class="o">()</span> <span class="o">{</span>
-   var numbers <span class="o">[]</span>int
-   printSlice<span class="o">(</span>numbers<span class="o">)</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>var<span class="w"> </span>numbers<span class="w"> </span><span class="o">[]</span>int
+<span class="w">   </span>printSlice<span class="o">(</span>numbers<span class="o">)</span>
 
-   /* 允许追加空切片 */
-   <span class="nv">numbers</span> <span class="o">=</span> append<span class="o">(</span>numbers, <span class="m">0</span><span class="o">)</span>
-   printSlice<span class="o">(</span>numbers<span class="o">)</span>
+<span class="w">   </span>/*<span class="w"> </span>允许追加空切片<span class="w"> </span>*/
+<span class="w">   </span><span class="nv">numbers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>append<span class="o">(</span>numbers,<span class="w"> </span><span class="m">0</span><span class="o">)</span>
+<span class="w">   </span>printSlice<span class="o">(</span>numbers<span class="o">)</span>
 
-   /* 向切片添加一个元素 */
-   <span class="nv">numbers</span> <span class="o">=</span> append<span class="o">(</span>numbers, <span class="m">1</span><span class="o">)</span>
-   printSlice<span class="o">(</span>numbers<span class="o">)</span>
+<span class="w">   </span>/*<span class="w"> </span>向切片添加一个元素<span class="w"> </span>*/
+<span class="w">   </span><span class="nv">numbers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>append<span class="o">(</span>numbers,<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+<span class="w">   </span>printSlice<span class="o">(</span>numbers<span class="o">)</span>
 
-   /* 同时添加多个元素 */
-   <span class="nv">numbers</span> <span class="o">=</span> append<span class="o">(</span>numbers, <span class="m">2</span>,3,4<span class="o">)</span>
-   printSlice<span class="o">(</span>numbers<span class="o">)</span>
+<span class="w">   </span>/*<span class="w"> </span>同时添加多个元素<span class="w"> </span>*/
+<span class="w">   </span><span class="nv">numbers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>append<span class="o">(</span>numbers,<span class="w"> </span><span class="m">2</span>,3,4<span class="o">)</span>
+<span class="w">   </span>printSlice<span class="o">(</span>numbers<span class="o">)</span>
 
-   /* 创建切片 numbers1 是之前切片的两倍容量*/
-   numbers1 :<span class="o">=</span> make<span class="o">([]</span>int, len<span class="o">(</span>numbers<span class="o">)</span>, <span class="o">(</span>cap<span class="o">(</span>numbers<span class="o">))</span>*2<span class="o">)</span>
+<span class="w">   </span>/*<span class="w"> </span>创建切片<span class="w"> </span>numbers1<span class="w"> </span>是之前切片的两倍容量*/
+<span class="w">   </span>numbers1<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">([]</span>int,<span class="w"> </span>len<span class="o">(</span>numbers<span class="o">)</span>,<span class="w"> </span><span class="o">(</span>cap<span class="o">(</span>numbers<span class="o">))</span>*2<span class="o">)</span>
 
-   /* 拷贝 numbers 的内容到 numbers1 */
-   copy<span class="o">(</span>numbers1,numbers<span class="o">)</span>
-   printSlice<span class="o">(</span>numbers1<span class="o">)</span>   
+<span class="w">   </span>/*<span class="w"> </span>拷贝<span class="w"> </span>numbers<span class="w"> </span>的内容到<span class="w"> </span>numbers1<span class="w"> </span>*/
+<span class="w">   </span>copy<span class="o">(</span>numbers1,numbers<span class="o">)</span>
+<span class="w">   </span>printSlice<span class="o">(</span>numbers1<span class="o">)</span><span class="w">   </span>
 <span class="o">}</span>
 
-func printSlice<span class="o">(</span>x <span class="o">[]</span>int<span class="o">){</span>
-   fmt.Printf<span class="o">(</span><span class="s2">"len=%d cap=%d slice=%v\n"</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
+func<span class="w"> </span>printSlice<span class="o">(</span>x<span class="w"> </span><span class="o">[]</span>int<span class="o">){</span>
+<span class="w">   </span>fmt.Printf<span class="o">(</span><span class="s2">"len=%d cap=%d slice=%v\n"</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>以上代码执行输出结果为：</p>
-<div class="highlight"><pre><span></span><span class="nv">len</span><span class="o">=</span><span class="m">0</span> <span class="nv">cap</span><span class="o">=</span><span class="m">0</span> <span class="nv">slice</span><span class="o">=[]</span>
-<span class="nv">len</span><span class="o">=</span><span class="m">1</span> <span class="nv">cap</span><span class="o">=</span><span class="m">1</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="o">]</span>
-<span class="nv">len</span><span class="o">=</span><span class="m">2</span> <span class="nv">cap</span><span class="o">=</span><span class="m">2</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span><span class="o">]</span>
-<span class="nv">len</span><span class="o">=</span><span class="m">5</span> <span class="nv">cap</span><span class="o">=</span><span class="m">6</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span><span class="o">]</span>
-<span class="nv">len</span><span class="o">=</span><span class="m">5</span> <span class="nv">cap</span><span class="o">=</span><span class="m">12</span> <span class="nv">slice</span><span class="o">=[</span><span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span><span class="o">]</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="nv">len</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[]</span>
+<span class="nv">len</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="o">]</span>
+<span class="nv">len</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="o">]</span>
+<span class="nv">len</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">6</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="o">]</span>
+<span class="nv">len</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">12</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="o">]</span>
+</code></pre></div>
 <ul>
 <li>指针类型（Pointer）</li>
 </ul>
 <p>指针类型就是一个变量，里面存的是另一个变量的地址</p>
-<div class="highlight"><pre><span></span>var b *int
+<div class="highlight"><pre><span></span><code>var<span class="w"> </span>b<span class="w"> </span>*int
 
-<span class="nv">b</span> <span class="o">=</span> <span class="p">&amp;</span>a
+<span class="nv">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">&amp;</span>a
 
-var b *int <span class="o">=</span> <span class="p">&amp;</span>a
+var<span class="w"> </span>b<span class="w"> </span>*int<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">&amp;</span>a
 
-b :<span class="o">=</span> <span class="p">&amp;</span>a
-</pre></div>
-<div class="highlight"><pre><span></span>package main 
+b<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="p">&amp;</span>a
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main<span class="w"> </span>
 
-import <span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">"fmt"</span>
 
-func main<span class="o">(){</span>
+func<span class="w"> </span>main<span class="o">(){</span>
 
-    var a <span class="nv">int</span> <span class="o">=</span> <span class="m">1</span>
+<span class="w">    </span>var<span class="w"> </span>a<span class="w"> </span><span class="nv">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
 
-    var b *int <span class="o">=</span><span class="p">&amp;</span>a
+<span class="w">    </span>var<span class="w"> </span>b<span class="w"> </span>*int<span class="w"> </span><span class="o">=</span><span class="p">&amp;</span>a
 
-    fmt.Println<span class="o">(</span>*b<span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span>*b<span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>结构体类型(struct)</li>
 </ul>
 <p>定义结构体</p>
-<div class="highlight"><pre><span></span><span class="nb">type</span> struct_variable_type struct <span class="o">{</span>
-   member definition<span class="p">;</span>
-   member definition<span class="p">;</span>
-   ...
-   member definition<span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span>struct_variable_type<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>member<span class="w"> </span>definition<span class="p">;</span>
+<span class="w">   </span>member<span class="w"> </span>definition<span class="p">;</span>
+<span class="w">   </span>...
+<span class="w">   </span>member<span class="w"> </span>definition<span class="p">;</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>列子</p>
-<div class="highlight"><pre><span></span><span class="nb">type</span> Books struct <span class="o">{</span>
-   title string
-   author string
-   subject string
-   book_id int
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span>Books<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>title<span class="w"> </span>string
+<span class="w">   </span>author<span class="w"> </span>string
+<span class="w">   </span>subject<span class="w"> </span>string
+<span class="w">   </span>book_id<span class="w"> </span>int
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>如果要访问结构体成员，需要使用点号 . 操作符，格式为：</p>
 <p>结构体.成员名</p>
 <p>定义指向结构体的指针类似于其他指针变量，格式如下：</p>
@@ -381,659 +381,659 @@ func main<span class="o">(){</span>
 <ul>
 <li>Channel 类型</li>
 </ul>
-<div class="highlight"><pre><span></span>ch :<span class="o">=</span> chan int // 定义一个chan
-ch :<span class="o">=</span> make<span class="o">(</span>chan int<span class="o">)</span>  //定义一个chan
-ch &lt;- v    // 把 v 发送到通道 ch
-v :<span class="o">=</span> &lt;-ch  // 从 ch 接收数据
-           // 并把值赋给 v
-</pre></div>
+<div class="highlight"><pre><span></span><code>ch<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>chan<span class="w"> </span>int<span class="w"> </span>//<span class="w"> </span>定义一个chan
+ch<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">(</span>chan<span class="w"> </span>int<span class="o">)</span><span class="w">  </span>//定义一个chan
+ch<span class="w"> </span>&lt;-<span class="w"> </span>v<span class="w">    </span>//<span class="w"> </span>把<span class="w"> </span>v<span class="w"> </span>发送到通道<span class="w"> </span>ch
+v<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>&lt;-ch<span class="w">  </span>//<span class="w"> </span>从<span class="w"> </span>ch<span class="w"> </span>接收数据
+<span class="w">           </span>//<span class="w"> </span>并把值赋给<span class="w"> </span>v
+</code></pre></div>
 <ul>
 <li>接口类型（interface）</li>
 </ul>
-<div class="highlight"><pre><span></span>/* 定义接口 */
-<span class="nb">type</span> interface_name interface <span class="o">{</span>
-   method_name1 <span class="o">[</span>return_type<span class="o">]</span>
-   method_name2 <span class="o">[</span>return_type<span class="o">]</span>
-   method_name3 <span class="o">[</span>return_type<span class="o">]</span>
-   ...
-   method_namen <span class="o">[</span>return_type<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>/*<span class="w"> </span>定义接口<span class="w"> </span>*/
+<span class="nb">type</span><span class="w"> </span>interface_name<span class="w"> </span>interface<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>method_name1<span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span>
+<span class="w">   </span>method_name2<span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span>
+<span class="w">   </span>method_name3<span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span>
+<span class="w">   </span>...
+<span class="w">   </span>method_namen<span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span>
 <span class="o">}</span>
 
-/* 定义结构体 */
-<span class="nb">type</span> struct_name struct <span class="o">{</span>
-   /* variables */
+/*<span class="w"> </span>定义结构体<span class="w"> </span>*/
+<span class="nb">type</span><span class="w"> </span>struct_name<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>variables<span class="w"> </span>*/
 <span class="o">}</span>
 
-/* 实现接口方法 */
-func <span class="o">(</span>struct_name_variable struct_name<span class="o">)</span> method_name1<span class="o">()</span> <span class="o">[</span>return_type<span class="o">]</span> <span class="o">{</span>
-   /* 方法实现 */
+/*<span class="w"> </span>实现接口方法<span class="w"> </span>*/
+func<span class="w"> </span><span class="o">(</span>struct_name_variable<span class="w"> </span>struct_name<span class="o">)</span><span class="w"> </span>method_name1<span class="o">()</span><span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>方法实现<span class="w"> </span>*/
 <span class="o">}</span>
 ...
-func <span class="o">(</span>struct_name_variable struct_name<span class="o">)</span> method_namen<span class="o">()</span> <span class="o">[</span>return_type<span class="o">]</span> <span class="o">{</span>
-   /* 方法实现*/
+func<span class="w"> </span><span class="o">(</span>struct_name_variable<span class="w"> </span>struct_name<span class="o">)</span><span class="w"> </span>method_namen<span class="o">()</span><span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>方法实现*/
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <ul>
 <li>Map 类型</li>
 </ul>
-<div class="highlight"><pre><span></span>/* 声明变量，默认 map 是 nil */
-var map_variable map<span class="o">[</span>key_data_type<span class="o">]</span>value_data_type
+<div class="highlight"><pre><span></span><code>/*<span class="w"> </span>声明变量，默认<span class="w"> </span>map<span class="w"> </span>是<span class="w"> </span>nil<span class="w"> </span>*/
+var<span class="w"> </span>map_variable<span class="w"> </span>map<span class="o">[</span>key_data_type<span class="o">]</span>value_data_type
 
-/* 使用 make 函数 */
-map_variable :<span class="o">=</span> make<span class="o">(</span>map<span class="o">[</span>key_data_type<span class="o">]</span>value_data_type<span class="o">)</span>
+/*<span class="w"> </span>使用<span class="w"> </span>make<span class="w"> </span>函数<span class="w"> </span>*/
+map_variable<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">(</span>map<span class="o">[</span>key_data_type<span class="o">]</span>value_data_type<span class="o">)</span>
 
-/ * map 初始化 * /
-var <span class="nv">map_variable</span> <span class="o">=</span> map<span class="o">[</span>string<span class="o">]</span>string<span class="o">{</span><span class="s2">"key1"</span>: <span class="s2">"value1"</span>,<span class="s2">"key2"</span>: <span class="s2">"value2"</span>,<span class="o">}</span>
-</pre></div>
+/<span class="w"> </span>*<span class="w"> </span>map<span class="w"> </span>初始化<span class="w"> </span>*<span class="w"> </span>/
+var<span class="w"> </span><span class="nv">map_variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">{</span><span class="s2">"key1"</span>:<span class="w"> </span><span class="s2">"value1"</span>,<span class="s2">"key2"</span>:<span class="w"> </span><span class="s2">"value2"</span>,<span class="o">}</span>
+</code></pre></div>
 <ul>
 <li>类型转换</li>
 </ul>
-<div class="highlight"><pre><span></span>Go 语言类型转换基本格式如下：
-    type_name<span class="o">(</span>expression<span class="o">)</span>
-    type_name 为类型，expression 为表达式。
-</pre></div>
+<div class="highlight"><pre><span></span><code>Go<span class="w"> </span>语言类型转换基本格式如下：
+<span class="w">    </span>type_name<span class="o">(</span>expression<span class="o">)</span>
+<span class="w">    </span>type_name<span class="w"> </span>为类型，expression<span class="w"> </span>为表达式。
+</code></pre></div>
 <ul>
 <li>range</li>
 </ul>
 <p>range 关键字用于 for 循环中迭代数组(array)、切片(slice)、通道(channel)或集合(map)的元素。在数组和切片中它返回元素的索引和索引对应的值，在map 中返回 key 和 value。</p>
-<div class="highlight"><pre><span></span>package main
-import <span class="s2">"fmt"</span>
-func main<span class="o">()</span> <span class="o">{</span>
-    //这是我们使用range去求一个slice的和。使用数组跟这个很类似
-    nums :<span class="o">=</span> <span class="o">[]</span>int<span class="o">{</span><span class="m">2</span>, <span class="m">3</span>, <span class="m">4</span><span class="o">}</span>
-    sum :<span class="o">=</span> <span class="m">0</span>
-    <span class="k">for</span> _, num :<span class="o">=</span> range nums <span class="o">{</span>
-        <span class="nv">sum</span> <span class="o">+=</span> num
-    <span class="o">}</span>
-    fmt.Println<span class="o">(</span><span class="s2">"sum:"</span>, sum<span class="o">)</span>
-    //在数组上使用range将传入index和值两个变量。上面那个例子我们不需要使用该元素的序号，所以我们使用空白符<span class="s2">"_"</span>省略了。有时侯我们确实需要知道它的索引。
-    <span class="k">for</span> i, num :<span class="o">=</span> range nums <span class="o">{</span>
-        <span class="k">if</span> <span class="nv">num</span> <span class="o">==</span> <span class="m">3</span> <span class="o">{</span>
-            fmt.Println<span class="o">(</span><span class="s2">"index:"</span>, i<span class="o">)</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    //range也可以用在map的键值对上。
-    kvs :<span class="o">=</span> map<span class="o">[</span>string<span class="o">]</span>string<span class="o">{</span><span class="s2">"a"</span>: <span class="s2">"apple"</span>, <span class="s2">"b"</span>: <span class="s2">"banana"</span><span class="o">}</span>
-    <span class="k">for</span> k, v :<span class="o">=</span> range kvs <span class="o">{</span>
-        fmt.Printf<span class="o">(</span><span class="s2">"%s -&gt; %s\n"</span>, k, v<span class="o">)</span>
-    <span class="o">}</span>
-    //range也可以用来枚举Unicode字符串。第一个参数是字符的索引，第二个是字符（Unicode的值）本身。
-    <span class="k">for</span> i, c :<span class="o">=</span> range <span class="s2">"go"</span> <span class="o">{</span>
-        fmt.Println<span class="o">(</span>i, c<span class="o">)</span>
-    <span class="o">}</span>
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
+import<span class="w"> </span><span class="s2">"fmt"</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//这是我们使用range去求一个slice的和。使用数组跟这个很类似
+<span class="w">    </span>nums<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[]</span>int<span class="o">{</span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">4</span><span class="o">}</span>
+<span class="w">    </span>sum<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>_,<span class="w"> </span>num<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>nums<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span>num
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"sum:"</span>,<span class="w"> </span>sum<span class="o">)</span>
+<span class="w">    </span>//在数组上使用range将传入index和值两个变量。上面那个例子我们不需要使用该元素的序号，所以我们使用空白符<span class="s2">"_"</span>省略了。有时侯我们确实需要知道它的索引。
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>i,<span class="w"> </span>num<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>nums<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nv">num</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>fmt.Println<span class="o">(</span><span class="s2">"index:"</span>,<span class="w"> </span>i<span class="o">)</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>//range也可以用在map的键值对上。
+<span class="w">    </span>kvs<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">{</span><span class="s2">"a"</span>:<span class="w"> </span><span class="s2">"apple"</span>,<span class="w"> </span><span class="s2">"b"</span>:<span class="w"> </span><span class="s2">"banana"</span><span class="o">}</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>k,<span class="w"> </span>v<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>kvs<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">"%s -&gt; %s\n"</span>,<span class="w"> </span>k,<span class="w"> </span>v<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>//range也可以用来枚举Unicode字符串。第一个参数是字符的索引，第二个是字符（Unicode的值）本身。
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>i,<span class="w"> </span>c<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span><span class="s2">"go"</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>fmt.Println<span class="o">(</span>i,<span class="w"> </span>c<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>运算符</h4>
 <p>算术运算符</p>
-<div class="highlight"><pre><span></span>+   相加  
--   相减  
-*   相乘  
-/   相除  
-%   求余  
-++  自增  
---  自减  
-</pre></div>
+<div class="highlight"><pre><span></span><code>+<span class="w">   </span>相加<span class="w">  </span>
+-<span class="w">   </span>相减<span class="w">  </span>
+*<span class="w">   </span>相乘<span class="w">  </span>
+/<span class="w">   </span>相除<span class="w">  </span>
+%<span class="w">   </span>求余<span class="w">  </span>
+++<span class="w">  </span>自增<span class="w">  </span>
+--<span class="w">  </span>自减<span class="w">  </span>
+</code></pre></div>
 <p>关系运算符</p>
-<div class="highlight"><pre><span></span><span class="o">==</span>  检查两个值是否相等，如果相等返回 True 否则返回 False。
-!<span class="o">=</span>  检查两个值是否不相等，如果不相等返回 True 否则返回 False。
-&gt;   检查左边值是否大于右边值，如果是返回 True 否则返回 False。
-&gt;<span class="o">=</span>  检查左边值是否大于等于右边值，如果是返回 True 否则返回 False。
-&lt;<span class="o">=</span>  检查左边值是否小于等于右边值，如果是返回 True 否则返回 False。
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">==</span><span class="w">  </span>检查两个值是否相等，如果相等返回<span class="w"> </span>True<span class="w"> </span>否则返回<span class="w"> </span>False。
+!<span class="o">=</span><span class="w">  </span>检查两个值是否不相等，如果不相等返回<span class="w"> </span>True<span class="w"> </span>否则返回<span class="w"> </span>False。
+&gt;<span class="w">   </span>检查左边值是否大于右边值，如果是返回<span class="w"> </span>True<span class="w"> </span>否则返回<span class="w"> </span>False。
+&gt;<span class="o">=</span><span class="w">  </span>检查左边值是否大于等于右边值，如果是返回<span class="w"> </span>True<span class="w"> </span>否则返回<span class="w"> </span>False。
+&lt;<span class="o">=</span><span class="w">  </span>检查左边值是否小于等于右边值，如果是返回<span class="w"> </span>True<span class="w"> </span>否则返回<span class="w"> </span>False。
+</code></pre></div>
 <p>逻辑运算符</p>
-<div class="highlight"><pre><span></span><span class="o">&amp;&amp;</span>  逻辑 AND 运算符。 如果两边的操作数都是 True，则条件 True，否则为 False。
-<span class="o">||</span>  逻辑 OR 运算符。 如果两边的操作数有一个 True，则条件 True，否则为 False。
-!   逻辑 NOT 运算符。 如果条件为 True，则逻辑 NOT 条件 False，否则为 True。
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">&amp;&amp;</span><span class="w">  </span>逻辑<span class="w"> </span>AND<span class="w"> </span>运算符。<span class="w"> </span>如果两边的操作数都是<span class="w"> </span>True，则条件<span class="w"> </span>True，否则为<span class="w"> </span>False。
+<span class="o">||</span><span class="w">  </span>逻辑<span class="w"> </span>OR<span class="w"> </span>运算符。<span class="w"> </span>如果两边的操作数有一个<span class="w"> </span>True，则条件<span class="w"> </span>True，否则为<span class="w"> </span>False。
+!<span class="w">   </span>逻辑<span class="w"> </span>NOT<span class="w"> </span>运算符。<span class="w"> </span>如果条件为<span class="w"> </span>True，则逻辑<span class="w"> </span>NOT<span class="w"> </span>条件<span class="w"> </span>False，否则为<span class="w"> </span>True。
+</code></pre></div>
 <p>赋值运算符</p>
-<div class="highlight"><pre><span></span><span class="o">=</span>   简单的赋值运算符，将一个表达式的值赋给一个左值
-+<span class="o">=</span>  相加后再赋值  <span class="nv">C</span> <span class="o">+=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C + A
--<span class="o">=</span>  相减后再赋值  C -<span class="o">=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C - A
-*<span class="o">=</span>  相乘后再赋值  C *<span class="o">=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C * A
-/<span class="o">=</span>  相除后再赋值  C /<span class="o">=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C / A
-%<span class="o">=</span>  求余后再赋值   C %<span class="o">=</span> A 等于 <span class="nv">C</span> <span class="o">=</span> C % A
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">=</span><span class="w">   </span>简单的赋值运算符，将一个表达式的值赋给一个左值
++<span class="o">=</span><span class="w">  </span>相加后再赋值<span class="w">  </span><span class="nv">C</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span>A<span class="w"> </span>等于<span class="w"> </span><span class="nv">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>C<span class="w"> </span>+<span class="w"> </span>A
+-<span class="o">=</span><span class="w">  </span>相减后再赋值<span class="w">  </span>C<span class="w"> </span>-<span class="o">=</span><span class="w"> </span>A<span class="w"> </span>等于<span class="w"> </span><span class="nv">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>C<span class="w"> </span>-<span class="w"> </span>A
+*<span class="o">=</span><span class="w">  </span>相乘后再赋值<span class="w">  </span>C<span class="w"> </span>*<span class="o">=</span><span class="w"> </span>A<span class="w"> </span>等于<span class="w"> </span><span class="nv">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>C<span class="w"> </span>*<span class="w"> </span>A
+/<span class="o">=</span><span class="w">  </span>相除后再赋值<span class="w">  </span>C<span class="w"> </span>/<span class="o">=</span><span class="w"> </span>A<span class="w"> </span>等于<span class="w"> </span><span class="nv">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>C<span class="w"> </span>/<span class="w"> </span>A
+%<span class="o">=</span><span class="w">  </span>求余后再赋值<span class="w">   </span>C<span class="w"> </span>%<span class="o">=</span><span class="w"> </span>A<span class="w"> </span>等于<span class="w"> </span><span class="nv">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>C<span class="w"> </span>%<span class="w"> </span>A
+</code></pre></div>
 <p>指针相关运算符</p>
-<div class="highlight"><pre><span></span><span class="p">&amp;</span>   返回变量存储地址    <span class="p">&amp;</span>a<span class="p">;</span> 将给出变量的实际地址。
-*   指针变量。   *a<span class="p">;</span> 是一个指针变量
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">&amp;</span><span class="w">   </span>返回变量存储地址<span class="w">    </span><span class="p">&amp;</span>a<span class="p">;</span><span class="w"> </span>将给出变量的实际地址。
+*<span class="w">   </span>指针变量。<span class="w">   </span>*a<span class="p">;</span><span class="w"> </span>是一个指针变量
+</code></pre></div>
 <h4>控制语句</h4>
 <ul>
 <li>条件语句</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">if</span> 布尔表达式 <span class="o">{</span>
-   /* 在布尔表达式为 <span class="nb">true</span> 时执行 */
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span>布尔表达式<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>在布尔表达式为<span class="w"> </span><span class="nb">true</span><span class="w"> </span>时执行<span class="w"> </span>*/
 <span class="o">}</span>
 
-<span class="k">if</span> 布尔表达式 <span class="o">{</span>
-   /* 在布尔表达式为 <span class="nb">true</span> 时执行 */
-<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-  /* 在布尔表达式为 <span class="nb">false</span> 时执行 */
+<span class="k">if</span><span class="w"> </span>布尔表达式<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>在布尔表达式为<span class="w"> </span><span class="nb">true</span><span class="w"> </span>时执行<span class="w"> </span>*/
+<span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>/*<span class="w"> </span>在布尔表达式为<span class="w"> </span><span class="nb">false</span><span class="w"> </span>时执行<span class="w"> </span>*/
 <span class="o">}</span>
 
-<span class="k">if</span> 布尔表达式 <span class="m">1</span> <span class="o">{</span>
-   /* 在布尔表达式 <span class="m">1</span> 为 <span class="nb">true</span> 时执行 */
-   <span class="k">if</span> 布尔表达式 <span class="m">2</span> <span class="o">{</span>
-      /* 在布尔表达式 <span class="m">2</span> 为 <span class="nb">true</span> 时执行 */
-   <span class="o">}</span>
+<span class="k">if</span><span class="w"> </span>布尔表达式<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>在布尔表达式<span class="w"> </span><span class="m">1</span><span class="w"> </span>为<span class="w"> </span><span class="nb">true</span><span class="w"> </span>时执行<span class="w"> </span>*/
+<span class="w">   </span><span class="k">if</span><span class="w"> </span>布尔表达式<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">{</span>
+<span class="w">      </span>/*<span class="w"> </span>在布尔表达式<span class="w"> </span><span class="m">2</span><span class="w"> </span>为<span class="w"> </span><span class="nb">true</span><span class="w"> </span>时执行<span class="w"> </span>*/
+<span class="w">   </span><span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>for 循环</p>
-<div class="highlight"><pre><span></span>Go语言的For循环有3中形式，只有其中的一种使用分号。
+<div class="highlight"><pre><span></span><code>Go语言的For循环有3中形式，只有其中的一种使用分号。
 
-和 C 语言的 <span class="k">for</span> 一样：
+和<span class="w"> </span>C<span class="w"> </span>语言的<span class="w"> </span><span class="k">for</span><span class="w"> </span>一样：
 
-<span class="k">for</span> init<span class="p">;</span> condition<span class="p">;</span> post <span class="o">{</span> <span class="o">}</span>
-和 C 的 <span class="k">while</span> 一样：
+<span class="k">for</span><span class="w"> </span>init<span class="p">;</span><span class="w"> </span>condition<span class="p">;</span><span class="w"> </span>post<span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="o">}</span>
+和<span class="w"> </span>C<span class="w"> </span>的<span class="w"> </span><span class="k">while</span><span class="w"> </span>一样：
 
-<span class="k">for</span> condition <span class="o">{</span> <span class="o">}</span>
-和 C 的 <span class="k">for</span><span class="o">(</span><span class="p">;;</span><span class="o">)</span> 一样：
+<span class="k">for</span><span class="w"> </span>condition<span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="o">}</span>
+和<span class="w"> </span>C<span class="w"> </span>的<span class="w"> </span><span class="k">for</span><span class="o">(</span><span class="p">;;</span><span class="o">)</span><span class="w"> </span>一样：
 
-<span class="k">for</span> <span class="o">{</span> <span class="o">}</span>
-init： 一般为赋值表达式，给控制变量赋初值；
-condition： 关系表达式或逻辑表达式，循环控制条件；
-post： 一般为赋值表达式，给控制变量增量或减量。
-</pre></div>
+<span class="k">for</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="o">}</span>
+init：<span class="w"> </span>一般为赋值表达式，给控制变量赋初值；
+condition：<span class="w"> </span>关系表达式或逻辑表达式，循环控制条件；
+post：<span class="w"> </span>一般为赋值表达式，给控制变量增量或减量。
+</code></pre></div>
 <p>for 循环的 range 格式可以对 slice、map、数组、字符串等进行迭代循环。格式如下：</p>
-<div class="highlight"><pre><span></span><span class="k">for</span> key, value :<span class="o">=</span> range oldMap <span class="o">{</span>
-    newMap<span class="o">[</span>key<span class="o">]</span> <span class="o">=</span> value
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>key,<span class="w"> </span>value<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>oldMap<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>newMap<span class="o">[</span>key<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>value
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>for 例子</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">"fmt"</span>
 
-func main<span class="o">()</span> <span class="o">{</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 
-   var b <span class="nv">int</span> <span class="o">=</span> <span class="m">15</span>
-   var a int
+<span class="w">   </span>var<span class="w"> </span>b<span class="w"> </span><span class="nv">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">15</span>
+<span class="w">   </span>var<span class="w"> </span>a<span class="w"> </span>int
 
-   numbers :<span class="o">=</span> <span class="o">[</span><span class="m">6</span><span class="o">]</span>int<span class="o">{</span><span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>, <span class="m">5</span><span class="o">}</span> 
+<span class="w">   </span>numbers<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="m">6</span><span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">5</span><span class="o">}</span><span class="w"> </span>
 
-   /* <span class="k">for</span> 循环 */
-   <span class="k">for</span> a :<span class="o">=</span> <span class="m">0</span><span class="p">;</span> a &lt; <span class="m">10</span><span class="p">;</span> a++ <span class="o">{</span>
-      fmt.Printf<span class="o">(</span><span class="s2">"a 的值为: %d\n"</span>, a<span class="o">)</span>
-   <span class="o">}</span>
+<span class="w">   </span>/*<span class="w"> </span><span class="k">for</span><span class="w"> </span>循环<span class="w"> </span>*/
+<span class="w">   </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>a<span class="w"> </span>&lt;<span class="w"> </span><span class="m">10</span><span class="p">;</span><span class="w"> </span>a++<span class="w"> </span><span class="o">{</span>
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"a 的值为: %d\n"</span>,<span class="w"> </span>a<span class="o">)</span>
+<span class="w">   </span><span class="o">}</span>
 
-   <span class="k">for</span> a &lt; b <span class="o">{</span>
-      a++
-      fmt.Printf<span class="o">(</span><span class="s2">"a 的值为: %d\n"</span>, a<span class="o">)</span>
-   <span class="o">}</span>
+<span class="w">   </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>&lt;<span class="w"> </span>b<span class="w"> </span><span class="o">{</span>
+<span class="w">      </span>a++
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"a 的值为: %d\n"</span>,<span class="w"> </span>a<span class="o">)</span>
+<span class="w">   </span><span class="o">}</span>
 
-   <span class="k">for</span> i,x:<span class="o">=</span> range numbers <span class="o">{</span>
-      fmt.Printf<span class="o">(</span><span class="s2">"第 %d 位 x 的值 = %d\n"</span>, i,x<span class="o">)</span>
-   <span class="o">}</span>   
+<span class="w">   </span><span class="k">for</span><span class="w"> </span>i,x:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>numbers<span class="w"> </span><span class="o">{</span>
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"第 %d 位 x 的值 = %d\n"</span>,<span class="w"> </span>i,x<span class="o">)</span>
+<span class="w">   </span><span class="o">}</span><span class="w">   </span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>for 无限循环</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">"fmt"</span>
 
-func main<span class="o">()</span> <span class="o">{</span>
-    <span class="k">for</span> <span class="nb">true</span>  <span class="o">{</span>
-        fmt.Printf<span class="o">(</span><span class="s2">"这是无限循环。\n"</span><span class="o">)</span><span class="p">;</span>
-    <span class="o">}</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nb">true</span><span class="w">  </span><span class="o">{</span>
+<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">"这是无限循环。\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>break 语句</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">"fmt"</span>
 
-func main<span class="o">()</span> <span class="o">{</span>
-   /* 定义局部变量 */
-   var a <span class="nv">int</span> <span class="o">=</span> <span class="m">10</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>定义局部变量<span class="w"> </span>*/
+<span class="w">   </span>var<span class="w"> </span>a<span class="w"> </span><span class="nv">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>
 
-   /* <span class="k">for</span> 循环 */
-   <span class="k">for</span> a &lt; <span class="m">20</span> <span class="o">{</span>
-      fmt.Printf<span class="o">(</span><span class="s2">"a 的值为 : %d\n"</span>, a<span class="o">)</span><span class="p">;</span>
-      a++<span class="p">;</span>
-      <span class="k">if</span> a &gt; <span class="m">15</span> <span class="o">{</span>
-         /* 使用 <span class="nb">break</span> 语句跳出循环 */
-         break<span class="p">;</span>
-      <span class="o">}</span>
-   <span class="o">}</span>
+<span class="w">   </span>/*<span class="w"> </span><span class="k">for</span><span class="w"> </span>循环<span class="w"> </span>*/
+<span class="w">   </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>&lt;<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="o">{</span>
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"a 的值为 : %d\n"</span>,<span class="w"> </span>a<span class="o">)</span><span class="p">;</span>
+<span class="w">      </span>a++<span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span>a<span class="w"> </span>&gt;<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="o">{</span>
+<span class="w">         </span>/*<span class="w"> </span>使用<span class="w"> </span><span class="k">break</span><span class="w"> </span>语句跳出循环<span class="w"> </span>*/
+<span class="w">         </span><span class="k">break</span><span class="p">;</span>
+<span class="w">      </span><span class="o">}</span>
+<span class="w">   </span><span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>continue 语句</p>
-<div class="highlight"><pre><span></span>import <span class="s2">"fmt"</span>
+<div class="highlight"><pre><span></span><code>import<span class="w"> </span><span class="s2">"fmt"</span>
 
-func main<span class="o">()</span> <span class="o">{</span>
-   /* 定义局部变量 */
-   var a <span class="nv">int</span> <span class="o">=</span> <span class="m">10</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>定义局部变量<span class="w"> </span>*/
+<span class="w">   </span>var<span class="w"> </span>a<span class="w"> </span><span class="nv">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>
 
-   /* <span class="k">for</span> 循环 */
-   <span class="k">for</span> a &lt; <span class="m">20</span> <span class="o">{</span>
-      <span class="k">if</span> <span class="nv">a</span> <span class="o">==</span> <span class="m">15</span> <span class="o">{</span>
-         /* 跳过此次循环 */
-         <span class="nv">a</span> <span class="o">=</span> a + <span class="m">1</span><span class="p">;</span>
-         <span class="k">continue</span><span class="p">;</span>
-      <span class="o">}</span>
-      fmt.Printf<span class="o">(</span><span class="s2">"a 的值为 : %d\n"</span>, a<span class="o">)</span><span class="p">;</span>
-      a++<span class="p">;</span>     
-   <span class="o">}</span>  
+<span class="w">   </span>/*<span class="w"> </span><span class="k">for</span><span class="w"> </span>循环<span class="w"> </span>*/
+<span class="w">   </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>&lt;<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="o">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="o">{</span>
+<span class="w">         </span>/*<span class="w"> </span>跳过此次循环<span class="w"> </span>*/
+<span class="w">         </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>a<span class="w"> </span>+<span class="w"> </span><span class="m">1</span><span class="p">;</span>
+<span class="w">         </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">      </span><span class="o">}</span>
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"a 的值为 : %d\n"</span>,<span class="w"> </span>a<span class="o">)</span><span class="p">;</span>
+<span class="w">      </span>a++<span class="p">;</span><span class="w">     </span>
+<span class="w">   </span><span class="o">}</span><span class="w">  </span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>函数</h4>
 <p>函数定义 </p>
-<div class="highlight"><pre><span></span>func function_name<span class="o">(</span> <span class="o">[</span>parameter list<span class="o">]</span> <span class="o">)</span> <span class="o">[</span>return_types<span class="o">]</span> <span class="o">{</span>
-   函数体
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span>function_name<span class="o">(</span><span class="w"> </span><span class="o">[</span>parameter<span class="w"> </span>list<span class="o">]</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="o">[</span>return_types<span class="o">]</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>函数体
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>以下实例为 max() 函数的代码，该函数传入两个整型参数 num1 和 num2，并返回这两个参数的最大值：</p>
-<div class="highlight"><pre><span></span>/* 函数返回两个数的最大值 */
-func max<span class="o">(</span>num1, num2 int<span class="o">)</span> int <span class="o">{</span>
-   /* 声明局部变量 */
-   var result int
+<div class="highlight"><pre><span></span><code>/*<span class="w"> </span>函数返回两个数的最大值<span class="w"> </span>*/
+func<span class="w"> </span>max<span class="o">(</span>num1,<span class="w"> </span>num2<span class="w"> </span>int<span class="o">)</span><span class="w"> </span>int<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>声明局部变量<span class="w"> </span>*/
+<span class="w">   </span>var<span class="w"> </span>result<span class="w"> </span>int
 
-   <span class="k">if</span> <span class="o">(</span>num1 &gt; num2<span class="o">)</span> <span class="o">{</span>
-      <span class="nv">result</span> <span class="o">=</span> num1
-   <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-      <span class="nv">result</span> <span class="o">=</span> num2
-   <span class="o">}</span>
-   <span class="k">return</span> result 
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>num1<span class="w"> </span>&gt;<span class="w"> </span>num2<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">      </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>num1
+<span class="w">   </span><span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">{</span>
+<span class="w">      </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>num2
+<span class="w">   </span><span class="o">}</span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span>result<span class="w"> </span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>向函数传递数组</p>
-<div class="highlight"><pre><span></span>形参设定数组大小：
+<div class="highlight"><pre><span></span><code>形参设定数组大小：
 
-void myFunction<span class="o">(</span>param <span class="o">[</span><span class="m">10</span><span class="o">]</span>int<span class="o">)</span>
+void<span class="w"> </span>myFunction<span class="o">(</span>param<span class="w"> </span><span class="o">[</span><span class="m">10</span><span class="o">]</span>int<span class="o">)</span>
 <span class="o">{</span>
 <span class="o">}</span>
 
 形参未设定数组大小：
 
-void myFunction<span class="o">(</span>param <span class="o">[]</span>int<span class="o">)</span>
+void<span class="w"> </span>myFunction<span class="o">(</span>param<span class="w"> </span><span class="o">[]</span>int<span class="o">)</span>
 <span class="o">{</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>列子</p>
-<div class="highlight"><pre><span></span>func main<span class="o">()</span> <span class="o">{</span>
-    var <span class="nv">array</span> <span class="o">=</span> <span class="o">[]</span>int<span class="o">{</span><span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>, <span class="m">4</span>, <span class="m">5</span><span class="o">}</span>
-    /* 未定义长度的数组只能传给不限制数组长度的函数 */
-    setArray<span class="o">(</span>array<span class="o">)</span>
-    /* 定义了长度的数组只能传给限制了相同数组长度的函数 */
-    var <span class="nv">array2</span> <span class="o">=</span> <span class="o">[</span><span class="m">5</span><span class="o">]</span>int<span class="o">{</span><span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>, <span class="m">4</span>, <span class="m">5</span><span class="o">}</span>
-    setArray2<span class="o">(</span>array2<span class="o">)</span>
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>var<span class="w"> </span><span class="nv">array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span>int<span class="o">{</span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+<span class="w">    </span>/*<span class="w"> </span>未定义长度的数组只能传给不限制数组长度的函数<span class="w"> </span>*/
+<span class="w">    </span>setArray<span class="o">(</span>array<span class="o">)</span>
+<span class="w">    </span>/*<span class="w"> </span>定义了长度的数组只能传给限制了相同数组长度的函数<span class="w"> </span>*/
+<span class="w">    </span>var<span class="w"> </span><span class="nv">array2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="m">5</span><span class="o">]</span>int<span class="o">{</span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+<span class="w">    </span>setArray2<span class="o">(</span>array2<span class="o">)</span>
 <span class="o">}</span>
 
-func setArray<span class="o">(</span>params <span class="o">[]</span>int<span class="o">)</span> <span class="o">{</span>
-    fmt.Println<span class="o">(</span><span class="s2">"params array length of setArray is : "</span>, len<span class="o">(</span>params<span class="o">))</span>
+func<span class="w"> </span>setArray<span class="o">(</span>params<span class="w"> </span><span class="o">[]</span>int<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"params array length of setArray is : "</span>,<span class="w"> </span>len<span class="o">(</span>params<span class="o">))</span>
 <span class="o">}</span>
 
-func setArray2<span class="o">(</span>params <span class="o">[</span><span class="m">5</span><span class="o">]</span>int<span class="o">)</span> <span class="o">{</span>
-    fmt.Println<span class="o">(</span><span class="s2">"params array length of setArray2 is : "</span>, len<span class="o">(</span>params<span class="o">))</span>
+func<span class="w"> </span>setArray2<span class="o">(</span>params<span class="w"> </span><span class="o">[</span><span class="m">5</span><span class="o">]</span>int<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"params array length of setArray2 is : "</span>,<span class="w"> </span>len<span class="o">(</span>params<span class="o">))</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>函数可以作为值</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="o">(</span>
-   <span class="s2">"fmt"</span>
-   <span class="s2">"math"</span>
+import<span class="w"> </span><span class="o">(</span>
+<span class="w">   </span><span class="s2">"fmt"</span>
+<span class="w">   </span><span class="s2">"math"</span>
 <span class="o">)</span>
 
-func main<span class="o">(){</span>
-   /* 声明函数变量 */
-   getSquareRoot :<span class="o">=</span> func<span class="o">(</span>x float64<span class="o">)</span> float64 <span class="o">{</span>
-      <span class="k">return</span> math.Sqrt<span class="o">(</span>x<span class="o">)</span>
-   <span class="o">}</span>
+func<span class="w"> </span>main<span class="o">(){</span>
+<span class="w">   </span>/*<span class="w"> </span>声明函数变量<span class="w"> </span>*/
+<span class="w">   </span>getSquareRoot<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>func<span class="o">(</span>x<span class="w"> </span>float64<span class="o">)</span><span class="w"> </span>float64<span class="w"> </span><span class="o">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span>math.Sqrt<span class="o">(</span>x<span class="o">)</span>
+<span class="w">   </span><span class="o">}</span>
 
-   /* 使用函数 */
-   fmt.Println<span class="o">(</span>getSquareRoot<span class="o">(</span><span class="m">9</span><span class="o">))</span>
+<span class="w">   </span>/*<span class="w"> </span>使用函数<span class="w"> </span>*/
+<span class="w">   </span>fmt.Println<span class="o">(</span>getSquareRoot<span class="o">(</span><span class="m">9</span><span class="o">))</span>
 
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>闭包</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">"fmt"</span>
 
-func getSequence<span class="o">()</span> func<span class="o">()</span> int <span class="o">{</span>
-   i:<span class="o">=</span><span class="m">0</span>
-   <span class="k">return</span> func<span class="o">()</span> int <span class="o">{</span>
-      <span class="nv">i</span><span class="o">+=</span><span class="m">1</span>
-     <span class="k">return</span> i  
-   <span class="o">}</span>
+func<span class="w"> </span>getSequence<span class="o">()</span><span class="w"> </span>func<span class="o">()</span><span class="w"> </span>int<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>i:<span class="o">=</span><span class="m">0</span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span>func<span class="o">()</span><span class="w"> </span>int<span class="w"> </span><span class="o">{</span>
+<span class="w">      </span><span class="nv">i</span><span class="o">+=</span><span class="m">1</span>
+<span class="w">     </span><span class="k">return</span><span class="w"> </span>i<span class="w">  </span>
+<span class="w">   </span><span class="o">}</span>
 <span class="o">}</span>
 
-func main<span class="o">(){</span>
-   /* nextNumber 为一个函数，函数 i 为 <span class="m">0</span> */
-   nextNumber :<span class="o">=</span> getSequence<span class="o">()</span>  
+func<span class="w"> </span>main<span class="o">(){</span>
+<span class="w">   </span>/*<span class="w"> </span>nextNumber<span class="w"> </span>为一个函数，函数<span class="w"> </span>i<span class="w"> </span>为<span class="w"> </span><span class="m">0</span><span class="w"> </span>*/
+<span class="w">   </span>nextNumber<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>getSequence<span class="o">()</span><span class="w">  </span>
 
-   /* 调用 nextNumber 函数，i 变量自增 <span class="m">1</span> 并返回 */
-   fmt.Println<span class="o">(</span>nextNumber<span class="o">())</span>
-   fmt.Println<span class="o">(</span>nextNumber<span class="o">())</span>
-   fmt.Println<span class="o">(</span>nextNumber<span class="o">())</span>
+<span class="w">   </span>/*<span class="w"> </span>调用<span class="w"> </span>nextNumber<span class="w"> </span>函数，i<span class="w"> </span>变量自增<span class="w"> </span><span class="m">1</span><span class="w"> </span>并返回<span class="w"> </span>*/
+<span class="w">   </span>fmt.Println<span class="o">(</span>nextNumber<span class="o">())</span>
+<span class="w">   </span>fmt.Println<span class="o">(</span>nextNumber<span class="o">())</span>
+<span class="w">   </span>fmt.Println<span class="o">(</span>nextNumber<span class="o">())</span>
 
-   /* 创建新的函数 nextNumber1，并查看结果 */
-   nextNumber1 :<span class="o">=</span> getSequence<span class="o">()</span>  
-   fmt.Println<span class="o">(</span>nextNumber1<span class="o">())</span>
-   fmt.Println<span class="o">(</span>nextNumber1<span class="o">())</span>
+<span class="w">   </span>/*<span class="w"> </span>创建新的函数<span class="w"> </span>nextNumber1，并查看结果<span class="w"> </span>*/
+<span class="w">   </span>nextNumber1<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>getSequence<span class="o">()</span><span class="w">  </span>
+<span class="w">   </span>fmt.Println<span class="o">(</span>nextNumber1<span class="o">())</span>
+<span class="w">   </span>fmt.Println<span class="o">(</span>nextNumber1<span class="o">())</span>
 <span class="o">}</span>
-</pre></div>
-<div class="highlight"><pre><span></span>package main
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="s2">"fmt"</span>
-func main<span class="o">()</span> <span class="o">{</span>
-    add_func :<span class="o">=</span> add<span class="o">(</span><span class="m">1</span>,2<span class="o">)</span>
-    fmt.Println<span class="o">(</span>add_func<span class="o">())</span>
-    fmt.Println<span class="o">(</span>add_func<span class="o">())</span>
-    fmt.Println<span class="o">(</span>add_func<span class="o">())</span>
+import<span class="w"> </span><span class="s2">"fmt"</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>add_func<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>add<span class="o">(</span><span class="m">1</span>,2<span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span>add_func<span class="o">())</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span>add_func<span class="o">())</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span>add_func<span class="o">())</span>
 <span class="o">}</span>
 
-// 闭包使用方法
-func add<span class="o">(</span>x1, x2 int<span class="o">)</span> func<span class="o">()(</span>int,int<span class="o">)</span>  <span class="o">{</span>
-    i :<span class="o">=</span> <span class="m">0</span>
-    <span class="k">return</span> func<span class="o">()</span> <span class="o">(</span>int,int<span class="o">){</span>
-        i++
-        <span class="k">return</span> i,x1+x2
-    <span class="o">}</span>
+//<span class="w"> </span>闭包使用方法
+func<span class="w"> </span>add<span class="o">(</span>x1,<span class="w"> </span>x2<span class="w"> </span>int<span class="o">)</span><span class="w"> </span>func<span class="o">()(</span>int,int<span class="o">)</span><span class="w">  </span><span class="o">{</span>
+<span class="w">    </span>i<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>func<span class="o">()</span><span class="w"> </span><span class="o">(</span>int,int<span class="o">){</span>
+<span class="w">        </span>i++
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>i,x1+x2
+<span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
-<div class="highlight"><pre><span></span>package main
-import <span class="s2">"fmt"</span>
-func main<span class="o">()</span> <span class="o">{</span>
-    add_func :<span class="o">=</span> add<span class="o">(</span><span class="m">1</span>,2<span class="o">)</span>
-    fmt.Println<span class="o">(</span>add_func<span class="o">(</span><span class="m">1</span>,1<span class="o">))</span>
-    fmt.Println<span class="o">(</span>add_func<span class="o">(</span><span class="m">0</span>,0<span class="o">))</span>
-    fmt.Println<span class="o">(</span>add_func<span class="o">(</span><span class="m">2</span>,2<span class="o">))</span>
-<span class="o">}</span> 
-// 闭包使用方法
-func add<span class="o">(</span>x1, x2 int<span class="o">)</span> func<span class="o">(</span>x3 int,x4 int<span class="o">)(</span>int,int,int<span class="o">)</span>  <span class="o">{</span>
-    i :<span class="o">=</span> <span class="m">0</span>
-    <span class="k">return</span> func<span class="o">(</span>x3 int,x4 int<span class="o">)</span> <span class="o">(</span>int,int,int<span class="o">){</span> 
-       i++
-       <span class="k">return</span> i,x1+x2,x3+x4
-    <span class="o">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
+import<span class="w"> </span><span class="s2">"fmt"</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>add_func<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>add<span class="o">(</span><span class="m">1</span>,2<span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span>add_func<span class="o">(</span><span class="m">1</span>,1<span class="o">))</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span>add_func<span class="o">(</span><span class="m">0</span>,0<span class="o">))</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span>add_func<span class="o">(</span><span class="m">2</span>,2<span class="o">))</span>
+<span class="o">}</span><span class="w"> </span>
+//<span class="w"> </span>闭包使用方法
+func<span class="w"> </span>add<span class="o">(</span>x1,<span class="w"> </span>x2<span class="w"> </span>int<span class="o">)</span><span class="w"> </span>func<span class="o">(</span>x3<span class="w"> </span>int,x4<span class="w"> </span>int<span class="o">)(</span>int,int,int<span class="o">)</span><span class="w">  </span><span class="o">{</span>
+<span class="w">    </span>i<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>func<span class="o">(</span>x3<span class="w"> </span>int,x4<span class="w"> </span>int<span class="o">)</span><span class="w"> </span><span class="o">(</span>int,int,int<span class="o">){</span><span class="w"> </span>
+<span class="w">       </span>i++
+<span class="w">       </span><span class="k">return</span><span class="w"> </span>i,x1+x2,x3+x4
+<span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>接口</h4>
-<div class="highlight"><pre><span></span>Go 语言提供了另外一种数据类型即接口，它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。
+<div class="highlight"><pre><span></span><code>Go<span class="w"> </span>语言提供了另外一种数据类型即接口，它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。
 
 实例
-/* 定义接口 */
-<span class="nb">type</span> interface_name interface <span class="o">{</span>
-   method_name1 <span class="o">[</span>return_type<span class="o">]</span>
-   method_name2 <span class="o">[</span>return_type<span class="o">]</span>
-   method_name3 <span class="o">[</span>return_type<span class="o">]</span>
-   ...
-   method_namen <span class="o">[</span>return_type<span class="o">]</span>
+/*<span class="w"> </span>定义接口<span class="w"> </span>*/
+<span class="nb">type</span><span class="w"> </span>interface_name<span class="w"> </span>interface<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>method_name1<span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span>
+<span class="w">   </span>method_name2<span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span>
+<span class="w">   </span>method_name3<span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span>
+<span class="w">   </span>...
+<span class="w">   </span>method_namen<span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span>
 <span class="o">}</span>
 
-/* 定义结构体 */
-<span class="nb">type</span> struct_name struct <span class="o">{</span>
-   /* variables */
+/*<span class="w"> </span>定义结构体<span class="w"> </span>*/
+<span class="nb">type</span><span class="w"> </span>struct_name<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>variables<span class="w"> </span>*/
 <span class="o">}</span>
 
-/* 实现接口方法 */
-func <span class="o">(</span>struct_name_variable struct_name<span class="o">)</span> method_name1<span class="o">()</span> <span class="o">[</span>return_type<span class="o">]</span> <span class="o">{</span>
-   /* 方法实现 */
+/*<span class="w"> </span>实现接口方法<span class="w"> </span>*/
+func<span class="w"> </span><span class="o">(</span>struct_name_variable<span class="w"> </span>struct_name<span class="o">)</span><span class="w"> </span>method_name1<span class="o">()</span><span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>方法实现<span class="w"> </span>*/
 <span class="o">}</span>
 ...
-func <span class="o">(</span>struct_name_variable struct_name<span class="o">)</span> method_namen<span class="o">()</span> <span class="o">[</span>return_type<span class="o">]</span> <span class="o">{</span>
-   /* 方法实现*/
+func<span class="w"> </span><span class="o">(</span>struct_name_variable<span class="w"> </span>struct_name<span class="o">)</span><span class="w"> </span>method_namen<span class="o">()</span><span class="w"> </span><span class="o">[</span>return_type<span class="o">]</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>/*<span class="w"> </span>方法实现*/
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>例子</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="o">(</span>
-    <span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="o">(</span>
+<span class="w">    </span><span class="s2">"fmt"</span>
 <span class="o">)</span>
 
-<span class="nb">type</span> Phone interface <span class="o">{</span>
-    call<span class="o">()</span>
+<span class="nb">type</span><span class="w"> </span>Phone<span class="w"> </span>interface<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>call<span class="o">()</span>
 <span class="o">}</span>
 
-<span class="nb">type</span> NokiaPhone struct <span class="o">{</span>
+<span class="nb">type</span><span class="w"> </span>NokiaPhone<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
 <span class="o">}</span>
 
-func <span class="o">(</span>nokiaPhone NokiaPhone<span class="o">)</span> call<span class="o">()</span> <span class="o">{</span>
-    fmt.Println<span class="o">(</span><span class="s2">"I am Nokia, I can call you!"</span><span class="o">)</span>
+func<span class="w"> </span><span class="o">(</span>nokiaPhone<span class="w"> </span>NokiaPhone<span class="o">)</span><span class="w"> </span>call<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"I am Nokia, I can call you!"</span><span class="o">)</span>
 <span class="o">}</span>
 
-<span class="nb">type</span> IPhone struct <span class="o">{</span>
+<span class="nb">type</span><span class="w"> </span>IPhone<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
 <span class="o">}</span>
 
-func <span class="o">(</span>iPhone IPhone<span class="o">)</span> call<span class="o">()</span> <span class="o">{</span>
-    fmt.Println<span class="o">(</span><span class="s2">"I am iPhone, I can call you!"</span><span class="o">)</span>
+func<span class="w"> </span><span class="o">(</span>iPhone<span class="w"> </span>IPhone<span class="o">)</span><span class="w"> </span>call<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"I am iPhone, I can call you!"</span><span class="o">)</span>
 <span class="o">}</span>
 
-func main<span class="o">()</span> <span class="o">{</span>
-    var phone Phone
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>var<span class="w"> </span>phone<span class="w"> </span>Phone
 
-    <span class="nv">phone</span> <span class="o">=</span> new<span class="o">(</span>NokiaPhone<span class="o">)</span>
-    phone.call<span class="o">()</span>
+<span class="w">    </span><span class="nv">phone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>new<span class="o">(</span>NokiaPhone<span class="o">)</span>
+<span class="w">    </span>phone.call<span class="o">()</span>
 
-    <span class="nv">phone</span> <span class="o">=</span> new<span class="o">(</span>IPhone<span class="o">)</span>
-    phone.call<span class="o">()</span>
+<span class="w">    </span><span class="nv">phone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>new<span class="o">(</span>IPhone<span class="o">)</span>
+<span class="w">    </span>phone.call<span class="o">()</span>
 
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>面向对象</h4>
 <p>面向对象的方法</p>
-<div class="highlight"><pre><span></span>package main
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import <span class="o">(</span>
-   <span class="s2">"fmt"</span>  
+import<span class="w"> </span><span class="o">(</span>
+<span class="w">   </span><span class="s2">"fmt"</span><span class="w">  </span>
 <span class="o">)</span>
 
-/* 定义结构体 */
-<span class="nb">type</span> Circle struct <span class="o">{</span>
-  radius float64
+/*<span class="w"> </span>定义结构体<span class="w"> </span>*/
+<span class="nb">type</span><span class="w"> </span>Circle<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>radius<span class="w"> </span>float64
 <span class="o">}</span>
 
-func main<span class="o">()</span> <span class="o">{</span>
-  var c1 Circle
-  c1.radius <span class="o">=</span> <span class="m">10</span>.00
-  fmt.Println<span class="o">(</span><span class="s2">"圆的面积 = "</span>, c1.getArea<span class="o">())</span>
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>var<span class="w"> </span>c1<span class="w"> </span>Circle
+<span class="w">  </span>c1.radius<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>.00
+<span class="w">  </span>fmt.Println<span class="o">(</span><span class="s2">"圆的面积 = "</span>,<span class="w"> </span>c1.getArea<span class="o">())</span>
 <span class="o">}</span>
 
-//该 method 属于 Circle 类型对象中的方法
-func <span class="o">(</span>c Circle<span class="o">)</span> getArea<span class="o">()</span> float64 <span class="o">{</span>
-  //c.radius 即为 Circle 类型对象中的属性
-  <span class="k">return</span> <span class="m">3</span>.14 * c.radius * c.radius
+//该<span class="w"> </span>method<span class="w"> </span>属于<span class="w"> </span>Circle<span class="w"> </span>类型对象中的方法
+func<span class="w"> </span><span class="o">(</span>c<span class="w"> </span>Circle<span class="o">)</span><span class="w"> </span>getArea<span class="o">()</span><span class="w"> </span>float64<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>//c.radius<span class="w"> </span>即为<span class="w"> </span>Circle<span class="w"> </span>类型对象中的属性
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="m">3</span>.14<span class="w"> </span>*<span class="w"> </span>c.radius<span class="w"> </span>*<span class="w"> </span>c.radius
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>GO IO</h4>
 <h4>GO异常处理</h4>
 <p>这里会提到3个关键词， defer, panic, recover
 defer就是用来添加函数结束时执行的语句，Go中的defer是动态的。</p>
-<div class="highlight"><pre><span></span>func f<span class="o">()</span> <span class="o">(</span>result int<span class="o">)</span> <span class="o">{</span>
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span>f<span class="o">()</span><span class="w"> </span><span class="o">(</span>result<span class="w"> </span>int<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 
-  deferfunc<span class="o">()</span> <span class="o">{</span>
-    result++
-  <span class="o">}()</span>
-  return0
+<span class="w">  </span>deferfunc<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>result++
+<span class="w">  </span><span class="o">}()</span>
+<span class="w">  </span>return0
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>上面函数返回1，因为defer中添加了一个函数，在函数返回前改变了命名返回值的值。是不是很好用呢。但是，要注意的是，如果我们的defer语句没有执行，那么defer的函数就不会添加，如果把上面的程序改成这样：</p>
-<div class="highlight"><pre><span></span>    func f<span class="o">()</span> <span class="o">(</span>result int<span class="o">)</span> <span class="o">{</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span>func<span class="w"> </span>f<span class="o">()</span><span class="w"> </span><span class="o">(</span>result<span class="w"> </span>int<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 
-      return0
-      deferfunc<span class="o">()</span> <span class="o">{</span>
-        result++
-      <span class="o">}()</span>
-      return0
-    <span class="o">}</span>
-</pre></div>
+<span class="w">      </span>return0
+<span class="w">      </span>deferfunc<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>result++
+<span class="w">      </span><span class="o">}()</span>
+<span class="w">      </span>return0
+<span class="w">    </span><span class="o">}</span>
+</code></pre></div>
 <p>然后，我们在defer里面用recover捕获panic，完成go的异常处理</p>
-<div class="highlight"><pre><span></span>package main
-import <span class="s2">"fmt"</span>
-func main<span class="o">(){</span>
-    defer func<span class="o">(){</span> // 必须要先声明defer，否则不能捕获到panic异常
-        fmt.Println<span class="o">(</span><span class="s2">"c"</span><span class="o">)</span>
-        <span class="k">if</span> err:<span class="o">=</span>recover<span class="o">()</span><span class="p">;</span>err!<span class="o">=</span>nil<span class="o">{</span>
-            fmt.Println<span class="o">(</span>err<span class="o">)</span> // 这里的err其实就是panic传入的内容，55
-        <span class="o">}</span>
-        fmt.Println<span class="o">(</span><span class="s2">"d"</span><span class="o">)</span>
-    <span class="o">}()</span>
-    f<span class="o">()</span>
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
+import<span class="w"> </span><span class="s2">"fmt"</span>
+func<span class="w"> </span>main<span class="o">(){</span>
+<span class="w">    </span>defer<span class="w"> </span>func<span class="o">(){</span><span class="w"> </span>//<span class="w"> </span>必须要先声明defer，否则不能捕获到panic异常
+<span class="w">        </span>fmt.Println<span class="o">(</span><span class="s2">"c"</span><span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err:<span class="o">=</span>recover<span class="o">()</span><span class="p">;</span>err!<span class="o">=</span>nil<span class="o">{</span>
+<span class="w">            </span>fmt.Println<span class="o">(</span>err<span class="o">)</span><span class="w"> </span>//<span class="w"> </span>这里的err其实就是panic传入的内容，55
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>fmt.Println<span class="o">(</span><span class="s2">"d"</span><span class="o">)</span>
+<span class="w">    </span><span class="o">}()</span>
+<span class="w">    </span>f<span class="o">()</span>
 <span class="o">}</span>
-func f<span class="o">(){</span>
-    fmt.Println<span class="o">(</span><span class="s2">"a"</span><span class="o">)</span>
-    panic<span class="o">(</span><span class="m">55</span><span class="o">)</span>
-    fmt.Println<span class="o">(</span><span class="s2">"b"</span><span class="o">)</span>
-    fmt.Println<span class="o">(</span><span class="s2">"f"</span><span class="o">)</span>
+func<span class="w"> </span>f<span class="o">(){</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"a"</span><span class="o">)</span>
+<span class="w">    </span>panic<span class="o">(</span><span class="m">55</span><span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"b"</span><span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"f"</span><span class="o">)</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <h4>GO 并发</h4>
 <h4>标准库</h4>
-<div class="highlight"><pre><span></span>archive         
-     tar            tar包实现了tar格式压缩文件的存取.
-     zip            zip包提供了zip档案文件的读写服务.
-bufio           bufio 包实现了带缓存的I/O操作.
-<span class="nb">builtin</span>         <span class="nb">builtin</span> 包为Go的预声明标识符提供了文档.
-bytes           bytes包实现了操作<span class="o">[]</span>byte的常用函数.
-compress            
-     bzip2          bzip2包实现bzip2的解压缩.
-     flate          flate包实现了deflate压缩数据格式，参见RFC <span class="m">1951</span>.
-     gzip           gzip包实现了gzip格式压缩文件的读写，参见RFC <span class="m">1952</span>.
-     lzw            lzw包实现了Lempel-Ziv-Welch数据压缩格式，这是一种T. A. Welch在“A Technique <span class="k">for</span> High-Performance Data Compression”一文（Computer, <span class="m">17</span><span class="o">(</span><span class="m">6</span><span class="o">)</span> <span class="o">(</span>June <span class="m">1984</span><span class="o">)</span>, pp <span class="m">8</span>-19）提出的一种压缩格式.
-     zlib           zlib包实现了对zlib格式压缩数据的读写，参见RFC <span class="m">1950</span>.
-container           
-     heap           heap包提供了对任意类型（实现了heap.Interface接口）的堆操作.
-     list           list包实现了双向链表.
-     ring           ring实现了环形链表的操作.
-context         Package context defines the Context type, which carries deadlines, cancelation signals, and other request-scoped values across API boundaries and between processes.
-crypto          crypto包搜集了常用的密码（算法）常量.
-     aes            aes包实现了AES加密算法，参见U.S. Federal Information Processing Standards Publication <span class="m">197</span>.
-     cipher         cipher包实现了多个标准的用于包装底层块加密算法的加密算法实现.
-     des            des包实现了DES标准和TDEA算法，参见U.S. Federal Information Processing Standards Publication <span class="m">46</span>-3.
-     dsa            dsa包实现FIPS <span class="m">186</span>-3定义的数字签名算法（Digital Signature Algorithm），即DSA算法.
-     ecdsa          ecdsa包实现了椭圆曲线数字签名算法，参见FIPS <span class="m">186</span>-3.
-     elliptic           elliptic包实现了几条覆盖素数有限域的标准椭圆曲线.
-     hmac           hmac包实现了U.S. Federal Information Processing Standards Publication 198规定的HMAC（加密哈希信息认证码）.
-     md5            md5包实现了MD5哈希算法，参见RFC <span class="m">1321</span>.
-     rand           rand包实现了用于加解密的更安全的随机数生成器.
-     rc4            rc4包实现了RC4加密算法，参见Bruce Schneier<span class="err">'</span>s Applied Cryptography.
-     rsa            rsa包实现了PKCS#1规定的RSA加密算法.
-     sha1           sha1包实现了SHA1哈希算法，参见RFC <span class="m">3174</span>.
-     sha256         sha256包实现了SHA224和SHA256哈希算法，参见FIPS <span class="m">180</span>-4.
-     sha512         sha512包实现了SHA384和SHA512哈希算法，参见FIPS <span class="m">180</span>-2.
-     subtle         Package subtle implements functions that are often useful in cryptographic code but require careful thought to use correctly.
-     tls            tls包实现了TLS <span class="m">1</span>.2，细节参见RFC <span class="m">5246</span>.
-     x509           x509包解析X.509编码的证书和密钥.
-          pkix          pkix包提供了共享的、低层次的结构体，用于ASN.1解析和X.509证书、CRL、OCSP的序列化.
-database            
-     sql            sql 包提供了通用的SQL（或类SQL）数据库接口.
-          driver            driver包定义了应被数据库驱动实现的接口，这些接口会被sql包使用.
-debug           
-     dwarf          Package dwarf provides access to DWARF debugging information loaded from executable files, as defined in the DWARF <span class="m">2</span>.0 Standard at http://dwarfstd.org/doc/dwarf-2.0.0.pdf
-     elf            Package elf implements access to ELF object files.
-     gosym          Package gosym implements access to the Go symbol and line number tables embedded in Go binaries generated by the gc compilers.
-     macho          Package macho implements access to Mach-O object files.
-     pe         Package pe implements access to PE <span class="o">(</span>Microsoft Windows Portable Executable<span class="o">)</span> files.
-     plan9obj           Package plan9obj implements access to Plan <span class="m">9</span> a.out object files.
-encoding            encoding包定义了供其它包使用的可以将数据在字节水平和文本表示之间转换的接口.
-     ascii85            ascii85 包是对 ascii85 的数据编码的实现.
-     asn1           asn1包实现了DER编码的ASN.1数据结构的解析，参见ITU-T Rec X.690.
-     base32         base32包实现了RFC 4648规定的base32编码.
-     base64         base64实现了RFC 4648规定的base64编码.
-     binary         binary包实现了简单的数字与字节序列的转换以及变长值的编解码.
-     csv            csv读写逗号分隔值（csv）的文件.
-     gob            gob包管理gob流——在编码器（发送器）和解码器（接受器）之间交换的binary值.
-     hex            hex包实现了16进制字符表示的编解码.
-     json           json包实现了json对象的编解码，参见RFC <span class="m">4627</span>.
-     pem            pem包实现了PEM数据编码（源自保密增强邮件协议）.
-     xml            Package xml implements a simple XML <span class="m">1</span>.0 parser that understands XML name spaces.
-errors          error 包实现了用于错误处理的函数.
-expvar          expvar包提供了公共变量的标准接口，如服务的操作计数器.
-flag            flag 包实现命令行标签解析.
-fmt         fmt 包实现了格式化I/O函数，类似于C的 <span class="nb">printf</span> 和 scanf.
-go          
-     ast            Package ast declares the types used to represent syntax trees <span class="k">for</span> Go packages.
-     build          Package build gathers information about Go packages.
-     constant           Package constant implements Values representing untyped Go constants and their corresponding operations.
-     doc            Package doc extracts <span class="nb">source</span> code documentation from a Go AST.
-     format         Package format implements standard formatting of Go source.
-     importer           Package importer provides access to <span class="nb">export</span> data importers.
-     parser         Package parser implements a parser <span class="k">for</span> Go <span class="nb">source</span> files.
-     printer            Package printer implements printing of AST nodes.
-     scanner            Package scanner implements a scanner <span class="k">for</span> Go <span class="nb">source</span> text.
-     token          Package token defines constants representing the lexical tokens of the Go programming language and basic operations on tokens <span class="o">(</span>printing, predicates<span class="o">)</span>.
-     types          Package types declares the data types and implements the algorithms <span class="k">for</span> type-checking of Go packages.
-<span class="nb">hash</span>            hash包提供hash函数的接口.
-     adler32            adler32包实现了Adler-32校验和算法，参见RFC <span class="m">1950</span>.
-     crc32          crc32包实现了32位循环冗余校验（CRC-32）的校验和算法.
-     crc64          Package crc64 implements the <span class="m">64</span>-bit cyclic redundancy check, or CRC-64, checksum.
-     fnv            fnv包实现了FNV-1和FNV-1a（非加密hash函数）.
-html            html包提供了用于转义和解转义HTML文本的函数.
-     template           template包（html/template）实现了数据驱动的模板，用于生成可对抗代码注入的安全HTML输出.
-image           image实现了基本的2D图片库.
-     color          color 包实现了基本的颜色库。
-          palette           palette包提供了标准的调色板.
-     draw           draw 包提供组装图片的方法.
-     gif            gif 包实现了GIF图片的解码.
-     jpeg           jpeg包实现了jpeg格式图像的编解码.
-     png            png 包实现了PNG图像的编码和解码.
-index           
-     suffixarray            suffixarrayb包通过使用内存中的后缀树实现了对数级时间消耗的子字符串搜索.
-io          io 包为I/O原语提供了基础的接口.
-     ioutil         ioutil 实现了一些I/O的工具函数。
-log         log包实现了简单的日志服务.
-     syslog         syslog包提供一个简单的系统日志服务的接口.
-math            math 包提供了基本常数和数学函数。
-     big            big 包实现了（大数的）高精度运算.
-     cmplx          cmplx 包为复数提供了基本的常量和数学函数.
-     rand           rand 包实现了伪随机数生成器.
-mime            mime实现了MIME的部分规定.
-     multipart          multipart实现了MIME的multipart解析，参见RFC <span class="m">2046</span>.
-     quotedprintable            Package quotedprintable implements quoted-printable encoding as specified by RFC <span class="m">2045</span>.
-net         net包提供了可移植的网络I/O接口，包括TCP/IP、UDP、域名解析和Unix域socket.
-     http           http包提供了HTTP客户端和服务端的实现.
-          cgi           cgi 包实现了RFC3875协议描述的CGI（公共网关接口）.
-          cookiejar         cookiejar包实现了保管在内存中的符合RFC 6265标准的http.CookieJar接口.
-          fcgi          fcgi 包实现了FastCGI协议.
-          httptest          httptest 包提供HTTP测试的单元工具.
-          httptrace         Package httptrace provides mechanisms to trace the events within HTTP client requests.
-          httputil          httputil包提供了HTTP公用函数，是对net/http包的更常见函数的补充.
-          pprof         pprof 包通过提供HTTP服务返回runtime的统计数据，这个数据是以pprof可视化工具规定的返回格式返回的.
-     mail           mail 包实现了解析邮件消息的功能.
-     rpc            rpc 包提供了一个方法来通过网络或者其他的I/O连接进入对象的外部方法.
-          jsonrpc           jsonrpc 包使用了rpc的包实现了一个JSON-RPC的客户端解码器和服务端的解码器.
-     smtp           smtp包实现了简单邮件传输协议（SMTP），参见RFC <span class="m">5321</span>.
-     textproto          textproto实现了对基于文本的请求/回复协议的一般性支持，包括HTTP、NNTP和SMTP.
-     url            url包解析URL并实现了查询的逸码，参见RFC <span class="m">3986</span>.
-os          os包提供了操作系统函数的不依赖平台的接口.
-     <span class="nb">exec</span>           exec包执行外部命令.
-     signal         signal包实现了对输入信号的访问.
-     user           user包允许通过名称或ID查询用户帐户.
-path            path实现了对斜杠分隔的路径的实用操作函数.
-     filepath           filepath包实现了兼容各操作系统的文件路径的实用操作函数.
-plugin          Package plugin implements loading and symbol resolution of Go plugins.
-reflect         reflect包实现了运行时反射，允许程序操作任意类型的对象.
-regexp          regexp包实现了正则表达式搜索.
-     syntax         Package syntax parses regular expressions into parse trees and compiles parse trees into programs.
-runtime         TODO<span class="o">(</span>osc<span class="o">)</span>: 需更新 runtime 包含与Go的运行时系统进行交互的操作，例如用于控制Go程的函数.
-     cgo            cgo 包含有 cgo 工具生成的代码的运行时支持.
-     debug          debug 包含有程序在运行时调试其自身的功能.
-     pprof          pprof 包按照可视化工具 pprof 所要求的格式写出运行时分析数据.
-     race           race 包实现了数据竞争检测逻辑.
-     trace          Go execution tracer.
-sort            sort 包为切片及用户定义的集合的排序操作提供了原语.
-strconv         strconv包实现了基本数据类型和其字符串表示的相互转换.
-strings         strings包实现了用于操作字符的简单函数.
-sync            sync 包提供了互斥锁这类的基本的同步原语.
-     atomic         atomic 包提供了底层的原子性内存原语，这对于同步算法的实现很有用.
-syscall         Package syscall contains an interface to the low-level operating system primitives.
-testing         Package testing provides support <span class="k">for</span> automated testing of Go packages.
-     iotest         Package iotest implements Readers and Writers useful mainly <span class="k">for</span> testing.
-     quick          Package quick implements utility functions to <span class="nb">help</span> with black box testing.
-text            
-     scanner            scanner包提供对utf-8文本的token扫描服务.
-     tabwriter          tabwriter包实现了写入过滤器（tabwriter.Writer），可以将输入的缩进修正为正确的对齐文本.
-     template           template包实现了数据驱动的用于生成文本输出的模板.
-          parse         Package parse builds parse trees <span class="k">for</span> templates as defined by text/template and html/template.
-<span class="nb">time</span>            time包提供了时间的显示和测量用的函数.
-unicode         unicode 包提供了一些测试Unicode码点属性的数据和函数.
-     utf16          utf16 包实现了对UTF-16序列的编码和解码。
-     utf8           utf8 包实现了支持UTF-8文本编码的函数和常量.
+<div class="highlight"><pre><span></span><code>archive<span class="w">         </span>
+<span class="w">     </span>tar<span class="w">            </span>tar包实现了tar格式压缩文件的存取.
+<span class="w">     </span>zip<span class="w">            </span>zip包提供了zip档案文件的读写服务.
+bufio<span class="w">           </span>bufio<span class="w"> </span>包实现了带缓存的I/O操作.
+<span class="nb">builtin</span><span class="w">         </span><span class="nb">builtin</span><span class="w"> </span>包为Go的预声明标识符提供了文档.
+bytes<span class="w">           </span>bytes包实现了操作<span class="o">[]</span>byte的常用函数.
+compress<span class="w">            </span>
+<span class="w">     </span>bzip2<span class="w">          </span>bzip2包实现bzip2的解压缩.
+<span class="w">     </span>flate<span class="w">          </span>flate包实现了deflate压缩数据格式，参见RFC<span class="w"> </span><span class="m">1951</span>.
+<span class="w">     </span>gzip<span class="w">           </span>gzip包实现了gzip格式压缩文件的读写，参见RFC<span class="w"> </span><span class="m">1952</span>.
+<span class="w">     </span>lzw<span class="w">            </span>lzw包实现了Lempel-Ziv-Welch数据压缩格式，这是一种T.<span class="w"> </span>A.<span class="w"> </span>Welch在“A<span class="w"> </span>Technique<span class="w"> </span><span class="k">for</span><span class="w"> </span>High-Performance<span class="w"> </span>Data<span class="w"> </span>Compression”一文（Computer,<span class="w"> </span><span class="m">17</span><span class="o">(</span><span class="m">6</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>June<span class="w"> </span><span class="m">1984</span><span class="o">)</span>,<span class="w"> </span>pp<span class="w"> </span><span class="m">8</span>-19）提出的一种压缩格式.
+<span class="w">     </span>zlib<span class="w">           </span>zlib包实现了对zlib格式压缩数据的读写，参见RFC<span class="w"> </span><span class="m">1950</span>.
+container<span class="w">           </span>
+<span class="w">     </span>heap<span class="w">           </span>heap包提供了对任意类型（实现了heap.Interface接口）的堆操作.
+<span class="w">     </span>list<span class="w">           </span>list包实现了双向链表.
+<span class="w">     </span>ring<span class="w">           </span>ring实现了环形链表的操作.
+context<span class="w">         </span>Package<span class="w"> </span>context<span class="w"> </span>defines<span class="w"> </span>the<span class="w"> </span>Context<span class="w"> </span>type,<span class="w"> </span>which<span class="w"> </span>carries<span class="w"> </span>deadlines,<span class="w"> </span>cancelation<span class="w"> </span>signals,<span class="w"> </span>and<span class="w"> </span>other<span class="w"> </span>request-scoped<span class="w"> </span>values<span class="w"> </span>across<span class="w"> </span>API<span class="w"> </span>boundaries<span class="w"> </span>and<span class="w"> </span>between<span class="w"> </span>processes.
+crypto<span class="w">          </span>crypto包搜集了常用的密码（算法）常量.
+<span class="w">     </span>aes<span class="w">            </span>aes包实现了AES加密算法，参见U.S.<span class="w"> </span>Federal<span class="w"> </span>Information<span class="w"> </span>Processing<span class="w"> </span>Standards<span class="w"> </span>Publication<span class="w"> </span><span class="m">197</span>.
+<span class="w">     </span>cipher<span class="w">         </span>cipher包实现了多个标准的用于包装底层块加密算法的加密算法实现.
+<span class="w">     </span>des<span class="w">            </span>des包实现了DES标准和TDEA算法，参见U.S.<span class="w"> </span>Federal<span class="w"> </span>Information<span class="w"> </span>Processing<span class="w"> </span>Standards<span class="w"> </span>Publication<span class="w"> </span><span class="m">46</span>-3.
+<span class="w">     </span>dsa<span class="w">            </span>dsa包实现FIPS<span class="w"> </span><span class="m">186</span>-3定义的数字签名算法（Digital<span class="w"> </span>Signature<span class="w"> </span>Algorithm），即DSA算法.
+<span class="w">     </span>ecdsa<span class="w">          </span>ecdsa包实现了椭圆曲线数字签名算法，参见FIPS<span class="w"> </span><span class="m">186</span>-3.
+<span class="w">     </span>elliptic<span class="w">           </span>elliptic包实现了几条覆盖素数有限域的标准椭圆曲线.
+<span class="w">     </span>hmac<span class="w">           </span>hmac包实现了U.S.<span class="w"> </span>Federal<span class="w"> </span>Information<span class="w"> </span>Processing<span class="w"> </span>Standards<span class="w"> </span>Publication<span class="w"> </span>198规定的HMAC（加密哈希信息认证码）.
+<span class="w">     </span>md5<span class="w">            </span>md5包实现了MD5哈希算法，参见RFC<span class="w"> </span><span class="m">1321</span>.
+<span class="w">     </span>rand<span class="w">           </span>rand包实现了用于加解密的更安全的随机数生成器.
+<span class="w">     </span>rc4<span class="w">            </span>rc4包实现了RC4加密算法，参见Bruce<span class="w"> </span>Schneier<span class="err">'</span>s<span class="w"> </span>Applied<span class="w"> </span>Cryptography.
+<span class="w">     </span>rsa<span class="w">            </span>rsa包实现了PKCS#1规定的RSA加密算法.
+<span class="w">     </span>sha1<span class="w">           </span>sha1包实现了SHA1哈希算法，参见RFC<span class="w"> </span><span class="m">3174</span>.
+<span class="w">     </span>sha256<span class="w">         </span>sha256包实现了SHA224和SHA256哈希算法，参见FIPS<span class="w"> </span><span class="m">180</span>-4.
+<span class="w">     </span>sha512<span class="w">         </span>sha512包实现了SHA384和SHA512哈希算法，参见FIPS<span class="w"> </span><span class="m">180</span>-2.
+<span class="w">     </span>subtle<span class="w">         </span>Package<span class="w"> </span>subtle<span class="w"> </span>implements<span class="w"> </span>functions<span class="w"> </span>that<span class="w"> </span>are<span class="w"> </span>often<span class="w"> </span>useful<span class="w"> </span><span class="k">in</span><span class="w"> </span>cryptographic<span class="w"> </span>code<span class="w"> </span>but<span class="w"> </span>require<span class="w"> </span>careful<span class="w"> </span>thought<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>correctly.
+<span class="w">     </span>tls<span class="w">            </span>tls包实现了TLS<span class="w"> </span><span class="m">1</span>.2，细节参见RFC<span class="w"> </span><span class="m">5246</span>.
+<span class="w">     </span>x509<span class="w">           </span>x509包解析X.509编码的证书和密钥.
+<span class="w">          </span>pkix<span class="w">          </span>pkix包提供了共享的、低层次的结构体，用于ASN.1解析和X.509证书、CRL、OCSP的序列化.
+database<span class="w">            </span>
+<span class="w">     </span>sql<span class="w">            </span>sql<span class="w"> </span>包提供了通用的SQL（或类SQL）数据库接口.
+<span class="w">          </span>driver<span class="w">            </span>driver包定义了应被数据库驱动实现的接口，这些接口会被sql包使用.
+debug<span class="w">           </span>
+<span class="w">     </span>dwarf<span class="w">          </span>Package<span class="w"> </span>dwarf<span class="w"> </span>provides<span class="w"> </span>access<span class="w"> </span>to<span class="w"> </span>DWARF<span class="w"> </span>debugging<span class="w"> </span>information<span class="w"> </span>loaded<span class="w"> </span>from<span class="w"> </span>executable<span class="w"> </span>files,<span class="w"> </span>as<span class="w"> </span>defined<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>DWARF<span class="w"> </span><span class="m">2</span>.0<span class="w"> </span>Standard<span class="w"> </span>at<span class="w"> </span>http://dwarfstd.org/doc/dwarf-2.0.0.pdf
+<span class="w">     </span>elf<span class="w">            </span>Package<span class="w"> </span>elf<span class="w"> </span>implements<span class="w"> </span>access<span class="w"> </span>to<span class="w"> </span>ELF<span class="w"> </span>object<span class="w"> </span>files.
+<span class="w">     </span>gosym<span class="w">          </span>Package<span class="w"> </span>gosym<span class="w"> </span>implements<span class="w"> </span>access<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>Go<span class="w"> </span>symbol<span class="w"> </span>and<span class="w"> </span>line<span class="w"> </span>number<span class="w"> </span>tables<span class="w"> </span>embedded<span class="w"> </span><span class="k">in</span><span class="w"> </span>Go<span class="w"> </span>binaries<span class="w"> </span>generated<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>gc<span class="w"> </span>compilers.
+<span class="w">     </span>macho<span class="w">          </span>Package<span class="w"> </span>macho<span class="w"> </span>implements<span class="w"> </span>access<span class="w"> </span>to<span class="w"> </span>Mach-O<span class="w"> </span>object<span class="w"> </span>files.
+<span class="w">     </span>pe<span class="w">         </span>Package<span class="w"> </span>pe<span class="w"> </span>implements<span class="w"> </span>access<span class="w"> </span>to<span class="w"> </span>PE<span class="w"> </span><span class="o">(</span>Microsoft<span class="w"> </span>Windows<span class="w"> </span>Portable<span class="w"> </span>Executable<span class="o">)</span><span class="w"> </span>files.
+<span class="w">     </span>plan9obj<span class="w">           </span>Package<span class="w"> </span>plan9obj<span class="w"> </span>implements<span class="w"> </span>access<span class="w"> </span>to<span class="w"> </span>Plan<span class="w"> </span><span class="m">9</span><span class="w"> </span>a.out<span class="w"> </span>object<span class="w"> </span>files.
+encoding<span class="w">            </span>encoding包定义了供其它包使用的可以将数据在字节水平和文本表示之间转换的接口.
+<span class="w">     </span>ascii85<span class="w">            </span>ascii85<span class="w"> </span>包是对<span class="w"> </span>ascii85<span class="w"> </span>的数据编码的实现.
+<span class="w">     </span>asn1<span class="w">           </span>asn1包实现了DER编码的ASN.1数据结构的解析，参见ITU-T<span class="w"> </span>Rec<span class="w"> </span>X.690.
+<span class="w">     </span>base32<span class="w">         </span>base32包实现了RFC<span class="w"> </span>4648规定的base32编码.
+<span class="w">     </span>base64<span class="w">         </span>base64实现了RFC<span class="w"> </span>4648规定的base64编码.
+<span class="w">     </span>binary<span class="w">         </span>binary包实现了简单的数字与字节序列的转换以及变长值的编解码.
+<span class="w">     </span>csv<span class="w">            </span>csv读写逗号分隔值（csv）的文件.
+<span class="w">     </span>gob<span class="w">            </span>gob包管理gob流——在编码器（发送器）和解码器（接受器）之间交换的binary值.
+<span class="w">     </span>hex<span class="w">            </span>hex包实现了16进制字符表示的编解码.
+<span class="w">     </span>json<span class="w">           </span>json包实现了json对象的编解码，参见RFC<span class="w"> </span><span class="m">4627</span>.
+<span class="w">     </span>pem<span class="w">            </span>pem包实现了PEM数据编码（源自保密增强邮件协议）.
+<span class="w">     </span>xml<span class="w">            </span>Package<span class="w"> </span>xml<span class="w"> </span>implements<span class="w"> </span>a<span class="w"> </span>simple<span class="w"> </span>XML<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span>parser<span class="w"> </span>that<span class="w"> </span>understands<span class="w"> </span>XML<span class="w"> </span>name<span class="w"> </span>spaces.
+errors<span class="w">          </span>error<span class="w"> </span>包实现了用于错误处理的函数.
+expvar<span class="w">          </span>expvar包提供了公共变量的标准接口，如服务的操作计数器.
+flag<span class="w">            </span>flag<span class="w"> </span>包实现命令行标签解析.
+fmt<span class="w">         </span>fmt<span class="w"> </span>包实现了格式化I/O函数，类似于C的<span class="w"> </span><span class="nb">printf</span><span class="w"> </span>和<span class="w"> </span>scanf.
+go<span class="w">          </span>
+<span class="w">     </span>ast<span class="w">            </span>Package<span class="w"> </span>ast<span class="w"> </span>declares<span class="w"> </span>the<span class="w"> </span>types<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>represent<span class="w"> </span>syntax<span class="w"> </span>trees<span class="w"> </span><span class="k">for</span><span class="w"> </span>Go<span class="w"> </span>packages.
+<span class="w">     </span>build<span class="w">          </span>Package<span class="w"> </span>build<span class="w"> </span>gathers<span class="w"> </span>information<span class="w"> </span>about<span class="w"> </span>Go<span class="w"> </span>packages.
+<span class="w">     </span>constant<span class="w">           </span>Package<span class="w"> </span>constant<span class="w"> </span>implements<span class="w"> </span>Values<span class="w"> </span>representing<span class="w"> </span>untyped<span class="w"> </span>Go<span class="w"> </span>constants<span class="w"> </span>and<span class="w"> </span>their<span class="w"> </span>corresponding<span class="w"> </span>operations.
+<span class="w">     </span>doc<span class="w">            </span>Package<span class="w"> </span>doc<span class="w"> </span>extracts<span class="w"> </span><span class="nb">source</span><span class="w"> </span>code<span class="w"> </span>documentation<span class="w"> </span>from<span class="w"> </span>a<span class="w"> </span>Go<span class="w"> </span>AST.
+<span class="w">     </span>format<span class="w">         </span>Package<span class="w"> </span>format<span class="w"> </span>implements<span class="w"> </span>standard<span class="w"> </span>formatting<span class="w"> </span>of<span class="w"> </span>Go<span class="w"> </span>source.
+<span class="w">     </span>importer<span class="w">           </span>Package<span class="w"> </span>importer<span class="w"> </span>provides<span class="w"> </span>access<span class="w"> </span>to<span class="w"> </span><span class="nb">export</span><span class="w"> </span>data<span class="w"> </span>importers.
+<span class="w">     </span>parser<span class="w">         </span>Package<span class="w"> </span>parser<span class="w"> </span>implements<span class="w"> </span>a<span class="w"> </span>parser<span class="w"> </span><span class="k">for</span><span class="w"> </span>Go<span class="w"> </span><span class="nb">source</span><span class="w"> </span>files.
+<span class="w">     </span>printer<span class="w">            </span>Package<span class="w"> </span>printer<span class="w"> </span>implements<span class="w"> </span>printing<span class="w"> </span>of<span class="w"> </span>AST<span class="w"> </span>nodes.
+<span class="w">     </span>scanner<span class="w">            </span>Package<span class="w"> </span>scanner<span class="w"> </span>implements<span class="w"> </span>a<span class="w"> </span>scanner<span class="w"> </span><span class="k">for</span><span class="w"> </span>Go<span class="w"> </span><span class="nb">source</span><span class="w"> </span>text.
+<span class="w">     </span>token<span class="w">          </span>Package<span class="w"> </span>token<span class="w"> </span>defines<span class="w"> </span>constants<span class="w"> </span>representing<span class="w"> </span>the<span class="w"> </span>lexical<span class="w"> </span>tokens<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>Go<span class="w"> </span>programming<span class="w"> </span>language<span class="w"> </span>and<span class="w"> </span>basic<span class="w"> </span>operations<span class="w"> </span>on<span class="w"> </span>tokens<span class="w"> </span><span class="o">(</span>printing,<span class="w"> </span>predicates<span class="o">)</span>.
+<span class="w">     </span>types<span class="w">          </span>Package<span class="w"> </span>types<span class="w"> </span>declares<span class="w"> </span>the<span class="w"> </span>data<span class="w"> </span>types<span class="w"> </span>and<span class="w"> </span>implements<span class="w"> </span>the<span class="w"> </span>algorithms<span class="w"> </span><span class="k">for</span><span class="w"> </span>type-checking<span class="w"> </span>of<span class="w"> </span>Go<span class="w"> </span>packages.
+<span class="nb">hash</span><span class="w">            </span>hash包提供hash函数的接口.
+<span class="w">     </span>adler32<span class="w">            </span>adler32包实现了Adler-32校验和算法，参见RFC<span class="w"> </span><span class="m">1950</span>.
+<span class="w">     </span>crc32<span class="w">          </span>crc32包实现了32位循环冗余校验（CRC-32）的校验和算法.
+<span class="w">     </span>crc64<span class="w">          </span>Package<span class="w"> </span>crc64<span class="w"> </span>implements<span class="w"> </span>the<span class="w"> </span><span class="m">64</span>-bit<span class="w"> </span>cyclic<span class="w"> </span>redundancy<span class="w"> </span>check,<span class="w"> </span>or<span class="w"> </span>CRC-64,<span class="w"> </span>checksum.
+<span class="w">     </span>fnv<span class="w">            </span>fnv包实现了FNV-1和FNV-1a（非加密hash函数）.
+html<span class="w">            </span>html包提供了用于转义和解转义HTML文本的函数.
+<span class="w">     </span>template<span class="w">           </span>template包（html/template）实现了数据驱动的模板，用于生成可对抗代码注入的安全HTML输出.
+image<span class="w">           </span>image实现了基本的2D图片库.
+<span class="w">     </span>color<span class="w">          </span>color<span class="w"> </span>包实现了基本的颜色库。
+<span class="w">          </span>palette<span class="w">           </span>palette包提供了标准的调色板.
+<span class="w">     </span>draw<span class="w">           </span>draw<span class="w"> </span>包提供组装图片的方法.
+<span class="w">     </span>gif<span class="w">            </span>gif<span class="w"> </span>包实现了GIF图片的解码.
+<span class="w">     </span>jpeg<span class="w">           </span>jpeg包实现了jpeg格式图像的编解码.
+<span class="w">     </span>png<span class="w">            </span>png<span class="w"> </span>包实现了PNG图像的编码和解码.
+index<span class="w">           </span>
+<span class="w">     </span>suffixarray<span class="w">            </span>suffixarrayb包通过使用内存中的后缀树实现了对数级时间消耗的子字符串搜索.
+io<span class="w">          </span>io<span class="w"> </span>包为I/O原语提供了基础的接口.
+<span class="w">     </span>ioutil<span class="w">         </span>ioutil<span class="w"> </span>实现了一些I/O的工具函数。
+log<span class="w">         </span>log包实现了简单的日志服务.
+<span class="w">     </span>syslog<span class="w">         </span>syslog包提供一个简单的系统日志服务的接口.
+math<span class="w">            </span>math<span class="w"> </span>包提供了基本常数和数学函数。
+<span class="w">     </span>big<span class="w">            </span>big<span class="w"> </span>包实现了（大数的）高精度运算.
+<span class="w">     </span>cmplx<span class="w">          </span>cmplx<span class="w"> </span>包为复数提供了基本的常量和数学函数.
+<span class="w">     </span>rand<span class="w">           </span>rand<span class="w"> </span>包实现了伪随机数生成器.
+mime<span class="w">            </span>mime实现了MIME的部分规定.
+<span class="w">     </span>multipart<span class="w">          </span>multipart实现了MIME的multipart解析，参见RFC<span class="w"> </span><span class="m">2046</span>.
+<span class="w">     </span>quotedprintable<span class="w">            </span>Package<span class="w"> </span>quotedprintable<span class="w"> </span>implements<span class="w"> </span>quoted-printable<span class="w"> </span>encoding<span class="w"> </span>as<span class="w"> </span>specified<span class="w"> </span>by<span class="w"> </span>RFC<span class="w"> </span><span class="m">2045</span>.
+net<span class="w">         </span>net包提供了可移植的网络I/O接口，包括TCP/IP、UDP、域名解析和Unix域socket.
+<span class="w">     </span>http<span class="w">           </span>http包提供了HTTP客户端和服务端的实现.
+<span class="w">          </span>cgi<span class="w">           </span>cgi<span class="w"> </span>包实现了RFC3875协议描述的CGI（公共网关接口）.
+<span class="w">          </span>cookiejar<span class="w">         </span>cookiejar包实现了保管在内存中的符合RFC<span class="w"> </span>6265标准的http.CookieJar接口.
+<span class="w">          </span>fcgi<span class="w">          </span>fcgi<span class="w"> </span>包实现了FastCGI协议.
+<span class="w">          </span>httptest<span class="w">          </span>httptest<span class="w"> </span>包提供HTTP测试的单元工具.
+<span class="w">          </span>httptrace<span class="w">         </span>Package<span class="w"> </span>httptrace<span class="w"> </span>provides<span class="w"> </span>mechanisms<span class="w"> </span>to<span class="w"> </span>trace<span class="w"> </span>the<span class="w"> </span>events<span class="w"> </span>within<span class="w"> </span>HTTP<span class="w"> </span>client<span class="w"> </span>requests.
+<span class="w">          </span>httputil<span class="w">          </span>httputil包提供了HTTP公用函数，是对net/http包的更常见函数的补充.
+<span class="w">          </span>pprof<span class="w">         </span>pprof<span class="w"> </span>包通过提供HTTP服务返回runtime的统计数据，这个数据是以pprof可视化工具规定的返回格式返回的.
+<span class="w">     </span>mail<span class="w">           </span>mail<span class="w"> </span>包实现了解析邮件消息的功能.
+<span class="w">     </span>rpc<span class="w">            </span>rpc<span class="w"> </span>包提供了一个方法来通过网络或者其他的I/O连接进入对象的外部方法.
+<span class="w">          </span>jsonrpc<span class="w">           </span>jsonrpc<span class="w"> </span>包使用了rpc的包实现了一个JSON-RPC的客户端解码器和服务端的解码器.
+<span class="w">     </span>smtp<span class="w">           </span>smtp包实现了简单邮件传输协议（SMTP），参见RFC<span class="w"> </span><span class="m">5321</span>.
+<span class="w">     </span>textproto<span class="w">          </span>textproto实现了对基于文本的请求/回复协议的一般性支持，包括HTTP、NNTP和SMTP.
+<span class="w">     </span>url<span class="w">            </span>url包解析URL并实现了查询的逸码，参见RFC<span class="w"> </span><span class="m">3986</span>.
+os<span class="w">          </span>os包提供了操作系统函数的不依赖平台的接口.
+<span class="w">     </span><span class="nb">exec</span><span class="w">           </span>exec包执行外部命令.
+<span class="w">     </span>signal<span class="w">         </span>signal包实现了对输入信号的访问.
+<span class="w">     </span>user<span class="w">           </span>user包允许通过名称或ID查询用户帐户.
+path<span class="w">            </span>path实现了对斜杠分隔的路径的实用操作函数.
+<span class="w">     </span>filepath<span class="w">           </span>filepath包实现了兼容各操作系统的文件路径的实用操作函数.
+plugin<span class="w">          </span>Package<span class="w"> </span>plugin<span class="w"> </span>implements<span class="w"> </span>loading<span class="w"> </span>and<span class="w"> </span>symbol<span class="w"> </span>resolution<span class="w"> </span>of<span class="w"> </span>Go<span class="w"> </span>plugins.
+reflect<span class="w">         </span>reflect包实现了运行时反射，允许程序操作任意类型的对象.
+regexp<span class="w">          </span>regexp包实现了正则表达式搜索.
+<span class="w">     </span>syntax<span class="w">         </span>Package<span class="w"> </span>syntax<span class="w"> </span>parses<span class="w"> </span>regular<span class="w"> </span>expressions<span class="w"> </span>into<span class="w"> </span>parse<span class="w"> </span>trees<span class="w"> </span>and<span class="w"> </span>compiles<span class="w"> </span>parse<span class="w"> </span>trees<span class="w"> </span>into<span class="w"> </span>programs.
+runtime<span class="w">         </span>TODO<span class="o">(</span>osc<span class="o">)</span>:<span class="w"> </span>需更新<span class="w"> </span>runtime<span class="w"> </span>包含与Go的运行时系统进行交互的操作，例如用于控制Go程的函数.
+<span class="w">     </span>cgo<span class="w">            </span>cgo<span class="w"> </span>包含有<span class="w"> </span>cgo<span class="w"> </span>工具生成的代码的运行时支持.
+<span class="w">     </span>debug<span class="w">          </span>debug<span class="w"> </span>包含有程序在运行时调试其自身的功能.
+<span class="w">     </span>pprof<span class="w">          </span>pprof<span class="w"> </span>包按照可视化工具<span class="w"> </span>pprof<span class="w"> </span>所要求的格式写出运行时分析数据.
+<span class="w">     </span>race<span class="w">           </span>race<span class="w"> </span>包实现了数据竞争检测逻辑.
+<span class="w">     </span>trace<span class="w">          </span>Go<span class="w"> </span>execution<span class="w"> </span>tracer.
+sort<span class="w">            </span>sort<span class="w"> </span>包为切片及用户定义的集合的排序操作提供了原语.
+strconv<span class="w">         </span>strconv包实现了基本数据类型和其字符串表示的相互转换.
+strings<span class="w">         </span>strings包实现了用于操作字符的简单函数.
+sync<span class="w">            </span>sync<span class="w"> </span>包提供了互斥锁这类的基本的同步原语.
+<span class="w">     </span>atomic<span class="w">         </span>atomic<span class="w"> </span>包提供了底层的原子性内存原语，这对于同步算法的实现很有用.
+syscall<span class="w">         </span>Package<span class="w"> </span>syscall<span class="w"> </span>contains<span class="w"> </span>an<span class="w"> </span>interface<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>low-level<span class="w"> </span>operating<span class="w"> </span>system<span class="w"> </span>primitives.
+testing<span class="w">         </span>Package<span class="w"> </span>testing<span class="w"> </span>provides<span class="w"> </span>support<span class="w"> </span><span class="k">for</span><span class="w"> </span>automated<span class="w"> </span>testing<span class="w"> </span>of<span class="w"> </span>Go<span class="w"> </span>packages.
+<span class="w">     </span>iotest<span class="w">         </span>Package<span class="w"> </span>iotest<span class="w"> </span>implements<span class="w"> </span>Readers<span class="w"> </span>and<span class="w"> </span>Writers<span class="w"> </span>useful<span class="w"> </span>mainly<span class="w"> </span><span class="k">for</span><span class="w"> </span>testing.
+<span class="w">     </span>quick<span class="w">          </span>Package<span class="w"> </span>quick<span class="w"> </span>implements<span class="w"> </span>utility<span class="w"> </span>functions<span class="w"> </span>to<span class="w"> </span><span class="nb">help</span><span class="w"> </span>with<span class="w"> </span>black<span class="w"> </span>box<span class="w"> </span>testing.
+text<span class="w">            </span>
+<span class="w">     </span>scanner<span class="w">            </span>scanner包提供对utf-8文本的token扫描服务.
+<span class="w">     </span>tabwriter<span class="w">          </span>tabwriter包实现了写入过滤器（tabwriter.Writer），可以将输入的缩进修正为正确的对齐文本.
+<span class="w">     </span>template<span class="w">           </span>template包实现了数据驱动的用于生成文本输出的模板.
+<span class="w">          </span>parse<span class="w">         </span>Package<span class="w"> </span>parse<span class="w"> </span>builds<span class="w"> </span>parse<span class="w"> </span>trees<span class="w"> </span><span class="k">for</span><span class="w"> </span>templates<span class="w"> </span>as<span class="w"> </span>defined<span class="w"> </span>by<span class="w"> </span>text/template<span class="w"> </span>and<span class="w"> </span>html/template.
+<span class="nb">time</span><span class="w">            </span>time包提供了时间的显示和测量用的函数.
+unicode<span class="w">         </span>unicode<span class="w"> </span>包提供了一些测试Unicode码点属性的数据和函数.
+<span class="w">     </span>utf16<span class="w">          </span>utf16<span class="w"> </span>包实现了对UTF-16序列的编码和解码。
+<span class="w">     </span>utf8<span class="w">           </span>utf8<span class="w"> </span>包实现了支持UTF-8文本编码的函数和常量.
 unsafe
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

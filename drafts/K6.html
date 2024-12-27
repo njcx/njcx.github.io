@@ -105,39 +105,39 @@ var _hmt = _hmt || [];
     <h4>介绍</h4>
 <h4>安装</h4>
 <p>笔者电脑： Mac + VMware + winxp + masm</p>
-<div class="highlight"><pre><span></span>masm <span class="k">for</span> windows版本
+<div class="highlight"><pre><span></span><code>masm<span class="w"> </span><span class="k">for</span><span class="w"> </span>windows版本
 
 http://sqdownb.onlinedown.net/down/masm2015.rar
 
 深度技术_Windows_XP_SP3_完美精简安装版小盘_v6
 
 https://weedser.ctfile.com/file/59675503
-</pre></div>
-<div class="highlight"><pre><span></span><span class="p">;</span>计算2^12
-assume cs:code
-code segment
-start:  mov ax,2
-        mov cx,11
-      p:add,ax,ax       
-        loop p<span class="p">;</span>p是标号
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">;</span>计算2^12
+assume<span class="w"> </span>cs:code
+code<span class="w"> </span>segment
+start:<span class="w">  </span>mov<span class="w"> </span>ax,2
+<span class="w">        </span>mov<span class="w"> </span>cx,11
+<span class="w">      </span>p:add,ax,ax<span class="w">       </span>
+<span class="w">        </span>loop<span class="w"> </span>p<span class="p">;</span>p是标号
 
-       mov ax,4c00H<span class="p">;</span>masm默认数字是十进制
-       int 21H
-code ends
-end start
+<span class="w">       </span>mov<span class="w"> </span>ax,4c00H<span class="p">;</span>masm默认数字是十进制
+<span class="w">       </span>int<span class="w"> </span>21H
+code<span class="w"> </span>ends
+end<span class="w"> </span>start
 
 <span class="p">;</span>编程计算123*236，结果放在ax中
-assume cs:code
-code segment
-start:mov ax,0
-      mov cx,236
-   an:add ax,123
-     loop an
-      mov ax,4c00H
-      int 21H
-code ends
-end start
-</pre></div>
+assume<span class="w"> </span>cs:code
+code<span class="w"> </span>segment
+start:mov<span class="w"> </span>ax,0
+<span class="w">      </span>mov<span class="w"> </span>cx,236
+<span class="w">   </span>an:add<span class="w"> </span>ax,123
+<span class="w">     </span>loop<span class="w"> </span>an
+<span class="w">      </span>mov<span class="w"> </span>ax,4c00H
+<span class="w">      </span>int<span class="w"> </span>21H
+code<span class="w"> </span>ends
+end<span class="w"> </span>start
+</code></pre></div>
 <p><img alt="asm" class="img-fluid" src="../images/asm.jpeg"/></p>
   </div>
 </article>

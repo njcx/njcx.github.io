@@ -103,12 +103,12 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>工具</h4>
-<div class="highlight"><pre><span></span>https://github.com/poornigga/tfn2k.git
-https://github.com/cxueqin/falcon.git  //tfn2k web版本
+<div class="highlight"><pre><span></span><code>https://github.com/poornigga/tfn2k.git
+https://github.com/cxueqin/falcon.git<span class="w">  </span>//tfn2k<span class="w"> </span>web版本
 https://github.com/GinjaChris/pentmenu.git
 https://github.com/OffensivePython/Saddam.git
 https://github.com/649/Memcrashed-DDoS-Exploit
-</pre></div>
+</code></pre></div>
 <h4>TCP</h4>
 <ul>
 <li>SYN FLOOD </li>
@@ -172,7 +172,7 @@ STACK tweaking：管理员可以调整TCP堆栈以减缓SYN泛洪攻击的影响
 <p>指纹学习是通过分析客户端向服务器发送的UDP报文载荷是否有大量的一致内容，来判定这个UDP报文是否异常。防火墙对到达指定目的地的UDP报文进行统计，当UDP报文达到告警阈值时，开始对UDP报文的指纹进行学习。如果相同的特征频繁出现，就会被学习成指纹，后续命中指纹的报文判定这是攻击报文，作为攻击特征进行过滤。</p>
 <p>防火墙防御UDP Flood攻击主要有两种方式：限流和指纹学习，两种方式各有利弊。限流方式属于暴力型，可以很快将UDP流量限制在一个合理的范围内，但是不分青红皂白，超过就丢，可能会丢弃一些正常报文；而指纹学习属于理智型，不会随意丢弃报文，但是发生攻击后需要有个指纹学习的过程。目前，指纹学习功能是针对UDP Flood攻击的主流防御手段，在华为防火墙产品中广泛应用。</p>
 <p>细化的流程大概就是：</p>
-<div class="highlight"><pre><span></span>第一步进行报文合法性检查,过滤一些畸形报文攻击;
+<div class="highlight"><pre><span></span><code>第一步进行报文合法性检查,过滤一些畸形报文攻击;
 第二步进行特征过滤,即基于报文特征匹配进行过滤,主要过滤一些UDP Flood和UDP反射放大攻击;
 第三步进行虚假源认证,可过滤一些虚假源发起的TCP SYN Flood;
 第四步进行应用层源认证,过滤各类型的应用层攻击,例如DNS Query Flood, HTTP Get Flood.
@@ -184,7 +184,7 @@ HTTP Post Flood. HTTPS Flood等;
 Flood;
 第七步进行智能限速,像ICMP没有对应业务系统，可以直接限速。完成前六步的过滤后流量依然超过链路负载阈值
 时,利用基于各种协议的精细化限速使得流量大小稳定在安全范围内。
-</pre></div>
+</code></pre></div>
 <h4>使用DPDK进行DDOS检测</h4>
 <p>DPDK全称Intel Data Plane Development Kit，是intel提供的数据平面开发工具集，为Intel architecture（IA）处理器架构下用户空间高效的数据包处理提供库函数和驱动的支持。通俗地说，就是一个用来进行包数据处理加速的软件库。</p>
 <p>DPDK不同于Linux系统以通用性设计为目的，而是专注于网络应用中数据包的高性能处理。具体体现在DPDK应用程序是运行在用户空间上利用自身提供的数据平面库来收发数据包，绕过了Linux内核协议栈对数据包处理过程。它不是一个用户可以直接建立应用程序的完整产品，不包含需要与控制层（包括内核和协议堆栈）进行交互的工具。</p>
@@ -210,57 +210,57 @@ DPDK利用线程的CPU亲和绑定机制使得特定任务能够被指定在某�
 核上执行,这样可避免线程在不同核之间频繁转换而导致的因cache miss和cache
 write back造成的性能损失。</p>
 <p>检测是否为 slow header 攻击的demo，通过是否包含连续的两个 \r\n 来进行判断</p>
-<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">process_http_pkt</span><span class="p">(</span>
-    <span class="k">struct</span> <span class="n">FeatureExtractCoreConfig</span><span class="o">*</span> <span class="n">config</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">src_ip</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">http_payload_len</span><span class="p">,</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">http_payload</span><span class="p">){</span>
-    <span class="kt">uint8_t</span> <span class="n">atk_type</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="kt">char</span><span class="o">*</span> <span class="n">find</span> <span class="o">=</span> <span class="n">strstr</span><span class="p">(</span><span class="n">http_payload</span><span class="p">,</span> <span class="s">"</span><span class="se">\r\n\r\n</span><span class="s">"</span><span class="p">);</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">find</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">){</span>
-        <span class="n">atk_type</span> <span class="o">=</span> <span class="n">ATK_TYPE_HTTP_POST</span><span class="p">;</span>
-    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-        <span class="k">switch</span> <span class="p">(</span><span class="n">http_payload</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
-        <span class="k">case</span> <span class="sc">'G'</span><span class="o">:</span>
-            <span class="n">atk_type</span> <span class="o">=</span> <span class="n">ATK_TYPE_HTTP_GET</span><span class="p">;</span>
-            <span class="k">break</span><span class="p">;</span>
-        <span class="k">case</span> <span class="sc">'P'</span><span class="o">:</span>
-            <span class="n">atk_type</span> <span class="o">=</span> <span class="n">ATK_TYPE_HTTP_POST</span><span class="p">;</span>
-            <span class="k">break</span><span class="p">;</span>
-        <span class="k">default</span><span class="o">:</span>
-            <span class="k">break</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">atk_type</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
-        <span class="n">update_feature</span><span class="p">(</span><span class="n">config</span><span class="o">-&gt;</span><span class="n">featureTableList</span><span class="p">[</span><span class="n">atk_type</span><span class="p">],</span> <span class="n">src_ip</span><span class="p">,</span> <span class="n">http_payload_len</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">process_http_pkt</span><span class="p">(</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">FeatureExtractCoreConfig</span><span class="o">*</span><span class="w"> </span><span class="n">config</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">src_ip</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">http_payload_len</span><span class="p">,</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">http_payload</span><span class="p">){</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">atk_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strstr</span><span class="p">(</span><span class="n">http_payload</span><span class="p">,</span><span class="w"> </span><span class="s">"</span><span class="se">\r\n\r\n</span><span class="s">"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">find</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">){</span>
+<span class="w">        </span><span class="n">atk_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ATK_TYPE_HTTP_POST</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="k">else</span><span class="p">{</span>
+<span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">http_payload</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">'G'</span><span class="p">:</span>
+<span class="w">            </span><span class="n">atk_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ATK_TYPE_HTTP_GET</span><span class="p">;</span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">'P'</span><span class="p">:</span>
+<span class="w">            </span><span class="n">atk_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ATK_TYPE_HTTP_POST</span><span class="p">;</span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">default</span><span class="o">:</span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">atk_type</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-1</span><span class="p">){</span>
+<span class="w">        </span><span class="n">update_feature</span><span class="p">(</span><span class="n">config</span><span class="o">-&gt;</span><span class="n">featureTableList</span><span class="p">[</span><span class="n">atk_type</span><span class="p">],</span><span class="w"> </span><span class="n">src_ip</span><span class="p">,</span><span class="w"> </span><span class="n">http_payload_len</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>开源的基于DPDK的 抗D工具：</p>
-<div class="highlight"><pre><span></span>https://github.com/AltraMayor/gatekeeper
-</pre></div>
+<div class="highlight"><pre><span></span><code>https://github.com/AltraMayor/gatekeeper
+</code></pre></div>
 <h4>使用XDP进行DDOS拦截</h4>
 <p>在计算机网络中，Hook钩子在操作系统中用于在调用前或执行过程中拦截网络数据包。Linux内核中暴露了多个钩子，BPF程序可以连接到这些钩子上，实现数据收集和自定义事件处理。XDP全称为eXpress Data Path，是Linux内核网络栈的最底层。它只存在于RX路径上，允许在网络设备驱动内部网络堆栈中数据来源最早的地方进行数据包处理，在特定模式下可以在操作系统分配内存（skb）之前就已经完成处理。XDP暴露了一个可以加载BPF程序的网络钩子。在这个钩子中，程序能够对传入的数据包进行任意修改和快速决策，避免了内核内部处理带来的额外开销。基于XDP实现高效的防DDoS攻击，其本质上就是实现尽可能早地实现「丢包」，而不去消耗系统资源创建完整的网络栈链路，即「early drop」。</p>
 <p><img alt="ddos" class="img-fluid" src="../images/imag19e.png"/></p>
 <p>XDP暴露的钩子具有特定的输入上下文，它是单一输入参数。它的类型为 struct xdp_md，在内核头文件bpf.h 中定义，具体字段如下所示：</p>
-<div class="highlight"><pre><span></span> */
-struct xdp_md <span class="o">{</span>
-  __u32 data<span class="p">;</span>
-  __u32 data_end<span class="p">;</span>
-  __u32 data_meta<span class="p">;</span>
-  /* Below access go through struct xdp_rxq_info */
-  __u32 ingress_ifindex<span class="p">;</span> /* rxq-&gt;dev-&gt;ifindex */
-  __u32 rx_queue_index<span class="p">;</span>  /* rxq-&gt;queue_index  */
+<div class="highlight"><pre><span></span><code><span class="w"> </span>*/
+struct<span class="w"> </span>xdp_md<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>__u32<span class="w"> </span>data<span class="p">;</span>
+<span class="w">  </span>__u32<span class="w"> </span>data_end<span class="p">;</span>
+<span class="w">  </span>__u32<span class="w"> </span>data_meta<span class="p">;</span>
+<span class="w">  </span>/*<span class="w"> </span>Below<span class="w"> </span>access<span class="w"> </span>go<span class="w"> </span>through<span class="w"> </span>struct<span class="w"> </span>xdp_rxq_info<span class="w"> </span>*/
+<span class="w">  </span>__u32<span class="w"> </span>ingress_ifindex<span class="p">;</span><span class="w"> </span>/*<span class="w"> </span>rxq-&gt;dev-&gt;ifindex<span class="w"> </span>*/
+<span class="w">  </span>__u32<span class="w"> </span>rx_queue_index<span class="p">;</span><span class="w">  </span>/*<span class="w"> </span>rxq-&gt;queue_index<span class="w">  </span>*/
 <span class="o">}</span><span class="p">;</span>
-</pre></div>
+</code></pre></div>
 <p>程序执行时，data和data_end字段分别是数据包开始和结束的指针，它们是用来获取和解析传来的数据，第三个值是data_meta指针，初始阶段它是一个空闲的内存地址，供XDP程序与其他层交换数据包元数据时使用。最后两个字段分别是接收数据包的接口和对应的RX队列的索引。当访问这两个值时，BPF代码会在内核内部重写，以访问实际持有这些值的内核结构struct xdp_rxq_info。</p>
 <p>在处理完一个数据包后，XDP程序会返回一个动作（Action）作为输出，它代表了程序退出后对数据包应该做什么样的最终裁决，也是在内核头文件bpf.h 定义了以下5种动作类型：</p>
-<div class="highlight"><pre><span></span>enum xdp_action <span class="o">{</span>
-  <span class="nv">XDP_ABORTED</span> <span class="o">=</span> <span class="m">0</span>, // Drop packet <span class="k">while</span> raising an exception
-  XDP_DROP, // Drop packet silently
-  XDP_PASS, // Allow further processing by the kernel stack
-  XDP_TX, // Transmit from the interface it came from
-  XDP_REDIRECT, // Transmit packet from another interface
+<div class="highlight"><pre><span></span><code>enum<span class="w"> </span>xdp_action<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="nv">XDP_ABORTED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>,<span class="w"> </span>//<span class="w"> </span>Drop<span class="w"> </span>packet<span class="w"> </span><span class="k">while</span><span class="w"> </span>raising<span class="w"> </span>an<span class="w"> </span>exception
+<span class="w">  </span>XDP_DROP,<span class="w"> </span>//<span class="w"> </span>Drop<span class="w"> </span>packet<span class="w"> </span>silently
+<span class="w">  </span>XDP_PASS,<span class="w"> </span>//<span class="w"> </span>Allow<span class="w"> </span>further<span class="w"> </span>processing<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>kernel<span class="w"> </span>stack
+<span class="w">  </span>XDP_TX,<span class="w"> </span>//<span class="w"> </span>Transmit<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>interface<span class="w"> </span>it<span class="w"> </span>came<span class="w"> </span>from
+<span class="w">  </span>XDP_REDIRECT,<span class="w"> </span>//<span class="w"> </span>Transmit<span class="w"> </span>packet<span class="w"> </span>from<span class="w"> </span>another<span class="w"> </span>interface
 <span class="o">}</span><span class="p">;</span>
-</pre></div>
+</code></pre></div>
 <p>可以看出这个动作的本质是一个int值。前面4个动作是不需要参数的，最后一个动作需要额外指定一个NIC网络设备名称，作为转发这个数据包的目的地。</p>
 <p>启用XDP后，网络包传输路径是这样的：</p>
 <p><img alt="ddos" class="img-fluid" src="../images/ima123ge.png"/></p>
@@ -269,51 +269,51 @@ offload模式，XDP程序直接hook到可编程网卡硬件设备上，与其他
 native模式，XDP程序hook到网络设备的驱动上，它是XDP最原始的模式，因为还是先于操作系统进行数据处理，它的执行性能还是很高的，当然你的网络驱动需要支持，目前已知的有i40e, nfp, mlx系列和ixgbe系列。
 generic模式，这是操作系统内核提供的通用 XDP兼容模式，它可以在没有硬件或驱动程序支持的主机上执行XDP程序。在这种模式下，XDP的执行是由操作系统本身来完成的，以模拟native模式执行。好处是，只要内核够高，人人都能玩XDP；缺点是由于是仿真执行，需要分配额外的套接字缓冲区（SKB），导致处理性能下降，跟native模式在10倍左右的差距。
 当前主流内核版本的Linux系统在加载XDP BPF程序时，会自动在native和generic这两种模式选择，完成加载后，可以使用ip命令行工具来查看选择的模式。</p>
-<div class="highlight"><pre><span></span>struct bpf_map_def SEC<span class="o">(</span><span class="s2">"maps"</span><span class="o">)</span> <span class="nv">c_map</span> <span class="o">=</span> <span class="o">{</span>
-    .type <span class="o">=</span> BPF_MAP_TYP_PERCPU_ARRAY,
-    .key_size <span class="o">=</span> sizeof<span class="o">(</span>int<span class="o">)</span>,
-    .value_size <span class="o">=</span> sizeof<span class="o">(</span>long<span class="o">)</span>,
-    .max_entries <span class="o">=</span> <span class="m">256</span>,
+<div class="highlight"><pre><span></span><code>struct<span class="w"> </span>bpf_map_def<span class="w"> </span>SEC<span class="o">(</span><span class="s2">"maps"</span><span class="o">)</span><span class="w"> </span><span class="nv">c_map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>.type<span class="w"> </span><span class="o">=</span><span class="w"> </span>BPF_MAP_TYP_PERCPU_ARRAY,
+<span class="w">    </span>.key_size<span class="w"> </span><span class="o">=</span><span class="w"> </span>sizeof<span class="o">(</span>int<span class="o">)</span>,
+<span class="w">    </span>.value_size<span class="w"> </span><span class="o">=</span><span class="w"> </span>sizeof<span class="o">(</span>long<span class="o">)</span>,
+<span class="w">    </span>.max_entries<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">256</span>,
 <span class="o">}</span><span class="p">;</span>
 
-void sample_packet<span class="o">(</span>void *data, void *data_end<span class="o">)</span> <span class="o">{</span>
-    // mark the packet to be sampled
+void<span class="w"> </span>sample_packet<span class="o">(</span>void<span class="w"> </span>*data,<span class="w"> </span>void<span class="w"> </span>*data_end<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span>mark<span class="w"> </span>the<span class="w"> </span>packet<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>sampled
 <span class="o">}</span>
 
-static inline void update_rule_counters<span class="o">(</span>int rule_id<span class="o">)</span> <span class="o">{</span>
-    long *value <span class="o">=</span>
-    bpf_map_lookup_elem<span class="o">(</span><span class="p">&amp;</span>c_map, <span class="p">&amp;</span>rule_id<span class="o">)</span><span class="p">;</span>
-    <span class="k">if</span> <span class="o">(</span>value<span class="o">)</span>
-    *value +<span class="o">=</span> <span class="m">1</span><span class="p">;</span>
+static<span class="w"> </span>inline<span class="w"> </span>void<span class="w"> </span>update_rule_counters<span class="o">(</span>int<span class="w"> </span>rule_id<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>long<span class="w"> </span>*value<span class="w"> </span><span class="o">=</span>
+<span class="w">    </span>bpf_map_lookup_elem<span class="o">(</span><span class="p">&amp;</span>c_map,<span class="w"> </span><span class="p">&amp;</span>rule_id<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>value<span class="o">)</span>
+<span class="w">    </span>*value<span class="w"> </span>+<span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">;</span>
 <span class="o">}</span>
-static inline int rule_1<span class="o">(</span>void *data, void *data_end<span class="o">)</span> <span class="o">{</span>
-    // <span class="k">if</span> any of the rule conditions is not met
-    // <span class="k">return</span> XDP_PASS<span class="p">;</span>
-    update_rule_counters<span class="o">(</span><span class="m">1</span><span class="o">)</span><span class="p">;</span>
-    sample_packet<span class="o">(</span>data, data_end<span class="o">)</span><span class="p">;</span>
-    <span class="k">return</span> XDP_DROP<span class="p">;</span>
+static<span class="w"> </span>inline<span class="w"> </span>int<span class="w"> </span>rule_1<span class="o">(</span>void<span class="w"> </span>*data,<span class="w"> </span>void<span class="w"> </span>*data_end<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span><span class="k">if</span><span class="w"> </span>any<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>rule<span class="w"> </span>conditions<span class="w"> </span>is<span class="w"> </span>not<span class="w"> </span>met
+<span class="w">    </span>//<span class="w"> </span><span class="k">return</span><span class="w"> </span>XDP_PASS<span class="p">;</span>
+<span class="w">    </span>update_rule_counters<span class="o">(</span><span class="m">1</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>sample_packet<span class="o">(</span>data,<span class="w"> </span>data_end<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>XDP_DROP<span class="p">;</span>
 <span class="o">}</span>
-// static inline int rule_2<span class="o">(</span>..<span class="o">)</span>
+//<span class="w"> </span>static<span class="w"> </span>inline<span class="w"> </span>int<span class="w"> </span>rule_2<span class="o">(</span>..<span class="o">)</span>
 SEC<span class="o">(</span><span class="s2">"xdp1"</span><span class="o">)</span>
-int xdp_prog<span class="o">(</span>struct xdp_md *ctx<span class="o">)</span> <span class="o">{</span>
-    void *data <span class="o">=</span> <span class="o">(</span>void *<span class="o">)(</span>long<span class="o">)</span>ctx-&gt;data<span class="p">;</span>
-    void *data_end <span class="o">=</span> <span class="o">(</span>void *<span class="o">)(</span>long<span class="o">)</span>ctx-&gt;data_end<span class="p">;</span>
-    int ret<span class="p">;</span>
-    <span class="nv">ret</span> <span class="o">=</span> rule_1<span class="o">(</span>data, data_end<span class="o">)</span><span class="p">;</span>
-    <span class="k">if</span> <span class="o">(</span>ret !<span class="o">=</span> XDP_PASS<span class="o">)</span>
-    <span class="k">return</span> ret<span class="p">;</span>
-    <span class="nv">ret</span> <span class="o">=</span> rule_2<span class="o">(</span>data, data_end<span class="o">)</span><span class="p">;</span>
-    <span class="k">if</span> <span class="o">(</span>ret !<span class="o">=</span> XDP_PASS<span class="o">)</span>
-    <span class="k">return</span> ret<span class="p">;</span>
-    //..
-    <span class="k">return</span> XDP_PASS<span class="p">;</span>
+int<span class="w"> </span>xdp_prog<span class="o">(</span>struct<span class="w"> </span>xdp_md<span class="w"> </span>*ctx<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>void<span class="w"> </span>*data<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)(</span>long<span class="o">)</span>ctx-&gt;data<span class="p">;</span>
+<span class="w">    </span>void<span class="w"> </span>*data_end<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)(</span>long<span class="o">)</span>ctx-&gt;data_end<span class="p">;</span>
+<span class="w">    </span>int<span class="w"> </span>ret<span class="p">;</span>
+<span class="w">    </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rule_1<span class="o">(</span>data,<span class="w"> </span>data_end<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ret<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>XDP_PASS<span class="o">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>ret<span class="p">;</span>
+<span class="w">    </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rule_2<span class="o">(</span>data,<span class="w"> </span>data_end<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ret<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>XDP_PASS<span class="o">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>ret<span class="p">;</span>
+<span class="w">    </span>//..
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>XDP_PASS<span class="p">;</span>
 <span class="o">}</span>
-</pre></div>
+</code></pre></div>
 <p>XDP的程序在这里的主要作用是完成early drop ，而不是识别，相当于执行者，通过我们的分析工具下发拦截指令，并实施拦截。大体的玩法就是：</p>
-<div class="highlight"><pre><span></span>1, 自研的模块负责识别DDOS攻击包
-2, 自研的规则下发拦截规则，完成告警并记录
-3, XDP负责阻止黑名单里的IP继续访问
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="n">自研的模块负责识别DDOS攻击包</span>
+<span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="n">自研的规则下发拦截规则</span><span class="err">，</span><span class="n">完成告警并记录</span>
+<span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="n">XDP负责阻止黑名单里的IP继续访问</span>
+</code></pre></div>
 <p>DDOS大体介绍了一遍，了解即可，上面都是脏活累活即可，交给专门做防DDoS的厂商去做，一般都直接使用CDN和高防即可，比如，知道创宇的加速乐，腾讯云的大禹等等。</p>
   </div>
 </article>

@@ -106,223 +106,223 @@ var _hmt = _hmt || [];
 <p>Redis是很火的一个Key-Value数据库,它以优异的性能得到了广泛的应用.Redis是一个内存数据库，但在磁盘数据库上是持久的，它有5种数据类型，string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)，它所有的操作都是原子类型的,可以应对复杂的生产环境,可用于多种用例，如：缓存，消息队列，应用程序中短期数据。</p>
 <h4>安装</h4>
 <p>Redis 可以编译安装,也可以apt-get /yum安装,一般编译安装的版本比较新一些</p>
-<div class="highlight"><pre><span></span>centos/rhce : yum install redis -y
-</pre></div>
-<div class="highlight"><pre><span></span>debian/ubuntu : sudo apt-get install redis-server -y
-</pre></div>
+<div class="highlight"><pre><span></span><code>centos/rhce<span class="w"> </span>:<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>redis<span class="w"> </span>-y
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>debian/ubuntu<span class="w"> </span>:<span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>redis-server<span class="w"> </span>-y
+</code></pre></div>
 <p>编译安装,</p>
-<div class="highlight"><pre><span></span>wget http://download.redis.io/releases/redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> tar -xzvf redis-3.2.9.tar.gz <span class="o">&amp;&amp;</span> <span class="nb">cd</span> redis-3.2.9
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>http://download.redis.io/releases/redis-3.2.9.tar.gz<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>tar<span class="w"> </span>-xzvf<span class="w"> </span>redis-3.2.9.tar.gz<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>redis-3.2.9
 
-make <span class="o">&amp;&amp;</span> make <span class="nv">PREFIX</span><span class="o">=</span>/usr/local/redis install <span class="o">&amp;&amp;</span> mkdir /usr/local/redis/etc/
+make<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span><span class="nv">PREFIX</span><span class="o">=</span>/usr/local/redis<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdir<span class="w"> </span>/usr/local/redis/etc/
 
-cp redis.conf /usr/local/redis/etc/ <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /usr/local/redis/bin/ <span class="o">&amp;&amp;</span> cp redis-benchmark redis-cli redis-server /usr/bin/
-</pre></div>
+cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/usr/local/redis/bin/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>redis-benchmark<span class="w"> </span>redis-cli<span class="w"> </span>redis-server<span class="w"> </span>/usr/bin/
+</code></pre></div>
 <h4>使用</h4>
 <p>先通过读取配置文件启动服务端,我通过apt-get 安装的,默认配置文件在 /etc/redis/redis.conf,先启动服务端</p>
-<div class="highlight"><pre><span></span>redis-server /etc/redis/redis.conf
-</pre></div>
+<div class="highlight"><pre><span></span><code>redis-server<span class="w"> </span>/etc/redis/redis.conf
+</code></pre></div>
 <p>再启动客服端</p>
-<div class="highlight"><pre><span></span>redis-cli
-</pre></div>
+<div class="highlight"><pre><span></span><code>redis-cli
+</code></pre></div>
 <h4>命令</h4>
 <p>Redis的命令主要围绕着:配置,以及相关数据类型的操作的.</p>
 <ul>
 <li>配置</li>
 </ul>
 <p>查看配置</p>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; CONFIG GET *
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>CONFIG<span class="w"> </span>GET<span class="w"> </span>*
 
-<span class="m">127</span>.0.0.1:6379&gt; CONFIG GET loglevel  
-</pre></div>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>CONFIG<span class="w"> </span>GET<span class="w"> </span>loglevel<span class="w">  </span>
+</code></pre></div>
 <p>更改配置</p>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; CONFIG SET CONFIG_SETTING_NAME NEW_CONFIG_VALUE
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>CONFIG<span class="w"> </span>SET<span class="w"> </span>CONFIG_SETTING_NAME<span class="w"> </span>NEW_CONFIG_VALUE
 
-<span class="m">127</span>.0.0.1:6379&gt; CONFIG SET loglevel <span class="s2">"notice"</span> 
-</pre></div>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>CONFIG<span class="w"> </span>SET<span class="w"> </span>loglevel<span class="w"> </span><span class="s2">"notice"</span><span class="w"> </span>
+</code></pre></div>
 <ul>
 <li>Redis 键命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;　DEL key　　             // 删除key
-<span class="m">127</span>.0.0.1:6379&gt; DUMP key                // 返回存储在指定键的值的序列化版本。
-<span class="m">127</span>.0.0.1:6379&gt; EXISTS key              // 检查键是否存在
-<span class="m">127</span>.0.0.1:6379&gt; EXPIRE key seconds         //   设置键在指定时间秒数之后到期/过期。
-<span class="m">127</span>.0.0.1:6379&gt; EXPIRE key timestamp        // 设置在指定时间戳之后键到期/过期。这里的时间是Unix时间戳格式。
-<span class="m">127</span>.0.0.1:6379&gt; PEXPIRE key milliseconds     // 设置键的到期时间<span class="o">(</span>以毫秒为单位<span class="o">)</span>。1000毫秒等于1秒
-<span class="m">127</span>.0.0.1:6379&gt; PEXPIREAT key milliseconds-timestamp // 以Unix时间戳形式来设置键的到期时间<span class="o">(</span>以毫秒为单位<span class="o">)</span>。
-<span class="m">127</span>.0.0.1:6379&gt; KEYS pattern                // 查找与指定模式匹配的所有键。
-<span class="m">127</span>.0.0.1:6379&gt; MOVE key db                // 将键移动到另一个数据库
-<span class="m">127</span>.0.0.1:6379&gt; PERSIST key                // 删除指定键的过期时间
-<span class="m">127</span>.0.0.1:6379&gt; PTTL key                     // 获取键的剩余到期时间
-<span class="m">127</span>.0.0.1:6379&gt; RANDOMKEY                  // 随机获取一个key
-<span class="m">127</span>.0.0.1:6379&gt; RENAME key newkey        // 重命名一个key
-<span class="m">127</span>.0.0.1:6379&gt; RENAMENX key newkey         // 如果新键不存在，重命名键
-<span class="m">127</span>.0.0.1:6379&gt; TYPE key                   // 返回key的数据类型
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w">　</span>DEL<span class="w"> </span>key<span class="w">　　             </span>//<span class="w"> </span>删除key
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>DUMP<span class="w"> </span>key<span class="w">                </span>//<span class="w"> </span>返回存储在指定键的值的序列化版本。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>EXISTS<span class="w"> </span>key<span class="w">              </span>//<span class="w"> </span>检查键是否存在
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>EXPIRE<span class="w"> </span>key<span class="w"> </span>seconds<span class="w">         </span>//<span class="w">   </span>设置键在指定时间秒数之后到期/过期。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>EXPIRE<span class="w"> </span>key<span class="w"> </span>timestamp<span class="w">        </span>//<span class="w"> </span>设置在指定时间戳之后键到期/过期。这里的时间是Unix时间戳格式。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PEXPIRE<span class="w"> </span>key<span class="w"> </span>milliseconds<span class="w">     </span>//<span class="w"> </span>设置键的到期时间<span class="o">(</span>以毫秒为单位<span class="o">)</span>。1000毫秒等于1秒
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PEXPIREAT<span class="w"> </span>key<span class="w"> </span>milliseconds-timestamp<span class="w"> </span>//<span class="w"> </span>以Unix时间戳形式来设置键的到期时间<span class="o">(</span>以毫秒为单位<span class="o">)</span>。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>KEYS<span class="w"> </span>pattern<span class="w">                </span>//<span class="w"> </span>查找与指定模式匹配的所有键。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>MOVE<span class="w"> </span>key<span class="w"> </span>db<span class="w">                </span>//<span class="w"> </span>将键移动到另一个数据库
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PERSIST<span class="w"> </span>key<span class="w">                </span>//<span class="w"> </span>删除指定键的过期时间
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PTTL<span class="w"> </span>key<span class="w">                     </span>//<span class="w"> </span>获取键的剩余到期时间
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>RANDOMKEY<span class="w">                  </span>//<span class="w"> </span>随机获取一个key
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>RENAME<span class="w"> </span>key<span class="w"> </span>newkey<span class="w">        </span>//<span class="w"> </span>重命名一个key
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>RENAMENX<span class="w"> </span>key<span class="w"> </span>newkey<span class="w">         </span>//<span class="w"> </span>如果新键不存在，重命名键
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>TYPE<span class="w"> </span>key<span class="w">                   </span>//<span class="w"> </span>返回key的数据类型
+</code></pre></div>
 <ul>
 <li>Redis 字符串命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; SET key value                  // 此命令设置指定键的值。
-<span class="m">127</span>.0.0.1:6379&gt; GET key                        // 得到键的值
-<span class="m">127</span>.0.0.1:6379&gt; GETRANGE key start end         // 得到key 上字符串的子串<span class="o">(</span>索引<span class="o">)</span>
-<span class="m">127</span>.0.0.1:6379&gt; GETSET key value                // 先得到旧值,再设置新值
-<span class="m">127</span>.0.0.1:6379&gt; GETBIT key offset              // 返回在键处存储的字符串值中偏移处的位值
-<span class="m">127</span>.0.0.1:6379&gt; MGET key<span class="o">[</span>key1<span class="o">]</span>                //    获取所有给定键的值
-<span class="m">127</span>.0.0.1:6379&gt; SETBIT key offset value        // 存储在键上的字符串值中设置或清除偏移处的位
-<span class="m">127</span>.0.0.1:6379&gt; SETEX key seconds value            //   使用键和到期时间来设置值<span class="o">(</span>同时把两个都设置了<span class="o">)</span>
-<span class="m">127</span>.0.0.1:6379&gt; SETNX key value                 // 设置键的值，仅当键不存在时
-<span class="m">127</span>.0.0.1:6379&gt; SETRANGE key offset value       // 在指定偏移处开始的键处覆盖字符串的一部分
-<span class="m">127</span>.0.0.1:6379&gt; STRLEN key                        // 获取key中值的长度
-<span class="m">127</span>.0.0.1:6379&gt; MSET key value <span class="o">[</span>key value …<span class="o">]</span>       // 为多个key 设置 值
-<span class="m">127</span>.0.0.1:6379&gt; MSETNX key value <span class="o">[</span>key value …<span class="o">]</span>        // 为多个键分别设置它们的值，仅当键不存在时
-<span class="m">127</span>.0.0.1:6379&gt; PSETEX key milliseconds value       // 设置键的值和到期时间<span class="o">(</span>以毫秒为单位<span class="o">)</span>
-<span class="m">127</span>.0.0.1:6379&gt; INCR key                        // 将键的整数值增加1
-<span class="m">127</span>.0.0.1:6379&gt; INCRBY key  increment             //  将键的整数值按给定的数值增加
-<span class="m">127</span>.0.0.1:6379&gt; INCRBYFLOAT key increment          // 将键的整数值按给定的数值增加
-<span class="m">127</span>.0.0.1:6379&gt; DECR key                           //  将键的整数值减1
-<span class="m">127</span>.0.0.1:6379&gt; DECRBY key decrement              //  按给定数值减少键的整数值
-<span class="m">127</span>.0.0.1:6379&gt; APPEND key value                 //     将指定值附加到键
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SET<span class="w"> </span>key<span class="w"> </span>value<span class="w">                  </span>//<span class="w"> </span>此命令设置指定键的值。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>GET<span class="w"> </span>key<span class="w">                        </span>//<span class="w"> </span>得到键的值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>GETRANGE<span class="w"> </span>key<span class="w"> </span>start<span class="w"> </span>end<span class="w">         </span>//<span class="w"> </span>得到key<span class="w"> </span>上字符串的子串<span class="o">(</span>索引<span class="o">)</span>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>GETSET<span class="w"> </span>key<span class="w"> </span>value<span class="w">                </span>//<span class="w"> </span>先得到旧值,再设置新值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>GETBIT<span class="w"> </span>key<span class="w"> </span>offset<span class="w">              </span>//<span class="w"> </span>返回在键处存储的字符串值中偏移处的位值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>MGET<span class="w"> </span>key<span class="o">[</span>key1<span class="o">]</span><span class="w">                </span>//<span class="w">    </span>获取所有给定键的值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SETBIT<span class="w"> </span>key<span class="w"> </span>offset<span class="w"> </span>value<span class="w">        </span>//<span class="w"> </span>存储在键上的字符串值中设置或清除偏移处的位
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SETEX<span class="w"> </span>key<span class="w"> </span>seconds<span class="w"> </span>value<span class="w">            </span>//<span class="w">   </span>使用键和到期时间来设置值<span class="o">(</span>同时把两个都设置了<span class="o">)</span>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SETNX<span class="w"> </span>key<span class="w"> </span>value<span class="w">                 </span>//<span class="w"> </span>设置键的值，仅当键不存在时
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SETRANGE<span class="w"> </span>key<span class="w"> </span>offset<span class="w"> </span>value<span class="w">       </span>//<span class="w"> </span>在指定偏移处开始的键处覆盖字符串的一部分
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>STRLEN<span class="w"> </span>key<span class="w">                        </span>//<span class="w"> </span>获取key中值的长度
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>MSET<span class="w"> </span>key<span class="w"> </span>value<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>value<span class="w"> </span>…<span class="o">]</span><span class="w">       </span>//<span class="w"> </span>为多个key<span class="w"> </span>设置<span class="w"> </span>值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>MSETNX<span class="w"> </span>key<span class="w"> </span>value<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>value<span class="w"> </span>…<span class="o">]</span><span class="w">        </span>//<span class="w"> </span>为多个键分别设置它们的值，仅当键不存在时
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PSETEX<span class="w"> </span>key<span class="w"> </span>milliseconds<span class="w"> </span>value<span class="w">       </span>//<span class="w"> </span>设置键的值和到期时间<span class="o">(</span>以毫秒为单位<span class="o">)</span>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>INCR<span class="w"> </span>key<span class="w">                        </span>//<span class="w"> </span>将键的整数值增加1
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>INCRBY<span class="w"> </span>key<span class="w">  </span>increment<span class="w">             </span>//<span class="w">  </span>将键的整数值按给定的数值增加
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>INCRBYFLOAT<span class="w"> </span>key<span class="w"> </span>increment<span class="w">          </span>//<span class="w"> </span>将键的整数值按给定的数值增加
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>DECR<span class="w"> </span>key<span class="w">                           </span>//<span class="w">  </span>将键的整数值减1
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>DECRBY<span class="w"> </span>key<span class="w"> </span>decrement<span class="w">              </span>//<span class="w">  </span>按给定数值减少键的整数值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>APPEND<span class="w"> </span>key<span class="w"> </span>value<span class="w">                 </span>//<span class="w">     </span>将指定值附加到键
+</code></pre></div>
 <ul>
 <li>Redis 哈希命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; HMGET key field1 <span class="o">[</span>field2<span class="o">]</span>                      // 获取所有给定哈希字段的值
-<span class="m">127</span>.0.0.1:6379&gt; HMSET key field1 value1 <span class="o">[</span>field2 value2 <span class="o">]</span>       // 为多个哈希字段分别设置它们的值
-<span class="m">127</span>.0.0.1:6379&gt; HSET key field value                         // 设置散列字段的字符串值
-<span class="m">127</span>.0.0.1:6379&gt; HSETNX key field value                         //   仅当字段不存在时，才设置散列字段的值
-<span class="m">127</span>.0.0.1:6379&gt; HLEN key                                      // 获取散列中的字段数量
-<span class="m">127</span>.0.0.1:6379&gt; HKEYS key                                   // 获取哈希中的所有字段
-<span class="m">127</span>.0.0.1:6379&gt; HINCRBY key field increment                  //     将哈希字段的整数值按给定数字增加
-<span class="m">127</span>.0.0.1:6379&gt; HINCRBYFLOAT key field increment               // 将哈希字段的浮点值按给定数值增加
-<span class="m">127</span>.0.0.1:6379&gt; HGETALL key                                   // 获取存储在指定键的哈希中的所有字段和值
-<span class="m">127</span>.0.0.1:6379&gt; HGET key field                              // 获取存储在指定键的哈希字段的值
-<span class="m">127</span>.0.0.1:6379&gt; HEXISTS key field                            // 判断是否存在散列字段
-<span class="m">127</span>.0.0.1:6379&gt; HDEL key field2 <span class="o">[</span>field2<span class="o">]</span>                       // 删除一个或多个哈希字段
-<span class="m">127</span>.0.0.1:6379&gt; HVALS key                                   // 获取哈希中的所有值
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HMGET<span class="w"> </span>key<span class="w"> </span>field1<span class="w"> </span><span class="o">[</span>field2<span class="o">]</span><span class="w">                      </span>//<span class="w"> </span>获取所有给定哈希字段的值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HMSET<span class="w"> </span>key<span class="w"> </span>field1<span class="w"> </span>value1<span class="w"> </span><span class="o">[</span>field2<span class="w"> </span>value2<span class="w"> </span><span class="o">]</span><span class="w">       </span>//<span class="w"> </span>为多个哈希字段分别设置它们的值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HSET<span class="w"> </span>key<span class="w"> </span>field<span class="w"> </span>value<span class="w">                         </span>//<span class="w"> </span>设置散列字段的字符串值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HSETNX<span class="w"> </span>key<span class="w"> </span>field<span class="w"> </span>value<span class="w">                         </span>//<span class="w">   </span>仅当字段不存在时，才设置散列字段的值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HLEN<span class="w"> </span>key<span class="w">                                      </span>//<span class="w"> </span>获取散列中的字段数量
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HKEYS<span class="w"> </span>key<span class="w">                                   </span>//<span class="w"> </span>获取哈希中的所有字段
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HINCRBY<span class="w"> </span>key<span class="w"> </span>field<span class="w"> </span>increment<span class="w">                  </span>//<span class="w">     </span>将哈希字段的整数值按给定数字增加
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HINCRBYFLOAT<span class="w"> </span>key<span class="w"> </span>field<span class="w"> </span>increment<span class="w">               </span>//<span class="w"> </span>将哈希字段的浮点值按给定数值增加
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HGETALL<span class="w"> </span>key<span class="w">                                   </span>//<span class="w"> </span>获取存储在指定键的哈希中的所有字段和值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HGET<span class="w"> </span>key<span class="w"> </span>field<span class="w">                              </span>//<span class="w"> </span>获取存储在指定键的哈希字段的值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HEXISTS<span class="w"> </span>key<span class="w"> </span>field<span class="w">                            </span>//<span class="w"> </span>判断是否存在散列字段
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HDEL<span class="w"> </span>key<span class="w"> </span>field2<span class="w"> </span><span class="o">[</span>field2<span class="o">]</span><span class="w">                       </span>//<span class="w"> </span>删除一个或多个哈希字段
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HVALS<span class="w"> </span>key<span class="w">                                   </span>//<span class="w"> </span>获取哈希中的所有值
+</code></pre></div>
 <ul>
 <li>Redis 列表命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; BLPOP key1 <span class="o">[</span>key2 <span class="o">]</span> timeout          // 删除并获取列表中的第一个元素，或阻塞，直到有一个元素可用
-<span class="m">127</span>.0.0.1:6379&gt; BRPOP key1 <span class="o">[</span>key2 <span class="o">]</span> timeout           //     删除并获取列表中的最后一个元素，或阻塞，直到有一个元素可用
-<span class="m">127</span>.0.0.1:6379&gt; LINDEX key index                 // 通过其索引从列表获取元素
-<span class="m">127</span>.0.0.1:6379&gt; LLEN key                           //   获取列表的长度
-<span class="m">127</span>.0.0.1:6379&gt; LINSERT key BEFORE/AFTER pivot value  // 在列表中的另一个元素之前或之后插入元素
-<span class="m">127</span>.0.0.1:6379&gt; LPOP key                           // 删除并获取列表中的第一个元素
-<span class="m">127</span>.0.0.1:6379&gt; LPUSH key value1 <span class="o">[</span>value2<span class="o">]</span>            //将一个或多个值添加到列表
-<span class="m">127</span>.0.0.1:6379&gt; BRPOPLPUSH <span class="nb">source</span> destination timeout   // 从列表中弹出值，将其推送到另一个列表并返回它<span class="p">;</span> 或阻塞，直到一个可用
-<span class="m">127</span>.0.0.1:6379&gt; RPOP key                             // 删除并获取列表中的最后一个元素
-<span class="m">127</span>.0.0.1:6379&gt; RPUSH key value1 <span class="o">[</span>value2<span class="o">]</span>           //将一个或多个值附加到列表
-<span class="m">127</span>.0.0.1:6379&gt; RPUSHX key value                     //仅当列表存在时才将值附加到列表
-<span class="m">127</span>.0.0.1:6379&gt; RPOPLPUSH <span class="nb">source</span> destination        // 删除列表中的最后一个元素，将其附加到另一个列表并返回
-<span class="m">127</span>.0.0.1:6379&gt; LREM key count value                 //     从列表中删除元素
-<span class="m">127</span>.0.0.1:6379&gt; LSET key index value            // 通过索引在列表中设置元素的值
-<span class="m">127</span>.0.0.1:6379&gt; LTRIM key start stop             // 修剪列表的指定范围
-<span class="m">127</span>.0.0.1:6379&gt; LPUSHX key value                  //仅当列表存在时，才向列表添加值
-<span class="m">127</span>.0.0.1:6379&gt; LRANGE key start stop          // 从列表中获取一系列元素
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>BLPOP<span class="w"> </span>key1<span class="w"> </span><span class="o">[</span>key2<span class="w"> </span><span class="o">]</span><span class="w"> </span>timeout<span class="w">          </span>//<span class="w"> </span>删除并获取列表中的第一个元素，或阻塞，直到有一个元素可用
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>BRPOP<span class="w"> </span>key1<span class="w"> </span><span class="o">[</span>key2<span class="w"> </span><span class="o">]</span><span class="w"> </span>timeout<span class="w">           </span>//<span class="w">     </span>删除并获取列表中的最后一个元素，或阻塞，直到有一个元素可用
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LINDEX<span class="w"> </span>key<span class="w"> </span>index<span class="w">                 </span>//<span class="w"> </span>通过其索引从列表获取元素
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LLEN<span class="w"> </span>key<span class="w">                           </span>//<span class="w">   </span>获取列表的长度
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LINSERT<span class="w"> </span>key<span class="w"> </span>BEFORE/AFTER<span class="w"> </span>pivot<span class="w"> </span>value<span class="w">  </span>//<span class="w"> </span>在列表中的另一个元素之前或之后插入元素
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LPOP<span class="w"> </span>key<span class="w">                           </span>//<span class="w"> </span>删除并获取列表中的第一个元素
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LPUSH<span class="w"> </span>key<span class="w"> </span>value1<span class="w"> </span><span class="o">[</span>value2<span class="o">]</span><span class="w">            </span>//将一个或多个值添加到列表
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>BRPOPLPUSH<span class="w"> </span><span class="nb">source</span><span class="w"> </span>destination<span class="w"> </span>timeout<span class="w">   </span>//<span class="w"> </span>从列表中弹出值，将其推送到另一个列表并返回它<span class="p">;</span><span class="w"> </span>或阻塞，直到一个可用
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>RPOP<span class="w"> </span>key<span class="w">                             </span>//<span class="w"> </span>删除并获取列表中的最后一个元素
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>RPUSH<span class="w"> </span>key<span class="w"> </span>value1<span class="w"> </span><span class="o">[</span>value2<span class="o">]</span><span class="w">           </span>//将一个或多个值附加到列表
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>RPUSHX<span class="w"> </span>key<span class="w"> </span>value<span class="w">                     </span>//仅当列表存在时才将值附加到列表
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>RPOPLPUSH<span class="w"> </span><span class="nb">source</span><span class="w"> </span>destination<span class="w">        </span>//<span class="w"> </span>删除列表中的最后一个元素，将其附加到另一个列表并返回
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LREM<span class="w"> </span>key<span class="w"> </span>count<span class="w"> </span>value<span class="w">                 </span>//<span class="w">     </span>从列表中删除元素
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LSET<span class="w"> </span>key<span class="w"> </span>index<span class="w"> </span>value<span class="w">            </span>//<span class="w"> </span>通过索引在列表中设置元素的值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LTRIM<span class="w"> </span>key<span class="w"> </span>start<span class="w"> </span>stop<span class="w">             </span>//<span class="w"> </span>修剪列表的指定范围
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LPUSHX<span class="w"> </span>key<span class="w"> </span>value<span class="w">                  </span>//仅当列表存在时，才向列表添加值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LRANGE<span class="w"> </span>key<span class="w"> </span>start<span class="w"> </span>stop<span class="w">          </span>//<span class="w"> </span>从列表中获取一系列元素
+</code></pre></div>
 <ul>
 <li>Redis 集合命令</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;  SADD key member1 <span class="o">[</span>member2<span class="o">]</span>         //将一个或多个成员添加到集合
-<span class="m">127</span>.0.0.1:6379&gt;  SCARD key                           // 获取集合中的成员数
-<span class="m">127</span>.0.0.1:6379&gt;  SDIFF key1 <span class="o">[</span>key2<span class="o">]</span>                    //    减去多个集合
-<span class="m">127</span>.0.0.1:6379&gt;  SDIFFSTORE destination key1 <span class="o">[</span>key2<span class="o">]</span>    // 减去多个集并将结果集存储在键中
-<span class="m">127</span>.0.0.1:6379&gt;  SINTER key1 <span class="o">[</span>key2<span class="o">]</span>                    // 集合相交
-<span class="m">127</span>.0.0.1:6379&gt;  SINTERSTORE destination key1 <span class="o">[</span>key2<span class="o">]</span>   // 交叉多个集合并将结果集存储在键中
-<span class="m">127</span>.0.0.1:6379&gt;  SISMEMBER key member                  // 判断确定给定值是否是集合的成员
-<span class="m">127</span>.0.0.1:6379&gt;  SMOVE <span class="nb">source</span> destination member        //将成员从一个集合移动到另一个集合
-<span class="m">127</span>.0.0.1:6379&gt;  SPOP key                               // 从集合中删除并返回随机成员
-<span class="m">127</span>.0.0.1:6379&gt;  SRANDMEMBER key <span class="o">[</span>count<span class="o">]</span>                //  从集合中获取一个或多个随机成员
-<span class="m">127</span>.0.0.1:6379&gt;  SREM key member1 <span class="o">[</span>member2<span class="o">]</span>             // 从集合中删除一个或多个成员
-<span class="m">127</span>.0.0.1:6379&gt;  SUNION key1 <span class="o">[</span>key2<span class="o">]</span>                  // 添加多个集合
-<span class="m">127</span>.0.0.1:6379&gt;  SUNIONSTORE destination key1 <span class="o">[</span>key2<span class="o">]</span>   // 添加多个集并将结果集存储在键中
-<span class="m">127</span>.0.0.1:6379&gt;  SSCAN key cursor <span class="o">[</span>MATCH pattern<span class="o">]</span> <span class="o">[</span>COUNT count<span class="o">]</span>  //     递增地迭代集合中的元素
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SADD<span class="w"> </span>key<span class="w"> </span>member1<span class="w"> </span><span class="o">[</span>member2<span class="o">]</span><span class="w">         </span>//将一个或多个成员添加到集合
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SCARD<span class="w"> </span>key<span class="w">                           </span>//<span class="w"> </span>获取集合中的成员数
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SDIFF<span class="w"> </span>key1<span class="w"> </span><span class="o">[</span>key2<span class="o">]</span><span class="w">                    </span>//<span class="w">    </span>减去多个集合
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SDIFFSTORE<span class="w"> </span>destination<span class="w"> </span>key1<span class="w"> </span><span class="o">[</span>key2<span class="o">]</span><span class="w">    </span>//<span class="w"> </span>减去多个集并将结果集存储在键中
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SINTER<span class="w"> </span>key1<span class="w"> </span><span class="o">[</span>key2<span class="o">]</span><span class="w">                    </span>//<span class="w"> </span>集合相交
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SINTERSTORE<span class="w"> </span>destination<span class="w"> </span>key1<span class="w"> </span><span class="o">[</span>key2<span class="o">]</span><span class="w">   </span>//<span class="w"> </span>交叉多个集合并将结果集存储在键中
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SISMEMBER<span class="w"> </span>key<span class="w"> </span>member<span class="w">                  </span>//<span class="w"> </span>判断确定给定值是否是集合的成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SMOVE<span class="w"> </span><span class="nb">source</span><span class="w"> </span>destination<span class="w"> </span>member<span class="w">        </span>//将成员从一个集合移动到另一个集合
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SPOP<span class="w"> </span>key<span class="w">                               </span>//<span class="w"> </span>从集合中删除并返回随机成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SRANDMEMBER<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>count<span class="o">]</span><span class="w">                </span>//<span class="w">  </span>从集合中获取一个或多个随机成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SREM<span class="w"> </span>key<span class="w"> </span>member1<span class="w"> </span><span class="o">[</span>member2<span class="o">]</span><span class="w">             </span>//<span class="w"> </span>从集合中删除一个或多个成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SUNION<span class="w"> </span>key1<span class="w"> </span><span class="o">[</span>key2<span class="o">]</span><span class="w">                  </span>//<span class="w"> </span>添加多个集合
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SUNIONSTORE<span class="w"> </span>destination<span class="w"> </span>key1<span class="w"> </span><span class="o">[</span>key2<span class="o">]</span><span class="w">   </span>//<span class="w"> </span>添加多个集并将结果集存储在键中
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SSCAN<span class="w"> </span>key<span class="w"> </span>cursor<span class="w"> </span><span class="o">[</span>MATCH<span class="w"> </span>pattern<span class="o">]</span><span class="w"> </span><span class="o">[</span>COUNT<span class="w"> </span>count<span class="o">]</span><span class="w">  </span>//<span class="w">     </span>递增地迭代集合中的元素
+</code></pre></div>
 <ul>
 <li>Redis 有序集合(sorted set)</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; ZADD key score1 member1 <span class="o">[</span>score2 member2<span class="o">]</span>       //向有序集合添加一个或多个成员，或者更新已存在成员的分数
-<span class="m">127</span>.0.0.1:6379&gt; ZCARD key                                      // 获取有序集合的成员数
-<span class="m">127</span>.0.0.1:6379&gt; ZCOUNT key min max                             //计算在有序集合中指定区间分数的成员数
-<span class="m">127</span>.0.0.1:6379&gt; ZINCRBY key increment member                   //有序集合中对指定成员的分数加上增量 increment
-<span class="m">127</span>.0.0.1:6379&gt; ZINTERSTORE destination numkeys key <span class="o">[</span>key ...<span class="o">]</span>  //计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
-<span class="m">127</span>.0.0.1:6379&gt; ZLEXCOUNT key min max                          //在有序集合中计算指定字典区间内成员数量
-<span class="m">127</span>.0.0.1:6379&gt; ZRANGE key start stop <span class="o">[</span>WITHSCORES<span class="o">]</span>             //通过索引区间返回有序集合成指定区间内的成员
-<span class="m">127</span>.0.0.1:6379&gt; ZRANGEBYLEX key min max <span class="o">[</span>LIMIT offset count<span class="o">]</span>  //通过字典区间返回有序集合的成员
-<span class="m">127</span>.0.0.1:6379&gt; ZRANGEBYSCORE key min max <span class="o">[</span>WITHSCORES<span class="o">]</span> <span class="o">[</span>LIMIT<span class="o">]</span>  //通过分数返回有序集合指定区间内的成员
-<span class="m">127</span>.0.0.1:6379&gt; ZRANK key member                               // 返回有序集合中指定成员的索引
-<span class="m">127</span>.0.0.1:6379&gt; ZREM key member <span class="o">[</span>member ...<span class="o">]</span>                  //移除有序集合中的一个或多个成员
-<span class="m">127</span>.0.0.1:6379&gt; ZREMRANGEBYLEX key min max                     //移除有序集合中给定的字典区间的所有成员
-<span class="m">127</span>.0.0.1:6379&gt; ZREMRANGEBYRANK key start stop                 //移除有序集合中给定的排名区间的所有成员
-<span class="m">127</span>.0.0.1:6379&gt; ZREMRANGEBYSCORE key min max                  //移除有序集合中给定的分数区间的所有成员
-<span class="m">127</span>.0.0.1:6379&gt; ZREVRANGE key start stop <span class="o">[</span>WITHSCORES<span class="o">]</span>         //返回有序集中指定区间内的成员，通过索引，分数从高到底
-<span class="m">127</span>.0.0.1:6379&gt; ZREVRANGEBYSCORE key max min <span class="o">[</span>WITHSCORES<span class="o">]</span>     //返回有序集中指定分数区间内的成员，分数从高到低排序
-<span class="m">127</span>.0.0.1:6379&gt; ZREVRANK key member                           // 返回有序集合中指定成员的排名，有序集成员按分数值递减<span class="o">(</span>从大到小<span class="o">)</span>排序
-<span class="m">127</span>.0.0.1:6379&gt; ZSCORE key member                               //返回有序集中，成员的分数值
-<span class="m">127</span>.0.0.1:6379&gt; ZUNIONSTORE destination numkeys key <span class="o">[</span>key ...<span class="o">]</span>   //计算给定的一个或多个有序集的并集，并存储在新的 key 中
-<span class="m">127</span>.0.0.1:6379&gt; ZSCAN key cursor <span class="o">[</span>MATCH pattern<span class="o">]</span> <span class="o">[</span>COUNT count<span class="o">]</span>   //迭代有序集合中的元素（包括元素成员和元素分值）
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZADD<span class="w"> </span>key<span class="w"> </span>score1<span class="w"> </span>member1<span class="w"> </span><span class="o">[</span>score2<span class="w"> </span>member2<span class="o">]</span><span class="w">       </span>//向有序集合添加一个或多个成员，或者更新已存在成员的分数
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZCARD<span class="w"> </span>key<span class="w">                                      </span>//<span class="w"> </span>获取有序集合的成员数
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZCOUNT<span class="w"> </span>key<span class="w"> </span>min<span class="w"> </span>max<span class="w">                             </span>//计算在有序集合中指定区间分数的成员数
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZINCRBY<span class="w"> </span>key<span class="w"> </span>increment<span class="w"> </span>member<span class="w">                   </span>//有序集合中对指定成员的分数加上增量<span class="w"> </span>increment
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZINTERSTORE<span class="w"> </span>destination<span class="w"> </span>numkeys<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>...<span class="o">]</span><span class="w">  </span>//计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合<span class="w"> </span>key<span class="w"> </span>中
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZLEXCOUNT<span class="w"> </span>key<span class="w"> </span>min<span class="w"> </span>max<span class="w">                          </span>//在有序集合中计算指定字典区间内成员数量
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZRANGE<span class="w"> </span>key<span class="w"> </span>start<span class="w"> </span>stop<span class="w"> </span><span class="o">[</span>WITHSCORES<span class="o">]</span><span class="w">             </span>//通过索引区间返回有序集合成指定区间内的成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZRANGEBYLEX<span class="w"> </span>key<span class="w"> </span>min<span class="w"> </span>max<span class="w"> </span><span class="o">[</span>LIMIT<span class="w"> </span>offset<span class="w"> </span>count<span class="o">]</span><span class="w">  </span>//通过字典区间返回有序集合的成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZRANGEBYSCORE<span class="w"> </span>key<span class="w"> </span>min<span class="w"> </span>max<span class="w"> </span><span class="o">[</span>WITHSCORES<span class="o">]</span><span class="w"> </span><span class="o">[</span>LIMIT<span class="o">]</span><span class="w">  </span>//通过分数返回有序集合指定区间内的成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZRANK<span class="w"> </span>key<span class="w"> </span>member<span class="w">                               </span>//<span class="w"> </span>返回有序集合中指定成员的索引
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZREM<span class="w"> </span>key<span class="w"> </span>member<span class="w"> </span><span class="o">[</span>member<span class="w"> </span>...<span class="o">]</span><span class="w">                  </span>//移除有序集合中的一个或多个成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZREMRANGEBYLEX<span class="w"> </span>key<span class="w"> </span>min<span class="w"> </span>max<span class="w">                     </span>//移除有序集合中给定的字典区间的所有成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZREMRANGEBYRANK<span class="w"> </span>key<span class="w"> </span>start<span class="w"> </span>stop<span class="w">                 </span>//移除有序集合中给定的排名区间的所有成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZREMRANGEBYSCORE<span class="w"> </span>key<span class="w"> </span>min<span class="w"> </span>max<span class="w">                  </span>//移除有序集合中给定的分数区间的所有成员
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZREVRANGE<span class="w"> </span>key<span class="w"> </span>start<span class="w"> </span>stop<span class="w"> </span><span class="o">[</span>WITHSCORES<span class="o">]</span><span class="w">         </span>//返回有序集中指定区间内的成员，通过索引，分数从高到底
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZREVRANGEBYSCORE<span class="w"> </span>key<span class="w"> </span>max<span class="w"> </span>min<span class="w"> </span><span class="o">[</span>WITHSCORES<span class="o">]</span><span class="w">     </span>//返回有序集中指定分数区间内的成员，分数从高到低排序
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZREVRANK<span class="w"> </span>key<span class="w"> </span>member<span class="w">                           </span>//<span class="w"> </span>返回有序集合中指定成员的排名，有序集成员按分数值递减<span class="o">(</span>从大到小<span class="o">)</span>排序
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZSCORE<span class="w"> </span>key<span class="w"> </span>member<span class="w">                               </span>//返回有序集中，成员的分数值
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZUNIONSTORE<span class="w"> </span>destination<span class="w"> </span>numkeys<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>...<span class="o">]</span><span class="w">   </span>//计算给定的一个或多个有序集的并集，并存储在新的<span class="w"> </span>key<span class="w"> </span>中
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZSCAN<span class="w"> </span>key<span class="w"> </span>cursor<span class="w"> </span><span class="o">[</span>MATCH<span class="w"> </span>pattern<span class="o">]</span><span class="w"> </span><span class="o">[</span>COUNT<span class="w"> </span>count<span class="o">]</span><span class="w">   </span>//迭代有序集合中的元素（包括元素成员和元素分值）
+</code></pre></div>
 <ul>
 <li>Redis HyperLogLog</li>
 </ul>
 <p>HyperLogLog 是做基数统计的算法</p>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; PFADD key element <span class="o">[</span>element ...<span class="o">]</span>               //添加指定元素到 HyperLogLog 中。
-<span class="m">127</span>.0.0.1:6379&gt; PFCOUNT key <span class="o">[</span>key ...<span class="o">]</span>.                        //返回给定 HyperLogLog 的基数估算值。
-<span class="m">127</span>.0.0.1:6379&gt; PFMERGE destkey sourcekey <span class="o">[</span>sourcekey ...<span class="o">]</span>     //将多个 HyperLogLog 合并为一个 HyperLogLog
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PFADD<span class="w"> </span>key<span class="w"> </span>element<span class="w"> </span><span class="o">[</span>element<span class="w"> </span>...<span class="o">]</span><span class="w">               </span>//添加指定元素到<span class="w"> </span>HyperLogLog<span class="w"> </span>中。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PFCOUNT<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>...<span class="o">]</span>.<span class="w">                        </span>//返回给定<span class="w"> </span>HyperLogLog<span class="w"> </span>的基数估算值。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PFMERGE<span class="w"> </span>destkey<span class="w"> </span>sourcekey<span class="w"> </span><span class="o">[</span>sourcekey<span class="w"> </span>...<span class="o">]</span><span class="w">     </span>//将多个<span class="w"> </span>HyperLogLog<span class="w"> </span>合并为一个<span class="w"> </span>HyperLogLog
+</code></pre></div>
 <ul>
 <li>Redis 发布订阅</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; PSUBSCRIBE pattern <span class="o">[</span>pattern ...<span class="o">]</span>               //订阅一个或多个符合给定模式的频道。
-<span class="m">127</span>.0.0.1:6379&gt; PUBSUB subcommand <span class="o">[</span>argument <span class="o">[</span>argument ...<span class="o">]]</span>    //查看订阅与发布系统状态。
-<span class="m">127</span>.0.0.1:6379&gt; PUBLISH channel message                         //将信息发送到指定的频道。
-<span class="m">127</span>.0.0.1:6379&gt; PUNSUBSCRIBE <span class="o">[</span>pattern <span class="o">[</span>pattern ...<span class="o">]]</span>            //退订所有给定模式的频道。
-<span class="m">127</span>.0.0.1:6379&gt; SUBSCRIBE channel <span class="o">[</span>channel ...<span class="o">]</span>                //订阅给定的一个或多个频道的信息。
-<span class="m">127</span>.0.0.1:6379&gt; UNSUBSCRIBE <span class="o">[</span>channel <span class="o">[</span>channel ...<span class="o">]]</span>            //指退订给定的频道。
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PSUBSCRIBE<span class="w"> </span>pattern<span class="w"> </span><span class="o">[</span>pattern<span class="w"> </span>...<span class="o">]</span><span class="w">               </span>//订阅一个或多个符合给定模式的频道。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PUBSUB<span class="w"> </span>subcommand<span class="w"> </span><span class="o">[</span>argument<span class="w"> </span><span class="o">[</span>argument<span class="w"> </span>...<span class="o">]]</span><span class="w">    </span>//查看订阅与发布系统状态。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PUBLISH<span class="w"> </span>channel<span class="w"> </span>message<span class="w">                         </span>//将信息发送到指定的频道。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PUNSUBSCRIBE<span class="w"> </span><span class="o">[</span>pattern<span class="w"> </span><span class="o">[</span>pattern<span class="w"> </span>...<span class="o">]]</span><span class="w">            </span>//退订所有给定模式的频道。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SUBSCRIBE<span class="w"> </span>channel<span class="w"> </span><span class="o">[</span>channel<span class="w"> </span>...<span class="o">]</span><span class="w">                </span>//订阅给定的一个或多个频道的信息。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>UNSUBSCRIBE<span class="w"> </span><span class="o">[</span>channel<span class="w"> </span><span class="o">[</span>channel<span class="w"> </span>...<span class="o">]]</span><span class="w">            </span>//指退订给定的频道。
+</code></pre></div>
 <ul>
 <li>Redis 事务</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;  DISCARD                //取消事务，放弃执行事务块内的所有命令。
-<span class="m">127</span>.0.0.1:6379&gt;  EXEC                   //执行所有事务块内的命令。
-<span class="m">127</span>.0.0.1:6379&gt;  MULTI                  //标记一个事务块的开始。
-<span class="m">127</span>.0.0.1:6379&gt;  UNWATCH                //取消 WATCH 命令对所有 key 的监视。
-<span class="m">127</span>.0.0.1:6379&gt;  WATCH key <span class="o">[</span>key ...<span class="o">]</span>    // 监视一个<span class="o">(</span>或多个<span class="o">)</span> key ，如果在事务执行之前这个<span class="o">(</span>或这些<span class="o">)</span> key 被其他命令所改动，那么事务将被打断
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>DISCARD<span class="w">                </span>//取消事务，放弃执行事务块内的所有命令。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>EXEC<span class="w">                   </span>//执行所有事务块内的命令。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>MULTI<span class="w">                  </span>//标记一个事务块的开始。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>UNWATCH<span class="w">                </span>//取消<span class="w"> </span>WATCH<span class="w"> </span>命令对所有<span class="w"> </span>key<span class="w"> </span>的监视。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>WATCH<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>...<span class="o">]</span><span class="w">    </span>//<span class="w"> </span>监视一个<span class="o">(</span>或多个<span class="o">)</span><span class="w"> </span>key<span class="w"> </span>，如果在事务执行之前这个<span class="o">(</span>或这些<span class="o">)</span><span class="w"> </span>key<span class="w"> </span>被其他命令所改动，那么事务将被打断
+</code></pre></div>
 <p>样例</p>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt; MULTI
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>MULTI
 OK
 
-<span class="m">127</span>.0.0.1:6379&gt; SET book-name <span class="s2">"Mastering C++ in 21 days"</span>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SET<span class="w"> </span>book-name<span class="w"> </span><span class="s2">"Mastering C++ in 21 days"</span>
 QUEUED
 
-<span class="m">127</span>.0.0.1:6379&gt; GET book-name
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>GET<span class="w"> </span>book-name
 QUEUED
 
-<span class="m">127</span>.0.0.1:6379&gt; SADD tag <span class="s2">"C++"</span> <span class="s2">"Programming"</span> <span class="s2">"Mastering Series"</span>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SADD<span class="w"> </span>tag<span class="w"> </span><span class="s2">"C++"</span><span class="w"> </span><span class="s2">"Programming"</span><span class="w"> </span><span class="s2">"Mastering Series"</span>
 QUEUED
 
-<span class="m">127</span>.0.0.1:6379&gt; SMEMBERS tag
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SMEMBERS<span class="w"> </span>tag
 QUEUED
 
-<span class="m">127</span>.0.0.1:6379&gt; EXEC
-<span class="m">1</span><span class="o">)</span> OK
-<span class="m">2</span><span class="o">)</span> <span class="s2">"Mastering C++ in 21 days"</span>
-<span class="m">3</span><span class="o">)</span> <span class="o">(</span>integer<span class="o">)</span> <span class="m">3</span>
-<span class="m">4</span><span class="o">)</span> <span class="m">1</span><span class="o">)</span> <span class="s2">"Mastering Series"</span>
-   <span class="m">2</span><span class="o">)</span> <span class="s2">"C++"</span>
-   <span class="m">3</span><span class="o">)</span> <span class="s2">"Programming"</span>
-</pre></div>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>EXEC
+<span class="m">1</span><span class="o">)</span><span class="w"> </span>OK
+<span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="s2">"Mastering C++ in 21 days"</span>
+<span class="m">3</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>integer<span class="o">)</span><span class="w"> </span><span class="m">3</span>
+<span class="m">4</span><span class="o">)</span><span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="s2">"Mastering Series"</span>
+<span class="w">   </span><span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="s2">"C++"</span>
+<span class="w">   </span><span class="m">3</span><span class="o">)</span><span class="w"> </span><span class="s2">"Programming"</span>
+</code></pre></div>
 <ul>
 <li>Redis脚本</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1:6379&gt;  EVAL script numkeys key <span class="o">[</span>key ...<span class="o">]</span> arg <span class="o">[</span>arg ...<span class="o">]</span>    //执行 Lua 脚本。
-<span class="m">127</span>.0.0.1:6379&gt;     EVALSHA sha1 numkeys key <span class="o">[</span>key ...<span class="o">]</span> arg <span class="o">[</span>arg ...<span class="o">]</span>   //执行 Lua 脚本。
-<span class="m">127</span>.0.0.1:6379&gt;     SCRIPT EXISTS script <span class="o">[</span>script ...<span class="o">]</span> 查看指定的脚本是否已经被保存在缓存当中。
-<span class="m">127</span>.0.0.1:6379&gt;     SCRIPT FLUSH 从脚本缓存中移除所有脚本。
-<span class="m">127</span>.0.0.1:6379&gt;     SCRIPT KILL 杀死当前正在运行的 Lua 脚本。
-<span class="m">127</span>.0.0.1:6379&gt;     SCRIPT LOAD script    将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本。
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>EVAL<span class="w"> </span>script<span class="w"> </span>numkeys<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>...<span class="o">]</span><span class="w"> </span>arg<span class="w"> </span><span class="o">[</span>arg<span class="w"> </span>...<span class="o">]</span><span class="w">    </span>//执行<span class="w"> </span>Lua<span class="w"> </span>脚本。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">     </span>EVALSHA<span class="w"> </span>sha1<span class="w"> </span>numkeys<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>...<span class="o">]</span><span class="w"> </span>arg<span class="w"> </span><span class="o">[</span>arg<span class="w"> </span>...<span class="o">]</span><span class="w">   </span>//执行<span class="w"> </span>Lua<span class="w"> </span>脚本。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">     </span>SCRIPT<span class="w"> </span>EXISTS<span class="w"> </span>script<span class="w"> </span><span class="o">[</span>script<span class="w"> </span>...<span class="o">]</span><span class="w"> </span>查看指定的脚本是否已经被保存在缓存当中。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">     </span>SCRIPT<span class="w"> </span>FLUSH<span class="w"> </span>从脚本缓存中移除所有脚本。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">     </span>SCRIPT<span class="w"> </span>KILL<span class="w"> </span>杀死当前正在运行的<span class="w"> </span>Lua<span class="w"> </span>脚本。
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w">     </span>SCRIPT<span class="w"> </span>LOAD<span class="w"> </span>script<span class="w">    </span>将脚本<span class="w"> </span>script<span class="w"> </span>添加到脚本缓存中，但并不立即执行这个脚本。
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

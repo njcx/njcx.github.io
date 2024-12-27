@@ -103,44 +103,44 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>环境变量</h4>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/opt/jdk1.8.0_181
-<span class="nb">export</span> <span class="nv">JRE_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/jre
-<span class="nb">export</span> <span class="nv">CLASSPATH</span><span class="o">=</span>.:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/lib:<span class="si">${</span><span class="nv">JRE_HOME</span><span class="si">}</span>/lib
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">JAVA_HOME</span><span class="o">=</span>/opt/jdk1.8.0_181
+<span class="nb">export</span><span class="w"> </span><span class="nv">JRE_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/jre
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLASSPATH</span><span class="o">=</span>.:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/lib:<span class="si">${</span><span class="nv">JRE_HOME</span><span class="si">}</span>/lib
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
 
-<span class="nb">export</span> <span class="nv">SCALA_HOME</span><span class="o">=</span>/opt/scala-2.12.6
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SCALA_HOME</span>/bin
+<span class="nb">export</span><span class="w"> </span><span class="nv">SCALA_HOME</span><span class="o">=</span>/opt/scala-2.12.6
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SCALA_HOME</span>/bin
 
-<span class="nb">export</span> <span class="nv">MAVEN_HOME</span><span class="o">=</span>/opt/apache-maven-3.5.4
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">MAVEN_HOME</span><span class="si">}</span>/bin:<span class="si">${</span><span class="nv">PATH</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAVEN_HOME</span><span class="o">=</span>/opt/apache-maven-3.5.4
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">MAVEN_HOME</span><span class="si">}</span>/bin:<span class="si">${</span><span class="nv">PATH</span><span class="si">}</span>
 
 
-<span class="nb">export</span> <span class="nv">HADOOP_HOME</span><span class="o">=</span>/opt/hadoop-2.7.7/
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HADOOP_HOME</span>/bin
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HADOOP_HOME</span>/sbin
-<span class="nb">export</span> <span class="nv">HADOOP_MAPRED_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
-<span class="nb">export</span> <span class="nv">HADOOP_COMMON_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
-<span class="nb">export</span> <span class="nv">HADOOP_HDFS_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
-<span class="nb">export</span> <span class="nv">YARN_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
-<span class="nb">export</span> <span class="nv">HADOOP_COMMON_LIB_NATIVE_DIR</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>/lib/native
-<span class="nb">export</span> <span class="nv">HADOOP_OPTS</span><span class="o">=</span><span class="s2">"-Djava.library.path=</span><span class="nv">$HADOOP_HOME</span><span class="s2">/lib"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_HOME</span><span class="o">=</span>/opt/hadoop-2.7.7/
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HADOOP_HOME</span>/bin
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HADOOP_HOME</span>/sbin
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_MAPRED_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_COMMON_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_HDFS_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">YARN_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_COMMON_LIB_NATIVE_DIR</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>/lib/native
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_OPTS</span><span class="o">=</span><span class="s2">"-Djava.library.path=</span><span class="nv">$HADOOP_HOME</span><span class="s2">/lib"</span>
 
-<span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
-</pre></div>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
+</code></pre></div>
 <h4>源</h4>
 <p>pip 源</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>global<span class="o">]</span>
-index-url <span class="o">=</span> https://pypi.tuna.tsinghua.edu.cn/simple
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>global<span class="o">]</span>
+index-url<span class="w"> </span><span class="o">=</span><span class="w"> </span>https://pypi.tuna.tsinghua.edu.cn/simple
+</code></pre></div>
 <p>CentOS7 （清华）</p>
 <p>记得备份</p>
-<div class="highlight"><pre><span></span>cp /etc/yum.repos.d/CentOS-Base.repo  /etc/yum.repos.d/CentOS-Base.repo.bak
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>/etc/yum.repos.d/CentOS-Base.repo<span class="w">  </span>/etc/yum.repos.d/CentOS-Base.repo.bak
 
-cp /etc/yum.repos.d/epel.repo  /etc/yum.repos.d/epel.repo.bak
-</pre></div>
-<div class="highlight"><pre><span></span><span class="o">[</span>base<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Base
+cp<span class="w"> </span>/etc/yum.repos.d/epel.repo<span class="w">  </span>/etc/yum.repos.d/epel.repo.bak
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>base<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Base
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/os/<span class="nv">$basearch</span>/
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os</span>
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
@@ -148,7 +148,7 @@ cp /etc/yum.repos.d/epel.repo  /etc/yum.repos.d/epel.repo.bak
 
 <span class="c1">#released updates</span>
 <span class="o">[</span>updates<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Updates
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Updates
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/updates/<span class="nv">$basearch</span>/
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=updates</span>
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
@@ -156,7 +156,7 @@ cp /etc/yum.repos.d/epel.repo  /etc/yum.repos.d/epel.repo.bak
 
 <span class="c1">#additional packages that may be useful</span>
 <span class="o">[</span>extras<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Extras
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Extras
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/extras/<span class="nv">$basearch</span>/
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=extras</span>
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
@@ -164,15 +164,15 @@ cp /etc/yum.repos.d/epel.repo  /etc/yum.repos.d/epel.repo.bak
 
 <span class="c1">#additional packages that extend functionality of existing packages</span>
 <span class="o">[</span>centosplus<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Plus
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Plus
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/centosplus/<span class="nv">$basearch</span>/
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=centosplus</span>
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
 <span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-</pre></div>
-<div class="highlight"><pre><span></span><span class="o">[</span>epel<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>Extra Packages <span class="k">for</span> Enterprise Linux <span class="m">7</span> - <span class="nv">$basearch</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>epel<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>Extra<span class="w"> </span>Packages<span class="w"> </span><span class="k">for</span><span class="w"> </span>Enterprise<span class="w"> </span>Linux<span class="w"> </span><span class="m">7</span><span class="w"> </span>-<span class="w"> </span><span class="nv">$basearch</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/epel/7/<span class="nv">$basearch</span>
 <span class="c1">#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&amp;arch=$basearch</span>
 <span class="nv">failovermethod</span><span class="o">=</span>priority
@@ -181,7 +181,7 @@ cp /etc/yum.repos.d/epel.repo  /etc/yum.repos.d/epel.repo.bak
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 
 <span class="o">[</span>epel-debuginfo<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>Extra Packages <span class="k">for</span> Enterprise Linux <span class="m">7</span> - <span class="nv">$basearch</span> - Debug
+<span class="nv">name</span><span class="o">=</span>Extra<span class="w"> </span>Packages<span class="w"> </span><span class="k">for</span><span class="w"> </span>Enterprise<span class="w"> </span>Linux<span class="w"> </span><span class="m">7</span><span class="w"> </span>-<span class="w"> </span><span class="nv">$basearch</span><span class="w"> </span>-<span class="w"> </span>Debug
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/epel/7/<span class="nv">$basearch</span>/debug
 <span class="c1">#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-7&amp;arch=$basearch</span>
 <span class="nv">failovermethod</span><span class="o">=</span>priority
@@ -190,56 +190,56 @@ cp /etc/yum.repos.d/epel.repo  /etc/yum.repos.d/epel.repo.bak
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
 
 <span class="o">[</span>epel-source<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>Extra Packages <span class="k">for</span> Enterprise Linux <span class="m">7</span> - <span class="nv">$basearch</span> - Source
+<span class="nv">name</span><span class="o">=</span>Extra<span class="w"> </span>Packages<span class="w"> </span><span class="k">for</span><span class="w"> </span>Enterprise<span class="w"> </span>Linux<span class="w"> </span><span class="m">7</span><span class="w"> </span>-<span class="w"> </span><span class="nv">$basearch</span><span class="w"> </span>-<span class="w"> </span>Source
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/epel/7/SRPMS
 <span class="c1">#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-source-7&amp;arch=$basearch</span>
 <span class="nv">failovermethod</span><span class="o">=</span>priority
 <span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
-</pre></div>
+</code></pre></div>
 <p>CentOS7 阿里源</p>
-<div class="highlight"><pre><span></span>curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-o<span class="w"> </span>/etc/yum.repos.d/CentOS-Base.repo<span class="w"> </span>http://mirrors.aliyun.com/repo/Centos-7.repo
 
-curl -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
-</pre></div>
+curl<span class="w"> </span>-o<span class="w"> </span>/etc/yum.repos.d/epel.repo<span class="w"> </span>http://mirrors.aliyun.com/repo/epel-7.repo
+</code></pre></div>
 <p>kali linux </p>
-<div class="highlight"><pre><span></span><span class="c1">#阿里云</span>
-deb http://mirrors.aliyun.com/kali kali-rolling main non-free contrib 
-deb-src http://mirrors.aliyun.com/kali kali-rolling main non-free contrib 
+<div class="highlight"><pre><span></span><code><span class="c1">#阿里云</span>
+deb<span class="w"> </span>http://mirrors.aliyun.com/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>non-free<span class="w"> </span>contrib<span class="w"> </span>
+deb-src<span class="w"> </span>http://mirrors.aliyun.com/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>non-free<span class="w"> </span>contrib<span class="w"> </span>
 
 <span class="c1">#清华大学 </span>
-deb http://mirrors.tuna.tsinghua.edu.cn/kali kali-rolling main contrib non-free 
-deb-src https://mirrors.tuna.tsinghua.edu.cn/kali kali-rolling main contrib non-free 
+deb<span class="w"> </span>http://mirrors.tuna.tsinghua.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
+deb-src<span class="w"> </span>https://mirrors.tuna.tsinghua.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
 
 <span class="c1">#浙江大学 </span>
-deb http://mirrors.zju.edu.cn/kali kali-rolling main contrib non-free 
-deb-src http://mirrors.zju.edu.cn/kali kali-rolling main contrib non-free 
-</pre></div>
+deb<span class="w"> </span>http://mirrors.zju.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
+deb-src<span class="w"> </span>http://mirrors.zju.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
+</code></pre></div>
 <p>mysql 源</p>
-<div class="highlight"><pre><span></span>rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
-</pre></div>
+<div class="highlight"><pre><span></span><code>rpm<span class="w"> </span>-ivh<span class="w"> </span>https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+</code></pre></div>
 <h4>软件包</h4>
-<div class="highlight"><pre><span></span>yum groupinstall development tools
+<div class="highlight"><pre><span></span><code>yum<span class="w"> </span>groupinstall<span class="w"> </span>development<span class="w"> </span>tools
 
-yum install -y pcre pcre-devel zlip zlib-devel openssl openssl-devel 
+yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>pcre<span class="w"> </span>pcre-devel<span class="w"> </span>zlip<span class="w"> </span>zlib-devel<span class="w"> </span>openssl<span class="w"> </span>openssl-devel<span class="w"> </span>
 
-yum install python-devel python-pip python-virtualenv
+yum<span class="w"> </span>install<span class="w"> </span>python-devel<span class="w"> </span>python-pip<span class="w"> </span>python-virtualenv
 
 
-yum install mongodb-server mariadb-server 
+yum<span class="w"> </span>install<span class="w"> </span>mongodb-server<span class="w"> </span>mariadb-server<span class="w"> </span>
 
-yum install redis 
+yum<span class="w"> </span>install<span class="w"> </span>redis<span class="w"> </span>
 
-yum install python36 python36-devel
-</pre></div>
+yum<span class="w"> </span>install<span class="w"> </span>python36<span class="w"> </span>python36-devel
+</code></pre></div>
 <h4>nodejs</h4>
-<div class="highlight"><pre><span></span>wget https://npm.taobao.org/mirrors/node/v10.14.2/node-v10.14.2-linux-x64.tar.gz 
-</pre></div>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NODE_HOME</span><span class="o">=</span>/root/node-v10.14.2-linux-x64
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$NODE_HOME</span>/bin
-<span class="nb">export</span> <span class="nv">NODE_PATH</span><span class="o">=</span><span class="nv">$NODE_HOME</span>/lib/node_modules
-</pre></div>
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://npm.taobao.org/mirrors/node/v10.14.2/node-v10.14.2-linux-x64.tar.gz<span class="w"> </span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">NODE_HOME</span><span class="o">=</span>/root/node-v10.14.2-linux-x64
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$NODE_HOME</span>/bin
+<span class="nb">export</span><span class="w"> </span><span class="nv">NODE_PATH</span><span class="o">=</span><span class="nv">$NODE_HOME</span>/lib/node_modules
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

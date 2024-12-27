@@ -103,16 +103,16 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
-<div class="highlight"><pre><span></span><span class="c1"># wget http://download.redis.io/releases/redis-4.0.11.tar.gz</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># wget http://download.redis.io/releases/redis-4.0.11.tar.gz</span>
 <span class="c1"># tar -zxvf redis-4.0.11.tar.gz</span>
 <span class="c1"># cd redis-4.0.11 &amp;&amp; make &amp;&amp; make install </span>
-</pre></div>
+</code></pre></div>
 <p>然后进入utils 目录</p>
-<div class="highlight"><pre><span></span>./install_server.sh
-</pre></div>
+<div class="highlight"><pre><span></span><code>./install_server.sh
+</code></pre></div>
 <p>redis 就把 服务添加到 /etc/init.d/目录了，并且 开机自动启动了，服务名称redis_6379 ，如果更改了默认端口，服务名称就是 redis_端口号。</p>
 <h4>配置</h4>
-<div class="highlight"><pre><span></span><span class="c1"># Redis配置文件样例</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Redis配置文件样例</span>
 
 <span class="c1"># Note on units: when memory size is needed, it is possible to specifiy</span>
 <span class="c1"># it in the usual form of 1k 5GB 4M and so forth:</span>
@@ -128,14 +128,14 @@ var _hmt = _hmt || [];
 
 <span class="c1"># Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程</span>
 <span class="c1"># 启用守护进程后，Redis会把pid写到一个pidfile中，在/var/run/redis.pid</span>
-daemonize no
+daemonize<span class="w"> </span>no
 
 <span class="c1"># 当Redis以守护进程方式运行时，Redis默认会把pid写入/var/run/redis.pid文件，可以通过pidfile指定</span>
-pidfile /var/run/redis.pid
+pidfile<span class="w"> </span>/var/run/redis.pid
 
 <span class="c1"># 指定Redis监听端口，默认端口为6379</span>
 <span class="c1"># 如果指定0端口，表示Redis不监听TCP连接</span>
-port <span class="m">6379</span>
+port<span class="w"> </span><span class="m">6379</span>
 
 <span class="c1"># 绑定的主机地址</span>
 <span class="c1"># 你可以绑定单一接口，如果没有绑定，所有接口都会监听到来的连接</span>
@@ -149,17 +149,17 @@ port <span class="m">6379</span>
 <span class="c1"># unixsocketperm 755</span>
 
 <span class="c1"># 当客户端闲置多长时间后关闭连接，如果指定为0，表示关闭该功能</span>
-timeout <span class="m">0</span>
+timeout<span class="w"> </span><span class="m">0</span>
 
 <span class="c1"># 指定日志记录级别，Redis总共支持四个级别：debug、verbose、notice、warning，默认为verbose</span>
 <span class="c1"># debug (很多信息, 对开发／测试比较有用)</span>
 <span class="c1"># verbose (many rarely useful info, but not a mess like the debug level)</span>
 <span class="c1"># notice (moderately verbose, what you want in production probably)</span>
 <span class="c1"># warning (only very important / critical messages are logged)</span>
-loglevel verbose
+loglevel<span class="w"> </span>verbose
 
 <span class="c1"># 日志记录方式，默认为标准输出，如果配置为redis为守护进程方式运行，而这里又配置为标准输出，则日志将会发送给/dev/null</span>
-logfile stdout
+logfile<span class="w"> </span>stdout
 
 <span class="c1"># To enable logging to the system logger, just set 'syslog-enabled' to yes,</span>
 <span class="c1"># and optionally update the other syslog parameters to suit your needs.</span>
@@ -173,7 +173,7 @@ logfile stdout
 
 <span class="c1"># 设置数据库的数量，默认数据库为0，可以使用select &lt;dbid&gt;命令在连接上指定数据库id</span>
 <span class="c1"># dbid是从0到‘databases’-1的数目</span>
-databases <span class="m">16</span>
+databases<span class="w"> </span><span class="m">16</span>
 
 <span class="c1">################################ SNAPSHOTTING  #################################</span>
 <span class="c1"># 指定在多长时间内，有多少次更新操作，就将数据同步到数据文件，可以多个条件配合</span>
@@ -190,15 +190,15 @@ databases <span class="m">16</span>
 <span class="c1">#   60秒内有10000个更改</span>
 <span class="c1">#   Note: 可以把所有“save”行注释掉，这样就取消同步操作了</span>
 
-save <span class="m">900</span> <span class="m">1</span>
-save <span class="m">300</span> <span class="m">10</span>
-save <span class="m">60</span> <span class="m">10000</span>
+save<span class="w"> </span><span class="m">900</span><span class="w"> </span><span class="m">1</span>
+save<span class="w"> </span><span class="m">300</span><span class="w"> </span><span class="m">10</span>
+save<span class="w"> </span><span class="m">60</span><span class="w"> </span><span class="m">10000</span>
 
 <span class="c1"># 指定存储至本地数据库时是否压缩数据，默认为yes，Redis采用LZF压缩，如果为了节省CPU时间，可以关闭该选项，但会导致数据库文件变的巨大</span>
-rdbcompression yes
+rdbcompression<span class="w"> </span>yes
 
 <span class="c1"># 指定本地数据库文件名，默认值为dump.rdb</span>
-dbfilename dump.rdb
+dbfilename<span class="w"> </span>dump.rdb
 
 <span class="c1"># 工作目录.</span>
 <span class="c1"># 指定本地数据库存放目录，文件名由上一个dbfilename配置项指定</span>
@@ -206,7 +206,7 @@ dbfilename dump.rdb
 <span class="c1"># Also the Append Only File will be created inside this directory.</span>
 <span class="c1"># </span>
 <span class="c1"># 注意，这里只能指定一个目录，不能指定文件名</span>
-dir ./
+dir<span class="w"> </span>./
 
 <span class="c1">################################# REPLICATION #################################</span>
 
@@ -232,7 +232,7 @@ dir ./
 <span class="c1">#    an error "SYNC with master in progress" to all the kind of commands</span>
 <span class="c1">#    but to INFO and SLAVEOF.</span>
 <span class="c1">#</span>
-slave-serve-stale-data yes
+slave-serve-stale-data<span class="w"> </span>yes
 
 <span class="c1"># Slaves send PINGs to server in a predefined interval. It's possible to change</span>
 <span class="c1"># this interval with the repl_ping_slave_period option. The default value is 10</span>
@@ -343,7 +343,7 @@ slave-serve-stale-data yes
 <span class="c1"># IMPORTANT: Check the BGREWRITEAOF to check how to rewrite the append</span>
 <span class="c1"># log file in background when it gets too big.</span>
 
-appendonly no
+appendonly<span class="w"> </span>no
 
 <span class="c1"># 指定更新日志文件名，默认为appendonly.aof</span>
 <span class="c1"># appendfilename appendonly.aof</span>
@@ -357,7 +357,7 @@ appendonly no
 <span class="c1"># always:表示每次更新操作后手动调用fsync()将数据写到磁盘（慢，安全）</span>
 <span class="c1"># everysec:表示每秒同步一次（折衷，默认值）</span>
 
-appendfsync everysec
+appendfsync<span class="w"> </span>everysec
 <span class="c1"># appendfsync no</span>
 
 <span class="c1"># When the AOF fsync policy is set to always or everysec, and a background</span>
@@ -378,7 +378,7 @@ appendfsync everysec
 <span class="c1"># </span>
 <span class="c1"># If you have latency problems turn this to "yes". Otherwise leave it as</span>
 <span class="c1"># "no" that is the safest pick from the point of view of durability.</span>
-no-appendfsync-on-rewrite no
+no-appendfsync-on-rewrite<span class="w"> </span>no
 
 <span class="c1"># Automatic rewrite of the append only file.</span>
 <span class="c1"># Redis is able to automatically rewrite the log file implicitly calling</span>
@@ -397,8 +397,8 @@ no-appendfsync-on-rewrite no
 <span class="c1"># Specify a precentage of zero in order to disable the automatic AOF</span>
 <span class="c1"># rewrite feature.</span>
 
-auto-aof-rewrite-percentage <span class="m">100</span>
-auto-aof-rewrite-min-size 64mb
+auto-aof-rewrite-percentage<span class="w"> </span><span class="m">100</span>
+auto-aof-rewrite-min-size<span class="w"> </span>64mb
 
 <span class="c1">################################## SLOW LOG ###################################</span>
 
@@ -418,11 +418,11 @@ auto-aof-rewrite-min-size 64mb
 <span class="c1"># The following time is expressed in microseconds, so 1000000 is equivalent</span>
 <span class="c1"># to one second. Note that a negative number disables the slow log, while</span>
 <span class="c1"># a value of zero forces the logging of every command.</span>
-slowlog-log-slower-than <span class="m">10000</span>
+slowlog-log-slower-than<span class="w"> </span><span class="m">10000</span>
 
 <span class="c1"># There is no limit to this length. Just be aware that it will consume memory.</span>
 <span class="c1"># You can reclaim memory used by the slow log with SLOWLOG RESET.</span>
-slowlog-max-len <span class="m">1024</span>
+slowlog-max-len<span class="w"> </span><span class="m">1024</span>
 
 <span class="c1">################################ VIRTUAL MEMORY ###############################</span>
 
@@ -440,7 +440,7 @@ slowlog-max-len <span class="m">1024</span>
 <span class="c1"># 指定是否启用虚拟内存机制，默认值为no，</span>
 <span class="c1"># VM机制将数据分页存放，由Redis将访问量较少的页即冷数据swap到磁盘上，访问多的页面由磁盘自动换出到内存中</span>
 <span class="c1"># 把vm-enabled设置为yes，根据需要设置好接下来的三个VM参数，就可以启动VM了</span>
-vm-enabled no
+vm-enabled<span class="w"> </span>no
 <span class="c1"># vm-enabled yes</span>
 
 <span class="c1"># This is the path of the Redis swap file. As you can guess, swap files</span>
@@ -453,7 +453,7 @@ vm-enabled no
 <span class="c1"># *** WARNING *** if you are using a shared hosting the default of putting</span>
 <span class="c1"># the swap file under /tmp is not secure. Create a dir with access granted</span>
 <span class="c1"># only to Redis user and configure Redis to create the swap file there.</span>
-vm-swap-file /tmp/redis.swap
+vm-swap-file<span class="w"> </span>/tmp/redis.swap
 
 <span class="c1"># With vm-max-memory 0 the system will swap everything it can. Not a good</span>
 <span class="c1"># default, just specify the max amount of RAM you can in bytes, but it's</span>
@@ -461,11 +461,11 @@ vm-swap-file /tmp/redis.swap
 <span class="c1"># that's more or less between 60 and 80% of your free RAM.</span>
 <span class="c1"># 将所有大于vm-max-memory的数据存入虚拟内存，无论vm-max-memory设置多少，所有索引数据都是内存存储的（Redis的索引数据就是keys）</span>
 <span class="c1"># 也就是说当vm-max-memory设置为0的时候，其实是所有value都存在于磁盘。默认值为0</span>
-vm-max-memory <span class="m">0</span>
+vm-max-memory<span class="w"> </span><span class="m">0</span>
 
 <span class="c1"># Redis swap文件分成了很多的page，一个对象可以保存在多个page上面，但一个page上不能被多个对象共享，vm-page-size是要根据存储的数据大小来设定的。</span>
 <span class="c1"># 建议如果存储很多小对象，page大小最后设置为32或64bytes；如果存储很大的对象，则可以使用更大的page，如果不确定，就使用默认值</span>
-vm-page-size <span class="m">32</span>
+vm-page-size<span class="w"> </span><span class="m">32</span>
 
 <span class="c1"># 设置swap文件中的page数量由于页表（一种表示页面空闲或使用的bitmap）是存放在内存中的，在磁盘上每8个pages将消耗1byte的内存</span>
 <span class="c1"># swap空间总容量为 vm-page-size * vm-pages</span>
@@ -475,7 +475,7 @@ vm-page-size <span class="m">32</span>
 <span class="c1">#</span>
 <span class="c1"># It's better to use the smallest acceptable value for your application,</span>
 <span class="c1"># but the default is large in order to work in most conditions.</span>
-vm-pages <span class="m">134217728</span>
+vm-pages<span class="w"> </span><span class="m">134217728</span>
 
 <span class="c1"># Max number of VM I/O threads running at the same time.</span>
 <span class="c1"># This threads are used to read/write data from/to swap file, since they</span>
@@ -484,7 +484,7 @@ vm-pages <span class="m">134217728</span>
 <span class="c1"># I/O itself as the physical device may not be able to couple with many</span>
 <span class="c1"># reads/writes operations at the same time.</span>
 <span class="c1"># 设置访问swap文件的I/O线程数，最后不要超过机器的核数，如果设置为0，那么所有对swap文件的操作都是串行的，可能会造成比较长时间的延迟，默认值为4</span>
-vm-max-threads <span class="m">4</span>
+vm-max-threads<span class="w"> </span><span class="m">4</span>
 
 <span class="c1">############################### ADVANCED CONFIG ###############################</span>
 
@@ -493,27 +493,27 @@ vm-max-threads <span class="m">4</span>
 <span class="c1"># exceed a given threshold. You can configure this limits with the following</span>
 <span class="c1"># configuration directives.</span>
 <span class="c1"># 指定在超过一定的数量或者最大的元素超过某一临界值时，采用一种特殊的哈希算法</span>
-hash-max-zipmap-entries <span class="m">512</span>
-hash-max-zipmap-value <span class="m">64</span>
+hash-max-zipmap-entries<span class="w"> </span><span class="m">512</span>
+hash-max-zipmap-value<span class="w"> </span><span class="m">64</span>
 
 <span class="c1"># Similarly to hashes, small lists are also encoded in a special way in order</span>
 <span class="c1"># to save a lot of space. The special representation is only used when</span>
 <span class="c1"># you are under the following limits:</span>
-list-max-ziplist-entries <span class="m">512</span>
-list-max-ziplist-value <span class="m">64</span>
+list-max-ziplist-entries<span class="w"> </span><span class="m">512</span>
+list-max-ziplist-value<span class="w"> </span><span class="m">64</span>
 
 <span class="c1"># Sets have a special encoding in just one case: when a set is composed</span>
 <span class="c1"># of just strings that happens to be integers in radix 10 in the range</span>
 <span class="c1"># of 64 bit signed integers.</span>
 <span class="c1"># The following configuration setting sets the limit in the size of the</span>
 <span class="c1"># set in order to use this special memory saving encoding.</span>
-set-max-intset-entries <span class="m">512</span>
+set-max-intset-entries<span class="w"> </span><span class="m">512</span>
 
 <span class="c1"># Similarly to hashes and lists, sorted sets are also specially encoded in</span>
 <span class="c1"># order to save a lot of space. This encoding is only used when the length and</span>
 <span class="c1"># elements of a sorted set are below the following limits:</span>
-zset-max-ziplist-entries <span class="m">128</span>
-zset-max-ziplist-value <span class="m">64</span>
+zset-max-ziplist-entries<span class="w"> </span><span class="m">128</span>
+zset-max-ziplist-value<span class="w"> </span><span class="m">64</span>
 
 <span class="c1"># Active rehashing uses 1 millisecond every 100 milliseconds of CPU time in</span>
 <span class="c1"># order to help rehashing the main Redis hash table (the one mapping top-level</span>
@@ -531,17 +531,17 @@ zset-max-ziplist-value <span class="m">64</span>
 <span class="c1"># not a good thing in your environment that Redis can reply form time to time</span>
 <span class="c1"># to queries with 2 milliseconds delay.</span>
 <span class="c1"># 指定是否激活重置哈希，默认为开启</span>
-activerehashing yes
+activerehashing<span class="w"> </span>yes
 
 <span class="c1">################################## INCLUDES ###################################</span>
 
 <span class="c1"># 指定包含其他的配置文件，可以在同一主机上多个Redis实例之间使用同一份配置文件，而同时各实例又拥有自己的特定配置文件</span>
 <span class="c1"># include /path/to/local.conf</span>
 <span class="c1"># include /path/to/other.conf</span>
-</pre></div>
+</code></pre></div>
 <h4>redis 密码</h4>
-<div class="highlight"><pre><span></span><span class="c1"># requirepass foobared</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># requirepass foobared</span>
+</code></pre></div>
 <p>该字段注释去掉，后面就是密码</p>
 <h4>备份</h4>
 <p>127.0.0.1:6379&gt; SAVE</p>

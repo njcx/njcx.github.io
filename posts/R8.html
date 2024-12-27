@@ -125,21 +125,21 @@ var _hmt = _hmt || [];
 <p>每个Node运行kube-proxy服务，负责将访问service的TCP/UDP数据流转发到后端的容器。如果有多个副本会实现负载均衡。</p>
 <h4>安装</h4>
 <p>一共3个节点，</p>
-<div class="highlight"><pre><span></span><span class="m">10</span>.10.252.215   master   
-<span class="m">10</span>.10.252.214   node1 
-<span class="m">10</span>.10.252.213   node2  
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">10</span>.10.252.215<span class="w">   </span>master<span class="w">   </span>
+<span class="m">10</span>.10.252.214<span class="w">   </span>node1<span class="w"> </span>
+<span class="m">10</span>.10.252.213<span class="w">   </span>node2<span class="w">  </span>
+</code></pre></div>
 <p>除了初始化，软件安装一致</p>
 <p>k8s repo</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>k8s<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>k8s<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>k8s
 <span class="nv">enabled</span><span class="o">=</span><span class="m">1</span>
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
-</pre></div>
+</code></pre></div>
 <p>base.repo</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>base<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Base
+<div class="highlight"><pre><span></span><code><span class="o">[</span>base<span class="o">]</span>
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Base
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os&amp;infra=$infra</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.ustc.edu.cn/centos/<span class="nv">$releasever</span>/os/<span class="nv">$basearch</span>/
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
@@ -147,7 +147,7 @@ var _hmt = _hmt || [];
 
 <span class="c1">#released updates</span>
 <span class="o">[</span>updates<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Updates
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Updates
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=updates&amp;infra=$infra</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.ustc.edu.cn/centos/<span class="nv">$releasever</span>/updates/<span class="nv">$basearch</span>/
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
@@ -155,7 +155,7 @@ var _hmt = _hmt || [];
 
 <span class="c1">#additional packages that may be useful</span>
 <span class="o">[</span>extras<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Extras
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Extras
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=extras&amp;infra=$infra</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.ustc.edu.cn/centos/<span class="nv">$releasever</span>/extras/<span class="nv">$basearch</span>/
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
@@ -163,81 +163,81 @@ var _hmt = _hmt || [];
 
 <span class="c1">#additional packages that extend functionality of existing packages</span>
 <span class="o">[</span>centosplus<span class="o">]</span>
-<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span> - Plus
+<span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Plus
 <span class="c1">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=centosplus&amp;infra=$infra</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.ustc.edu.cn/centos/<span class="nv">$releasever</span>/centosplus/<span class="nv">$basearch</span>/
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
 <span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-</pre></div>
-<div class="highlight"><pre><span></span> <span class="nb">cd</span> /etc/yum.repos.d/
- wget http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
- vim k8s.repo
-yum makecache
- yum install docker-ce  kubelet kubeadm kubectl -y
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/etc/yum.repos.d/
+<span class="w"> </span>wget<span class="w"> </span>http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+<span class="w"> </span>vim<span class="w"> </span>k8s.repo
+yum<span class="w"> </span>makecache
+<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>docker-ce<span class="w">  </span>kubelet<span class="w"> </span>kubeadm<span class="w"> </span>kubectl<span class="w"> </span>-y
 
-cat /etc/docker/daemon.json
+cat<span class="w"> </span>/etc/docker/daemon.json
 
 <span class="o">{</span>
-<span class="s2">"exec-opts"</span>: <span class="o">[</span><span class="s2">"native.cgroupdriver=systemd"</span><span class="o">]</span>,  
-<span class="s2">"registry-mirrors"</span>: <span class="o">[</span><span class="s2">"https://docker.mirrors.ustc.edu.cn"</span><span class="o">]</span>
+<span class="s2">"exec-opts"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"native.cgroupdriver=systemd"</span><span class="o">]</span>,<span class="w">  </span>
+<span class="s2">"registry-mirrors"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"https://docker.mirrors.ustc.edu.cn"</span><span class="o">]</span>
 <span class="o">}</span>
 
 
-cat &gt; /etc/sysctl.d/k8s.conf <span class="s">&lt;&lt; EOF</span>
+cat<span class="w"> </span>&gt;<span class="w"> </span>/etc/sysctl.d/k8s.conf<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
 <span class="s">net.bridge.bridge-nf-call-ip6tables = 1</span>
 <span class="s">net.bridge.bridge-nf-call-iptables = 1</span>
 <span class="s">EOF</span>
 
- <span class="nb">echo</span> <span class="s2">"1"</span> &gt;/proc/sys/net/bridge/bridge-nf-call-iptables
+<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"1"</span><span class="w"> </span>&gt;/proc/sys/net/bridge/bridge-nf-call-iptables
 
- setenforce <span class="m">0</span>
- swapoff -a
-
-
-systemctl restart docker <span class="o">&amp;&amp;</span> systemctl <span class="nb">enable</span> docker 
- systemctl restart kubelet <span class="o">&amp;&amp;</span> systemctl <span class="nb">enable</span> kubelet
+<span class="w"> </span>setenforce<span class="w"> </span><span class="m">0</span>
+<span class="w"> </span>swapoff<span class="w"> </span>-a
 
 
+systemctl<span class="w"> </span>restart<span class="w"> </span>docker<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>docker<span class="w"> </span>
+<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>kubelet<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>kubelet
 
-master node1 node2 上面内容一致
+
+
+master<span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>上面内容一致
 
 
 master执行
 
-kubeadm init --kubernetes-version<span class="o">=</span><span class="m">1</span>.19.0 --apiserver-advertise-address<span class="o">=</span><span class="m">10</span>.10.252.215 --image-repository registry.aliyuncs.com/google_containers --service-cidr<span class="o">=</span><span class="m">10</span>.10.0.0/16 --pod-network-cidr<span class="o">=</span><span class="m">10</span>.244.0.0/16
+kubeadm<span class="w"> </span>init<span class="w"> </span>--kubernetes-version<span class="o">=</span><span class="m">1</span>.19.0<span class="w"> </span>--apiserver-advertise-address<span class="o">=</span><span class="m">10</span>.10.252.215<span class="w"> </span>--image-repository<span class="w"> </span>registry.aliyuncs.com/google_containers<span class="w"> </span>--service-cidr<span class="o">=</span><span class="m">10</span>.10.0.0/16<span class="w"> </span>--pod-network-cidr<span class="o">=</span><span class="m">10</span>.244.0.0/16
 
-  mkdir -p <span class="nv">$HOME</span>/.kube
-  sudo cp -i /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
- sudo chown <span class="k">$(</span>id -u<span class="k">)</span>:<span class="k">$(</span>id -g<span class="k">)</span> <span class="nv">$HOME</span>/.kube/config
+<span class="w">  </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/.kube
+<span class="w">  </span>sudo<span class="w"> </span>cp<span class="w"> </span>-i<span class="w"> </span>/etc/kubernetes/admin.conf<span class="w"> </span><span class="nv">$HOME</span>/.kube/config
+<span class="w"> </span>sudo<span class="w"> </span>chown<span class="w"> </span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>:<span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="w"> </span><span class="nv">$HOME</span>/.kube/config
 
 
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-</pre></div>
-<div class="highlight"><pre><span></span>node1 node2 执行
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://docs.projectcalico.org/manifests/calico.yaml
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>node1<span class="w"> </span>node2<span class="w"> </span>执行
 
- kubeadm join <span class="m">10</span>.10.252.215:6443 --token u3toqk.8j7fnn0lmajgvnvq     --discovery-token-ca-cert-hash sha256:49b37a021f9223d2f3af10d71a5ca47cc34e12d2c20147adfc61a6a4b90c4b97 
-</pre></div>
+<span class="w"> </span>kubeadm<span class="w"> </span>join<span class="w"> </span><span class="m">10</span>.10.252.215:6443<span class="w"> </span>--token<span class="w"> </span>u3toqk.8j7fnn0lmajgvnvq<span class="w">     </span>--discovery-token-ca-cert-hash<span class="w"> </span>sha256:49b37a021f9223d2f3af10d71a5ca47cc34e12d2c20147adfc61a6a4b90c4b97<span class="w"> </span>
+</code></pre></div>
 <p>master 生成join语句脚本备用</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 
-<span class="k">if</span> <span class="o">[</span> <span class="nv">$EUID</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span><span class="k">then</span>
-    <span class="nb">echo</span> <span class="s2">"You must be root (or sudo) to run this script"</span>
-    <span class="nb">exit</span> <span class="m">1</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$EUID</span><span class="w"> </span>-ne<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"You must be root (or sudo) to run this script"</span>
+<span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">fi</span>
 
-<span class="k">if</span> <span class="o">[</span> <span class="nv">$#</span> !<span class="o">=</span> <span class="m">1</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then</span>
-    <span class="nb">echo</span> <span class="s2">"Usage: </span><span class="nv">$0</span><span class="s2"> [master-hostname | master-ip-address]"</span>
-    <span class="nb">echo</span> <span class="s2">" e.g.: </span><span class="nv">$0</span><span class="s2"> api.k8s.hiko.im"</span>
-    <span class="nb">exit</span> <span class="m">1</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$#</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Usage: </span><span class="nv">$0</span><span class="s2"> [master-hostname | master-ip-address]"</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" e.g.: </span><span class="nv">$0</span><span class="s2"> api.k8s.hiko.im"</span>
+<span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="p">;</span>
 <span class="k">fi</span>
 
-<span class="nv">token</span><span class="o">=</span><span class="sb">`</span>kubeadm token create<span class="sb">`</span>
-<span class="nv">cert_hash</span><span class="o">=</span><span class="sb">`</span>openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt <span class="p">|</span> openssl rsa -pubin -outform der <span class="m">2</span>&gt;/dev/null <span class="p">|</span> openssl dgst -sha256 -hex <span class="p">|</span> sed <span class="s1">'s/^.* //'</span><span class="sb">`</span>
+<span class="nv">token</span><span class="o">=</span><span class="sb">`</span>kubeadm<span class="w"> </span>token<span class="w"> </span>create<span class="sb">`</span>
+<span class="nv">cert_hash</span><span class="o">=</span><span class="sb">`</span>openssl<span class="w"> </span>x509<span class="w"> </span>-pubkey<span class="w"> </span>-in<span class="w"> </span>/etc/kubernetes/pki/ca.crt<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>rsa<span class="w"> </span>-pubin<span class="w"> </span>-outform<span class="w"> </span>der<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>dgst<span class="w"> </span>-sha256<span class="w"> </span>-hex<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">'s/^.* //'</span><span class="sb">`</span>
 
-<span class="nb">echo</span> <span class="s2">"Refer the following command to join kubernetes cluster:"</span>
-<span class="nb">echo</span> <span class="s2">"kubeadm join </span><span class="nv">$1</span><span class="s2">:6443 --token </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2"> --discovery-token-ca-cert-hash sha256:</span><span class="si">${</span><span class="nv">cert_hash</span><span class="si">}</span><span class="s2">"</span>
-</pre></div>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Refer the following command to join kubernetes cluster:"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"kubeadm join </span><span class="nv">$1</span><span class="s2">:6443 --token </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2"> --discovery-token-ca-cert-hash sha256:</span><span class="si">${</span><span class="nv">cert_hash</span><span class="si">}</span><span class="s2">"</span>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

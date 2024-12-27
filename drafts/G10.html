@@ -109,14 +109,14 @@ var _hmt = _hmt || [];
 <li>反射型
 当我们把脚本作为参数，发给服务端的时候，服务端把脚本作为HTTP响应的一部分再次发送回来了，由浏览器解析脚本，产生攻击效应。</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
 <span class="nv">$user</span> <span class="o">=</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">'user'</span><span class="p">];</span>
 <span class="k">echo</span> <span class="nv">$user</span><span class="p">;</span>
-<span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
+<span class="cp">?&gt;</span>
+</code></pre></div>
 <p>当输入 </p>
-<div class="highlight"><pre><span></span>?user=<span class="nt">&lt;script&gt;</span>alert(1)<span class="nt">&lt;/script&gt;</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code>?user=<span class="nt">&lt;script&gt;</span>alert(1)<span class="nt">&lt;/script&gt;</span>
+</code></pre></div>
 <p>js脚本被渲染到前端了，由浏览器弹窗了</p>
 <ul>
 <li>存储型</li>

@@ -104,21 +104,21 @@ var _hmt = _hmt || [];
   <div class="content">
     <h2>安装</h2>
 <p>2017年4月测试正常,ubuntu16.04</p>
-<div class="highlight"><pre><span></span>sudo apt-get -y install <span class="se">\</span>
-  apt-transport-https <span class="se">\</span>
-  ca-certificates <span class="se">\</span>
-  curl
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>apt-transport-https<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ca-certificates<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>curl
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg <span class="p">|</span> sudo apt-key add -
+curl<span class="w"> </span>-fsSL<span class="w"> </span>https://download.docker.com/linux/ubuntu/gpg<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>apt-key<span class="w"> </span>add<span class="w"> </span>-
 
-sudo add-apt-repository <span class="se">\</span>
-       <span class="s2">"deb [arch=amd64] https://download.docker.com/linux/ubuntu \</span>
-<span class="s2">       </span><span class="k">$(</span>lsb_release -cs<span class="k">)</span><span class="s2"> \</span>
+sudo<span class="w"> </span>add-apt-repository<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span><span class="s2">"deb [arch=amd64] https://download.docker.com/linux/ubuntu \</span>
+<span class="s2">       </span><span class="k">$(</span>lsb_release<span class="w"> </span>-cs<span class="k">)</span><span class="s2"> \</span>
 <span class="s2">       stable"</span>
 
-sudo apt-get update
-sudo apt-get -y install docker-ce
-</pre></div>
+sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>docker-ce
+</code></pre></div>
 <h2>Docker的三个基本概念</h2>
 <ul>
 <li>镜像</li>

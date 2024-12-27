@@ -103,61 +103,61 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
-<div class="highlight"><pre><span></span><span class="c1">#  yum install numactl-devel  numactl  net-tools pciutils kernel-devel </span>
+<div class="highlight"><pre><span></span><code><span class="c1">#  yum install numactl-devel  numactl  net-tools pciutils kernel-devel </span>
 <span class="c1">#  wget http://fast.dpdk.org/rel/dpdk-18.11.tar.xz</span>
 <span class="c1">#  tar xvJf  dpdk-18.11.tar.xz </span>
-</pre></div>
+</code></pre></div>
 <p>下面这一步，很重要，可以避免很多错误</p>
-<div class="highlight"><pre><span></span><span class="c1"># export  RTE_SDK=/opt/dpdk-18.11/</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># export  RTE_SDK=/opt/dpdk-18.11/</span>
 <span class="c1"># export  RTE_TARGET=x86_64-native-linuxapp-gcc</span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="c1">#  cd /opt/dpdk-18.11/usertools</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">#  cd /opt/dpdk-18.11/usertools</span>
 <span class="c1"># ./dpdk-setup.sh</span>
 
-这里我们选择 
-<span class="o">[</span><span class="m">15</span><span class="o">]</span> x86_64-native-linuxapp-gcc
+这里我们选择<span class="w"> </span>
+<span class="o">[</span><span class="m">15</span><span class="o">]</span><span class="w"> </span>x86_64-native-linuxapp-gcc
 
-这里可能会报错，make: *** /lib/modules/3.10.0-1062.4.1.el7.x86_64/build: 没有那个文件或目录。 停止。
+这里可能会报错，make:<span class="w"> </span>***<span class="w"> </span>/lib/modules/3.10.0-1062.4.1.el7.x86_64/build:<span class="w"> </span>没有那个文件或目录。<span class="w"> </span>停止。
 
 <span class="c1"># ln -s /usr/src/kernels/3.10.0-1062.9.1.el7.x86_64/  /lib/modules/3.10.0-1062.4.1.el7.x86_64/build </span>
 
 即可
 
-<span class="o">[</span><span class="m">18</span><span class="o">]</span> Insert IGB UIO module
+<span class="o">[</span><span class="m">18</span><span class="o">]</span><span class="w"> </span>Insert<span class="w"> </span>IGB<span class="w"> </span>UIO<span class="w"> </span>module
 
-Loading DPDK UIO module
+Loading<span class="w"> </span>DPDK<span class="w"> </span>UIO<span class="w"> </span>module
 
-<span class="o">[</span><span class="m">22</span><span class="o">]</span> Setup hugepage mappings <span class="k">for</span> NUMA
+<span class="o">[</span><span class="m">22</span><span class="o">]</span><span class="w"> </span>Setup<span class="w"> </span>hugepage<span class="w"> </span>mappings<span class="w"> </span><span class="k">for</span><span class="w"> </span>NUMA
 
-我这里设置的 <span class="m">1024</span>
+我这里设置的<span class="w"> </span><span class="m">1024</span>
 
-<span class="o">[</span><span class="m">24</span><span class="o">]</span> Bind Ethernet/Crypto device to IGB UIO module
+<span class="o">[</span><span class="m">24</span><span class="o">]</span><span class="w"> </span>Bind<span class="w"> </span>Ethernet/Crypto<span class="w"> </span>device<span class="w"> </span>to<span class="w"> </span>IGB<span class="w"> </span>UIO<span class="w"> </span>module
 
 <span class="c1"># ifconfig ens38 down   这里要把网卡停用，不然会安装失败</span>
 
-Network devices using DPDK-compatible <span class="nv">driver</span>
+Network<span class="w"> </span>devices<span class="w"> </span>using<span class="w"> </span>DPDK-compatible<span class="w"> </span><span class="nv">driver</span>
 <span class="o">============================================</span>
-<span class="m">0000</span>:02:06.0 <span class="s1">'82545EM Gigabit Ethernet Controller (Copper) 100f'</span> <span class="nv">drv</span><span class="o">=</span>igb_uio <span class="nv">unused</span><span class="o">=</span>e1000
+<span class="m">0000</span>:02:06.0<span class="w"> </span><span class="s1">'82545EM Gigabit Ethernet Controller (Copper) 100f'</span><span class="w"> </span><span class="nv">drv</span><span class="o">=</span>igb_uio<span class="w"> </span><span class="nv">unused</span><span class="o">=</span>e1000
 
-Network devices using kernel <span class="nv">driver</span>
+Network<span class="w"> </span>devices<span class="w"> </span>using<span class="w"> </span>kernel<span class="w"> </span><span class="nv">driver</span>
 <span class="o">===================================</span>
-<span class="m">0000</span>:02:01.0 <span class="s1">'82545EM Gigabit Ethernet Controller (Copper) 100f'</span> <span class="k">if</span><span class="o">=</span>ens33 <span class="nv">drv</span><span class="o">=</span>e1000 <span class="nv">unused</span><span class="o">=</span>igb_uio *Active*
-<span class="m">0000</span>:02:05.0 <span class="s1">'82545EM Gigabit Ethernet Controller (Copper) 100f'</span> <span class="k">if</span><span class="o">=</span>ens37 <span class="nv">drv</span><span class="o">=</span>e1000 <span class="nv">unused</span><span class="o">=</span>igb_uio *Active*
+<span class="m">0000</span>:02:01.0<span class="w"> </span><span class="s1">'82545EM Gigabit Ethernet Controller (Copper) 100f'</span><span class="w"> </span><span class="k">if</span><span class="o">=</span>ens33<span class="w"> </span><span class="nv">drv</span><span class="o">=</span>e1000<span class="w"> </span><span class="nv">unused</span><span class="o">=</span>igb_uio<span class="w"> </span>*Active*
+<span class="m">0000</span>:02:05.0<span class="w"> </span><span class="s1">'82545EM Gigabit Ethernet Controller (Copper) 100f'</span><span class="w"> </span><span class="k">if</span><span class="o">=</span>ens37<span class="w"> </span><span class="nv">drv</span><span class="o">=</span>e1000<span class="w"> </span><span class="nv">unused</span><span class="o">=</span>igb_uio<span class="w"> </span>*Active*
 
-No <span class="s1">'Crypto'</span> devices <span class="nv">detected</span>
+No<span class="w"> </span><span class="s1">'Crypto'</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
 <span class="o">============================</span>
 
-No <span class="s1">'Eventdev'</span> devices <span class="nv">detected</span>
+No<span class="w"> </span><span class="s1">'Eventdev'</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
 <span class="o">==============================</span>
 
-No <span class="s1">'Mempool'</span> devices <span class="nv">detected</span>
+No<span class="w"> </span><span class="s1">'Mempool'</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
 <span class="o">=============================</span>
 
-No <span class="s1">'Compress'</span> devices <span class="nv">detected</span>
+No<span class="w"> </span><span class="s1">'Compress'</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
 <span class="o">==============================</span>
-</pre></div>
+</code></pre></div>
 <p>手动安装，绑定网卡（备选）</p>
-<div class="highlight"><pre><span></span><span class="c1"># make config T=x86_64-native-linuxapp-gcc</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># make config T=x86_64-native-linuxapp-gcc</span>
 <span class="c1"># make</span>
 <span class="c1"># make install T=x86_64-native-linuxapp-gcc</span>
 
@@ -173,30 +173,30 @@ No <span class="s1">'Compress'</span> devices <span class="nv">detected</span>
 <span class="c1"># mkdir -p /mnt/huge</span>
 <span class="c1"># mount -t hugetlbfs nodev /mnt/huge</span>
 <span class="c1"># echo 1024&gt;/sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages</span>
-</pre></div>
+</code></pre></div>
 <h4>测试</h4>
-<div class="highlight"><pre><span></span> <span class="c1">#cd dpdk-18.11/examples/helloworld</span>
- <span class="c1"># make</span>
- <span class="c1">#./build/helloworld</span>
+<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="c1">#cd dpdk-18.11/examples/helloworld</span>
+<span class="w"> </span><span class="c1"># make</span>
+<span class="w"> </span><span class="c1">#./build/helloworld</span>
 
 
 
-EAL: Detected <span class="m">1</span> lcore<span class="o">(</span>s<span class="o">)</span>
-EAL: Detected <span class="m">1</span> NUMA nodes
-EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
-EAL: No free hugepages reported in hugepages-1048576kB
-EAL: Probing VFIO support...
-EAL: PCI device <span class="m">0000</span>:02:01.0 on NUMA socket -1
-EAL:   Invalid NUMA socket, default to <span class="m">0</span>
-EAL:   probe driver: <span class="m">8086</span>:100f net_e1000_em
-EAL: PCI device <span class="m">0000</span>:02:05.0 on NUMA socket -1
-EAL:   Invalid NUMA socket, default to <span class="m">0</span>
-EAL:   probe driver: <span class="m">8086</span>:100f net_e1000_em
-EAL: PCI device <span class="m">0000</span>:02:06.0 on NUMA socket -1
-EAL:   Invalid NUMA socket, default to <span class="m">0</span>
-EAL:   probe driver: <span class="m">8086</span>:100f net_e1000_em
-hello from core <span class="m">0</span>
-</pre></div>
+EAL:<span class="w"> </span>Detected<span class="w"> </span><span class="m">1</span><span class="w"> </span>lcore<span class="o">(</span>s<span class="o">)</span>
+EAL:<span class="w"> </span>Detected<span class="w"> </span><span class="m">1</span><span class="w"> </span>NUMA<span class="w"> </span>nodes
+EAL:<span class="w"> </span>Multi-process<span class="w"> </span>socket<span class="w"> </span>/var/run/dpdk/rte/mp_socket
+EAL:<span class="w"> </span>No<span class="w"> </span>free<span class="w"> </span>hugepages<span class="w"> </span>reported<span class="w"> </span><span class="k">in</span><span class="w"> </span>hugepages-1048576kB
+EAL:<span class="w"> </span>Probing<span class="w"> </span>VFIO<span class="w"> </span>support...
+EAL:<span class="w"> </span>PCI<span class="w"> </span>device<span class="w"> </span><span class="m">0000</span>:02:01.0<span class="w"> </span>on<span class="w"> </span>NUMA<span class="w"> </span>socket<span class="w"> </span>-1
+EAL:<span class="w">   </span>Invalid<span class="w"> </span>NUMA<span class="w"> </span>socket,<span class="w"> </span>default<span class="w"> </span>to<span class="w"> </span><span class="m">0</span>
+EAL:<span class="w">   </span>probe<span class="w"> </span>driver:<span class="w"> </span><span class="m">8086</span>:100f<span class="w"> </span>net_e1000_em
+EAL:<span class="w"> </span>PCI<span class="w"> </span>device<span class="w"> </span><span class="m">0000</span>:02:05.0<span class="w"> </span>on<span class="w"> </span>NUMA<span class="w"> </span>socket<span class="w"> </span>-1
+EAL:<span class="w">   </span>Invalid<span class="w"> </span>NUMA<span class="w"> </span>socket,<span class="w"> </span>default<span class="w"> </span>to<span class="w"> </span><span class="m">0</span>
+EAL:<span class="w">   </span>probe<span class="w"> </span>driver:<span class="w"> </span><span class="m">8086</span>:100f<span class="w"> </span>net_e1000_em
+EAL:<span class="w"> </span>PCI<span class="w"> </span>device<span class="w"> </span><span class="m">0000</span>:02:06.0<span class="w"> </span>on<span class="w"> </span>NUMA<span class="w"> </span>socket<span class="w"> </span>-1
+EAL:<span class="w">   </span>Invalid<span class="w"> </span>NUMA<span class="w"> </span>socket,<span class="w"> </span>default<span class="w"> </span>to<span class="w"> </span><span class="m">0</span>
+EAL:<span class="w">   </span>probe<span class="w"> </span>driver:<span class="w"> </span><span class="m">8086</span>:100f<span class="w"> </span>net_e1000_em
+hello<span class="w"> </span>from<span class="w"> </span>core<span class="w"> </span><span class="m">0</span>
+</code></pre></div>
 <p>安装到这里，就结束了</p>
   </div>
 </article>

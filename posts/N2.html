@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>安装</h4>
-<div class="highlight"><pre><span></span><span class="c1"># yum groupinstall development tools</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># yum groupinstall development tools</span>
 
 <span class="c1"># yum install ragel</span>
 
@@ -119,14 +119,14 @@ var _hmt = _hmt || [];
 <span class="c1"># cp -r boost_1_71_0/boost ../../include/</span>
 
 <span class="c1"># cmake \</span>
-    -G <span class="s2">"Unix Makefiles"</span> <span class="se">\</span>
-    -DCMAKE_INSTALL_PREFIX:PATH<span class="o">=</span>/usr <span class="se">\</span>
-    -DBUILD_SHARED_LIBS<span class="o">=</span>ON ../
+<span class="w">    </span>-G<span class="w"> </span><span class="s2">"Unix Makefiles"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_INSTALL_PREFIX:PATH<span class="o">=</span>/usr<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DBUILD_SHARED_LIBS<span class="o">=</span>ON<span class="w"> </span>../
 <span class="c1"># make</span>
 <span class="c1"># make install</span>
 
 <span class="c1"># pip install hyperscan(好像不需要上面那一堆，尴尬)</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

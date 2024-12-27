@@ -104,315 +104,315 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>介绍</h4>
 <p>由于长期工作在Linux环境下，企业内网也基本是Linux的，对Windows有点生疏，所以决定学习一下Windows的相关渗透技巧~</p>
-<div class="highlight"><pre><span></span>https://github.com/samratashok/nishang.git
+<div class="highlight"><pre><span></span><code>https://github.com/samratashok/nishang.git
 https://github.com/EmpireProject/Empire.git
 https://github.com/PowerShellMafia/PowerSploit.git
-</pre></div>
-<div class="highlight"><pre><span></span>── ActiveDirectory
-│   ├── Add-ConstrainedDelegationBackdoor.ps1
-│   └── Set-DCShadowPermissions.ps1
-├── Antak-WebShell
-│   ├── antak.aspx
-│   └── Readme.md
-├── Backdoors
-│   ├── Add-ConstrainedDelegationBackdoor.ps1
-│   ├── Add-RegBackdoor.ps1
-│   ├── Add-ScrnSaveBackdoor.ps1
-│   ├── DNS_TXT_Pwnage.ps1
-│   ├── Execute-OnTime.ps1
-│   ├── Gupt-Backdoor.ps1
-│   ├── HTTP-Backdoor.ps1
-│   ├── Invoke-ADSBackdoor.ps1
-│   ├── Set-RemotePSRemoting.ps1
-│   └── Set-RemoteWMI.ps1
-├── Bypass
-│   └── Invoke-AmsiBypass.ps1
-├── CHANGELOG.txt
-├── Client
-│   ├── Out-CHM.ps1
-│   ├── Out-Excel.ps1
-│   ├── Out-HTA.ps1
-│   ├── Out-Java.ps1
-│   ├── Out-JS.ps1
-│   ├── Out-SCF.ps1
-│   ├── Out-SCT.ps1
-│   ├── Out-Shortcut.ps1
-│   ├── Out-WebQuery.ps1
-│   └── Out-Word.ps1
-├── DISCLAIMER.txt
-├── Escalation
-│   ├── Enable-DuplicateToken.ps1
-│   ├── Invoke-PsUACme.ps1
-│   └── Remove-Update.ps1
-├── Execution
-│   ├── Download_Execute.ps1
-│   ├── Download-Execute-PS.ps1
-│   ├── Execute-Command-MSSQL.ps1
-│   ├── Execute-DNSTXT-Code.ps1
-│   └── Out-RundllCommand.ps1
-├── Gather
-│   ├── Check-VM.ps1
-│   ├── Copy-VSS.ps1
-│   ├── FireBuster.ps1
-│   ├── FireListener.ps1
-│   ├── Get-Information.ps1
-│   ├── Get-LSASecret.ps1
-│   ├── Get-PassHashes.ps1
-│   ├── Get-PassHints.ps1
-│   ├── Get-WebCredentials.ps1
-│   ├── Get-WLAN-Keys.ps1
-│   ├── Invoke-CredentialsPhish.ps1
-│   ├── Invoke-Mimikatz.ps1
-│   ├── Invoke-MimikatzWDigestDowngrade.ps1
-│   ├── Invoke-Mimikittenz.ps1
-│   ├── Invoke-SessionGopher.ps1
-│   ├── Invoke-SSIDExfil.ps1
-│   ├── Keylogger.ps1
-│   └── Show-TargetScreen.ps1
-├── LICENSE
-├── Misc
-│   ├── Nishang_Logo.png
-│   ├── Nishang_logo_small.png
-│   └── Speak.ps1
-├── MITM
-│   └── Invoke-Interceptor.ps1
-├── nishang.psm1
-├── Pivot
-│   ├── Create-MultipleSessions.ps1
-│   ├── Invoke-NetworkRelay.ps1
-│   └── Run-EXEonRemote.ps1
-├── powerpreter
-│   ├── Powerpreter.psm1
-│   └── README.md
-├── Prasadhak
-│   └── Invoke-Prasadhak.ps1
-├── README.md
-├── Scan
-│   ├── Invoke-BruteForce.ps1
-│   └── Invoke-PortScan.ps1
-├── Shells
-│   ├── Invoke-ConPtyShell.ps1
-│   ├── Invoke-JSRatRegsvr.ps1
-│   ├── Invoke-JSRatRundll.ps1
-│   ├── Invoke-PoshRatHttp.ps1
-│   ├── Invoke-PoshRatHttps.ps1
-│   ├── Invoke-PowerShellIcmp.ps1
-│   ├── Invoke-PowerShellTcpOneLineBind.ps1
-│   ├── Invoke-PowerShellTcpOneLine.ps1
-│   ├── Invoke-PowerShellTcp.ps1
-│   ├── Invoke-PowerShellUdpOneLine.ps1
-│   ├── Invoke-PowerShellUdp.ps1
-│   ├── Invoke-PowerShellWmi.ps1
-│   ├── Invoke-PsGcatAgent.ps1
-│   ├── Invoke-PsGcat.ps1
-│   └── Remove-PoshRat.ps1
-└── Utility
-    ├── Add-Exfiltration.ps1
-    ├── Add-Persistence.ps1
-    ├── Base64ToString.ps1
-    ├── ConvertTo-ROT13.ps1
-    ├── Do-Exfiltration.ps1
-    ├── Download.ps1
-    ├── ExetoText.ps1
-    ├── Invoke-Decode.ps1
-    ├── Invoke-Encode.ps1
-    ├── Out-DnsTxt.ps1
-    ├── Parse_Keys.ps1
-    ├── Remove-Persistence.ps1
-    ├── Start-CaptureServer.ps1
-    ├── StringToBase64.ps1
-    └── TexttoExe.ps1
-</pre></div>
-<div class="highlight"><pre><span></span>├── AntivirusBypass
-│   ├── AntivirusBypass.psd1
-│   ├── AntivirusBypass.psm1
-│   ├── Find-AVSignature.ps1
-│   └── Usage.md
-├── CodeExecution
-│   ├── CodeExecution.psd1
-│   ├── CodeExecution.psm1
-│   ├── Invoke-DllInjection.ps1
-│   ├── Invoke-ReflectivePEInjection.ps1
-│   ├── Invoke-ReflectivePEInjection_Resources
-│   │   ├── DemoDLL
-│   │   │   ├── DemoDLL
-│   │   │   │   ├── DemoDLL.cpp
-│   │   │   │   ├── DemoDLL.h
-│   │   │   │   ├── DemoDLL.vcxproj
-│   │   │   │   ├── DemoDLL.vcxproj.filters
-│   │   │   │   ├── dllmain.cpp
-│   │   │   │   ├── ReadMe.txt
-│   │   │   │   ├── stdafx.cpp
-│   │   │   │   ├── stdafx.h
-│   │   │   │   └── targetver.h
-│   │   │   └── DemoDLL.sln
-│   │   ├── DemoDLL_RemoteProcess
-│   │   │   ├── DemoDLL_RemoteProcess
-│   │   │   │   ├── DemoDLL_RemoteProcess.cpp
-│   │   │   │   ├── DemoDLL_RemoteProcess.vcxproj
-│   │   │   │   ├── DemoDLL_RemoteProcess.vcxproj.filters
-│   │   │   │   ├── dllmain.cpp
-│   │   │   │   ├── ReadMe.txt
-│   │   │   │   ├── stdafx.cpp
-│   │   │   │   ├── stdafx.h
-│   │   │   │   └── targetver.h
-│   │   │   └── DemoDLL_RemoteProcess.sln
-│   │   ├── DemoExe
-│   │   │   ├── DemoExe_MD
-│   │   │   │   ├── DemoExe_MD.cpp
-│   │   │   │   ├── DemoExe_MD.vcxproj
-│   │   │   │   ├── DemoExe_MD.vcxproj.filters
-│   │   │   │   ├── ReadMe.txt
-│   │   │   │   ├── stdafx.cpp
-│   │   │   │   ├── stdafx.h
-│   │   │   │   └── targetver.h
-│   │   │   ├── DemoExe_MDd
-│   │   │   │   ├── DemoExe_MDd.cpp
-│   │   │   │   ├── DemoExe_MDd.vcxproj
-│   │   │   │   ├── DemoExe_MDd.vcxproj.filters
-│   │   │   │   ├── ReadMe.txt
-│   │   │   │   ├── stdafx.cpp
-│   │   │   │   ├── stdafx.h
-│   │   │   │   └── targetver.h
-│   │   │   └── DemoExe.sln
-│   │   ├── ExeToInjectInTo
-│   │   │   ├── ExeToInjectInTo
-│   │   │   │   ├── ExeToInjectInTo.cpp
-│   │   │   │   ├── ExeToInjectInTo.vcxproj
-│   │   │   │   ├── ExeToInjectInTo.vcxproj.filters
-│   │   │   │   ├── ReadMe.txt
-│   │   │   │   ├── stdafx.cpp
-│   │   │   │   ├── stdafx.h
-│   │   │   │   └── targetver.h
-│   │   │   └── ExeToInjectInTo.sln
-│   │   └── Shellcode
-│   │       ├── readme.txt
-│   │       ├── x64
-│   │       │   ├── CallDllMain.asm
-│   │       │   ├── ExitThread.asm
-│   │       │   ├── GetFuncAddress.asm
-│   │       │   └── LoadLibraryA.asm
-│   │       └── x86
-│   │           ├── CallDllMain.asm
-│   │           ├── ExitThread.asm
-│   │           └── GetProcAddress.asm
-│   ├── Invoke-Shellcode.ps1
-│   ├── Invoke-WmiCommand.ps1
-│   └── Usage.md
-├── Exfiltration
-│   ├── Exfiltration.psd1
-│   ├── Exfiltration.psm1
-│   ├── Get-GPPAutologon.ps1
-│   ├── Get-GPPPassword.ps1
-│   ├── Get-Keystrokes.ps1
-│   ├── Get-MicrophoneAudio.ps1
-│   ├── Get-TimedScreenshot.ps1
-│   ├── Get-VaultCredential.ps1
-│   ├── Get-VaultCredential.ps1xml
-│   ├── Invoke-CredentialInjection.ps1
-│   ├── Invoke-Mimikatz.ps1
-│   ├── Invoke-NinjaCopy.ps1
-│   ├── Invoke-TokenManipulation.ps1
-│   ├── LogonUser
-│   │   └── LogonUser
-│   │       ├── logon
-│   │       │   ├── dllmain.cpp
-│   │       │   ├── logon.cpp
-│   │       │   ├── logon.vcxproj
-│   │       │   ├── logon.vcxproj.filters
-│   │       │   ├── ReadMe.txt
-│   │       │   ├── stdafx.cpp
-│   │       │   ├── stdafx.h
-│   │       │   └── targetver.h
-│   │       ├── LogonUser
-│   │       │   ├── LogonUser.cpp
-│   │       │   ├── LogonUser.vcxproj
-│   │       │   ├── LogonUser.vcxproj.filters
-│   │       │   ├── ReadMe.txt
-│   │       │   ├── stdafx.cpp
-│   │       │   ├── stdafx.h
-│   │       │   └── targetver.h
-│   │       └── LogonUser.sln
-│   ├── NTFSParser
-│   │   ├── NTFSParser
-│   │   │   ├── NTFS_Attribute.h
-│   │   │   ├── NTFS_Common.h
-│   │   │   ├── NTFS_DataType.h
-│   │   │   ├── NTFS_FileRecord.h
-│   │   │   ├── NTFS.h
-│   │   │   ├── NTFSParser.cpp
-│   │   │   ├── NTFSParser.vcxproj
-│   │   │   ├── NTFSParser.vcxproj.filters
-│   │   │   ├── ReadMe.txt
-│   │   │   ├── stdafx.cpp
-│   │   │   ├── stdafx.h
-│   │   │   └── targetver.h
-│   │   ├── NTFSParserDLL
-│   │   │   ├── dllmain.cpp
-│   │   │   ├── NTFS_Attribute.h
-│   │   │   ├── NTFS_Common.h
-│   │   │   ├── NTFS_DataType.h
-│   │   │   ├── NTFS_FileRecord.h
-│   │   │   ├── NTFS.h
-│   │   │   ├── NTFSParserDLL.cpp
-│   │   │   ├── NTFSParserDLL.vcxproj
-│   │   │   ├── NTFSParserDLL.vcxproj.filters
-│   │   │   ├── ReadMe.txt
-│   │   │   ├── stdafx.cpp
-│   │   │   ├── stdafx.h
-│   │   │   └── targetver.h
-│   │   └── NTFSParser.sln
-│   ├── Out-Minidump.ps1
-│   ├── Usage.md
-│   └── VolumeShadowCopyTools.ps1
-├── LICENSE
-├── Mayhem
-│   ├── Mayhem.psd1
-│   ├── Mayhem.psm1
-│   └── Usage.md
-├── Persistence
-│   ├── Persistence.psd1
-│   ├── Persistence.psm1
-│   └── Usage.md
-├── PowerSploit.psd1
-├── PowerSploit.psm1
-├── PowerSploit.pssproj
-├── PowerSploit.sln
-├── Privesc
-│   ├── Get-System.ps1
-│   ├── PowerUp.ps1
-│   ├── Privesc.psd1
-│   ├── Privesc.psm1
-│   └── README.md
-├── README.md
-├── Recon
-│   ├── Dictionaries
-│   │   ├── admin.txt
-│   │   ├── generic.txt
-│   │   └── sharepoint.txt
-│   ├── Get-ComputerDetails.ps1
-│   ├── Get-HttpStatus.ps1
-│   ├── Invoke-Portscan.ps1
-│   ├── Invoke-ReverseDnsLookup.ps1
-│   ├── PowerView.ps1
-│   ├── README.md
-│   ├── Recon.psd1
-│   └── Recon.psm1
-├── ScriptModification
-│   ├── Out-CompressedDll.ps1
-│   ├── Out-EncodedCommand.ps1
-│   ├── Out-EncryptedScript.ps1
-│   ├── Remove-Comments.ps1
-│   ├── ScriptModification.psd1
-│   ├── ScriptModification.psm1
-│   └── Usage.md
-└── Tests
-    ├── CodeExecution.tests.ps1
-    ├── Exfiltration.tests.ps1
-    ├── PowerSploit.tests.ps1
-    ├── Privesc.tests.ps1
-    └── Recon.tests.ps1
-</pre></div>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>──<span class="w"> </span>ActiveDirectory
+│<span class="w">   </span>├──<span class="w"> </span>Add-ConstrainedDelegationBackdoor.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Set-DCShadowPermissions.ps1
+├──<span class="w"> </span>Antak-WebShell
+│<span class="w">   </span>├──<span class="w"> </span>antak.aspx
+│<span class="w">   </span>└──<span class="w"> </span>Readme.md
+├──<span class="w"> </span>Backdoors
+│<span class="w">   </span>├──<span class="w"> </span>Add-ConstrainedDelegationBackdoor.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Add-RegBackdoor.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Add-ScrnSaveBackdoor.ps1
+│<span class="w">   </span>├──<span class="w"> </span>DNS_TXT_Pwnage.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Execute-OnTime.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Gupt-Backdoor.ps1
+│<span class="w">   </span>├──<span class="w"> </span>HTTP-Backdoor.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-ADSBackdoor.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Set-RemotePSRemoting.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Set-RemoteWMI.ps1
+├──<span class="w"> </span>Bypass
+│<span class="w">   </span>└──<span class="w"> </span>Invoke-AmsiBypass.ps1
+├──<span class="w"> </span>CHANGELOG.txt
+├──<span class="w"> </span>Client
+│<span class="w">   </span>├──<span class="w"> </span>Out-CHM.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-Excel.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-HTA.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-Java.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-JS.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-SCF.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-SCT.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-Shortcut.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-WebQuery.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Out-Word.ps1
+├──<span class="w"> </span>DISCLAIMER.txt
+├──<span class="w"> </span>Escalation
+│<span class="w">   </span>├──<span class="w"> </span>Enable-DuplicateToken.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PsUACme.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Remove-Update.ps1
+├──<span class="w"> </span>Execution
+│<span class="w">   </span>├──<span class="w"> </span>Download_Execute.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Download-Execute-PS.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Execute-Command-MSSQL.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Execute-DNSTXT-Code.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Out-RundllCommand.ps1
+├──<span class="w"> </span>Gather
+│<span class="w">   </span>├──<span class="w"> </span>Check-VM.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Copy-VSS.ps1
+│<span class="w">   </span>├──<span class="w"> </span>FireBuster.ps1
+│<span class="w">   </span>├──<span class="w"> </span>FireListener.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-Information.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-LSASecret.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-PassHashes.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-PassHints.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-WebCredentials.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-WLAN-Keys.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-CredentialsPhish.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-Mimikatz.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-MimikatzWDigestDowngrade.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-Mimikittenz.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-SessionGopher.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-SSIDExfil.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Keylogger.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Show-TargetScreen.ps1
+├──<span class="w"> </span>LICENSE
+├──<span class="w"> </span>Misc
+│<span class="w">   </span>├──<span class="w"> </span>Nishang_Logo.png
+│<span class="w">   </span>├──<span class="w"> </span>Nishang_logo_small.png
+│<span class="w">   </span>└──<span class="w"> </span>Speak.ps1
+├──<span class="w"> </span>MITM
+│<span class="w">   </span>└──<span class="w"> </span>Invoke-Interceptor.ps1
+├──<span class="w"> </span>nishang.psm1
+├──<span class="w"> </span>Pivot
+│<span class="w">   </span>├──<span class="w"> </span>Create-MultipleSessions.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-NetworkRelay.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Run-EXEonRemote.ps1
+├──<span class="w"> </span>powerpreter
+│<span class="w">   </span>├──<span class="w"> </span>Powerpreter.psm1
+│<span class="w">   </span>└──<span class="w"> </span>README.md
+├──<span class="w"> </span>Prasadhak
+│<span class="w">   </span>└──<span class="w"> </span>Invoke-Prasadhak.ps1
+├──<span class="w"> </span>README.md
+├──<span class="w"> </span>Scan
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-BruteForce.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Invoke-PortScan.ps1
+├──<span class="w"> </span>Shells
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-ConPtyShell.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-JSRatRegsvr.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-JSRatRundll.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PoshRatHttp.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PoshRatHttps.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PowerShellIcmp.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PowerShellTcpOneLineBind.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PowerShellTcpOneLine.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PowerShellTcp.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PowerShellUdpOneLine.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PowerShellUdp.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PowerShellWmi.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PsGcatAgent.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-PsGcat.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Remove-PoshRat.ps1
+└──<span class="w"> </span>Utility
+<span class="w">    </span>├──<span class="w"> </span>Add-Exfiltration.ps1
+<span class="w">    </span>├──<span class="w"> </span>Add-Persistence.ps1
+<span class="w">    </span>├──<span class="w"> </span>Base64ToString.ps1
+<span class="w">    </span>├──<span class="w"> </span>ConvertTo-ROT13.ps1
+<span class="w">    </span>├──<span class="w"> </span>Do-Exfiltration.ps1
+<span class="w">    </span>├──<span class="w"> </span>Download.ps1
+<span class="w">    </span>├──<span class="w"> </span>ExetoText.ps1
+<span class="w">    </span>├──<span class="w"> </span>Invoke-Decode.ps1
+<span class="w">    </span>├──<span class="w"> </span>Invoke-Encode.ps1
+<span class="w">    </span>├──<span class="w"> </span>Out-DnsTxt.ps1
+<span class="w">    </span>├──<span class="w"> </span>Parse_Keys.ps1
+<span class="w">    </span>├──<span class="w"> </span>Remove-Persistence.ps1
+<span class="w">    </span>├──<span class="w"> </span>Start-CaptureServer.ps1
+<span class="w">    </span>├──<span class="w"> </span>StringToBase64.ps1
+<span class="w">    </span>└──<span class="w"> </span>TexttoExe.ps1
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>├──<span class="w"> </span>AntivirusBypass
+│<span class="w">   </span>├──<span class="w"> </span>AntivirusBypass.psd1
+│<span class="w">   </span>├──<span class="w"> </span>AntivirusBypass.psm1
+│<span class="w">   </span>├──<span class="w"> </span>Find-AVSignature.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Usage.md
+├──<span class="w"> </span>CodeExecution
+│<span class="w">   </span>├──<span class="w"> </span>CodeExecution.psd1
+│<span class="w">   </span>├──<span class="w"> </span>CodeExecution.psm1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-DllInjection.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-ReflectivePEInjection.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-ReflectivePEInjection_Resources
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL.vcxproj
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL.vcxproj.filters
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>dllmain.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ReadMe.txt
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>targetver.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>DemoDLL.sln
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL_RemoteProcess
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL_RemoteProcess
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL_RemoteProcess.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL_RemoteProcess.vcxproj
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoDLL_RemoteProcess.vcxproj.filters
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>dllmain.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ReadMe.txt
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>targetver.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>DemoDLL_RemoteProcess.sln
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoExe
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoExe_MD
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoExe_MD.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoExe_MD.vcxproj
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoExe_MD.vcxproj.filters
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ReadMe.txt
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>targetver.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoExe_MDd
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoExe_MDd.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoExe_MDd.vcxproj
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>DemoExe_MDd.vcxproj.filters
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ReadMe.txt
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>targetver.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>DemoExe.sln
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ExeToInjectInTo
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ExeToInjectInTo
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ExeToInjectInTo.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ExeToInjectInTo.vcxproj
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ExeToInjectInTo.vcxproj.filters
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ReadMe.txt
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>targetver.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>ExeToInjectInTo.sln
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>Shellcode
+│<span class="w">   </span>│<span class="w">       </span>├──<span class="w"> </span>readme.txt
+│<span class="w">   </span>│<span class="w">       </span>├──<span class="w"> </span>x64
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>CallDllMain.asm
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>ExitThread.asm
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>GetFuncAddress.asm
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>└──<span class="w"> </span>LoadLibraryA.asm
+│<span class="w">   </span>│<span class="w">       </span>└──<span class="w"> </span>x86
+│<span class="w">   </span>│<span class="w">           </span>├──<span class="w"> </span>CallDllMain.asm
+│<span class="w">   </span>│<span class="w">           </span>├──<span class="w"> </span>ExitThread.asm
+│<span class="w">   </span>│<span class="w">           </span>└──<span class="w"> </span>GetProcAddress.asm
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-Shellcode.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-WmiCommand.ps1
+│<span class="w">   </span>└──<span class="w"> </span>Usage.md
+├──<span class="w"> </span>Exfiltration
+│<span class="w">   </span>├──<span class="w"> </span>Exfiltration.psd1
+│<span class="w">   </span>├──<span class="w"> </span>Exfiltration.psm1
+│<span class="w">   </span>├──<span class="w"> </span>Get-GPPAutologon.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-GPPPassword.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-Keystrokes.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-MicrophoneAudio.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-TimedScreenshot.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-VaultCredential.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-VaultCredential.ps1xml
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-CredentialInjection.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-Mimikatz.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-NinjaCopy.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-TokenManipulation.ps1
+│<span class="w">   </span>├──<span class="w"> </span>LogonUser
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>LogonUser
+│<span class="w">   </span>│<span class="w">       </span>├──<span class="w"> </span>logon
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>dllmain.cpp
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>logon.cpp
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>logon.vcxproj
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>logon.vcxproj.filters
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>ReadMe.txt
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.cpp
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.h
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>└──<span class="w"> </span>targetver.h
+│<span class="w">   </span>│<span class="w">       </span>├──<span class="w"> </span>LogonUser
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>LogonUser.cpp
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>LogonUser.vcxproj
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>LogonUser.vcxproj.filters
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>ReadMe.txt
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.cpp
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.h
+│<span class="w">   </span>│<span class="w">       </span>│<span class="w">   </span>└──<span class="w"> </span>targetver.h
+│<span class="w">   </span>│<span class="w">       </span>└──<span class="w"> </span>LogonUser.sln
+│<span class="w">   </span>├──<span class="w"> </span>NTFSParser
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFSParser
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS_Attribute.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS_Common.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS_DataType.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS_FileRecord.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFSParser.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFSParser.vcxproj
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFSParser.vcxproj.filters
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ReadMe.txt
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>targetver.h
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFSParserDLL
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>dllmain.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS_Attribute.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS_Common.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS_DataType.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS_FileRecord.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFS.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFSParserDLL.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFSParserDLL.vcxproj
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>NTFSParserDLL.vcxproj.filters
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>ReadMe.txt
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.cpp
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>stdafx.h
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>targetver.h
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>NTFSParser.sln
+│<span class="w">   </span>├──<span class="w"> </span>Out-Minidump.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Usage.md
+│<span class="w">   </span>└──<span class="w"> </span>VolumeShadowCopyTools.ps1
+├──<span class="w"> </span>LICENSE
+├──<span class="w"> </span>Mayhem
+│<span class="w">   </span>├──<span class="w"> </span>Mayhem.psd1
+│<span class="w">   </span>├──<span class="w"> </span>Mayhem.psm1
+│<span class="w">   </span>└──<span class="w"> </span>Usage.md
+├──<span class="w"> </span>Persistence
+│<span class="w">   </span>├──<span class="w"> </span>Persistence.psd1
+│<span class="w">   </span>├──<span class="w"> </span>Persistence.psm1
+│<span class="w">   </span>└──<span class="w"> </span>Usage.md
+├──<span class="w"> </span>PowerSploit.psd1
+├──<span class="w"> </span>PowerSploit.psm1
+├──<span class="w"> </span>PowerSploit.pssproj
+├──<span class="w"> </span>PowerSploit.sln
+├──<span class="w"> </span>Privesc
+│<span class="w">   </span>├──<span class="w"> </span>Get-System.ps1
+│<span class="w">   </span>├──<span class="w"> </span>PowerUp.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Privesc.psd1
+│<span class="w">   </span>├──<span class="w"> </span>Privesc.psm1
+│<span class="w">   </span>└──<span class="w"> </span>README.md
+├──<span class="w"> </span>README.md
+├──<span class="w"> </span>Recon
+│<span class="w">   </span>├──<span class="w"> </span>Dictionaries
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>admin.txt
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>generic.txt
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>sharepoint.txt
+│<span class="w">   </span>├──<span class="w"> </span>Get-ComputerDetails.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Get-HttpStatus.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-Portscan.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Invoke-ReverseDnsLookup.ps1
+│<span class="w">   </span>├──<span class="w"> </span>PowerView.ps1
+│<span class="w">   </span>├──<span class="w"> </span>README.md
+│<span class="w">   </span>├──<span class="w"> </span>Recon.psd1
+│<span class="w">   </span>└──<span class="w"> </span>Recon.psm1
+├──<span class="w"> </span>ScriptModification
+│<span class="w">   </span>├──<span class="w"> </span>Out-CompressedDll.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-EncodedCommand.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Out-EncryptedScript.ps1
+│<span class="w">   </span>├──<span class="w"> </span>Remove-Comments.ps1
+│<span class="w">   </span>├──<span class="w"> </span>ScriptModification.psd1
+│<span class="w">   </span>├──<span class="w"> </span>ScriptModification.psm1
+│<span class="w">   </span>└──<span class="w"> </span>Usage.md
+└──<span class="w"> </span>Tests
+<span class="w">    </span>├──<span class="w"> </span>CodeExecution.tests.ps1
+<span class="w">    </span>├──<span class="w"> </span>Exfiltration.tests.ps1
+<span class="w">    </span>├──<span class="w"> </span>PowerSploit.tests.ps1
+<span class="w">    </span>├──<span class="w"> </span>Privesc.tests.ps1
+<span class="w">    </span>└──<span class="w"> </span>Recon.tests.ps1
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
