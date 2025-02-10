@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-08-08T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Wed 08 August 2018
+        三 08 八月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>介绍</h4>
-<p><img alt="k8s" class="img-fluid" src="../images/timg.jpeg"/></p>
+<p><img alt="k8s" src="../images/timg.jpeg"></p>
 <p>API Server</p>
 <p>提供HTTP/HTTPS RESTful API,是Cluster前端接口，各种客户端工具以及Kubernetes其他组件可以通过它管理Cluster的各种资源。
 它提供了对集群各种资源访问和控制的REST API,管理员可以通过kubectl或者第三方客户端生成HTTP请求，发送给API Server。或者是集群内部的服务通过API Server对集群进行控制操作（比如dashborad）。
@@ -129,6 +129,7 @@ var _hmt = _hmt || [];
 <span class="m">10</span>.10.252.214<span class="w">   </span>node1<span class="w"> </span>
 <span class="m">10</span>.10.252.213<span class="w">   </span>node2<span class="w">  </span>
 </code></pre></div>
+
 <p>除了初始化，软件安装一致</p>
 <p>k8s repo</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>k8s<span class="o">]</span>
@@ -137,6 +138,7 @@ var _hmt = _hmt || [];
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
 </code></pre></div>
+
 <p>base.repo</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>base<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Base
@@ -170,6 +172,7 @@ var _hmt = _hmt || [];
 <span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/etc/yum.repos.d/
 <span class="w"> </span>wget<span class="w"> </span>http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 <span class="w"> </span>vim<span class="w"> </span>k8s.repo
@@ -179,8 +182,8 @@ yum<span class="w"> </span>makecache
 cat<span class="w"> </span>/etc/docker/daemon.json
 
 <span class="o">{</span>
-<span class="s2">"exec-opts"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"native.cgroupdriver=systemd"</span><span class="o">]</span>,<span class="w">  </span>
-<span class="s2">"registry-mirrors"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"https://docker.mirrors.ustc.edu.cn"</span><span class="o">]</span>
+<span class="s2">&quot;exec-opts&quot;</span>:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;native.cgroupdriver=systemd&quot;</span><span class="o">]</span>,<span class="w">  </span>
+<span class="s2">&quot;registry-mirrors&quot;</span>:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;https://docker.mirrors.ustc.edu.cn&quot;</span><span class="o">]</span>
 <span class="o">}</span>
 
 
@@ -189,7 +192,7 @@ cat<span class="w"> </span>&gt;<span class="w"> </span>/etc/sysctl.d/k8s.conf<sp
 <span class="s">net.bridge.bridge-nf-call-iptables = 1</span>
 <span class="s">EOF</span>
 
-<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"1"</span><span class="w"> </span>&gt;/proc/sys/net/bridge/bridge-nf-call-iptables
+<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="w"> </span>&gt;/proc/sys/net/bridge/bridge-nf-call-iptables
 
 <span class="w"> </span>setenforce<span class="w"> </span><span class="m">0</span>
 <span class="w"> </span>swapoff<span class="w"> </span>-a
@@ -214,29 +217,31 @@ kubeadm<span class="w"> </span>init<span class="w"> </span>--kubernetes-version<
 
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://docs.projectcalico.org/manifests/calico.yaml
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>node1<span class="w"> </span>node2<span class="w"> </span>执行
 
 <span class="w"> </span>kubeadm<span class="w"> </span>join<span class="w"> </span><span class="m">10</span>.10.252.215:6443<span class="w"> </span>--token<span class="w"> </span>u3toqk.8j7fnn0lmajgvnvq<span class="w">     </span>--discovery-token-ca-cert-hash<span class="w"> </span>sha256:49b37a021f9223d2f3af10d71a5ca47cc34e12d2c20147adfc61a6a4b90c4b97<span class="w"> </span>
 </code></pre></div>
+
 <p>master 生成join语句脚本备用</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 
 <span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$EUID</span><span class="w"> </span>-ne<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"You must be root (or sudo) to run this script"</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;You must be root (or sudo) to run this script&quot;</span>
 <span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">fi</span>
 
 <span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$#</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Usage: </span><span class="nv">$0</span><span class="s2"> [master-hostname | master-ip-address]"</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" e.g.: </span><span class="nv">$0</span><span class="s2"> api.k8s.hiko.im"</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Usage: </span><span class="nv">$0</span><span class="s2"> [master-hostname | master-ip-address]&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot; e.g.: </span><span class="nv">$0</span><span class="s2"> api.k8s.hiko.im&quot;</span>
 <span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="p">;</span>
 <span class="k">fi</span>
 
 <span class="nv">token</span><span class="o">=</span><span class="sb">`</span>kubeadm<span class="w"> </span>token<span class="w"> </span>create<span class="sb">`</span>
-<span class="nv">cert_hash</span><span class="o">=</span><span class="sb">`</span>openssl<span class="w"> </span>x509<span class="w"> </span>-pubkey<span class="w"> </span>-in<span class="w"> </span>/etc/kubernetes/pki/ca.crt<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>rsa<span class="w"> </span>-pubin<span class="w"> </span>-outform<span class="w"> </span>der<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>dgst<span class="w"> </span>-sha256<span class="w"> </span>-hex<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">'s/^.* //'</span><span class="sb">`</span>
+<span class="nv">cert_hash</span><span class="o">=</span><span class="sb">`</span>openssl<span class="w"> </span>x509<span class="w"> </span>-pubkey<span class="w"> </span>-in<span class="w"> </span>/etc/kubernetes/pki/ca.crt<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>rsa<span class="w"> </span>-pubin<span class="w"> </span>-outform<span class="w"> </span>der<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>dgst<span class="w"> </span>-sha256<span class="w"> </span>-hex<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^.* //&#39;</span><span class="sb">`</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"Refer the following command to join kubernetes cluster:"</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"kubeadm join </span><span class="nv">$1</span><span class="s2">:6443 --token </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2"> --discovery-token-ca-cert-hash sha256:</span><span class="si">${</span><span class="nv">cert_hash</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Refer the following command to join kubernetes cluster:&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;kubeadm join </span><span class="nv">$1</span><span class="s2">:6443 --token </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2"> --discovery-token-ca-cert-hash sha256:</span><span class="si">${</span><span class="nv">cert_hash</span><span class="si">}</span><span class="s2">&quot;</span>
 </code></pre></div>
   </div>
 </article>

@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-04-16T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sun 16 April 2017
+        日 16 四月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -119,28 +119,30 @@ var _hmt = _hmt || [];
 </ul>
 <h4>Flask 之 RESTful</h4>
 <p>浏览器向http服务器发出请求,服务器返回一个html,然后浏览器渲染这个html,然后，大家就能看到网页了，而RESTful是返回json、xml、yaml、csv等序列化文件，作为resource的载体，供前端或者app解析。Flask实现RESTful，可以使用Flask-RESTful 插件，感觉这个插件比djangorestframework模块轻多了。</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">books</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span>
-        <span class="s1">'id'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s1">'title'</span><span class="p">:</span> <span class="sa">u</span><span class="s1">'Django book'</span><span class="p">,</span>
-        <span class="s1">'description'</span><span class="p">:</span> <span class="sa">u</span><span class="s1">'a book about django'</span><span class="p">,</span>
+        <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Django book&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;a book about django&#39;</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">]</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/api/v1.0/'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'GET'</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">get_book</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">'books'</span><span class="p">:</span> <span class="n">books</span><span class="p">})</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/v1.0/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_book</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;books&#39;</span><span class="p">:</span> <span class="n">books</span><span class="p">})</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
+
 <p>这里我们直接把任务列表存储在内存中
 我们通过</p>
 <div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>curl<span class="w"> </span>-i<span class="w"> </span>http://127.0.0.1:5000/api/v1.0/
 </code></pre></div>
+
 <p>就可以看到</p>
 <div class="highlight"><pre><span></span><code>njcx@debian:~$<span class="w"> </span>curl<span class="w"> </span>-i<span class="w"> </span>http://127.0.0.1:5000/api/v1.0/
 HTTP/1.0<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
@@ -150,11 +152,11 @@ Server:<span class="w"> </span>Werkzeug/0.12.2<span class="w"> </span>Python/2.7
 Date:<span class="w"> </span>Sun,<span class="w"> </span><span class="m">11</span><span class="w"> </span>Jun<span class="w"> </span><span class="m">2017</span><span class="w"> </span><span class="m">11</span>:32:20<span class="w"> </span>GMT
 
 <span class="o">{</span>
-<span class="w">  </span><span class="s2">"books"</span>:<span class="w"> </span><span class="o">[</span>
+<span class="w">  </span><span class="s2">&quot;books&quot;</span>:<span class="w"> </span><span class="o">[</span>
 <span class="w">    </span><span class="o">{</span>
-<span class="w">      </span><span class="s2">"description"</span>:<span class="w"> </span><span class="s2">"a book about django"</span>,<span class="w"> </span>
-<span class="w">      </span><span class="s2">"id"</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>
-<span class="w">      </span><span class="s2">"title"</span>:<span class="w"> </span><span class="s2">"Django book"</span>
+<span class="w">      </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;a book about django&quot;</span>,<span class="w"> </span>
+<span class="w">      </span><span class="s2">&quot;id&quot;</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>
+<span class="w">      </span><span class="s2">&quot;title&quot;</span>:<span class="w"> </span><span class="s2">&quot;Django book&quot;</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">  </span><span class="o">]</span>
 <span class="o">}</span>

@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-08-17T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Fri 17 August 2018
+        五 17 八月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -112,12 +112,14 @@ var _hmt = _hmt || [];
 
 技术成熟，被广泛应用于运营商、连锁快餐、酒店、学校等网络。
 </code></pre></div>
+
 <p>应用场景：</p>
 <div class="highlight"><pre><span></span><code>访客接入
 
 低成本混合接入：Portal + MAC旁路。
 </code></pre></div>
-<p><img alt="ac" class="img-fluid" src="../images/WechatIMG123.jpeg"/></p>
+
+<p><img alt="ac" src="../images/WechatIMG123.jpeg"></p>
 <div class="highlight"><pre><span></span><code><span class="mf">1</span><span class="err">）</span><span class="n">用户访问任意网站</span><span class="err">，</span><span class="n">经过AC判断该用户未完成认证</span><span class="err">，</span><span class="n">发送HTTP</span><span class="w"> </span><span class="mf">302</span><span class="n">请求到用户端</span><span class="err">，</span><span class="n">要求重定向到Portal</span><span class="w"> </span><span class="n">Server的URL</span><span class="err">；</span>
 
 <span class="mf">2</span><span class="err">）</span><span class="n">用户收到重定向报文</span><span class="err">，</span><span class="n">再次请求portal</span><span class="w"> </span><span class="n">server的URL</span><span class="err">；</span>
@@ -138,10 +140,13 @@ var _hmt = _hmt || [];
 
 <span class="mf">10</span><span class="err">）</span><span class="n">Portal</span><span class="w"> </span><span class="n">Server推送认证结果给用户</span><span class="err">。</span>
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">3306</span>:3306<span class="w"> </span>--name<span class="w"> </span>mysql<span class="w"> </span>-e<span class="w"> </span><span class="nv">MYSQL_ROOT_PASSWORD</span><span class="o">=</span><span class="m">208512512</span><span class="w"> </span>-d<span class="w"> </span>mysql:5.7
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>freeradius<span class="w"> </span>freeradius-utils<span class="w"> </span>freeradius-mysql
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>mycli
 
 使用<span class="w"> </span>mycli代替mysql
@@ -149,9 +154,9 @@ var _hmt = _hmt || [];
 
 <span class="m">1</span>.<span class="w"> </span>create<span class="w"> </span>database<span class="w"> </span>radius<span class="w"> </span>default<span class="w"> </span>character<span class="w"> </span><span class="nb">set</span><span class="w"> </span>utf8<span class="w"> </span>collate<span class="w"> </span>utf8_general_ci<span class="p">;</span><span class="w">  </span>
 
-<span class="m">2</span>.<span class="w"> </span>grant<span class="w"> </span>all<span class="w"> </span>on<span class="w"> </span>radius.*<span class="w"> </span>to<span class="w"> </span><span class="s1">'radius'</span>@<span class="s1">'%'</span><span class="w"> </span>identified<span class="w"> </span>by<span class="w"> </span><span class="s1">'123456'</span><span class="p">;</span>
+<span class="m">2</span>.<span class="w"> </span>grant<span class="w"> </span>all<span class="w"> </span>on<span class="w"> </span>radius.*<span class="w"> </span>to<span class="w"> </span><span class="s1">&#39;radius&#39;</span>@<span class="s1">&#39;%&#39;</span><span class="w"> </span>identified<span class="w"> </span>by<span class="w"> </span><span class="s1">&#39;123456&#39;</span><span class="p">;</span>
 
-<span class="m">3</span>.<span class="w"> </span>grant<span class="w"> </span>all<span class="w"> </span>on<span class="w"> </span>radius.*<span class="w"> </span>to<span class="w"> </span><span class="s1">'radius'</span>@<span class="s1">'localhost'</span><span class="w"> </span>identified<span class="w"> </span>by<span class="w"> </span><span class="s1">'123456'</span><span class="p">;</span>
+<span class="m">3</span>.<span class="w"> </span>grant<span class="w"> </span>all<span class="w"> </span>on<span class="w"> </span>radius.*<span class="w"> </span>to<span class="w"> </span><span class="s1">&#39;radius&#39;</span>@<span class="s1">&#39;localhost&#39;</span><span class="w"> </span>identified<span class="w"> </span>by<span class="w"> </span><span class="s1">&#39;123456&#39;</span><span class="p">;</span>
 
 <span class="m">4</span>.<span class="w"> </span>flush<span class="w"> </span>privileges<span class="p">;</span>
 
@@ -159,6 +164,7 @@ use<span class="w"> </span>radius
 
 <span class="nb">source</span><span class="w"> </span>/etc/raddb/mods-config/sql/main/mysql/schema.sql<span class="w"> </span>
 </code></pre></div>
+
 <p>上面的指令，共导入了7个表，分别是：
 radcheck 用户检查信息表
 radreply 用户回复信息表
@@ -168,19 +174,20 @@ radusergroup 用户和组关系表
 radacct 计费情况表
 radpostauth 认证后处理信息，可以包括认证请求成功和拒绝的记录。</p>
 <div class="highlight"><pre><span></span><code>建立组信息：（在此新建组名称为user）
-insert<span class="w"> </span>into<span class="w"> </span>radgroupreply<span class="w"> </span><span class="o">(</span>groupname,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">"user"</span>,<span class="s2">"Auth-Type"</span>,<span class="s2">":="</span>,<span class="s2">"Local"</span><span class="o">)</span><span class="p">;</span>
+insert<span class="w"> </span>into<span class="w"> </span>radgroupreply<span class="w"> </span><span class="o">(</span>groupname,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">&quot;user&quot;</span>,<span class="s2">&quot;Auth-Type&quot;</span>,<span class="s2">&quot;:=&quot;</span>,<span class="s2">&quot;Local&quot;</span><span class="o">)</span><span class="p">;</span>
 
-insert<span class="w"> </span>into<span class="w"> </span>radgroupreply<span class="w"> </span><span class="o">(</span>groupname,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">"user"</span>,<span class="s2">"Service-Type"</span>,<span class="s2">":="</span>,<span class="s2">"Framed-User"</span><span class="o">)</span><span class="p">;</span>
+insert<span class="w"> </span>into<span class="w"> </span>radgroupreply<span class="w"> </span><span class="o">(</span>groupname,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">&quot;user&quot;</span>,<span class="s2">&quot;Service-Type&quot;</span>,<span class="s2">&quot;:=&quot;</span>,<span class="s2">&quot;Framed-User&quot;</span><span class="o">)</span><span class="p">;</span>
 
-insert<span class="w"> </span>into<span class="w"> </span>radgroupreply<span class="w"> </span><span class="o">(</span>groupname,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">"user"</span>,<span class="s2">"Framed-IP-Address"</span>,<span class="w"> </span><span class="s2">":="</span>,<span class="s2">"255.255.255.255"</span><span class="o">)</span><span class="p">;</span>
-insert<span class="w"> </span>into<span class="w"> </span>radgroupreply<span class="w"> </span><span class="o">(</span>groupname,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">"user"</span>,<span class="s2">"Framed-IP-Netmask"</span>,<span class="w"> </span><span class="s2">":="</span>,<span class="s2">"255.255.255.0"</span><span class="o">)</span><span class="p">;</span>
+insert<span class="w"> </span>into<span class="w"> </span>radgroupreply<span class="w"> </span><span class="o">(</span>groupname,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">&quot;user&quot;</span>,<span class="s2">&quot;Framed-IP-Address&quot;</span>,<span class="w"> </span><span class="s2">&quot;:=&quot;</span>,<span class="s2">&quot;255.255.255.255&quot;</span><span class="o">)</span><span class="p">;</span>
+insert<span class="w"> </span>into<span class="w"> </span>radgroupreply<span class="w"> </span><span class="o">(</span>groupname,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">&quot;user&quot;</span>,<span class="s2">&quot;Framed-IP-Netmask&quot;</span>,<span class="w"> </span><span class="s2">&quot;:=&quot;</span>,<span class="s2">&quot;255.255.255.0&quot;</span><span class="o">)</span><span class="p">;</span>
 
 建立用户信息：（在此新建用户名为test，密码为testpwd）
-insert<span class="w"> </span>into<span class="w"> </span>radcheck<span class="w"> </span><span class="o">(</span>username,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">"test"</span>,<span class="w"> </span><span class="s2">"Cleartext-Password"</span>,<span class="s2">":="</span>,<span class="s2">"testpwd"</span><span class="o">)</span><span class="p">;</span>
+insert<span class="w"> </span>into<span class="w"> </span>radcheck<span class="w"> </span><span class="o">(</span>username,attribute,op,value<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">&quot;test&quot;</span>,<span class="w"> </span><span class="s2">&quot;Cleartext-Password&quot;</span>,<span class="s2">&quot;:=&quot;</span>,<span class="s2">&quot;testpwd&quot;</span><span class="o">)</span><span class="p">;</span>
 
 将用户加入组中：
-insert<span class="w"> </span>into<span class="w"> </span>radusergroup<span class="w"> </span><span class="o">(</span>username,groupname<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">"test"</span>,<span class="s2">"user"</span><span class="o">)</span><span class="p">;</span>
+insert<span class="w"> </span>into<span class="w"> </span>radusergroup<span class="w"> </span><span class="o">(</span>username,groupname<span class="o">)</span><span class="w"> </span>values<span class="w"> </span><span class="o">(</span><span class="s2">&quot;test&quot;</span>,<span class="s2">&quot;user&quot;</span><span class="o">)</span><span class="p">;</span>
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>修改FreeRadius中的mysql认证配置
 
 cd /etc/raddb/mods-enabled
@@ -206,27 +213,29 @@ vim /etc/raddb/mods-available/sql
 
 修改dialect = “sqlite” 为 dialect = “mysql”
 
-server = "10.10.128.235"
+server = &quot;10.10.128.235&quot;
 port = 3306
-login = "radius"
-password = "123456"
+login = &quot;radius&quot;
+password = &quot;123456&quot;
 
-radius_db = "radius"
+radius_db = &quot;radius&quot;
 
 
 read_clients=yes
 取消注释
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Unable<span class="w"> </span>to<span class="w"> </span>check<span class="w"> </span>file<span class="w"> </span><span class="s2">"/etc/raddb/certs/server.pem"</span>:<span class="w"> </span>No<span class="w"> </span>such<span class="w"> </span>file<span class="w"> </span>or<span class="w"> </span>directory
+
+<div class="highlight"><pre><span></span><code>Unable<span class="w"> </span>to<span class="w"> </span>check<span class="w"> </span>file<span class="w"> </span><span class="s2">&quot;/etc/raddb/certs/server.pem&quot;</span>:<span class="w"> </span>No<span class="w"> </span>such<span class="w"> </span>file<span class="w"> </span>or<span class="w"> </span>directory
 rlm_eap_tls:<span class="w"> </span>Failed<span class="w"> </span>initializing<span class="w"> </span>SSL<span class="w"> </span>context
 rlm_eap<span class="w"> </span><span class="o">(</span>EAP<span class="o">)</span>:<span class="w"> </span>Failed<span class="w"> </span>to<span class="w"> </span>initialise<span class="w"> </span>rlm_eap_tls
-/etc/raddb/mods-enabled/eap<span class="o">[</span><span class="m">14</span><span class="o">]</span>:<span class="w"> </span>Instantiation<span class="w"> </span>failed<span class="w"> </span><span class="k">for</span><span class="w"> </span>module<span class="w"> </span><span class="s2">"eap"</span>
+/etc/raddb/mods-enabled/eap<span class="o">[</span><span class="m">14</span><span class="o">]</span>:<span class="w"> </span>Instantiation<span class="w"> </span>failed<span class="w"> </span><span class="k">for</span><span class="w"> </span>module<span class="w"> </span><span class="s2">&quot;eap&quot;</span>
 
 rlm_eap:<span class="w"> </span>SSL<span class="w"> </span>error<span class="w"> </span>error:0200100D:system<span class="w"> </span>library:fopen:Permission<span class="w"> </span>denied
 rlm_eap_tls:<span class="w"> </span>Error<span class="w"> </span>reading<span class="w"> </span>certificate<span class="w"> </span>file<span class="w"> </span>/etc/raddb/certs/server.pem
 rlm_eap:<span class="w"> </span>Failed<span class="w"> </span>to<span class="w"> </span>initialize<span class="w"> </span><span class="nb">type</span><span class="w"> </span>tls
-/etc/raddb/eap.conf<span class="o">[</span><span class="m">17</span><span class="o">]</span>:<span class="w"> </span>Instantiation<span class="w"> </span>failed<span class="w"> </span><span class="k">for</span><span class="w"> </span>module<span class="w"> </span><span class="s2">"eap"</span>
+/etc/raddb/eap.conf<span class="o">[</span><span class="m">17</span><span class="o">]</span>:<span class="w"> </span>Instantiation<span class="w"> </span>failed<span class="w"> </span><span class="k">for</span><span class="w"> </span>module<span class="w"> </span><span class="s2">&quot;eap&quot;</span>
 </code></pre></div>
+
 <p>下面一定要操作，不然会报证书错误，读不到或者权限错误(上面的报错)</p>
 <div class="highlight"><pre><span></span><code><span class="c1">#  cd /etc/raddb/certs</span>
 
@@ -234,30 +243,34 @@ rlm_eap:<span class="w"> </span>Failed<span class="w"> </span>to<span class="w">
 
 <span class="c1">#  chown radiusd:radiusd server.pem  ca.pem  dh</span>
 </code></pre></div>
+
 <p>测试radius是否运行正常</p>
 <div class="highlight"><pre><span></span><code>radiusd<span class="w"> </span>-X
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>启动radius和设置为开机启动
 systemctl<span class="w"> </span>start<span class="w"> </span>radiusd.service
 systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>radiusd.service
 </code></pre></div>
+
 <p>正常启动</p>
 <div class="highlight"><pre><span></span><code>radtest<span class="w"> </span><span class="nb">test</span><span class="w"> </span>testpwd<span class="w"> </span>localhost<span class="w"> </span><span class="m">1812</span><span class="w"> </span>testing123
 
 
 Sent<span class="w"> </span>Access-Request<span class="w"> </span>Id<span class="w"> </span><span class="m">222</span><span class="w"> </span>from<span class="w"> </span><span class="m">0</span>.0.0.0:19958<span class="w"> </span>to<span class="w"> </span><span class="m">127</span>.0.0.1:1812<span class="w"> </span>length<span class="w"> </span><span class="m">74</span>
-<span class="w">        </span>User-Name<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"test"</span>
-<span class="w">        </span>User-Password<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"testpwd"</span>
+<span class="w">        </span>User-Name<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;test&quot;</span>
+<span class="w">        </span>User-Password<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;testpwd&quot;</span>
 <span class="w">        </span>NAS-IP-Address<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>.10.128.235
 <span class="w">        </span>NAS-Port<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1812</span>
 <span class="w">        </span>Message-Authenticator<span class="w"> </span><span class="o">=</span><span class="w"> </span>0x00
-<span class="w">        </span>Cleartext-Password<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"testpwd"</span>
+<span class="w">        </span>Cleartext-Password<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;testpwd&quot;</span>
 Received<span class="w"> </span>Access-Accept<span class="w"> </span>Id<span class="w"> </span><span class="m">222</span><span class="w"> </span>from<span class="w"> </span><span class="m">127</span>.0.0.1:1812<span class="w"> </span>to<span class="w"> </span><span class="m">0</span>.0.0.0:0<span class="w"> </span>length<span class="w"> </span><span class="m">44</span>
 <span class="w">        </span>Service-Type<span class="w"> </span><span class="o">=</span><span class="w"> </span>Framed-User
 <span class="w">        </span>Service-Type<span class="w"> </span><span class="o">=</span><span class="w"> </span>Framed-User
 <span class="w">        </span>Framed-IP-Address<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">255</span>.255.255.255
 <span class="w">        </span>Framed-IP-Netmask<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">255</span>.255.255.0
 </code></pre></div>
+
 <p>添加客户端连接设置</p>
 <div class="highlight"><pre><span></span><code>编辑/etc/raddb/clients.conf文件，为允许连接的客户端设置相应的共享秘钥
 例一：本地localhost接入<span class="o">(</span>一般用于测试<span class="o">)</span>，共享秘钥为demoradiussecret:

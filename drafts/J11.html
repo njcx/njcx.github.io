@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-04-14T22:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Fri 14 April 2017
+        五 14 四月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -123,22 +123,25 @@ var _hmt = _hmt || [];
 <span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_HDFS_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">YARN_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_COMMON_LIB_NATIVE_DIR</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>/lib/native
-<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_OPTS</span><span class="o">=</span><span class="s2">"-Djava.library.path=</span><span class="nv">$HADOOP_HOME</span><span class="s2">/lib"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_OPTS</span><span class="o">=</span><span class="s2">&quot;-Djava.library.path=</span><span class="nv">$HADOOP_HOME</span><span class="s2">/lib&quot;</span>
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark-2.3.2-bin-hadoop2.7
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
 </code></pre></div>
+
 <h4>源</h4>
 <p>pip 源</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>global<span class="o">]</span>
 index-url<span class="w"> </span><span class="o">=</span><span class="w"> </span>https://pypi.tuna.tsinghua.edu.cn/simple
 </code></pre></div>
+
 <p>CentOS7 （清华）</p>
 <p>记得备份</p>
 <div class="highlight"><pre><span></span><code>cp<span class="w"> </span>/etc/yum.repos.d/CentOS-Base.repo<span class="w">  </span>/etc/yum.repos.d/CentOS-Base.repo.bak
 
 cp<span class="w"> </span>/etc/yum.repos.d/epel.repo<span class="w">  </span>/etc/yum.repos.d/epel.repo.bak
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code><span class="o">[</span>base<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>CentOS-<span class="nv">$releasever</span><span class="w"> </span>-<span class="w"> </span>Base
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/centos/<span class="nv">$releasever</span>/os/<span class="nv">$basearch</span>/
@@ -171,6 +174,7 @@ cp<span class="w"> </span>/etc/yum.repos.d/epel.repo<span class="w">  </span>/et
 <span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code><span class="o">[</span>epel<span class="o">]</span>
 <span class="nv">name</span><span class="o">=</span>Extra<span class="w"> </span>Packages<span class="w"> </span><span class="k">for</span><span class="w"> </span>Enterprise<span class="w"> </span>Linux<span class="w"> </span><span class="m">7</span><span class="w"> </span>-<span class="w"> </span><span class="nv">$basearch</span>
 <span class="nv">baseurl</span><span class="o">=</span>https://mirrors.tuna.tsinghua.edu.cn/epel/7/<span class="nv">$basearch</span>
@@ -198,11 +202,13 @@ cp<span class="w"> </span>/etc/yum.repos.d/epel.repo<span class="w">  </span>/et
 <span class="nv">gpgkey</span><span class="o">=</span>file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 <span class="nv">gpgcheck</span><span class="o">=</span><span class="m">1</span>
 </code></pre></div>
+
 <p>CentOS7 阿里源</p>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-o<span class="w"> </span>/etc/yum.repos.d/CentOS-Base.repo<span class="w"> </span>http://mirrors.aliyun.com/repo/Centos-7.repo
 
 curl<span class="w"> </span>-o<span class="w"> </span>/etc/yum.repos.d/epel.repo<span class="w"> </span>http://mirrors.aliyun.com/repo/epel-7.repo
 </code></pre></div>
+
 <p>kali linux </p>
 <div class="highlight"><pre><span></span><code><span class="c1">#阿里云</span>
 deb<span class="w"> </span>http://mirrors.aliyun.com/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>non-free<span class="w"> </span>contrib<span class="w"> </span>
@@ -216,9 +222,11 @@ deb-src<span class="w"> </span>https://mirrors.tuna.tsinghua.edu.cn/kali<span cl
 deb<span class="w"> </span>http://mirrors.zju.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
 deb-src<span class="w"> </span>http://mirrors.zju.edu.cn/kali<span class="w"> </span>kali-rolling<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free<span class="w"> </span>
 </code></pre></div>
+
 <p>mysql 源</p>
 <div class="highlight"><pre><span></span><code>rpm<span class="w"> </span>-ivh<span class="w"> </span>https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
 </code></pre></div>
+
 <h4>软件包</h4>
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>groupinstall<span class="w"> </span>development<span class="w"> </span>tools
 
@@ -233,9 +241,11 @@ yum<span class="w"> </span>install<span class="w"> </span>redis<span class="w"> 
 
 yum<span class="w"> </span>install<span class="w"> </span>python36<span class="w"> </span>python36-devel
 </code></pre></div>
+
 <h4>nodejs</h4>
 <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://npm.taobao.org/mirrors/node/v10.14.2/node-v10.14.2-linux-x64.tar.gz<span class="w"> </span>
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">NODE_HOME</span><span class="o">=</span>/root/node-v10.14.2-linux-x64
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$NODE_HOME</span>/bin
 <span class="nb">export</span><span class="w"> </span><span class="nv">NODE_PATH</span><span class="o">=</span><span class="nv">$NODE_HOME</span>/lib/node_modules

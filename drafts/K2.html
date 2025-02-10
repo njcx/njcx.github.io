@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-05-27T12:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 27 May 2017
+        六 27 五月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -107,10 +107,13 @@ var _hmt = _hmt || [];
 <h4>安装</h4>
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>libpcap-devel<span class="w"> </span>libnet-devel<span class="w"> </span>pcre-devel<span class="w"> </span>gcc-c++<span class="w"> </span>automake<span class="w"> </span>autoconf<span class="w"> </span>libtool<span class="w"> </span>make<span class="w"> </span>libyaml-devel<span class="w"> </span>zlib-devel<span class="w"> </span>file-devel<span class="w"> </span>jansson-devel<span class="w"> </span>nss-devel<span class="w"> </span>python-pip<span class="w"> </span>python-devel<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>pyyaml
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code><span class="w"> </span>curl<span class="w"> </span>-LS<span class="w"> </span>https://www.openinfosecfoundation.org/download/suricata-4.1.0.tar.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>tar<span class="w"> </span>zx
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code><span class="w"> </span>./configure<span class="w"> </span>--prefix<span class="o">=</span>/opt/suricata<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>install-full
 </code></pre></div>
+
 <p>到这里基本安装完成</p>
 <h4>使用</h4>
 <p>/opt/suricata/bin/suricata -i ens33 -c /opt/suricata/etc/suricata/suricata.yaml -s /opt/suricata/share/suricata/rules/http-events.rules -l ./ -D</p>

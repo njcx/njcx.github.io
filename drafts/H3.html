@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-02T13:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 02 June 2018
+        六 02 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -108,21 +108,25 @@ var _hmt = _hmt || [];
 <p>mac 电脑安装</p>
 <div class="highlight"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>golang
 </code></pre></div>
+
 <p>ubuntu</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>golang<span class="w"> </span>-y
 </code></pre></div>
+
 <p>CentOS </p>
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>golang<span class="w"> </span>-y
 </code></pre></div>
+
 <h4>向世界打招呼</h4>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main<span class="w"> </span>
 
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"Hello world!"</span><span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="o">)</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <h4>注释</h4>
 <div class="highlight"><pre><span></span><code>//<span class="w"> </span>单行注释
 
@@ -134,6 +138,7 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <span class="w"> </span>我是多行注释
 <span class="w"> </span>*/
 </code></pre></div>
+
 <h4>数据结构</h4>
 <ul>
 <li>布尔型</li>
@@ -141,6 +146,7 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <div class="highlight"><pre><span></span><code><span class="w">    </span>var<span class="w"> </span>b<span class="w"> </span><span class="nv">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
 <span class="w">    </span>c<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="nb">false</span>
 </code></pre></div>
+
 <ul>
 <li>数字类型
 整型 int 和浮点型 float32、float64，Go 语言支持整型和浮点型数字，支持复数，位运算采用补码。<ul>
@@ -188,20 +194,23 @@ var<span class="w"> </span>b<span class="w"> </span><span class="nv">int</span><
 
 c<span class="w"> </span>:<span class="o">=</span><span class="m">3</span>
 </code></pre></div>
+
 <p>常量</p>
 <div class="highlight"><pre><span></span><code>const<span class="w"> </span>identifier<span class="w"> </span><span class="o">[</span>type<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>value
 
-显式类型定义：<span class="w"> </span>const<span class="w"> </span>b<span class="w"> </span><span class="nv">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"abc"</span>
-隐式类型定义：<span class="w"> </span>const<span class="w"> </span><span class="nv">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"abc"</span>
+显式类型定义：<span class="w"> </span>const<span class="w"> </span>b<span class="w"> </span><span class="nv">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;abc&quot;</span>
+隐式类型定义：<span class="w"> </span>const<span class="w"> </span><span class="nv">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;abc&quot;</span>
 
 多个类型定义：<span class="w"> </span>const<span class="w"> </span>c_name1,<span class="w"> </span><span class="nv">c_name2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>value1,<span class="w"> </span>value2
 </code></pre></div>
+
 <ul>
 <li>字符串类型</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="w">    </span>var<span class="w"> </span>b<span class="w"> </span><span class="nv">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"demo"</span>
-<span class="w">    </span>c<span class="w"> </span>:<span class="o">=</span><span class="w">  </span><span class="s2">"godemo"</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span>var<span class="w"> </span>b<span class="w"> </span><span class="nv">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;demo&quot;</span>
+<span class="w">    </span>c<span class="w"> </span>:<span class="o">=</span><span class="w">  </span><span class="s2">&quot;godemo&quot;</span>
 </code></pre></div>
+
 <ul>
 <li>数组类型</li>
 </ul>
@@ -225,21 +234,25 @@ arr<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><spa
 var<span class="w"> </span><span class="nv">arr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>:1,0:2<span class="o">}</span>
 arr<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[</span>...<span class="o">]</span>int<span class="o">{</span><span class="m">1</span>:1,0:2<span class="o">}</span>
 </code></pre></div>
+
 <ul>
 <li>切片类型</li>
 </ul>
 <p>切片就是动态数组</p>
 <div class="highlight"><pre><span></span><code>var<span class="w"> </span>identifier<span class="w"> </span><span class="o">[]</span><span class="nb">type</span>
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>s<span class="w"> </span>:<span class="o">=[]</span><span class="w"> </span>int<span class="w"> </span><span class="o">{</span><span class="m">1</span>,2,3<span class="w"> </span><span class="o">}</span><span class="w"> </span>
 </code></pre></div>
+
 <p>切片也可以通过make 创建，其中，len 是数组的长度并且也是切片的初始长度，cap 是切片容量</p>
 <div class="highlight"><pre><span></span><code>s<span class="w"> </span>:<span class="o">=</span>make<span class="o">([]</span>int,len,cap<span class="o">)</span><span class="w"> </span>
 </code></pre></div>
+
 <p>切片使用的例子</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">   </span>/*<span class="w"> </span>创建切片<span class="w"> </span>*/
@@ -247,16 +260,16 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <span class="w">   </span>printSlice<span class="o">(</span>numbers<span class="o">)</span>
 
 <span class="w">   </span>/*<span class="w"> </span>打印原始切片<span class="w"> </span>*/
-<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">"numbers =="</span>,<span class="w"> </span>numbers<span class="o">)</span>
+<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">&quot;numbers ==&quot;</span>,<span class="w"> </span>numbers<span class="o">)</span>
 
 <span class="w">   </span>/*<span class="w"> </span>打印子切片从索引1<span class="o">(</span>包含<span class="o">)</span><span class="w"> </span>到索引4<span class="o">(</span>不包含<span class="o">)</span>*/
-<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">"numbers[1:4] =="</span>,<span class="w"> </span>numbers<span class="o">[</span><span class="m">1</span>:4<span class="o">])</span>
+<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">&quot;numbers[1:4] ==&quot;</span>,<span class="w"> </span>numbers<span class="o">[</span><span class="m">1</span>:4<span class="o">])</span>
 
 <span class="w">   </span>/*<span class="w"> </span>默认下限为<span class="w"> </span><span class="m">0</span>*/
-<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">"numbers[:3] =="</span>,<span class="w"> </span>numbers<span class="o">[</span>:3<span class="o">])</span>
+<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">&quot;numbers[:3] ==&quot;</span>,<span class="w"> </span>numbers<span class="o">[</span>:3<span class="o">])</span>
 
 <span class="w">   </span>/*<span class="w"> </span>默认上限为<span class="w"> </span>len<span class="o">(</span>s<span class="o">)</span>*/
-<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">"numbers[4:] =="</span>,<span class="w"> </span>numbers<span class="o">[</span><span class="m">4</span>:<span class="o">])</span>
+<span class="w">   </span>fmt.Println<span class="o">(</span><span class="s2">&quot;numbers[4:] ==&quot;</span>,<span class="w"> </span>numbers<span class="o">[</span><span class="m">4</span>:<span class="o">])</span>
 
 <span class="w">   </span>numbers1<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">([]</span>int,0,5<span class="o">)</span>
 <span class="w">   </span>printSlice<span class="o">(</span>numbers1<span class="o">)</span>
@@ -272,9 +285,10 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <span class="o">}</span>
 
 func<span class="w"> </span>printSlice<span class="o">(</span>x<span class="w"> </span><span class="o">[]</span>int<span class="o">){</span>
-<span class="w">   </span>fmt.Printf<span class="o">(</span><span class="s2">"len=%d cap=%d slice=%v\n"</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
+<span class="w">   </span>fmt.Printf<span class="o">(</span><span class="s2">&quot;len=%d cap=%d slice=%v\n&quot;</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>执行以上代码输出结果为：</p>
 <div class="highlight"><pre><span></span><code><span class="nv">len</span><span class="o">=</span><span class="m">9</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">9</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="m">8</span><span class="o">]</span>
 <span class="nv">numbers</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="m">8</span><span class="o">]</span>
@@ -285,11 +299,12 @@ numbers<span class="o">[</span><span class="m">4</span>:<span class="o">]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">9</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="o">]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">3</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">7</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="o">]</span>
 </code></pre></div>
+
 <p>如果想增加切片的容量，我们必须创建一个新的更大的切片并把原分片的内容都拷贝过来。
 下面的代码描述了从拷贝切片的 copy 方法和向切片追加新元素的 append 方法。</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">   </span>var<span class="w"> </span>numbers<span class="w"> </span><span class="o">[]</span>int
@@ -316,9 +331,10 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <span class="o">}</span>
 
 func<span class="w"> </span>printSlice<span class="o">(</span>x<span class="w"> </span><span class="o">[]</span>int<span class="o">){</span>
-<span class="w">   </span>fmt.Printf<span class="o">(</span><span class="s2">"len=%d cap=%d slice=%v\n"</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
+<span class="w">   </span>fmt.Printf<span class="o">(</span><span class="s2">&quot;len=%d cap=%d slice=%v\n&quot;</span>,len<span class="o">(</span>x<span class="o">)</span>,cap<span class="o">(</span>x<span class="o">)</span>,x<span class="o">)</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>以上代码执行输出结果为：</p>
 <div class="highlight"><pre><span></span><code><span class="nv">len</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="o">]</span>
@@ -326,6 +342,7 @@ func<span class="w"> </span>printSlice<span class="o">(</span>x<span class="w"> 
 <span class="nv">len</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">6</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="o">]</span>
 <span class="nv">len</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="nv">cap</span><span class="o">=</span><span class="m">12</span><span class="w"> </span><span class="nv">slice</span><span class="o">=[</span><span class="m">0</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="o">]</span>
 </code></pre></div>
+
 <ul>
 <li>指针类型（Pointer）</li>
 </ul>
@@ -338,9 +355,10 @@ var<span class="w"> </span>b<span class="w"> </span>*int<span class="w"> </span>
 
 b<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="p">&amp;</span>a
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main<span class="w"> </span>
 
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 
 func<span class="w"> </span>main<span class="o">(){</span>
 
@@ -351,6 +369,7 @@ func<span class="w"> </span>main<span class="o">(){</span>
 <span class="w">    </span>fmt.Println<span class="o">(</span>*b<span class="o">)</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <ul>
 <li>结构体类型(struct)</li>
 </ul>
@@ -362,6 +381,7 @@ func<span class="w"> </span>main<span class="o">(){</span>
 <span class="w">   </span>member<span class="w"> </span>definition<span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>列子</p>
 <div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span>Books<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
 <span class="w">   </span>title<span class="w"> </span>string
@@ -370,12 +390,13 @@ func<span class="w"> </span>main<span class="o">(){</span>
 <span class="w">   </span>book_id<span class="w"> </span>int
 <span class="o">}</span>
 </code></pre></div>
+
 <p>如果要访问结构体成员，需要使用点号 . 操作符，格式为：</p>
 <p>结构体.成员名</p>
 <p>定义指向结构体的指针类似于其他指针变量，格式如下：</p>
 <p>var struct_pointer *Books</p>
 <p>以上定义的指针变量可以存储结构体变量的地址。查看结构体变量地址，可以将 &amp; 符号放置于结构体变量前：</p>
-<p>struct_pointer = &amp;Book1</p>
+<p>struct_pointer = &Book1;</p>
 <p>使用结构体指针访问结构体成员，使用 "." 操作符：</p>
 <p>struct_pointer.title;</p>
 <ul>
@@ -387,6 +408,7 @@ ch<span class="w"> </span>&lt;-<span class="w"> </span>v<span class="w">    </sp
 v<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>&lt;-ch<span class="w">  </span>//<span class="w"> </span>从<span class="w"> </span>ch<span class="w"> </span>接收数据
 <span class="w">           </span>//<span class="w"> </span>并把值赋给<span class="w"> </span>v
 </code></pre></div>
+
 <ul>
 <li>接口类型（interface）</li>
 </ul>
@@ -413,6 +435,7 @@ func<span class="w"> </span><span class="o">(</span>struct_name_variable<span cl
 <span class="w">   </span>/*<span class="w"> </span>方法实现*/
 <span class="o">}</span>
 </code></pre></div>
+
 <ul>
 <li>Map 类型</li>
 </ul>
@@ -423,8 +446,9 @@ var<span class="w"> </span>map_variable<span class="w"> </span>map<span class="o
 map_variable<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">(</span>map<span class="o">[</span>key_data_type<span class="o">]</span>value_data_type<span class="o">)</span>
 
 /<span class="w"> </span>*<span class="w"> </span>map<span class="w"> </span>初始化<span class="w"> </span>*<span class="w"> </span>/
-var<span class="w"> </span><span class="nv">map_variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">{</span><span class="s2">"key1"</span>:<span class="w"> </span><span class="s2">"value1"</span>,<span class="s2">"key2"</span>:<span class="w"> </span><span class="s2">"value2"</span>,<span class="o">}</span>
+var<span class="w"> </span><span class="nv">map_variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">{</span><span class="s2">&quot;key1&quot;</span>:<span class="w"> </span><span class="s2">&quot;value1&quot;</span>,<span class="s2">&quot;key2&quot;</span>:<span class="w"> </span><span class="s2">&quot;value2&quot;</span>,<span class="o">}</span>
 </code></pre></div>
+
 <ul>
 <li>类型转换</li>
 </ul>
@@ -432,12 +456,13 @@ var<span class="w"> </span><span class="nv">map_variable</span><span class="w"> 
 <span class="w">    </span>type_name<span class="o">(</span>expression<span class="o">)</span>
 <span class="w">    </span>type_name<span class="w"> </span>为类型，expression<span class="w"> </span>为表达式。
 </code></pre></div>
+
 <ul>
 <li>range</li>
 </ul>
 <p>range 关键字用于 for 循环中迭代数组(array)、切片(slice)、通道(channel)或集合(map)的元素。在数组和切片中它返回元素的索引和索引对应的值，在map 中返回 key 和 value。</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>//这是我们使用range去求一个slice的和。使用数组跟这个很类似
 <span class="w">    </span>nums<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[]</span>int<span class="o">{</span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">4</span><span class="o">}</span>
@@ -445,24 +470,25 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <span class="w">    </span><span class="k">for</span><span class="w"> </span>_,<span class="w"> </span>num<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>nums<span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="nv">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span>num
 <span class="w">    </span><span class="o">}</span>
-<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"sum:"</span>,<span class="w"> </span>sum<span class="o">)</span>
-<span class="w">    </span>//在数组上使用range将传入index和值两个变量。上面那个例子我们不需要使用该元素的序号，所以我们使用空白符<span class="s2">"_"</span>省略了。有时侯我们确实需要知道它的索引。
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">&quot;sum:&quot;</span>,<span class="w"> </span>sum<span class="o">)</span>
+<span class="w">    </span>//在数组上使用range将传入index和值两个变量。上面那个例子我们不需要使用该元素的序号，所以我们使用空白符<span class="s2">&quot;_&quot;</span>省略了。有时侯我们确实需要知道它的索引。
 <span class="w">    </span><span class="k">for</span><span class="w"> </span>i,<span class="w"> </span>num<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>nums<span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nv">num</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="o">{</span>
-<span class="w">            </span>fmt.Println<span class="o">(</span><span class="s2">"index:"</span>,<span class="w"> </span>i<span class="o">)</span>
+<span class="w">            </span>fmt.Println<span class="o">(</span><span class="s2">&quot;index:&quot;</span>,<span class="w"> </span>i<span class="o">)</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>//range也可以用在map的键值对上。
-<span class="w">    </span>kvs<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">{</span><span class="s2">"a"</span>:<span class="w"> </span><span class="s2">"apple"</span>,<span class="w"> </span><span class="s2">"b"</span>:<span class="w"> </span><span class="s2">"banana"</span><span class="o">}</span>
+<span class="w">    </span>kvs<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">{</span><span class="s2">&quot;a&quot;</span>:<span class="w"> </span><span class="s2">&quot;apple&quot;</span>,<span class="w"> </span><span class="s2">&quot;b&quot;</span>:<span class="w"> </span><span class="s2">&quot;banana&quot;</span><span class="o">}</span>
 <span class="w">    </span><span class="k">for</span><span class="w"> </span>k,<span class="w"> </span>v<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>kvs<span class="w"> </span><span class="o">{</span>
-<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">"%s -&gt; %s\n"</span>,<span class="w"> </span>k,<span class="w"> </span>v<span class="o">)</span>
+<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">&quot;%s -&gt; %s\n&quot;</span>,<span class="w"> </span>k,<span class="w"> </span>v<span class="o">)</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>//range也可以用来枚举Unicode字符串。第一个参数是字符的索引，第二个是字符（Unicode的值）本身。
-<span class="w">    </span><span class="k">for</span><span class="w"> </span>i,<span class="w"> </span>c<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span><span class="s2">"go"</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>i,<span class="w"> </span>c<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span><span class="s2">&quot;go&quot;</span><span class="w"> </span><span class="o">{</span>
 <span class="w">        </span>fmt.Println<span class="o">(</span>i,<span class="w"> </span>c<span class="o">)</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <h4>运算符</h4>
 <p>算术运算符</p>
 <div class="highlight"><pre><span></span><code>+<span class="w">   </span>相加<span class="w">  </span>
@@ -473,6 +499,7 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 ++<span class="w">  </span>自增<span class="w">  </span>
 --<span class="w">  </span>自减<span class="w">  </span>
 </code></pre></div>
+
 <p>关系运算符</p>
 <div class="highlight"><pre><span></span><code><span class="o">==</span><span class="w">  </span>检查两个值是否相等，如果相等返回<span class="w"> </span>True<span class="w"> </span>否则返回<span class="w"> </span>False。
 !<span class="o">=</span><span class="w">  </span>检查两个值是否不相等，如果不相等返回<span class="w"> </span>True<span class="w"> </span>否则返回<span class="w"> </span>False。
@@ -480,11 +507,13 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 &gt;<span class="o">=</span><span class="w">  </span>检查左边值是否大于等于右边值，如果是返回<span class="w"> </span>True<span class="w"> </span>否则返回<span class="w"> </span>False。
 &lt;<span class="o">=</span><span class="w">  </span>检查左边值是否小于等于右边值，如果是返回<span class="w"> </span>True<span class="w"> </span>否则返回<span class="w"> </span>False。
 </code></pre></div>
+
 <p>逻辑运算符</p>
 <div class="highlight"><pre><span></span><code><span class="o">&amp;&amp;</span><span class="w">  </span>逻辑<span class="w"> </span>AND<span class="w"> </span>运算符。<span class="w"> </span>如果两边的操作数都是<span class="w"> </span>True，则条件<span class="w"> </span>True，否则为<span class="w"> </span>False。
 <span class="o">||</span><span class="w">  </span>逻辑<span class="w"> </span>OR<span class="w"> </span>运算符。<span class="w"> </span>如果两边的操作数有一个<span class="w"> </span>True，则条件<span class="w"> </span>True，否则为<span class="w"> </span>False。
 !<span class="w">   </span>逻辑<span class="w"> </span>NOT<span class="w"> </span>运算符。<span class="w"> </span>如果条件为<span class="w"> </span>True，则逻辑<span class="w"> </span>NOT<span class="w"> </span>条件<span class="w"> </span>False，否则为<span class="w"> </span>True。
 </code></pre></div>
+
 <p>赋值运算符</p>
 <div class="highlight"><pre><span></span><code><span class="o">=</span><span class="w">   </span>简单的赋值运算符，将一个表达式的值赋给一个左值
 +<span class="o">=</span><span class="w">  </span>相加后再赋值<span class="w">  </span><span class="nv">C</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span>A<span class="w"> </span>等于<span class="w"> </span><span class="nv">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>C<span class="w"> </span>+<span class="w"> </span>A
@@ -493,10 +522,12 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 /<span class="o">=</span><span class="w">  </span>相除后再赋值<span class="w">  </span>C<span class="w"> </span>/<span class="o">=</span><span class="w"> </span>A<span class="w"> </span>等于<span class="w"> </span><span class="nv">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>C<span class="w"> </span>/<span class="w"> </span>A
 %<span class="o">=</span><span class="w">  </span>求余后再赋值<span class="w">   </span>C<span class="w"> </span>%<span class="o">=</span><span class="w"> </span>A<span class="w"> </span>等于<span class="w"> </span><span class="nv">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>C<span class="w"> </span>%<span class="w"> </span>A
 </code></pre></div>
+
 <p>指针相关运算符</p>
 <div class="highlight"><pre><span></span><code><span class="p">&amp;</span><span class="w">   </span>返回变量存储地址<span class="w">    </span><span class="p">&amp;</span>a<span class="p">;</span><span class="w"> </span>将给出变量的实际地址。
 *<span class="w">   </span>指针变量。<span class="w">   </span>*a<span class="p">;</span><span class="w"> </span>是一个指针变量
 </code></pre></div>
+
 <h4>控制语句</h4>
 <ul>
 <li>条件语句</li>
@@ -518,6 +549,7 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <span class="w">   </span><span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>for 循环</p>
 <div class="highlight"><pre><span></span><code>Go语言的For循环有3中形式，只有其中的一种使用分号。
 
@@ -534,15 +566,17 @@ init：<span class="w"> </span>一般为赋值表达式，给控制变量赋初�
 condition：<span class="w"> </span>关系表达式或逻辑表达式，循环控制条件；
 post：<span class="w"> </span>一般为赋值表达式，给控制变量增量或减量。
 </code></pre></div>
+
 <p>for 循环的 range 格式可以对 slice、map、数组、字符串等进行迭代循环。格式如下：</p>
 <div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>key,<span class="w"> </span>value<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>oldMap<span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>newMap<span class="o">[</span>key<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>value
 <span class="o">}</span>
 </code></pre></div>
+
 <p>for 例子</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 
@@ -553,34 +587,36 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 
 <span class="w">   </span>/*<span class="w"> </span><span class="k">for</span><span class="w"> </span>循环<span class="w"> </span>*/
 <span class="w">   </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>a<span class="w"> </span>&lt;<span class="w"> </span><span class="m">10</span><span class="p">;</span><span class="w"> </span>a++<span class="w"> </span><span class="o">{</span>
-<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"a 的值为: %d\n"</span>,<span class="w"> </span>a<span class="o">)</span>
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">&quot;a 的值为: %d\n&quot;</span>,<span class="w"> </span>a<span class="o">)</span>
 <span class="w">   </span><span class="o">}</span>
 
 <span class="w">   </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>&lt;<span class="w"> </span>b<span class="w"> </span><span class="o">{</span>
 <span class="w">      </span>a++
-<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"a 的值为: %d\n"</span>,<span class="w"> </span>a<span class="o">)</span>
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">&quot;a 的值为: %d\n&quot;</span>,<span class="w"> </span>a<span class="o">)</span>
 <span class="w">   </span><span class="o">}</span>
 
 <span class="w">   </span><span class="k">for</span><span class="w"> </span>i,x:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>numbers<span class="w"> </span><span class="o">{</span>
-<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"第 %d 位 x 的值 = %d\n"</span>,<span class="w"> </span>i,x<span class="o">)</span>
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">&quot;第 %d 位 x 的值 = %d\n&quot;</span>,<span class="w"> </span>i,x<span class="o">)</span>
 <span class="w">   </span><span class="o">}</span><span class="w">   </span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>for 无限循环</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nb">true</span><span class="w">  </span><span class="o">{</span>
-<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">"这是无限循环。\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">&quot;这是无限循环。\n&quot;</span><span class="o">)</span><span class="p">;</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>break 语句</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">   </span>/*<span class="w"> </span>定义局部变量<span class="w"> </span>*/
@@ -588,7 +624,7 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 
 <span class="w">   </span>/*<span class="w"> </span><span class="k">for</span><span class="w"> </span>循环<span class="w"> </span>*/
 <span class="w">   </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>&lt;<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="o">{</span>
-<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"a 的值为 : %d\n"</span>,<span class="w"> </span>a<span class="o">)</span><span class="p">;</span>
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">&quot;a 的值为 : %d\n&quot;</span>,<span class="w"> </span>a<span class="o">)</span><span class="p">;</span>
 <span class="w">      </span>a++<span class="p">;</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span>a<span class="w"> </span>&gt;<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="o">{</span>
 <span class="w">         </span>/*<span class="w"> </span>使用<span class="w"> </span><span class="k">break</span><span class="w"> </span>语句跳出循环<span class="w"> </span>*/
@@ -597,8 +633,9 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <span class="w">   </span><span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>continue 语句</p>
-<div class="highlight"><pre><span></span><code>import<span class="w"> </span><span class="s2">"fmt"</span>
+<div class="highlight"><pre><span></span><code>import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">   </span>/*<span class="w"> </span>定义局部变量<span class="w"> </span>*/
@@ -611,17 +648,19 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <span class="w">         </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>a<span class="w"> </span>+<span class="w"> </span><span class="m">1</span><span class="p">;</span>
 <span class="w">         </span><span class="k">continue</span><span class="p">;</span>
 <span class="w">      </span><span class="o">}</span>
-<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">"a 的值为 : %d\n"</span>,<span class="w"> </span>a<span class="o">)</span><span class="p">;</span>
+<span class="w">      </span>fmt.Printf<span class="o">(</span><span class="s2">&quot;a 的值为 : %d\n&quot;</span>,<span class="w"> </span>a<span class="o">)</span><span class="p">;</span>
 <span class="w">      </span>a++<span class="p">;</span><span class="w">     </span>
 <span class="w">   </span><span class="o">}</span><span class="w">  </span>
 <span class="o">}</span>
 </code></pre></div>
+
 <h4>函数</h4>
 <p>函数定义 </p>
 <div class="highlight"><pre><span></span><code>func<span class="w"> </span>function_name<span class="o">(</span><span class="w"> </span><span class="o">[</span>parameter<span class="w"> </span>list<span class="o">]</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="o">[</span>return_types<span class="o">]</span><span class="w"> </span><span class="o">{</span>
 <span class="w">   </span>函数体
 <span class="o">}</span>
 </code></pre></div>
+
 <p>以下实例为 max() 函数的代码，该函数传入两个整型参数 num1 和 num2，并返回这两个参数的最大值：</p>
 <div class="highlight"><pre><span></span><code>/*<span class="w"> </span>函数返回两个数的最大值<span class="w"> </span>*/
 func<span class="w"> </span>max<span class="o">(</span>num1,<span class="w"> </span>num2<span class="w"> </span>int<span class="o">)</span><span class="w"> </span>int<span class="w"> </span><span class="o">{</span>
@@ -636,6 +675,7 @@ func<span class="w"> </span>max<span class="o">(</span>num1,<span class="w"> </s
 <span class="w">   </span><span class="k">return</span><span class="w"> </span>result<span class="w"> </span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>向函数传递数组</p>
 <div class="highlight"><pre><span></span><code>形参设定数组大小：
 
@@ -649,6 +689,7 @@ void<span class="w"> </span>myFunction<span class="o">(</span>param<span class="
 <span class="o">{</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>列子</p>
 <div class="highlight"><pre><span></span><code>func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>var<span class="w"> </span><span class="nv">array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span>int<span class="o">{</span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="m">5</span><span class="o">}</span>
@@ -660,19 +701,20 @@ void<span class="w"> </span>myFunction<span class="o">(</span>param<span class="
 <span class="o">}</span>
 
 func<span class="w"> </span>setArray<span class="o">(</span>params<span class="w"> </span><span class="o">[]</span>int<span class="o">)</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"params array length of setArray is : "</span>,<span class="w"> </span>len<span class="o">(</span>params<span class="o">))</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">&quot;params array length of setArray is : &quot;</span>,<span class="w"> </span>len<span class="o">(</span>params<span class="o">))</span>
 <span class="o">}</span>
 
 func<span class="w"> </span>setArray2<span class="o">(</span>params<span class="w"> </span><span class="o">[</span><span class="m">5</span><span class="o">]</span>int<span class="o">)</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"params array length of setArray2 is : "</span>,<span class="w"> </span>len<span class="o">(</span>params<span class="o">))</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">&quot;params array length of setArray2 is : &quot;</span>,<span class="w"> </span>len<span class="o">(</span>params<span class="o">))</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>函数可以作为值</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
 import<span class="w"> </span><span class="o">(</span>
-<span class="w">   </span><span class="s2">"fmt"</span>
-<span class="w">   </span><span class="s2">"math"</span>
+<span class="w">   </span><span class="s2">&quot;fmt&quot;</span>
+<span class="w">   </span><span class="s2">&quot;math&quot;</span>
 <span class="o">)</span>
 
 func<span class="w"> </span>main<span class="o">(){</span>
@@ -686,10 +728,11 @@ func<span class="w"> </span>main<span class="o">(){</span>
 
 <span class="o">}</span>
 </code></pre></div>
+
 <p>闭包</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 
 func<span class="w"> </span>getSequence<span class="o">()</span><span class="w"> </span>func<span class="o">()</span><span class="w"> </span>int<span class="w"> </span><span class="o">{</span>
 <span class="w">   </span>i:<span class="o">=</span><span class="m">0</span>
@@ -714,9 +757,10 @@ func<span class="w"> </span>main<span class="o">(){</span>
 <span class="w">   </span>fmt.Println<span class="o">(</span>nextNumber1<span class="o">())</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>add_func<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>add<span class="o">(</span><span class="m">1</span>,2<span class="o">)</span>
 <span class="w">    </span>fmt.Println<span class="o">(</span>add_func<span class="o">())</span>
@@ -733,8 +777,9 @@ func<span class="w"> </span>add<span class="o">(</span>x1,<span class="w"> </spa
 <span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>add_func<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>add<span class="o">(</span><span class="m">1</span>,2<span class="o">)</span>
 <span class="w">    </span>fmt.Println<span class="o">(</span>add_func<span class="o">(</span><span class="m">1</span>,1<span class="o">))</span>
@@ -750,6 +795,7 @@ func<span class="w"> </span>add<span class="o">(</span>x1,<span class="w"> </spa
 <span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <h4>接口</h4>
 <div class="highlight"><pre><span></span><code>Go<span class="w"> </span>语言提供了另外一种数据类型即接口，它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。
 
@@ -777,11 +823,12 @@ func<span class="w"> </span><span class="o">(</span>struct_name_variable<span cl
 <span class="w">   </span>/*<span class="w"> </span>方法实现*/
 <span class="o">}</span>
 </code></pre></div>
+
 <p>例子</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
 import<span class="w"> </span><span class="o">(</span>
-<span class="w">    </span><span class="s2">"fmt"</span>
+<span class="w">    </span><span class="s2">&quot;fmt&quot;</span>
 <span class="o">)</span>
 
 <span class="nb">type</span><span class="w"> </span>Phone<span class="w"> </span>interface<span class="w"> </span><span class="o">{</span>
@@ -792,14 +839,14 @@ import<span class="w"> </span><span class="o">(</span>
 <span class="o">}</span>
 
 func<span class="w"> </span><span class="o">(</span>nokiaPhone<span class="w"> </span>NokiaPhone<span class="o">)</span><span class="w"> </span>call<span class="o">()</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"I am Nokia, I can call you!"</span><span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">&quot;I am Nokia, I can call you!&quot;</span><span class="o">)</span>
 <span class="o">}</span>
 
 <span class="nb">type</span><span class="w"> </span>IPhone<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
 <span class="o">}</span>
 
 func<span class="w"> </span><span class="o">(</span>iPhone<span class="w"> </span>IPhone<span class="o">)</span><span class="w"> </span>call<span class="o">()</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"I am iPhone, I can call you!"</span><span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">&quot;I am iPhone, I can call you!&quot;</span><span class="o">)</span>
 <span class="o">}</span>
 
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
@@ -813,12 +860,13 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 
 <span class="o">}</span>
 </code></pre></div>
+
 <h4>面向对象</h4>
 <p>面向对象的方法</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
 import<span class="w"> </span><span class="o">(</span>
-<span class="w">   </span><span class="s2">"fmt"</span><span class="w">  </span>
+<span class="w">   </span><span class="s2">&quot;fmt&quot;</span><span class="w">  </span>
 <span class="o">)</span>
 
 /*<span class="w"> </span>定义结构体<span class="w"> </span>*/
@@ -829,7 +877,7 @@ import<span class="w"> </span><span class="o">(</span>
 func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">  </span>var<span class="w"> </span>c1<span class="w"> </span>Circle
 <span class="w">  </span>c1.radius<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>.00
-<span class="w">  </span>fmt.Println<span class="o">(</span><span class="s2">"圆的面积 = "</span>,<span class="w"> </span>c1.getArea<span class="o">())</span>
+<span class="w">  </span>fmt.Println<span class="o">(</span><span class="s2">&quot;圆的面积 = &quot;</span>,<span class="w"> </span>c1.getArea<span class="o">())</span>
 <span class="o">}</span>
 
 //该<span class="w"> </span>method<span class="w"> </span>属于<span class="w"> </span>Circle<span class="w"> </span>类型对象中的方法
@@ -838,6 +886,7 @@ func<span class="w"> </span><span class="o">(</span>c<span class="w"> </span>Cir
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="m">3</span>.14<span class="w"> </span>*<span class="w"> </span>c.radius<span class="w"> </span>*<span class="w"> </span>c.radius
 <span class="o">}</span>
 </code></pre></div>
+
 <h4>GO IO</h4>
 <h4>GO异常处理</h4>
 <p>这里会提到3个关键词， defer, panic, recover
@@ -850,6 +899,7 @@ defer就是用来添加函数结束时执行的语句，Go中的defer是动态�
 <span class="w">  </span>return0
 <span class="o">}</span>
 </code></pre></div>
+
 <p>上面函数返回1，因为defer中添加了一个函数，在函数返回前改变了命名返回值的值。是不是很好用呢。但是，要注意的是，如果我们的defer语句没有执行，那么defer的函数就不会添加，如果把上面的程序改成这样：</p>
 <div class="highlight"><pre><span></span><code><span class="w">    </span>func<span class="w"> </span>f<span class="o">()</span><span class="w"> </span><span class="o">(</span>result<span class="w"> </span>int<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 
@@ -860,26 +910,28 @@ defer就是用来添加函数结束时执行的语句，Go中的defer是动态�
 <span class="w">      </span>return0
 <span class="w">    </span><span class="o">}</span>
 </code></pre></div>
+
 <p>然后，我们在defer里面用recover捕获panic，完成go的异常处理</p>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
-import<span class="w"> </span><span class="s2">"fmt"</span>
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
 func<span class="w"> </span>main<span class="o">(){</span>
 <span class="w">    </span>defer<span class="w"> </span>func<span class="o">(){</span><span class="w"> </span>//<span class="w"> </span>必须要先声明defer，否则不能捕获到panic异常
-<span class="w">        </span>fmt.Println<span class="o">(</span><span class="s2">"c"</span><span class="o">)</span>
+<span class="w">        </span>fmt.Println<span class="o">(</span><span class="s2">&quot;c&quot;</span><span class="o">)</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span>err:<span class="o">=</span>recover<span class="o">()</span><span class="p">;</span>err!<span class="o">=</span>nil<span class="o">{</span>
 <span class="w">            </span>fmt.Println<span class="o">(</span>err<span class="o">)</span><span class="w"> </span>//<span class="w"> </span>这里的err其实就是panic传入的内容，55
 <span class="w">        </span><span class="o">}</span>
-<span class="w">        </span>fmt.Println<span class="o">(</span><span class="s2">"d"</span><span class="o">)</span>
+<span class="w">        </span>fmt.Println<span class="o">(</span><span class="s2">&quot;d&quot;</span><span class="o">)</span>
 <span class="w">    </span><span class="o">}()</span>
 <span class="w">    </span>f<span class="o">()</span>
 <span class="o">}</span>
 func<span class="w"> </span>f<span class="o">(){</span>
-<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"a"</span><span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">&quot;a&quot;</span><span class="o">)</span>
 <span class="w">    </span>panic<span class="o">(</span><span class="m">55</span><span class="o">)</span>
-<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"b"</span><span class="o">)</span>
-<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">"f"</span><span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">&quot;b&quot;</span><span class="o">)</span>
+<span class="w">    </span>fmt.Println<span class="o">(</span><span class="s2">&quot;f&quot;</span><span class="o">)</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <h4>GO 并发</h4>
 <h4>标准库</h4>
 <div class="highlight"><pre><span></span><code>archive<span class="w">         </span>
@@ -909,7 +961,7 @@ crypto<span class="w">          </span>crypto包搜集了常用的密码（算�
 <span class="w">     </span>hmac<span class="w">           </span>hmac包实现了U.S.<span class="w"> </span>Federal<span class="w"> </span>Information<span class="w"> </span>Processing<span class="w"> </span>Standards<span class="w"> </span>Publication<span class="w"> </span>198规定的HMAC（加密哈希信息认证码）.
 <span class="w">     </span>md5<span class="w">            </span>md5包实现了MD5哈希算法，参见RFC<span class="w"> </span><span class="m">1321</span>.
 <span class="w">     </span>rand<span class="w">           </span>rand包实现了用于加解密的更安全的随机数生成器.
-<span class="w">     </span>rc4<span class="w">            </span>rc4包实现了RC4加密算法，参见Bruce<span class="w"> </span>Schneier<span class="err">'</span>s<span class="w"> </span>Applied<span class="w"> </span>Cryptography.
+<span class="w">     </span>rc4<span class="w">            </span>rc4包实现了RC4加密算法，参见Bruce<span class="w"> </span>Schneier<span class="err">&#39;</span>s<span class="w"> </span>Applied<span class="w"> </span>Cryptography.
 <span class="w">     </span>rsa<span class="w">            </span>rsa包实现了PKCS#1规定的RSA加密算法.
 <span class="w">     </span>sha1<span class="w">           </span>sha1包实现了SHA1哈希算法，参见RFC<span class="w"> </span><span class="m">3174</span>.
 <span class="w">     </span>sha256<span class="w">         </span>sha256包实现了SHA224和SHA256哈希算法，参见FIPS<span class="w"> </span><span class="m">180</span>-4.

@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-02-18T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 18 February 2017
+        六 18 二月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -102,85 +102,85 @@ var _hmt = _hmt || [];
     </ul>
   </header>
   <div class="content">
-    <div class="highlight"><pre><span></span><code><span class="c1">#coding='utf-8'</span>
-<span class="kn">import</span> <span class="nn">urllib2</span>
-<span class="kn">import</span> <span class="nn">pdfkit</span><span class="o">,</span><span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+    <div class="highlight"><pre><span></span><code><span class="c1">#coding=&#39;utf-8&#39;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pdfkit</span><span class="o">,</span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bs4</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="n">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span> <span class="s2">"utf-8"</span> <span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span> <span class="s2">&quot;utf-8&quot;</span> <span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">download</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">numretries</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="p">:</span>
-    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'User-Agent'</span><span class="p">:</span><span class="s1">'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.15 Safari/537.36'</span><span class="p">}</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">numretries</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="p">:</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span><span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.15 Safari/537.36&#39;</span><span class="p">}</span>
     <span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span> <span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">html</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">URLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">html</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">numretries</span> <span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="s1">'code'</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">500</span><span class="o">&lt;=</span> <span class="n">e</span><span class="o">.</span><span class="n">code</span><span class="o">&lt;=</span><span class="mi">600</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="s1">&#39;code&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">500</span><span class="o">&lt;=</span> <span class="n">e</span><span class="o">.</span><span class="n">code</span><span class="o">&lt;=</span><span class="mi">600</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">numretries</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">html</span>
 
-<span class="k">def</span> <span class="nf">get_url_list</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_url_list</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="s2">"lxml"</span><span class="p">)</span>
-    <span class="n">menu_tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">"uk-nav uk-nav-side"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+    <span class="n">menu_tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">&quot;uk-nav uk-nav-side&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">urls</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">menu_tag</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">"li"</span><span class="p">):</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"href"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"http"</span><span class="p">):</span>
-                <span class="n">url</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'http://www.liaoxuefeng.com'</span><span class="p">,</span> <span class="n">url</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">menu_tag</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;li&quot;</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http&quot;</span><span class="p">):</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;http://www.liaoxuefeng.com&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">])</span>
         <span class="n">urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">urls</span>
 
-<span class="k">def</span> <span class="nf">parse_url_to_html</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">'1.html'</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_url_to_html</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;1.html&#39;</span><span class="p">):</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="s2">"lxml"</span><span class="p">)</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">"x-wiki-content"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'h4'</span><span class="p">)</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
-    <span class="n">center_tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">new_tag</span><span class="p">(</span><span class="s2">"center"</span><span class="p">)</span>
-    <span class="n">title_tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">new_tag</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">)</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">&quot;x-wiki-content&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;h4&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
+    <span class="n">center_tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">new_tag</span><span class="p">(</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
+    <span class="n">title_tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">new_tag</span><span class="p">(</span><span class="s1">&#39;h1&#39;</span><span class="p">)</span>
     <span class="n">title_tag</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="n">title</span>
     <span class="n">center_tag</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">title_tag</span><span class="p">)</span>
     <span class="n">body</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">center_tag</span><span class="p">)</span>
 
     <span class="n">html</span> <span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-    <span class="n">pattern</span> <span class="o">=</span> <span class="s2">"(&lt;img .*?src=</span><span class="se">\"</span><span class="s2">)(.*?)(</span><span class="se">\"</span><span class="s2">)"</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="s2">&quot;(&lt;img .*?src=</span><span class="se">\&quot;</span><span class="s2">)(.*?)(</span><span class="se">\&quot;</span><span class="s2">)&quot;</span>
 
-    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"http"</span><span class="p">):</span>
-            <span class="n">rtn</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s1">'http://www.liaoxuefeng.com'</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http&quot;</span><span class="p">):</span>
+            <span class="n">rtn</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;http://www.liaoxuefeng.com&#39;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
             <span class="k">return</span> <span class="n">rtn</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
 
     <span class="n">html</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">html</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">save_pdf</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_pdf</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="n">urls</span> <span class="o">=</span> <span class="n">get_url_list</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">htmls</span><span class="o">=</span><span class="p">[]</span>
-    <span class="nb">print</span> <span class="s1">'下载ing'</span>
+    <span class="nb">print</span> <span class="s1">&#39;下载ing&#39;</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">urls</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">+</span><span class="s1">'.html'</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">urls</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;.html&#39;</span>
         <span class="n">parse_url_to_html</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
         <span class="n">htmls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
     <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">'page-size'</span><span class="p">:</span> <span class="s1">'Letter'</span><span class="p">,</span>
-        <span class="s1">'encoding'</span><span class="p">:</span> <span class="s2">"UTF-8"</span><span class="p">,</span>
-        <span class="s1">'custom-header'</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">'Accept-Encoding'</span><span class="p">,</span> <span class="s1">'gzip'</span><span class="p">)</span>
+        <span class="s1">&#39;page-size&#39;</span><span class="p">:</span> <span class="s1">&#39;Letter&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;encoding&#39;</span><span class="p">:</span> <span class="s2">&quot;UTF-8&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;custom-header&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;Accept-Encoding&#39;</span><span class="p">,</span> <span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
         <span class="p">]</span>
     <span class="p">}</span>
-    <span class="nb">print</span> <span class="s1">'下载结束'</span>
-    <span class="n">pdfkit</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">htmls</span><span class="p">,</span> <span class="s1">'first.pdf'</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="s1">&#39;下载结束&#39;</span>
+    <span class="n">pdfkit</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">htmls</span><span class="p">,</span> <span class="s1">&#39;first.pdf&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-     <span class="n">save_pdf</span><span class="p">(</span><span class="s1">'http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000'</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+     <span class="n">save_pdf</span><span class="p">(</span><span class="s1">&#39;http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000&#39;</span><span class="p">)</span>
 </code></pre></div>
   </div>
 </article>

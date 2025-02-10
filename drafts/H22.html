@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-05-28T17:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sun 28 May 2017
+        日 28 五月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -104,10 +104,11 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>介绍</h4>
 <p>OpenVAS是一款开源的漏洞扫描攻击，主要用来检测网络或主机的安全性。其强大的扫描能力来自于集成数万个漏洞测试程序，这些测试程序以插件的形式提供，可以从官方网站免费更新.</p>
-<p><img alt="openvas1" class="img-fluid" src="../images/openvas1.jpg"/></p>
+<p><img alt="openvas1" src="../images/openvas1.jpg"></p>
 <h4>安装</h4>
 <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>-q<span class="w"> </span>-O<span class="w"> </span>-<span class="w"> </span>http://www.atomicorp.com/installers/atomic<span class="w"> </span><span class="p">|</span>sh
 </code></pre></div>
+
 <p>然后，关闭selinux，修改/etc/selinux/config文件，将SELINUX=enforcing改为SELINUX=disabled</p>
 <h4>启动</h4>
 <p>openvas-setup</p>
@@ -119,10 +120,12 @@ var _hmt = _hmt || [];
 <div class="highlight"><pre><span></span><code><span class="c1"># openvassd</span>
 <span class="c1"># openvasmd</span>
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>创建用户
 openvasmd<span class="w"> </span>--create-user<span class="o">=</span>admin<span class="w"> </span>--role<span class="o">=</span>Admin
 openvasmd<span class="w"> </span>--user<span class="o">=</span>admin<span class="w"> </span>--new-password<span class="o">=</span>*******
 </code></pre></div>
+
 <p>openvas-check-setup --v9</p>
 <p>gsad --listen=0.0.0.0 --port=9392</p>
 <p>然后访问 https://ip:9392</p>

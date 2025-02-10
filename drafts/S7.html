@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-08-22T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Wed 22 August 2018
+        三 22 八月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -118,6 +118,7 @@ var _hmt = _hmt || [];
 <span class="w">                              </span><span class="p">|</span><span class="w">                        </span><span class="p">|</span>
 <span class="w">                              </span>v<span class="w">                        </span><span class="p">|</span>
 </code></pre></div>
+
 <p>Netfilter Hook的意义:</p>
 <div class="highlight"><pre><span></span><code>NF_IP_PRE_ROUTING:<span class="w"> </span>位于路由之前，报文一致性检查之后（报文一致性检查包括:<span class="w"> </span>报文版本、报文长度和checksum）。
 NF_IP_LOCAL_IN:<span class="w"> </span>位于报文经过路由之后，并且目的是本机的。
@@ -125,6 +126,7 @@ NF_IP_FORWARD：位于在报文路由之后，目的地非本机的。
 NF_IP_LOCAL_OUT:<span class="w"> </span>由本机发出去的报文，并且在路由之前。
 NF_IP_POST_ROUTING:<span class="w"> </span>所有即将离开本机的报文。
 </code></pre></div>
+
 <p>Linux 内核模块可以注册到任何的hook，注册的回调函数也必需指定优先级。当一个报文通过hook的时候，hook将会依据优先级调用回调函数。注册的回调函数，可以有五种返回，每种返回代表对报文不同的操作:</p>
 <div class="highlight"><pre><span></span><code>NF_ACCEPT:<span class="w"> </span>继续正常处理此报文，即允许报文通过。
 NF_DROP:<span class="w"> </span>丢弃此报文，不再进行继续处理，即拒绝此报文。
@@ -132,6 +134,7 @@ NF_STOLEN:<span class="w"> </span>取走这个报文，不再继续处理。
 NF_QUEUE:<span class="w"> </span>报文进行重新排队，可以将报文发到用户空间的程序，进行修改或者决定是拒绝或者允许。
 NF_REPEAT:<span class="w"> </span>报文重新调用hook。
 </code></pre></div>
+
 <p>Iptables 是基于Netfilter框架实现的报文选择系统，其可以用于报文的过滤、网络地址转换和报文修改等功能。Iptables 本质上是包含了5个规则表，而规则表则包含了一些列的报文的匹配规则以及操作目标。以下对每个规则表进行了简单说明：</p>
 <div class="highlight"><pre><span></span><code>Filter<span class="w"> </span>Table:<span class="w"> </span>是一个默认的规则表，用于报文的过滤。他注册了三个链:<span class="w"> </span>INPUT、FORWARD和OUTPUT。
 NAT<span class="w"> </span>Table:<span class="w"> </span>主要用于NAT转换，注册了四个链：PREROUTING、INPUT、OUTPUT和POSTROUTING。

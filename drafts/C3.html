@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-04-01T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 01 April 2017
+        六 01 四月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -108,24 +108,28 @@ var _hmt = _hmt || [];
 <p>PyPy安装，一般我推荐使用包管理工具安装，因为我试了一下编译，我编译了4个小时，成功的把我的电脑编译死机了，如果，生产环境是centos的话，还是比较推荐编译的，centos 源里面的软件真心老。</p>
 <div class="highlight"><pre><span></span><code>debian/ubuntu：<span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>pypy<span class="w"> </span>pypy-dev<span class="w"> </span>pypy-lib<span class="w"> </span>-y
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>red<span class="w"> </span>hat/centos<span class="w"> </span>:<span class="w"> </span>yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>pypy-libs<span class="w"> </span>pypy<span class="w"> </span>pypy-devel
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code><span class="n">ubuntu</span> <span class="n">ppa</span><span class="p">:</span>
 <span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="n">ppa</span><span class="p">:</span><span class="n">pypy</span><span class="o">/</span><span class="n">ppa</span>
 <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
 </code></pre></div>
+
 <h4>使用以及注意事项</h4>
 <p>PyPy毕竟不是亲娘生的，相比CPython，PyPy对C拓展支持存在兼容性问题，如果项目使用的是纯Python写的，那么就可以大胆使用PyPy了，主流的web框架不会存在问题，主要是一些CPU密集型类库容易出问题，比如一些科学计算的库，因为这种类型的库一般含有C源码，不过，这种兼容性现在在慢慢改善。PyPy的解释器一般位于/usr/bin/pypy,使用pip的时候，可以通过 pypy -m pip install xxx</p>
 <h4>性能测试</h4>
 <p>由于PyPy加持JIT，会在频繁使用循环和多次调用同一个函数的时候爆发出异样的风采，下面简单测一下性能</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">8</span><span class="p">):</span>
     <span class="k">continue</span>
 <span class="nb">print</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span>
 </code></pre></div>
+
 <p>循环10**8次，然后统计时间</p>
-<p><img alt="pypy" class="img-fluid" src="../images/pypy.png"/></p>
+<p><img alt="pypy" src="../images/pypy.png"></p>
 <p>可以看出CPython被吊打了</p>
 <h4>未来展望</h4>
 <p>由于CPython存在历史遗留问题（C API），导致PyPy对C拓展支持存在兼容性问题，我们应该做什么呢？

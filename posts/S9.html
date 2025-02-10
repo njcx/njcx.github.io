@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-08-28T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Tue 28 August 2018
+        二 28 八月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -123,19 +123,21 @@ var _hmt = _hmt || [];
 <span class="c1">#  vim /etc/docker/daemon.json</span>
 
 <span class="o">{</span>
-<span class="s2">"exec-opts"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"native.cgroupdriver=systemd"</span><span class="o">]</span>,<span class="w">  </span>
-<span class="s2">"registry-mirrors"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"https://docker.mirrors.ustc.edu.cn"</span><span class="o">]</span>
+<span class="s2">&quot;exec-opts&quot;</span>:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;native.cgroupdriver=systemd&quot;</span><span class="o">]</span>,<span class="w">  </span>
+<span class="s2">&quot;registry-mirrors&quot;</span>:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;https://docker.mirrors.ustc.edu.cn&quot;</span><span class="o">]</span>
 <span class="o">}</span>
 
 <span class="c1"># systemctl  restart  docker </span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">#  curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose</span>
+
+<div class="highlight"><pre><span></span><code><span class="c1">#  curl -L &quot;https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose</span>
 
 <span class="c1"># chmod +x /usr/local/bin/docker-compose</span>
 
 <span class="c1"># wget  https://github.com/goharbor/harbor/releases/download/v2.2.3/harbor-offline-installer-v2.2.3.tgz</span>
 </code></pre></div>
-<p><img alt="agent" class="img-fluid" src="../images/1521625902561_.pic_hd.jpg"/></p>
+
+<p><img alt="agent" src="../images/1521625902561_.pic_hd.jpg"></p>
 <p>修改 harbor.yml配置文件，生存环境请用https，这里仅用于测试</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># tar xf harbor-offline-installer-v2.2.3.tgz </span>
 <span class="c1"># cp harbor.yml.tmpl harbor.yml</span>
@@ -143,20 +145,22 @@ var _hmt = _hmt || [];
 <span class="c1"># ./prepare </span>
 <span class="c1"># ./install.sh  --with-trivy  --with-chartmuseum </span>
 </code></pre></div>
+
 <p>安装过程如图：</p>
-<p><img alt="agent" class="img-fluid" src="../images/1501625901938_.pic_hd.jpg"/></p>
-<p><img alt="agent" class="img-fluid" src="../images/1541625902778_.pic.jpg"/></p>
+<p><img alt="agent" src="../images/1501625901938_.pic_hd.jpg"></p>
+<p><img alt="agent" src="../images/1541625902778_.pic.jpg"></p>
 <p>然后，我们把images 推到上面去：</p>
-<p><img alt="agent" class="img-fluid" src="../images/1571625903101_.pic.jpg"/></p>
-<p><img alt="agent" class="img-fluid" src="../images/15.50.15.png"/></p>
+<p><img alt="agent" src="../images/1571625903101_.pic.jpg"></p>
+<p><img alt="agent" src="../images/15.50.15.png"></p>
 <p>Vmware Harbor 提供了一个API 接口，这样我们就可以与SOC 集成，查看images 的安全情况。</p>
 <div class="highlight"><pre><span></span><code>/projects/<span class="o">{</span>project_name<span class="o">}</span>/repositories/<span class="o">{</span>repository_name<span class="o">}</span>/artifacts/<span class="o">{</span>reference<span class="o">}</span>/additions/vulnerabilities<span class="w">  </span>
 
 
-curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">"http://172.16.116.5/api/v2.0/projects/library/repositories/fastjson/artifacts/1.2.24/additions/vulnerabilities"</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">"accept: application/json"</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">"X-Request-Id: 111"</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://172.16.116.5/api/v2.0/projects/library/repositories/fastjson/artifacts/1.2.24/additions/vulnerabilities&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-Request-Id: 111&quot;</span>
 </code></pre></div>
+
 <p>结果如下图：</p>
-<p><img alt="agent" class="img-fluid" src="../images/image.png"/></p>
+<p><img alt="agent" src="../images/image.png"></p>
 <p>当我们发现了大量的安全漏洞怎么办? 我们尝试最小化容器镜像，将不必要的组件从镜像中移除可以减少攻击面、降低安全风险，修正项目的自身的依赖问题。从docker -17.05 开始，docker 引入了多阶段构建的概念，它允许用户在一个 dockerfile 中使用多个 From 语句。每个 From 语句可以指定不同的基础镜像并将开启一个全新的构建流程。您可以选择性地将前一阶段的构建产物复制到另一个阶段，从而只将必要的内容保留在最终的镜像里。同时我们选用  alpine 的基础镜像，就可以大大减少不必要的依赖。</p>
 <p>优化后的 dockerfile 如下：</p>
 <div class="highlight"><pre><span></span><code>FROM<span class="w"> </span>maven:3.5-jdk-8<span class="w"> </span>AS<span class="w"> </span>build
@@ -169,8 +173,9 @@ ARG<span class="w"> </span><span class="nv">DEPENDENCY</span><span class="o">=</
 COPY<span class="w"> </span>--from<span class="o">=</span>build<span class="w"> </span><span class="si">${</span><span class="nv">DEPENDENCY</span><span class="si">}</span>/BOOT-INF/lib<span class="w"> </span>/app/lib
 COPY<span class="w"> </span>--from<span class="o">=</span>build<span class="w"> </span><span class="si">${</span><span class="nv">DEPENDENCY</span><span class="si">}</span>/META-INF<span class="w"> </span>/app/META-INF
 COPY<span class="w"> </span>--from<span class="o">=</span>build<span class="w"> </span><span class="si">${</span><span class="nv">DEPENDENCY</span><span class="si">}</span>/BOOT-INF/classes<span class="w"> </span>/app
-ENTRYPOINT<span class="w"> </span><span class="o">[</span><span class="s2">"java"</span>,<span class="s2">"-cp"</span>,<span class="s2">"app:app/lib/*"</span>,<span class="s2">"hello_world.Application"</span><span class="o">]</span>
+ENTRYPOINT<span class="w"> </span><span class="o">[</span><span class="s2">&quot;java&quot;</span>,<span class="s2">&quot;-cp&quot;</span>,<span class="s2">&quot;app:app/lib/*&quot;</span>,<span class="s2">&quot;hello_world.Application&quot;</span><span class="o">]</span>
 </code></pre></div>
+
 <h4>k8s 基线</h4>
 <p>互联网安全中心（CIS）是一个非营利性组织，其制定自己的配置策略基准（即CIS基准），使组织可以改善其安全性和合规性计划及态势。
 除了针对操作系统、数据库等，该组织也推出了适用Kubernetes、dockers的Benchmark基准。
@@ -181,6 +186,7 @@ kubernetes CIS基准下载地址，如下</p>
 <span class="w">   </span>node节点的服务:<span class="w">  </span>kubelet,<span class="w"> </span>proxy
 <span class="w">   </span>安全控制:<span class="w">  </span>rbac,<span class="w"> </span>pod<span class="w"> </span>policy,<span class="w"> </span>network<span class="w"> </span>policy
 </code></pre></div>
+
 <p>该工具是使用Go语言完成，而测试文件则兼容于YAML格式，其测试结果也能支持JSON格式，方便使用者整合其他的自动化工具。在执行完测试任务后，系统除了告诉开发者Kubernetes未通过哪些测试外，也会给予如何改善的建议，例如移除K8s上某个不安全的配置设置建议，或者限制配置文件的权限等。下载地址如下</p>
 <p>https://github.com/aquasecurity/kube-bench</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>job.yaml
@@ -195,17 +201,19 @@ $<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </sp
 NAME<span class="w">                      </span>READY<span class="w">   </span>STATUS<span class="w">      </span>RESTARTS<span class="w">   </span>AGE
 kube-bench-j76s9<span class="w">   </span><span class="m">0</span>/1<span class="w">     </span>Completed<span class="w">   </span><span class="m">0</span><span class="w">          </span>11s
 
-<span class="c1"># The results are held in the pod's logs</span>
+<span class="c1"># The results are held in the pod&#39;s logs</span>
 kubectl<span class="w"> </span>logs<span class="w"> </span>kube-bench-j76s9
 <span class="o">[</span>INFO<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>Master<span class="w"> </span>Node<span class="w"> </span>Security<span class="w"> </span>Configuration
 <span class="o">[</span>INFO<span class="o">]</span><span class="w"> </span><span class="m">1</span>.1<span class="w"> </span>API<span class="w"> </span>Server
 </code></pre></div>
-<p><img alt="agent" class="img-fluid" src="../images/WechatIMG298.jpeg"/></p>
-<p><img alt="agent" class="img-fluid" src="../images/WechatIMG299.jpeg"/></p>
+
+<p><img alt="agent" src="../images/WechatIMG298.jpeg"></p>
+<p><img alt="agent" src="../images/WechatIMG299.jpeg"></p>
 <p>kube-hunter是也aquasec的开源工具，它们可以在Kubernetes集群中寻找安全问题。kube-bench主要用于让你的实践符合CIS的标准，而kube-hunter则关注你要暴露的漏洞。它们两个结合使用，可以为我们提供一个很好的发现安全问题的视角。kube-hunter 可以你的环境内部或外部运行扫描，</p>
 <div class="highlight"><pre><span></span><code>pip3<span class="w"> </span>install<span class="w"> </span>kube-hunter<span class="w">    </span>//py3<span class="w"> </span>环境
 </code></pre></div>
-<p><img alt="agent" class="img-fluid" src="../images/WeChatacd04043ac589270629b297a810ec9d3.png"/></p>
+
+<p><img alt="agent" src="../images/WeChatacd04043ac589270629b297a810ec9d3.png"></p>
 <h4>k8s runtime 的监控</h4>
 <p>Falco 由 Sysdig 于 2016 年创建，是第一个作为孵化级项目加入 CNCF 的运行时安全项目。Falco可以对Linux系统调用行为进行监控，提供了lkm 内核模块驱动和eBPF 驱动。Falco的主要功能如下：
 从内核运行时采集Linux系统调用。
@@ -214,18 +222,20 @@ kubectl<span class="w"> </span>logs<span class="w"> </span>kube-bench-j76s9
 <p>安装文档地址如下：</p>
 <p>https://falco.org/docs/getting-started/installation/</p>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>https://falco.org/repo/falcosecurity-3672BA8F.asc<span class="w"> </span><span class="p">|</span><span class="w"> </span>apt-key<span class="w"> </span>add<span class="w"> </span>-
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"deb https://download.falco.org/packages/deb stable main"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/apt/sources.list.d/falcosecurity.list
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;deb https://download.falco.org/packages/deb stable main&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/apt/sources.list.d/falcosecurity.list
 
 apt-get<span class="w"> </span>update<span class="w"> </span>-y
 apt-get<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>linux-headers-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
 apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>falco
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>rpm<span class="w"> </span>--import<span class="w"> </span>https://falco.org/repo/falcosecurity-3672BA8F.asc
 curl<span class="w"> </span>-s<span class="w"> </span>-o<span class="w"> </span>/etc/yum.repos.d/falcosecurity.repo<span class="w"> </span>https://falco.org/repo/falcosecurity-rpm.repo
 yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>kernel-devel-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
 yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>falco
 </code></pre></div>
-<p><img alt="agent" class="img-fluid" src="../images/imag1e.png"/></p>
+
+<p><img alt="agent" src="../images/imag1e.png"></p>
 <p>Falco规则文件是包含三种类型元素的YAML文件：</p>
 <p>Rules 、Macros、Lists</p>
 <p>Rules就是生成告警的条件以及一下描述性输出字符串。Macros 是可以在规则或者其他宏中重复使用的规则条件片段。Lists 类似Python 列表，定义了一个变量集合。</p>
@@ -233,6 +243,7 @@ yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </s
 <p>参考如下：</p>
 <div class="highlight"><pre><span></span><code>https://github.com/draios/sysdig/wiki/sysdig-user-guide#filtering
 </code></pre></div>
+
 <p>这是一个rule的 condition条件示例，在容器内运行 bash shell 时发出警报：</p>
 <p>container.id != host and proc.name = bash</p>
 <p>第一个子句检查事件是否发生在容器中（Sysdig 事件有一个container字段，该字段等于"host"事件是否发生在host主机上）。第二个子句检查进程名称是否为bash。</p>
@@ -249,36 +260,40 @@ yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </s
 <span class="w">  </span>output:<span class="w"> </span>a<span class="w"> </span>tracked<span class="w"> </span>program<span class="w"> </span>opened<span class="w"> </span>a<span class="w"> </span>file<span class="w"> </span><span class="o">(</span><span class="nv">user</span><span class="o">=</span>%user.name<span class="w"> </span><span class="nv">command</span><span class="o">=</span>%proc.cmdline<span class="w"> </span><span class="nv">file</span><span class="o">=</span>%fd.name<span class="o">)</span>
 <span class="w">  </span>priority:<span class="w"> </span>INFO
 </code></pre></div>
+
 <p>下面，我们修改falco 的配置，/etc/falco/falco.yaml </p>
 <div class="highlight"><pre><span></span><code>json_output:<span class="w"> </span><span class="nb">true</span>
 json_include_output_property:<span class="w"> </span><span class="nb">true</span>
 http_output:
 <span class="w">  </span>enabled:<span class="w"> </span><span class="nb">true</span>
-<span class="w">  </span>url:<span class="w"> </span><span class="s2">"http://localhost:2801"</span>
+<span class="w">  </span>url:<span class="w"> </span><span class="s2">&quot;http://localhost:2801&quot;</span>
 </code></pre></div>
+
 <p>启动falco</p>
 <div class="highlight"><pre><span></span><code>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>falco<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w">  </span>systemctl<span class="w"> </span>start<span class="w"> </span>falco
 </code></pre></div>
+
 <p>https://github.com/falcosecurity/falcosidekick.git</p>
 <p>falcosidekick 是一个管道工具，接受 Falco的事件并将它们发送到不同的持久化工具中。我们使用falcosidekick把falco post 过来的数据写入es ，也可以写入kafka。我们也读取kafka里面的东西完成告警， 也可以用 Prometheus 和falco-exporter 完成告警。如下图。</p>
 <div class="highlight"><pre><span></span><code>elasticsearch:
-<span class="w">   </span>hostport:<span class="w"> </span><span class="s2">"http://10.10.116.177:9200"</span><span class="w"> </span>
-<span class="w">   </span>index:<span class="w"> </span><span class="s2">"falco"</span><span class="w"> </span>
-<span class="w">   </span>type:<span class="w"> </span><span class="s2">"event"</span>
-<span class="w">   </span>minimumpriority:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
-<span class="w">   </span>suffix:<span class="w"> </span><span class="s2">"daily"</span><span class="w"> </span>
+<span class="w">   </span>hostport:<span class="w"> </span><span class="s2">&quot;http://10.10.116.177:9200&quot;</span><span class="w"> </span>
+<span class="w">   </span>index:<span class="w"> </span><span class="s2">&quot;falco&quot;</span><span class="w"> </span>
+<span class="w">   </span>type:<span class="w"> </span><span class="s2">&quot;event&quot;</span>
+<span class="w">   </span>minimumpriority:<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>
+<span class="w">   </span>suffix:<span class="w"> </span><span class="s2">&quot;daily&quot;</span><span class="w"> </span>
 <span class="w">   </span>mutualtls:<span class="w"> </span><span class="nb">false</span><span class="w"> </span>
 <span class="w">   </span>checkcert:<span class="w"> </span><span class="nb">true</span><span class="w"> </span>
-<span class="w">   </span>username:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
-<span class="w">   </span>password:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+<span class="w">   </span>username:<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>
+<span class="w">   </span>password:<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>
 
 
 kafka:
-<span class="w">  </span>hostport:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
-<span class="w">  </span>topic:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
-<span class="w">  </span><span class="c1"># minimumpriority: "debug" </span>
+<span class="w">  </span>hostport:<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>
+<span class="w">  </span>topic:<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>
+<span class="w">  </span><span class="c1"># minimumpriority: &quot;debug&quot; </span>
 </code></pre></div>
-<p><img alt="agent" class="img-fluid" src="../images/WechatIMG171123.jpeg"/></p>
+
+<p><img alt="agent" src="../images/WechatIMG171123.jpeg"></p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>

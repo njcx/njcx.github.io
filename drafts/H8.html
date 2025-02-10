@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-07T13:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Thu 07 June 2018
+        四 07 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -110,19 +110,22 @@ var _hmt = _hmt || [];
 
 <span class="c1"># yum install jenkins</span>
 </code></pre></div>
+
 <p>方法2：</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># wget https://pkg.jenkins.io/redhat-stable/jenkins-2.138.1-1.1.noarch.rpm</span>
 
 <span class="c1"># rpm -ivh jenkins-2.138.1-1.1.noarch.rpm</span>
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>jenkins的目录结构：
 /usr/lib/jenkins/jenkins.war<span class="w">     </span>WAR包<span class="w"> </span>
 /etc/sysconfig/jenkins<span class="w">       　　 </span>配置文件
 /var/lib/jenkins/<span class="w">        　　　　   </span>默认的JENKINS_HOME目录
 /var/log/jenkins/jenkins.log<span class="w">      </span>Jenkins日志文件
 </code></pre></div>
+
 <p>vim /etc/init.d/jenkins 最下面加上jdk实际的目录，不然报错</p>
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nv">candidates</span><span class="o">=</span><span class="s2">"</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nv">candidates</span><span class="o">=</span><span class="s2">&quot;</span>
 <span class="s2">    /etc/alternatives/java</span>
 <span class="s2">    /usr/lib/jvm/java-1.6.0/bin/java</span>
 <span class="s2">    /usr/lib/jvm/jre-1.6.0/bin/java</span>
@@ -133,6 +136,7 @@ var _hmt = _hmt || [];
 <span class="s2">    /usr/bin/java</span>
 <span class="s2">    /opt/jdk1.8.0_144/bin/java</span>
 </code></pre></div>
+
 <p>service jenkins start</p>
 <p>chkconfig jenkins on</p>
 <p>cat /var/lib/jenkins/secrets/initialAdminPassword</p>

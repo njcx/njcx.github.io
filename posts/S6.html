@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-08-21T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Tue 21 August 2018
+        二 21 八月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -107,6 +107,7 @@ var _hmt = _hmt || [];
 <p>一个新的虚拟机 (VM) 设计，可以有效地工作在基于寄存器结构的 CPU 之上；</p>
 <div class="highlight"><pre><span></span><code>应用程序使用缓存只复制与过滤数据包相关的数据，不会复制数据包的所有信息。这样可以最大程度地减少BPF 处理的数据；
 </code></pre></div>
+
 <p>由于这些巨大的改进，所有的 Unix 系统都选择采用 BPF 作为网络数据包过滤技术，直到今天，许多 Unix 内核的派生系统中（包括 Linux 内核）仍使用该实现。</p>
 <p>2014 年初，Alexei Starovoitov 实现了 eBPF（extended Berkeley Packet Filter）。经过重新设计，eBPF 演进为一个通用执行引擎，可基于此开发性能分析工具、软件定义网络等诸多场景。eBPF 最早出现在 3.18 内核中，此后原来的 BPF 就被称为经典 BPF，缩写 cBPF（classic BPF），cBPF 现在已经基本废弃。现在，Linux 内核只运行 eBPF，内核会将加载的 cBPF 字节码透明地转换成 eBPF 再执行。</p>
 <p>eBPF 新的设计针对现代硬件进行了优化，所以 eBPF 生成的指令集比旧的 BPF 解释器生成的机器码执行得更快。扩展版本也增加了虚拟机中的寄存器数量，将原有的 2 个 32 位寄存器增加到 10 个 64 位寄存器。由于寄存器数量和宽度的增加，开发人员可以使用函数参数自由交换更多的信息，编写更复杂的程序。总之，这些改进使 eBPF 版本的速度比原来的 BPF 提高了 4 倍。</p>
@@ -114,7 +115,8 @@ var _hmt = _hmt || [];
 <div class="highlight"><pre><span></span><code><span class="c1"># yum install kernel kernel-devel kernel-headers -y  </span>
 <span class="c1"># reboot</span>
 </code></pre></div>
-<p><img alt="agent" class="img-fluid" src="../images/WechatIMG69.jpeg"/></p>
+
+<p><img alt="agent" src="../images/WechatIMG69.jpeg"></p>
 <p>eBPF 分为用户空间程序和内核程序两部分：</p>
 <p>用户空间程序负责加载 BPF 字节码至内核，如需要也会负责读取内核回传的统计信息或者事件详情；
 内核中的 BPF 字节码负责在内核中执行特定事件，如需要也会将执行的结果通过 maps 或者 perf-event 事件发送至用户空间；
@@ -130,6 +132,7 @@ perf_events：定时采样和 PMC。
 maps 方式可用于将内核中实现的统计摘要信息（比如测量延迟、堆栈信息）等回传至用户空间；
 perf-event 用于将内核采集的事件实时发送至用户空间，用户空间程序实时读取分析；
 </code></pre></div>
+
 <p>eBPF 技术虽然强大，但是为了保证内核的处理安全和及时响应，内核中的 eBPF 技术也给予了诸多限制，当然随着技术的发展和演进，限制也在逐步放宽或者提供了对应的解决方案。</p>
 <div class="highlight"><pre><span></span><code>eBPF 程序不能调用任意的内核参数，只限于内核模块中列出的 BPF Helper 函数，函数支持列表也随着内核的演进在不断增加。
 eBPF 程序不允许包含无法到达的指令，防止加载无效代码，延迟程序的终止。
@@ -137,7 +140,8 @@ eBPF 程序中循环次数限制且必须在有限时间内结束，这主要是
 eBPF 堆栈大小被限制在 MAX_BPF_STACK，截止到内核 Linux 5.8 版本，被设置为 512；参见 include/linux/filter.h，这个限制特别是在栈上存储多个字符串缓冲区时：一个char[256]缓冲区会消耗这个栈的一半。目前没有计划增加这个限制，解决方法是改用 bpf 映射存储，它实际上是无限的。
 eBPF 字节码大小最初被限制为 4096 条指令，截止到内核 Linux 5.8 版本， 当前已将放宽至 100 万指令（ BPF_COMPLEXITY_LIMIT_INSNS），参见：include/linux/bpf.h，对于无权限的BPF程序，仍然保留 4096 条限制 ( BPF_MAXINSNS )；新版本的 eBPF 也支持了多个 eBPF 程序级联调用，虽然传递信息存在某些限制，但是可以通过组合实现更加强大的功能。
 </code></pre></div>
-<p><img alt="agent" class="img-fluid" src="../images/WechatIMG68.jpeg"/></p>
+
+<p><img alt="agent" src="../images/WechatIMG68.jpeg"></p>
 <p>eBPF支持的内核探针（Kernel probes）功能，允许开发者在几乎所有的内核指令中以最小的开销设置动态的标记或中断。当内核运行到某个标记的时候，就会执行附加到这个探测点上的代码，然后恢复正常的流程。对内核行为的追踪探测，可以获取内核中发生任何事件的信息，比如系统中打开的文件、正在执行的二进制文件、系统中发生的TCP连接等。</p>
 <p>内核动态探针可以分为两种：kprobes 和 kretprobes。二者的区别在于，根据探针执行周期的不同阶段，来确定插入eBPF程序的位置。kprobes类型的探针用于跟踪内核函数调用，是一种功能强大的探针类型，让我们可以追踪成千上万的内核函数。由于它们用来跟踪底层内核的，开发者需要熟悉内核源代码，理解这些探针的参数、返回值的意义。</p>
 <p>Kprobes通常在内核函数执行前插入eBPF程序，而kretprobes则在内核函数执行完毕返回之后，插入相应的eBPF程序。比如，tcp_connect() 是一个内核函数，当有TCP连接发生时，将调用该函数，那么如果对tcp_connect()使用kprobes探针，则对应的eBPF程序会在tcp_connect() 被调用时执行，而如果是使用kretprobes探针，则eBPF程序会在tcp_connect() 执行返回时执行。后文会举例说明如何使用Kprobes探针。</p>
@@ -165,6 +169,7 @@ BPF_MAP_TYPE_HASH_OF_MAPS：地图中地图数据结构
 BPF_MAP_TYPE_DEVICE_MAP：用于存储和查找网络设备引用
 BPF_MAP_TYPE_SOCKET_MAP：存储和查找套接字，并允许使用BPF辅助函数进行套接字重定向
 </code></pre></div>
+
 <p>可以使用bpf_map_lookup_elem（）和 bpf_map_update_elem（）函数从eBPF或用户空间程序访问所有Map.</p>
 <p>使用 man bpf 查看 bpf 系统调用，int bpf(int cmd, union bpf_attr *attr, unsigned int size)</p>
 <p>第一个参数cmd，如下</p>
@@ -177,6 +182,7 @@ BPF_PROG_LOAD：<span class="w"> </span>验证并加载一个<span class="w"> </
 
 ......<span class="w"> </span>等等
 </code></pre></div>
+
 <p>bpf_attr,第 2 个参数,该参数的类型取决于 cmd 参数的值，本文只分析 cmd=BPF_PROG_LOAD 这种情况，其中 prog_type 指定了 bpf 程序类型，eBPF 程序支持 attach 到不同的 event 上，比如 Kprobe，UProbe，tracepoint，Network packets，perf event 等。
 完整如下：</p>
 <div class="highlight"><pre><span></span><code>内核支持的当前eBPF程序类型集为：
@@ -194,11 +200,12 @@ BPF_PROG_TYPE_SOCK_OPS：用于设置socket参数的程序
 BPF_PROG_TYPE_SK_SKB：网络数据包过滤器，用于在socket之间转发数据包
 BPF_PROG_CGROUP_DEVICE：确定是否允许设备<span class="o">(</span>device<span class="o">)</span>操作
 </code></pre></div>
+
 <p>比如,cmd=BPF_PROG_LOAD 使用，bpf_attr 字段如下：</p>
 <div class="highlight"><pre><span></span><code>struct<span class="w"> </span><span class="o">{</span><span class="w">    </span>/*<span class="w"> </span>Used<span class="w"> </span>by<span class="w"> </span>BPF_PROG_LOAD<span class="w"> </span>*/
 <span class="w">    </span>__u32<span class="w">   </span>prog_type<span class="p">;</span><span class="w">  </span>//设置为<span class="w"> </span><span class="sb">`</span>BPF_PROG_TYPE_KPROBE<span class="sb">`</span>，表示是通过<span class="w"> </span>kprobe<span class="w"> </span>注入到内核函数。
 <span class="w">    </span>__u32<span class="w">   </span>insn_cnt<span class="p">;</span>
-<span class="w">    </span>__aligned_u64<span class="w"> </span>insns<span class="p">;</span><span class="w">      </span>/*<span class="w"> </span><span class="s1">'const struct bpf_insn *'</span><span class="w"> </span>*/
+<span class="w">    </span>__aligned_u64<span class="w"> </span>insns<span class="p">;</span><span class="w">      </span>/*<span class="w"> </span><span class="s1">&#39;const struct bpf_insn *&#39;</span><span class="w"> </span>*/
 <span class="w">    </span>__aligned_u64<span class="w"> </span>license<span class="p">;</span><span class="w">    </span>//<span class="w"> </span>指定<span class="w"> </span>license
 <span class="w">    </span>__u32<span class="w">   </span>log_level<span class="p">;</span><span class="w">  </span>/*<span class="w"> </span>verbosity<span class="w"> </span>level<span class="w"> </span>of<span class="w"> </span>verifier<span class="w"> </span>*/
 <span class="w">    </span>__u32<span class="w">   </span>log_size<span class="p">;</span><span class="w">   </span>/*<span class="w"> </span>size<span class="w"> </span>of<span class="w"> </span>user<span class="w"> </span>buffer<span class="w"> </span>*/
@@ -209,6 +216,7 @@ BPF_PROG_CGROUP_DEVICE：确定是否允许设备<span class="o">(</span>device<
 <span class="w">    </span><span class="o">(</span>since<span class="w"> </span>Linux<span class="w"> </span><span class="m">4</span>.1<span class="o">)</span><span class="w"> </span>*/
 <span class="o">}</span><span class="p">;</span>
 </code></pre></div>
+
 <p>size：第三个参数</p>
 <p>表示上述 bpf_attr 字节大小。</p>
 <p>当加载 bpf 程序时，BPF_PROG_LOAD 表示的是加载具体 bpf 指令，对应 SEC宏 下面的函数代码段。
@@ -221,6 +229,7 @@ BPF_PROG_CGROUP_DEVICE：确定是否允许设备<span class="o">(</span>device<
 <span class="w">            </span><span class="n">__s32</span><span class="w">   </span><span class="n">imm</span><span class="p">;</span><span class="w">            </span><span class="cm">/* signed immediate constant(立即数) */</span>
 <span class="w">    </span><span class="p">};</span>
 </code></pre></div>
+
 <p>详见</p>
 <div class="highlight"><pre><span></span><code><span class="nv">insns</span><span class="o">=[</span>
 <span class="o">{</span><span class="nv">code</span><span class="o">=</span>BPF_LDX<span class="p">|</span>BPF_DW<span class="p">|</span>BPF_MEM,<span class="w"> </span><span class="nv">dst_reg</span><span class="o">=</span>BPF_REG_1,<span class="w"> </span><span class="nv">src_reg</span><span class="o">=</span>BPF_REG_1,<span class="w"> </span><span class="nv">off</span><span class="o">=</span><span class="m">104</span>,<span class="w"> </span><span class="nv">imm</span><span class="o">=</span><span class="m">0</span><span class="o">}</span>,
@@ -233,6 +242,7 @@ BPF_PROG_CGROUP_DEVICE：确定是否允许设备<span class="o">(</span>device<
 <span class="o">{</span><span class="nv">code</span><span class="o">=</span>BPF_ALU64<span class="p">|</span>BPF_K<span class="p">|</span>BPF_MOV,<span class="w"> </span><span class="nv">dst_reg</span><span class="o">=</span>BPF_REG_0,<span class="w"> </span><span class="nv">src_reg</span><span class="o">=</span>BPF_REG_0,<span class="w"> </span><span class="nv">off</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">imm</span><span class="o">=</span><span class="m">0</span><span class="o">}</span>,
 <span class="o">{</span><span class="nv">code</span><span class="o">=</span>BPF_JMP<span class="p">|</span>BPF_K<span class="p">|</span>BPF_EXIT,<span class="w"> </span><span class="nv">dst_reg</span><span class="o">=</span>BPF_REG_0,<span class="w"> </span><span class="nv">src_reg</span><span class="o">=</span>BPF_REG_0,<span class="w"> </span><span class="nv">off</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">imm</span><span class="o">=</span><span class="m">0</span><span class="o">}</span>
 </code></pre></div>
+
 <p>bpf系统调用调用bpf_prog_load来加载ebpf程序。
  bpf_prog_load大致有以下几步:</p>
 <div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="err">调用</span><span class="n">bpf_prog_alloc为prog申请内存</span><span class="err">，大小为</span><span class="n">struct</span><span class="w"> </span><span class="n">bpf_prog大小</span><span class="o">+</span><span class="n">ebpf指令总长度</span>
@@ -241,6 +251,7 @@ BPF_PROG_CGROUP_DEVICE：确定是否允许设备<span class="o">(</span>device<
 <span class="mf">4.</span><span class="err">调用</span><span class="n">bpf_prog_select_runtime在线jit</span><span class="err">，编译</span><span class="n">ebpf指令成x64指令</span>
 <span class="mf">5.</span><span class="err">调用</span><span class="n">bpf_prog_alloc_id为prog生成id</span><span class="err">，作为</span><span class="n">prog的唯一标识的id被很多工具如bpftool用来查找prog</span>
 </code></pre></div>
+
 <p>ebpf从bpf的两个32位寄存器扩展到10个64位寄存器R0~R9和一个只读栈帧寄存器，并支持call指令，更加贴近现代64位处理器硬件</p>
 <div class="highlight"><pre><span></span><code>R0对应rax，<span class="w"> </span>函数返回值
 R1对应rdi，<span class="w"> </span>函数参数1
@@ -254,10 +265,12 @@ R8对应r14，<span class="w"> </span>callee保存
 R9对应r15，<span class="w"> </span>callee保存
 R10对应rbp，只读栈帧寄存器
 </code></pre></div>
+
 <p>可以看到x64的r9寄存器没有ebpf寄存器对应，所以ebpf函数最多支持5个参数。</p>
 <p>demo 是在Kali Linux 上开发的。环境搭建比较简单，由于内核不一样，可能修改部分参数：</p>
 <div class="highlight"><pre><span></span><code>apt-get<span class="w"> </span>install<span class="w"> </span>golang<span class="w"> </span>clang<span class="w"> </span>llvm<span class="w">  </span>-y
 </code></pre></div>
+
 <p>CentOS 7 可以按下面搭建</p>
 <div class="highlight"><pre><span></span><code>添加yum源<span class="w"> </span>：<span class="w"> </span>c7-clang-x86_64.repo
 
@@ -290,14 +303,15 @@ R10对应rbp，只读栈帧寄存器
 
 <span class="c1"># reboot 重启一下，应用新的内核</span>
 </code></pre></div>
+
 <p>HIDS 开发的核心在于抓取一些高风险 syscall的参数，比如，sys_ptrace() sys_execve(),这些函数被glibc 包装，暴露给用户使用。当用户在glibc调用对应的函数，通过执行CPU指令完成用户态向内核态的转换。32位系统中，通过int $0x80指令触发系统调用。其中EAX寄存器用于传递系统调用号，参数按顺序赋值给EBX、ECX、EDX、ESI、EDI、EBP这6个寄存器。64位系统则是使用syscall指令来触发系统调用，同样使用EAX寄存器传递系统调用号，RDI、RSI、RDX、RCX、R8、R9这6个寄存器则用来传递参数。系统调用逻辑，如下图：</p>
-<p><img alt="agent" class="img-fluid" src="../images/WechatIMG145.jpeg"/></p>
+<p><img alt="agent" src="../images/WechatIMG145.jpeg"></p>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;linux/kconfig.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;linux/bpf.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;linux/ptrace.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;uapi/linux/ptrace.h&gt;</span>
 
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">"bpf_helpers.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;bpf_helpers.h&quot;</span>
 
 <span class="cp">#define ARG_LEN 256</span>
 
@@ -329,7 +343,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="p">};</span>
 
 
-<span class="k">struct</span><span class="w"> </span><span class="nc">bpf_map_def</span><span class="w"> </span><span class="n">SEC</span><span class="p">(</span><span class="s">"maps/execve_events"</span><span class="p">)</span><span class="w"> </span><span class="n">execve_events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">bpf_map_def</span><span class="w"> </span><span class="n">SEC</span><span class="p">(</span><span class="s">&quot;maps/execve_events&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">execve_events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BPF_MAP_TYPE_PERF_EVENT_ARRAY</span><span class="p">,</span>
 <span class="w">        </span><span class="p">.</span><span class="n">key_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">),</span>
 <span class="w">        </span><span class="p">.</span><span class="n">value_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">__u32</span><span class="p">),</span>
@@ -377,7 +391,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">real_start_time_ns</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">SEC</span><span class="p">(</span><span class="s">"kprobe/SyS_execve"</span><span class="p">)</span>
+<span class="n">SEC</span><span class="p">(</span><span class="s">&quot;kprobe/SyS_execve&quot;</span><span class="p">)</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">kprobe__sys_exeve</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">pt_regs</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">u64</span><span class="w"> </span><span class="n">ktime_ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bpf_ktime_get_ns</span><span class="p">();</span>
@@ -412,14 +426,14 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">send_arg</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">cpu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">arg_data</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 
-<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">ellipse</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"..."</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">ellipse</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;...&quot;</span><span class="p">;</span>
 <span class="w">    </span><span class="n">bpf_probe_read</span><span class="p">(</span><span class="n">arg_data</span><span class="p">.</span><span class="n">arg</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">arg_data</span><span class="p">.</span><span class="n">arg</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">ellipse</span><span class="p">);</span>
 <span class="w">    </span><span class="n">bpf_perf_event_output</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">execve_events</span><span class="p">,</span><span class="w"> </span><span class="n">cpu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">arg_data</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">arg_data</span><span class="p">));</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">SEC</span><span class="p">(</span><span class="s">"kretprobe/SyS_execve"</span><span class="p">)</span>
+<span class="n">SEC</span><span class="p">(</span><span class="s">&quot;kretprobe/SyS_execve&quot;</span><span class="p">)</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">kretprobe__sys_exeve</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">pt_regs</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">execve_rtn_t</span><span class="w"> </span><span class="n">rtn_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
@@ -433,7 +447,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">SEC</span><span class="p">(</span><span class="s">"kprobe/do_exit"</span><span class="p">)</span>
+<span class="n">SEC</span><span class="p">(</span><span class="s">&quot;kprobe/do_exit&quot;</span><span class="p">)</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">kprobe__do_exit</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">pt_regs</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">exit_data_t</span><span class="w"> </span><span class="n">exit_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
@@ -447,8 +461,9 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="kt">char</span><span class="w"> </span><span class="n">_license</span><span class="p">[]</span><span class="w"> </span><span class="n">SEC</span><span class="p">(</span><span class="s">"license"</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"GPL"</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">_license</span><span class="p">[]</span><span class="w"> </span><span class="n">SEC</span><span class="p">(</span><span class="s">&quot;license&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;GPL&quot;</span><span class="p">;</span>
 </code></pre></div>
+
 <p>bpf_helpers.h 文件</p>
 <div class="highlight"><pre><span></span><code><span class="cp">#define SEC(NAME) __attribute__((section(NAME), used))</span>
 
@@ -506,11 +521,11 @@ R10对应rbp，只读栈帧寄存器
 <span class="cm"> */</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">sk_buff</span><span class="p">;</span>
 <span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">load_byte</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">skb</span><span class="p">,</span>
-<span class="w">                             </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">off</span><span class="p">)</span><span class="w"> </span><span class="k">asm</span><span class="p">(</span><span class="s">"llvm.bpf.load.byte"</span><span class="p">);</span>
+<span class="w">                             </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">off</span><span class="p">)</span><span class="w"> </span><span class="k">asm</span><span class="p">(</span><span class="s">&quot;llvm.bpf.load.byte&quot;</span><span class="p">);</span>
 <span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">load_half</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">skb</span><span class="p">,</span>
-<span class="w">                             </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">off</span><span class="p">)</span><span class="w"> </span><span class="k">asm</span><span class="p">(</span><span class="s">"llvm.bpf.load.half"</span><span class="p">);</span>
+<span class="w">                             </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">off</span><span class="p">)</span><span class="w"> </span><span class="k">asm</span><span class="p">(</span><span class="s">&quot;llvm.bpf.load.half&quot;</span><span class="p">);</span>
 <span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">load_word</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">skb</span><span class="p">,</span>
-<span class="w">                             </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">off</span><span class="p">)</span><span class="w"> </span><span class="k">asm</span><span class="p">(</span><span class="s">"llvm.bpf.load.word"</span><span class="p">);</span>
+<span class="w">                             </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">off</span><span class="p">)</span><span class="w"> </span><span class="k">asm</span><span class="p">(</span><span class="s">&quot;llvm.bpf.load.word&quot;</span><span class="p">);</span>
 
 <span class="cm">/* a helper structure used by eBPF C program</span>
 <span class="cm"> * to describe map attributes to elf_bpf loader</span>
@@ -599,10 +614,11 @@ R10对应rbp，只读栈帧寄存器
 
 <span class="cp">#endif</span>
 </code></pre></div>
+
 <p>Makefile </p>
 <div class="highlight"><pre><span></span><code><span class="n">project_root</span><span class="o">=</span><span class="n">$</span><span class="p">(</span><span class="n">shell</span><span class="w"> </span><span class="n">pwd</span><span class="p">)</span>
 <span class="n">uname</span><span class="o">=</span><span class="n">$</span><span class="p">(</span><span class="n">shell</span><span class="w"> </span><span class="n">uname</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="p">)</span>
-<span class="n">kernel_src</span><span class="o">=</span><span class="n">$</span><span class="p">(</span><span class="n">shell</span><span class="w"> </span><span class="n">rpm</span><span class="w"> </span><span class="o">-</span><span class="n">qa</span><span class="w"> </span><span class="n">kernel</span><span class="o">-</span><span class="n">devel</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">sed</span><span class="w"> </span><span class="err">'</span><span class="n">s</span><span class="o">/</span><span class="n">kernel</span><span class="o">-</span><span class="n">devel</span><span class="o">-</span><span class="c1">//g' | awk '{print "/usr/src/kernels/"$$1""}')</span>
+<span class="n">kernel_src</span><span class="o">=</span><span class="n">$</span><span class="p">(</span><span class="n">shell</span><span class="w"> </span><span class="n">rpm</span><span class="w"> </span><span class="o">-</span><span class="n">qa</span><span class="w"> </span><span class="n">kernel</span><span class="o">-</span><span class="n">devel</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">sed</span><span class="w"> </span><span class="err">&#39;</span><span class="n">s</span><span class="o">/</span><span class="n">kernel</span><span class="o">-</span><span class="n">devel</span><span class="o">-</span><span class="c1">//g&#39; | awk &#39;{print &quot;/usr/src/kernels/&quot;$$1&quot;&quot;}&#39;)</span>
 
 <span class="nl">all</span><span class="p">:</span><span class="w"> </span><span class="n">build</span>
 
@@ -621,22 +637,23 @@ R10对应rbp，只读栈帧寄存器
 
 <span class="p">.</span><span class="n">PHONY</span><span class="o">:</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">build</span><span class="w"> </span>
 </code></pre></div>
+
 <p>go接受数据：</p>
 <div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="s">"bytes"</span>
-<span class="w">    </span><span class="s">"encoding/binary"</span>
-<span class="w">    </span><span class="s">"encoding/json"</span>
-<span class="w">    </span><span class="s">"fmt"</span>
-<span class="w">    </span><span class="nx">bpf</span><span class="w"> </span><span class="s">"github.com/iovisor/gobpf/elf"</span>
-<span class="w">    </span><span class="s">"github.com/pkg/errors"</span>
-<span class="w">    </span><span class="s">"io/ioutil"</span>
-<span class="w">    </span><span class="s">"os"</span>
-<span class="w">    </span><span class="s">"os/signal"</span>
-<span class="w">    </span><span class="s">"sync"</span>
-<span class="w">    </span><span class="s">"time"</span>
-<span class="w">    </span><span class="s">"unsafe"</span>
+<span class="w">    </span><span class="s">&quot;bytes&quot;</span>
+<span class="w">    </span><span class="s">&quot;encoding/binary&quot;</span>
+<span class="w">    </span><span class="s">&quot;encoding/json&quot;</span>
+<span class="w">    </span><span class="s">&quot;fmt&quot;</span>
+<span class="w">    </span><span class="nx">bpf</span><span class="w"> </span><span class="s">&quot;github.com/iovisor/gobpf/elf&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/pkg/errors&quot;</span>
+<span class="w">    </span><span class="s">&quot;io/ioutil&quot;</span>
+<span class="w">    </span><span class="s">&quot;os&quot;</span>
+<span class="w">    </span><span class="s">&quot;os/signal&quot;</span>
+<span class="w">    </span><span class="s">&quot;sync&quot;</span>
+<span class="w">    </span><span class="s">&quot;time&quot;</span>
+<span class="w">    </span><span class="s">&quot;unsafe&quot;</span>
 <span class="p">)</span>
 
 <span class="kd">var</span><span class="w"> </span><span class="p">(</span>
@@ -646,10 +663,10 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="nx">sizeofExitData</span><span class="w">   </span><span class="p">=</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nx">Sizeof</span><span class="p">(</span><span class="nx">ExitData</span><span class="p">{}))</span>
 <span class="p">)</span>
 <span class="kd">const</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="nx">execveProbe</span><span class="w">       </span><span class="p">=</span><span class="w"> </span><span class="s">"kprobe/SyS_execve"</span>
-<span class="w">    </span><span class="nx">execveReturnProbe</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">"kretprobe/SyS_execve"</span>
-<span class="w">    </span><span class="nx">execveMap</span><span class="w">         </span><span class="p">=</span><span class="w"> </span><span class="s">"execve_events"</span>
-<span class="w">    </span><span class="nx">doExitProbe</span><span class="w">       </span><span class="p">=</span><span class="w"> </span><span class="s">"kprobe/do_exit"</span>
+<span class="w">    </span><span class="nx">execveProbe</span><span class="w">       </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;kprobe/SyS_execve&quot;</span>
+<span class="w">    </span><span class="nx">execveReturnProbe</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;kretprobe/SyS_execve&quot;</span>
+<span class="w">    </span><span class="nx">execveMap</span><span class="w">         </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;execve_events&quot;</span>
+<span class="w">    </span><span class="nx">doExitProbe</span><span class="w">       </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;kprobe/do_exit&quot;</span>
 <span class="p">)</span>
 
 
@@ -682,36 +699,36 @@ R10对应rbp，只读栈帧寄存器
 
 
 <span class="kd">type</span><span class="w"> </span><span class="nx">processData</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">StartTime</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w"> </span><span class="s">`json:"start_time"`</span>
+<span class="w">    </span><span class="nx">StartTime</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w"> </span><span class="s">`json:&quot;start_time&quot;`</span>
 
-<span class="w">    </span><span class="nx">PPID</span><span class="w">       </span><span class="kt">uint32</span><span class="w"> </span><span class="s">`json:"ppid"`</span>
-<span class="w">    </span><span class="nx">ParentComm</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"parent_comm,omitempty"`</span>
+<span class="w">    </span><span class="nx">PPID</span><span class="w">       </span><span class="kt">uint32</span><span class="w"> </span><span class="s">`json:&quot;ppid&quot;`</span>
+<span class="w">    </span><span class="nx">ParentComm</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;parent_comm,omitempty&quot;`</span>
 
-<span class="w">    </span><span class="nx">PID</span><span class="w">  </span><span class="kt">uint32</span><span class="w">   </span><span class="s">`json:"pid"`</span>
-<span class="w">    </span><span class="nx">UID</span><span class="w">  </span><span class="kt">uint32</span><span class="w">   </span><span class="s">`json:"uid"`</span>
-<span class="w">    </span><span class="nx">GID</span><span class="w">  </span><span class="kt">uint32</span><span class="w">   </span><span class="s">`json:"gid"`</span>
-<span class="w">    </span><span class="nx">Comm</span><span class="w"> </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:"comm,omitempty"`</span>
-<span class="w">    </span><span class="nx">Exe</span><span class="w">  </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:"exe,omitempty"`</span>
-<span class="w">    </span><span class="nx">Args</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"args,omitempty"`</span>
+<span class="w">    </span><span class="nx">PID</span><span class="w">  </span><span class="kt">uint32</span><span class="w">   </span><span class="s">`json:&quot;pid&quot;`</span>
+<span class="w">    </span><span class="nx">UID</span><span class="w">  </span><span class="kt">uint32</span><span class="w">   </span><span class="s">`json:&quot;uid&quot;`</span>
+<span class="w">    </span><span class="nx">GID</span><span class="w">  </span><span class="kt">uint32</span><span class="w">   </span><span class="s">`json:&quot;gid&quot;`</span>
+<span class="w">    </span><span class="nx">Comm</span><span class="w"> </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:&quot;comm,omitempty&quot;`</span>
+<span class="w">    </span><span class="nx">Exe</span><span class="w">  </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:&quot;exe,omitempty&quot;`</span>
+<span class="w">    </span><span class="nx">Args</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;args,omitempty&quot;`</span>
 <span class="p">}</span>
 
 
 <span class="kd">type</span><span class="w"> </span><span class="nx">ProcessStarted</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">Type</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"type"`</span>
+<span class="w">    </span><span class="nx">Type</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;type&quot;`</span>
 <span class="w">    </span><span class="nx">processData</span>
 <span class="p">}</span>
 
 <span class="kd">type</span><span class="w"> </span><span class="nx">ProcessExited</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">Type</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"type"`</span>
+<span class="w">    </span><span class="nx">Type</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;type&quot;`</span>
 <span class="w">    </span><span class="nx">processData</span>
-<span class="w">    </span><span class="nx">EndTime</span><span class="w">     </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w">     </span><span class="s">`json:"end_time"`</span>
-<span class="w">    </span><span class="nx">RunningTime</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="w"> </span><span class="s">`json:"running_time_ns"`</span>
+<span class="w">    </span><span class="nx">EndTime</span><span class="w">     </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w">     </span><span class="s">`json:&quot;end_time&quot;`</span>
+<span class="w">    </span><span class="nx">RunningTime</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="w"> </span><span class="s">`json:&quot;running_time_ns&quot;`</span>
 <span class="p">}</span>
 
 <span class="kd">type</span><span class="w"> </span><span class="nx">ProcessError</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">Type</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"type"`</span>
+<span class="w">    </span><span class="nx">Type</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;type&quot;`</span>
 <span class="w">    </span><span class="nx">processData</span>
-<span class="w">    </span><span class="nx">ErrorCode</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="s">`json:"error_code"`</span>
+<span class="w">    </span><span class="nx">ErrorCode</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="s">`json:&quot;error_code&quot;`</span>
 <span class="p">}</span>
 
 
@@ -777,7 +794,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">                </span><span class="nx">m</span><span class="p">.</span><span class="nx">handleBPFData</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
 <span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&lt;-</span><span class="nx">m</span><span class="p">.</span><span class="nx">lostBPFEvents</span><span class="p">:</span>
 <span class="w">                </span><span class="nx">m</span><span class="p">.</span><span class="nx">lostCount</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">count</span>
-<span class="w">                </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"%v messages from kernel dropped"</span><span class="p">,</span><span class="w"> </span><span class="nx">count</span><span class="p">)</span>
+<span class="w">                </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%v messages from kernel dropped&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">count</span><span class="p">)</span>
 <span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="o">&lt;-</span><span class="nx">done</span><span class="p">:</span>
 <span class="w">                </span><span class="k">return</span>
 <span class="w">            </span><span class="p">}</span>
@@ -788,16 +805,16 @@ R10对应rbp，只读栈帧寄存器
 <span class="p">}</span>
 
 <span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">m</span><span class="w"> </span><span class="o">*</span><span class="nx">ProcessMonitor</span><span class="p">)</span><span class="w"> </span><span class="nx">initBPF</span><span class="p">()</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">ioutil</span><span class="p">.</span><span class="nx">ReadFile</span><span class="p">(</span><span class="s">"exec.o"</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">ioutil</span><span class="p">.</span><span class="nx">ReadFile</span><span class="p">(</span><span class="s">&quot;exec.o&quot;</span><span class="p">)</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrap</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">"failed to load embedded ebpf code"</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrap</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;failed to load embedded ebpf code&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 
 <span class="w">    </span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">bpf</span><span class="p">.</span><span class="nx">NewModuleFromReader</span><span class="p">(</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">NewReader</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="p">.</span><span class="nx">Load</span><span class="p">(</span><span class="kc">nil</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrap</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">"failed to load ebpf module to kernel"</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrap</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;failed to load ebpf module to kernel&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">m</span><span class="p">.</span><span class="nx">bpfEvents</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span><span class="w"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="p">)</span>
@@ -805,23 +822,23 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="nx">m</span><span class="p">.</span><span class="nx">execvePerfMap</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">bpf</span><span class="p">.</span><span class="nx">InitPerfMap</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="p">,</span><span class="w"> </span><span class="nx">execveMap</span><span class="p">,</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">bpfEvents</span><span class="p">,</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">lostBPFEvents</span><span class="p">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrapf</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">"failed to initialize %v perf map"</span><span class="p">,</span><span class="w"> </span><span class="nx">execveMap</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrapf</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;failed to initialize %v perf map&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">execveMap</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="p">.</span><span class="nx">EnableKprobe</span><span class="p">(</span><span class="nx">execveProbe</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrapf</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">"failed to enable %v probe"</span><span class="p">,</span><span class="w"> </span><span class="nx">execveProbe</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrapf</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;failed to enable %v probe&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">execveProbe</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="p">.</span><span class="nx">EnableKprobe</span><span class="p">(</span><span class="nx">execveReturnProbe</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrapf</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">"failed to enable %v probe"</span><span class="p">,</span><span class="w"> </span><span class="nx">execveReturnProbe</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrapf</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;failed to enable %v probe&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">execveReturnProbe</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="p">.</span><span class="nx">EnableKprobe</span><span class="p">(</span><span class="nx">doExitProbe</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">m</span><span class="p">.</span><span class="nx">module</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrapf</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">"failed to enable %v probe"</span><span class="p">,</span><span class="w"> </span><span class="nx">doExitProbe</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Wrapf</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;failed to enable %v probe&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">doExitProbe</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">m</span><span class="p">.</span><span class="nx">execvePerfMap</span><span class="p">.</span><span class="nx">PollStart</span><span class="p">()</span>
@@ -833,7 +850,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">sizeofExecveData</span><span class="p">:</span>
 <span class="w">        </span><span class="nx">event</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">unmarshalData</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"failed to unmarshal execve data"</span><span class="p">)</span>
+<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;failed to unmarshal execve data&quot;</span><span class="p">)</span>
 <span class="w">            </span><span class="k">return</span>
 <span class="w">        </span><span class="p">}</span>
 
@@ -857,7 +874,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">sizeofExecveArg</span><span class="p">:</span>
 <span class="w">        </span><span class="nx">event</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">unmarshalArg</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"failed to unmarshal execve arg"</span><span class="p">)</span>
+<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;failed to unmarshal execve arg&quot;</span><span class="p">)</span>
 <span class="w">            </span><span class="k">return</span>
 <span class="w">        </span><span class="p">}</span>
 
@@ -876,7 +893,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">sizeofExecveRtn</span><span class="p">:</span>
 <span class="w">        </span><span class="nx">event</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">unmarshalRtn</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"failed to unmarshal execve return"</span><span class="p">)</span>
+<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;failed to unmarshal execve return&quot;</span><span class="p">)</span>
 <span class="w">            </span><span class="k">return</span>
 <span class="w">        </span><span class="p">}</span>
 
@@ -893,7 +910,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">sizeofExitData</span><span class="p">:</span>
 <span class="w">        </span><span class="nx">event</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">unmarshalExitData</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"failed to unmarshal exit data"</span><span class="p">)</span>
+<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;failed to unmarshal exit data&quot;</span><span class="p">)</span>
 <span class="w">            </span><span class="k">return</span>
 <span class="w">        </span><span class="p">}</span>
 
@@ -913,19 +930,19 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">State</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">stateStarted</span><span class="p">:</span>
 <span class="w">        </span><span class="nx">event</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">ProcessStarted</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">Type</span><span class="p">:</span><span class="w">        </span><span class="s">"started"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">Type</span><span class="p">:</span><span class="w">        </span><span class="s">&quot;started&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">processData</span><span class="p">:</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">processData</span><span class="p">,</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">stateExited</span><span class="p">:</span>
 <span class="w">        </span><span class="nx">event</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">ProcessExited</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">Type</span><span class="p">:</span><span class="w">        </span><span class="s">"exited"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">Type</span><span class="p">:</span><span class="w">        </span><span class="s">&quot;exited&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">processData</span><span class="p">:</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">processData</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">EndTime</span><span class="p">:</span><span class="w">     </span><span class="nx">p</span><span class="p">.</span><span class="nx">EndTime</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">RunningTime</span><span class="p">:</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">EndTime</span><span class="p">.</span><span class="nx">Sub</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">StartTime</span><span class="p">),</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">stateError</span><span class="p">:</span>
 <span class="w">        </span><span class="nx">event</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">ProcessError</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">Type</span><span class="p">:</span><span class="w">        </span><span class="s">"error"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">Type</span><span class="p">:</span><span class="w">        </span><span class="s">&quot;error&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">processData</span><span class="p">:</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">processData</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">ErrorCode</span><span class="p">:</span><span class="w">   </span><span class="nx">p</span><span class="p">.</span><span class="nx">ErrorCode</span><span class="p">,</span>
 <span class="w">        </span><span class="p">}</span>
@@ -977,13 +994,13 @@ R10对应rbp，只读栈帧寄存器
 
 <span class="w">    </span><span class="nx">m</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">NewMonitor</span><span class="p">()</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"failed to create exec monitor"</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;failed to create exec monitor&quot;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">done</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span><span class="w"> </span><span class="kd">struct</span><span class="p">{})</span>
 <span class="w">    </span><span class="nx">events</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">Start</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"failed to start exec monitor"</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;failed to start exec monitor&quot;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">sig</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Signal</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
@@ -1000,6 +1017,7 @@ R10对应rbp，只读栈帧寄存器
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
+
 <p>全文介绍了一下eBPF 的由来，以及ePBF 的技术部分。抓取了sys_execve 以此抛砖引玉，目前，ePBF 还在发展，部分API还不稳定，但是，已经可以低版本的内核有限的使用了。未来eBPF会使用面会越来越广。</p>
   </div>
 </article>

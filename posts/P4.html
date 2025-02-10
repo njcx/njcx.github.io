@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-07T01:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Thu 07 June 2018
+        四 07 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -109,6 +109,7 @@ https://github.com/GinjaChris/pentmenu.git
 https://github.com/OffensivePython/Saddam.git
 https://github.com/649/Memcrashed-DDoS-Exploit
 </code></pre></div>
+
 <h4>TCP</h4>
 <ul>
 <li>SYN FLOOD </li>
@@ -124,22 +125,22 @@ https://github.com/649/Memcrashed-DDoS-Exploit
 <li>TCP RST Flood </li>
 </ul>
 <p>TCP协议头部有一个标志位称为“RST”位，正常的数据包中该位为0，一旦该位设置为1,则接收该数据包的主机将立即断开TCP会话。TCP Reset攻击中，攻击者可以伪造TCP连接其中的一方给另一方发送带有RST位的包来断开TCP连接，但是要确保这个数据包的源IP地址、源端口号、目的IP地址、目的端口号、序列号等特征符合已有TCP连接的特征。</p>
-<p><img alt="ICMP" class="img-fluid" src="../images/WechatIMG103.jpeg"/></p>
-<p><img alt="ICMP" class="img-fluid" src="../images/WechatIMG104.jpeg"/></p>
+<p><img alt="ICMP" src="../images/WechatIMG103.jpeg"></p>
+<p><img alt="ICMP" src="../images/WechatIMG104.jpeg"></p>
 <h4>UDP</h4>
 <ul>
 <li>UDP Flood</li>
 </ul>
 <p>UDP协议与TCP协议不同， UDP是一个无连接协议。使用UDP协议传输数据之前，客户端和服务器之间不建立连接，UDP Flood属于带宽类攻击，黑客们通过僵尸网络向目标服务器发起大量的UDP报文，可以使用小数据包(64字节)进行攻击,也可以使用大数据包(大于1500字节,以太网MTU为1500字节)进行攻击。大量小数据包会增大网络设备处理数据包的压力；而对于大数据包，网络设备需要进行分片、重组，迅速造成链路拥塞。</p>
-<p><img alt="UDP" class="img-fluid" src="../images/WechatIMG101.jpeg"/></p>
-<p><img alt="UDP" class="img-fluid" src="../images/WechatIMG102.jpeg"/></p>
+<p><img alt="UDP" src="../images/WechatIMG101.jpeg"></p>
+<p><img alt="UDP" src="../images/WechatIMG102.jpeg"></p>
 <h4>ICMP</h4>
 <ul>
-<li>ICMP Echo Flood   <br/>
+<li>ICMP Echo Flood   <br>
 ICMP协议位于IP层，主要通过含有ICMP功能的主机与路由器之间发送ICMP数据包，来达到实现信息查询和错误通知的功能。因此攻击者利用icmp获取主机信息，时间、路由信息等。所以为攻击者创造了极大得便利条件。攻击者通过足够快的数据包速度和足够的带宽，对目标发出攻击请求，造成网络拥堵。</li>
 </ul>
-<p><img alt="ICMP" class="img-fluid" src="../images/WechatIMG99.jpeg"/></p>
-<p><img alt="ICMP" class="img-fluid" src="../images/WechatIMG100.jpeg"/></p>
+<p><img alt="ICMP" src="../images/WechatIMG99.jpeg"></p>
+<p><img alt="ICMP" src="../images/WechatIMG100.jpeg"></p>
 <ul>
 <li>ICMP Blacknurse  </li>
 </ul>
@@ -185,10 +186,11 @@ Flood;
 第七步进行智能限速,像ICMP没有对应业务系统，可以直接限速。完成前六步的过滤后流量依然超过链路负载阈值
 时,利用基于各种协议的精细化限速使得流量大小稳定在安全范围内。
 </code></pre></div>
+
 <h4>使用DPDK进行DDOS检测</h4>
 <p>DPDK全称Intel Data Plane Development Kit，是intel提供的数据平面开发工具集，为Intel architecture（IA）处理器架构下用户空间高效的数据包处理提供库函数和驱动的支持。通俗地说，就是一个用来进行包数据处理加速的软件库。</p>
 <p>DPDK不同于Linux系统以通用性设计为目的，而是专注于网络应用中数据包的高性能处理。具体体现在DPDK应用程序是运行在用户空间上利用自身提供的数据平面库来收发数据包，绕过了Linux内核协议栈对数据包处理过程。它不是一个用户可以直接建立应用程序的完整产品，不包含需要与控制层（包括内核和协议堆栈）进行交互的工具。</p>
-<p><img alt="ddos" class="img-fluid" src="../images/WeChate2b598d1b9404efc992d83f0cd333e73.png"/></p>
+<p><img alt="ddos" src="../images/WeChate2b598d1b9404efc992d83f0cd333e73.png"></p>
 <p>传统Linux内核读取数据包使用中断模式驱动首先当数据包到达网卡后,网卡产生硬中断,将网
 卡加入到轮询输入数据包的网卡队列中,然后关闭硬中断并开启软中断,此时硬中
 断处理结束,软中断被激活后轮询设备,读取指定数量的数据包后清空设备队列,
@@ -213,15 +215,15 @@ write back造成的性能损失。</p>
 <div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">process_http_pkt</span><span class="p">(</span>
 <span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">FeatureExtractCoreConfig</span><span class="o">*</span><span class="w"> </span><span class="n">config</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">src_ip</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">http_payload_len</span><span class="p">,</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">http_payload</span><span class="p">){</span>
 <span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">atk_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
-<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strstr</span><span class="p">(</span><span class="n">http_payload</span><span class="p">,</span><span class="w"> </span><span class="s">"</span><span class="se">\r\n\r\n</span><span class="s">"</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strstr</span><span class="p">(</span><span class="n">http_payload</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\r\n\r\n</span><span class="s">&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">find</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">){</span>
 <span class="w">        </span><span class="n">atk_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ATK_TYPE_HTTP_POST</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span><span class="k">else</span><span class="p">{</span>
 <span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">http_payload</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
-<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">'G'</span><span class="p">:</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;G&#39;</span><span class="p">:</span>
 <span class="w">            </span><span class="n">atk_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ATK_TYPE_HTTP_GET</span><span class="p">;</span>
 <span class="w">            </span><span class="k">break</span><span class="p">;</span>
-<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">'P'</span><span class="p">:</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;P&#39;</span><span class="p">:</span>
 <span class="w">            </span><span class="n">atk_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ATK_TYPE_HTTP_POST</span><span class="p">;</span>
 <span class="w">            </span><span class="k">break</span><span class="p">;</span>
 <span class="w">        </span><span class="k">default</span><span class="o">:</span>
@@ -234,12 +236,14 @@ write back造成的性能损失。</p>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
+
 <p>开源的基于DPDK的 抗D工具：</p>
 <div class="highlight"><pre><span></span><code>https://github.com/AltraMayor/gatekeeper
 </code></pre></div>
+
 <h4>使用XDP进行DDOS拦截</h4>
 <p>在计算机网络中，Hook钩子在操作系统中用于在调用前或执行过程中拦截网络数据包。Linux内核中暴露了多个钩子，BPF程序可以连接到这些钩子上，实现数据收集和自定义事件处理。XDP全称为eXpress Data Path，是Linux内核网络栈的最底层。它只存在于RX路径上，允许在网络设备驱动内部网络堆栈中数据来源最早的地方进行数据包处理，在特定模式下可以在操作系统分配内存（skb）之前就已经完成处理。XDP暴露了一个可以加载BPF程序的网络钩子。在这个钩子中，程序能够对传入的数据包进行任意修改和快速决策，避免了内核内部处理带来的额外开销。基于XDP实现高效的防DDoS攻击，其本质上就是实现尽可能早地实现「丢包」，而不去消耗系统资源创建完整的网络栈链路，即「early drop」。</p>
-<p><img alt="ddos" class="img-fluid" src="../images/imag19e.png"/></p>
+<p><img alt="ddos" src="../images/imag19e.png"></p>
 <p>XDP暴露的钩子具有特定的输入上下文，它是单一输入参数。它的类型为 struct xdp_md，在内核头文件bpf.h 中定义，具体字段如下所示：</p>
 <div class="highlight"><pre><span></span><code><span class="w"> </span>*/
 struct<span class="w"> </span>xdp_md<span class="w"> </span><span class="o">{</span>
@@ -251,6 +255,7 @@ struct<span class="w"> </span>xdp_md<span class="w"> </span><span class="o">{</s
 <span class="w">  </span>__u32<span class="w"> </span>rx_queue_index<span class="p">;</span><span class="w">  </span>/*<span class="w"> </span>rxq-&gt;queue_index<span class="w">  </span>*/
 <span class="o">}</span><span class="p">;</span>
 </code></pre></div>
+
 <p>程序执行时，data和data_end字段分别是数据包开始和结束的指针，它们是用来获取和解析传来的数据，第三个值是data_meta指针，初始阶段它是一个空闲的内存地址，供XDP程序与其他层交换数据包元数据时使用。最后两个字段分别是接收数据包的接口和对应的RX队列的索引。当访问这两个值时，BPF代码会在内核内部重写，以访问实际持有这些值的内核结构struct xdp_rxq_info。</p>
 <p>在处理完一个数据包后，XDP程序会返回一个动作（Action）作为输出，它代表了程序退出后对数据包应该做什么样的最终裁决，也是在内核头文件bpf.h 定义了以下5种动作类型：</p>
 <div class="highlight"><pre><span></span><code>enum<span class="w"> </span>xdp_action<span class="w"> </span><span class="o">{</span>
@@ -261,15 +266,16 @@ struct<span class="w"> </span>xdp_md<span class="w"> </span><span class="o">{</s
 <span class="w">  </span>XDP_REDIRECT,<span class="w"> </span>//<span class="w"> </span>Transmit<span class="w"> </span>packet<span class="w"> </span>from<span class="w"> </span>another<span class="w"> </span>interface
 <span class="o">}</span><span class="p">;</span>
 </code></pre></div>
+
 <p>可以看出这个动作的本质是一个int值。前面4个动作是不需要参数的，最后一个动作需要额外指定一个NIC网络设备名称，作为转发这个数据包的目的地。</p>
 <p>启用XDP后，网络包传输路径是这样的：</p>
-<p><img alt="ddos" class="img-fluid" src="../images/ima123ge.png"/></p>
+<p><img alt="ddos" src="../images/ima123ge.png"></p>
 <p>可以看到多了3个红色方框圈起来的新链路，我们来一一介绍：
 offload模式，XDP程序直接hook到可编程网卡硬件设备上，与其他两种模式相比，它的处理性能最强；由于处于数据链路的最前端，过滤效率也是最高的。如果需要使用这种模式，需要在加载程序时明确声明。目前支持这种模式的网卡设备不多，有一家叫netronome。
 native模式，XDP程序hook到网络设备的驱动上，它是XDP最原始的模式，因为还是先于操作系统进行数据处理，它的执行性能还是很高的，当然你的网络驱动需要支持，目前已知的有i40e, nfp, mlx系列和ixgbe系列。
 generic模式，这是操作系统内核提供的通用 XDP兼容模式，它可以在没有硬件或驱动程序支持的主机上执行XDP程序。在这种模式下，XDP的执行是由操作系统本身来完成的，以模拟native模式执行。好处是，只要内核够高，人人都能玩XDP；缺点是由于是仿真执行，需要分配额外的套接字缓冲区（SKB），导致处理性能下降，跟native模式在10倍左右的差距。
 当前主流内核版本的Linux系统在加载XDP BPF程序时，会自动在native和generic这两种模式选择，完成加载后，可以使用ip命令行工具来查看选择的模式。</p>
-<div class="highlight"><pre><span></span><code>struct<span class="w"> </span>bpf_map_def<span class="w"> </span>SEC<span class="o">(</span><span class="s2">"maps"</span><span class="o">)</span><span class="w"> </span><span class="nv">c_map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>
+<div class="highlight"><pre><span></span><code>struct<span class="w"> </span>bpf_map_def<span class="w"> </span>SEC<span class="o">(</span><span class="s2">&quot;maps&quot;</span><span class="o">)</span><span class="w"> </span><span class="nv">c_map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>.type<span class="w"> </span><span class="o">=</span><span class="w"> </span>BPF_MAP_TYP_PERCPU_ARRAY,
 <span class="w">    </span>.key_size<span class="w"> </span><span class="o">=</span><span class="w"> </span>sizeof<span class="o">(</span>int<span class="o">)</span>,
 <span class="w">    </span>.value_size<span class="w"> </span><span class="o">=</span><span class="w"> </span>sizeof<span class="o">(</span>long<span class="o">)</span>,
@@ -294,7 +300,7 @@ static<span class="w"> </span>inline<span class="w"> </span>int<span class="w"> 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span>XDP_DROP<span class="p">;</span>
 <span class="o">}</span>
 //<span class="w"> </span>static<span class="w"> </span>inline<span class="w"> </span>int<span class="w"> </span>rule_2<span class="o">(</span>..<span class="o">)</span>
-SEC<span class="o">(</span><span class="s2">"xdp1"</span><span class="o">)</span>
+SEC<span class="o">(</span><span class="s2">&quot;xdp1&quot;</span><span class="o">)</span>
 int<span class="w"> </span>xdp_prog<span class="o">(</span>struct<span class="w"> </span>xdp_md<span class="w"> </span>*ctx<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>void<span class="w"> </span>*data<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)(</span>long<span class="o">)</span>ctx-&gt;data<span class="p">;</span>
 <span class="w">    </span>void<span class="w"> </span>*data_end<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)(</span>long<span class="o">)</span>ctx-&gt;data_end<span class="p">;</span>
@@ -309,11 +315,13 @@ int<span class="w"> </span>xdp_prog<span class="o">(</span>struct<span class="w"
 <span class="w">    </span><span class="k">return</span><span class="w"> </span>XDP_PASS<span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
+
 <p>XDP的程序在这里的主要作用是完成early drop ，而不是识别，相当于执行者，通过我们的分析工具下发拦截指令，并实施拦截。大体的玩法就是：</p>
 <div class="highlight"><pre><span></span><code><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="n">自研的模块负责识别DDOS攻击包</span>
 <span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="n">自研的规则下发拦截规则</span><span class="err">，</span><span class="n">完成告警并记录</span>
 <span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="n">XDP负责阻止黑名单里的IP继续访问</span>
 </code></pre></div>
+
 <p>DDOS大体介绍了一遍，了解即可，上面都是脏活累活即可，交给专门做防DDoS的厂商去做，一般都直接使用CDN和高防即可，比如，知道创宇的加速乐，腾讯云的大禹等等。</p>
   </div>
 </article>

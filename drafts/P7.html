@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-07-05T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Thu 05 July 2018
+        四 05 七月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -111,7 +111,7 @@ var _hmt = _hmt || [];
 <p>1.核心点：在半径Eps内含有超过MinPts数目的点。</p>
 <p>2.边界点：在半径Eps内点的数量小于MinPts,但是落在核心点的邻域内的点。</p>
 <p>3.噪音点：既不是核心点也不是边界点的点。</p>
-<p><img alt="ml2" class="img-fluid" src="../images/2018072516361747.png"/></p>
+<p><img alt="ml2" src="../images/2018072516361747.png"></p>
 <p>结合2中内容，DBSCAN的一般步骤是：（在已知Eps和MinPts的前提下）</p>
 <p>任意选择一个点（既没有指定到一个类也没有特定为外围点），计算它的NBHD(p,epsilon)密度空间判断是否为核心点。如果是，在该点周围建立一个簇，否则，设定为噪音点。
 遍历其他点，直到建立一个簇。把directly-reachable的点加入到簇中，接着把density-reachable的点也加进来。如果标记为外围的点被加进来，修改状态为边界点。

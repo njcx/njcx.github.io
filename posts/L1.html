@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-05-27T12:21:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 27 May 2017
+        六 27 五月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -109,7 +109,7 @@ var _hmt = _hmt || [];
 <span class="c1"># More details at the LICENSE file included with OSSEC or online</span>
 <span class="c1"># at: https://github.com/ossec/ossec-hids/blob/master/LICENSE</span>
 <span class="c1">#</span>
-<span class="c1"># Blank lines and lines starting with '#' are ignored.</span>
+<span class="c1"># Blank lines and lines starting with &#39;#&#39; are ignored.</span>
 <span class="c1">#</span>
 <span class="c1"># Each line must be in the following format:</span>
 <span class="c1"># file_name !string_to_search!Description</span>
@@ -215,6 +215,7 @@ killall<span class="w">     </span>!/dev/<span class="o">[</span>^t%<span class=
 /etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*antivirus.com!<span class="w"> </span>Anti-virus<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
 /etc/hosts<span class="w">  </span>!^<span class="o">[</span>^#<span class="o">]</span>*sans.org!<span class="w"> </span>Security<span class="w"> </span>site<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>hosts<span class="w"> </span>file
 </code></pre></div>
+
 <h4>check_rc_trojans.c</h4>
 <div class="highlight"><pre><span></span><code><span class="cm">/* Copyright (C) 2009 Trend Micro Inc.</span>
 <span class="cm"> * All right reserved.</span>
@@ -225,8 +226,8 @@ killall<span class="w">     </span>!/dev/<span class="o">[</span>^t%<span class=
 <span class="cm"> * Foundation</span>
 <span class="cm"> */</span>
 
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">"shared.h"</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rootcheck.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;shared.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rootcheck.h&quot;</span>
 
 
 <span class="cm">/* Read the file pointer specified (rootkit_trojans)</span>
@@ -241,12 +242,12 @@ killall<span class="w">     </span>!/dev/<span class="o">[</span>^t%<span class=
 <span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">string_to_look</span><span class="p">;</span>
 
 <span class="cp">#ifndef WIN32</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">all_paths</span><span class="p">[])</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"bin"</span><span class="p">,</span><span class="w"> </span><span class="s">"sbin"</span><span class="p">,</span><span class="w"> </span><span class="s">"usr/bin"</span><span class="p">,</span><span class="w"> </span><span class="s">"usr/sbin"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">};</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">all_paths</span><span class="p">[])</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sbin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;usr/bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;usr/sbin&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">};</span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">all_paths</span><span class="p">[])</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"C:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="s">"D:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">};</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">all_paths</span><span class="p">[])</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;C:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;D:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">};</span>
 <span class="cp">#endif</span>
 
-<span class="w">    </span><span class="n">debug1</span><span class="p">(</span><span class="s">"%s: DEBUG: Starting on check_rc_trojans"</span><span class="p">,</span><span class="w"> </span><span class="n">ARGV0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">debug1</span><span class="p">(</span><span class="s">&quot;%s: DEBUG: Starting on check_rc_trojans&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ARGV0</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="n">fp</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">nbuf</span><span class="p">;</span>
@@ -254,40 +255,40 @@ killall<span class="w">     </span>!/dev/<span class="o">[</span>^t%<span class=
 
 <span class="w">        </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="w">        </span><span class="cm">/* Remove end of line */</span>
-<span class="w">        </span><span class="n">nbuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strchr</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">);</span>
+<span class="w">        </span><span class="n">nbuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strchr</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">nbuf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="o">*</span><span class="n">nbuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">            </span><span class="o">*</span><span class="n">nbuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="n">nbuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize_string</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">nbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'\0'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">*</span><span class="n">nbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'#'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">nbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">*</span><span class="n">nbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;#&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="k">continue</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="cm">/* File now may be valid */</span>
 <span class="w">        </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nbuf</span><span class="p">;</span>
 
-<span class="w">        </span><span class="n">string_to_look</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strchr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="sc">'!'</span><span class="p">);</span>
+<span class="w">        </span><span class="n">string_to_look</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strchr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;!&#39;</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">string_to_look</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="k">continue</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="o">*</span><span class="n">string_to_look</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">        </span><span class="o">*</span><span class="n">string_to_look</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span>
 <span class="w">        </span><span class="n">string_to_look</span><span class="o">++</span><span class="p">;</span>
 
-<span class="w">        </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strchr</span><span class="p">(</span><span class="n">string_to_look</span><span class="p">,</span><span class="w"> </span><span class="sc">'!'</span><span class="p">);</span>
+<span class="w">        </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strchr</span><span class="p">(</span><span class="n">string_to_look</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;!&#39;</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="k">continue</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="o">*</span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">        </span><span class="o">*</span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span>
 <span class="w">        </span><span class="n">message</span><span class="o">++</span><span class="p">;</span>
 
 <span class="w">        </span><span class="n">string_to_look</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize_string</span><span class="p">(</span><span class="n">string_to_look</span><span class="p">);</span>
 <span class="w">        </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize_string</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
 <span class="w">        </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize_string</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'\0'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">*</span><span class="n">string_to_look</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">*</span><span class="n">string_to_look</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="k">continue</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
@@ -295,13 +296,13 @@ killall<span class="w">     </span>!/dev/<span class="o">[</span>^t%<span class=
 
 <span class="w">        </span><span class="cm">/* Try with all possible paths */</span>
 <span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">all_paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">'/'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="n">snprintf</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="s">"%s/%s/%s"</span><span class="p">,</span><span class="w"> </span><span class="n">basedir</span><span class="p">,</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">&#39;/&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">snprintf</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%s/%s/%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">basedir</span><span class="p">,</span>
 <span class="w">                         </span><span class="n">all_paths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
 <span class="w">                         </span><span class="n">file</span><span class="p">);</span>
 <span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="n">strncpy</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">);</span>
-<span class="w">                </span><span class="n">file_path</span><span class="p">[</span><span class="n">OS_SIZE_1024</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">                </span><span class="n">file_path</span><span class="p">[</span><span class="n">OS_SIZE_1024</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span>
 <span class="w">            </span><span class="p">}</span>
 
 <span class="w">            </span><span class="cm">/* Check if entry is found */</span>
@@ -309,17 +310,17 @@ killall<span class="w">     </span>!/dev/<span class="o">[</span>^t%<span class=
 <span class="w">                </span><span class="kt">char</span><span class="w"> </span><span class="n">op_msg</span><span class="p">[</span><span class="n">OS_SIZE_1024</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
 <span class="w">                </span><span class="n">_errors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-<span class="w">                </span><span class="n">snprintf</span><span class="p">(</span><span class="n">op_msg</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="s">"Trojaned version of file "</span>
-<span class="w">                         </span><span class="s">"'%s' detected. Signature used: '%s' (%s)."</span><span class="p">,</span>
+<span class="w">                </span><span class="n">snprintf</span><span class="p">(</span><span class="n">op_msg</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Trojaned version of file &quot;</span>
+<span class="w">                         </span><span class="s">&quot;&#39;%s&#39; detected. Signature used: &#39;%s&#39; (%s).&quot;</span><span class="p">,</span>
 <span class="w">                         </span><span class="n">file_path</span><span class="p">,</span>
 <span class="w">                         </span><span class="n">string_to_look</span><span class="p">,</span>
-<span class="w">                         </span><span class="o">*</span><span class="n">message</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'\0'</span><span class="w"> </span><span class="o">?</span>
-<span class="w">                         </span><span class="s">"Generic"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">message</span><span class="p">);</span>
+<span class="w">                         </span><span class="o">*</span><span class="n">message</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="w"> </span><span class="o">?</span>
+<span class="w">                         </span><span class="s">&quot;Generic&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">message</span><span class="p">);</span>
 
 <span class="w">                </span><span class="n">notify_rk</span><span class="p">(</span><span class="n">ALERT_ROOTKIT_FOUND</span><span class="p">,</span><span class="w"> </span><span class="n">op_msg</span><span class="p">);</span>
 <span class="w">            </span><span class="p">}</span>
 
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'/'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;/&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="k">break</span><span class="p">;</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">            </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
@@ -329,18 +330,19 @@ killall<span class="w">     </span>!/dev/<span class="o">[</span>^t%<span class=
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_errors</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="n">op_msg</span><span class="p">[</span><span class="n">OS_SIZE_1024</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
-<span class="w">        </span><span class="n">snprintf</span><span class="p">(</span><span class="n">op_msg</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="s">"No binaries with any trojan detected. "</span>
-<span class="w">                 </span><span class="s">"Analyzed %d files."</span><span class="p">,</span><span class="w"> </span><span class="n">_total</span><span class="p">);</span>
+<span class="w">        </span><span class="n">snprintf</span><span class="p">(</span><span class="n">op_msg</span><span class="p">,</span><span class="w"> </span><span class="n">OS_SIZE_1024</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;No binaries with any trojan detected. &quot;</span>
+<span class="w">                 </span><span class="s">&quot;Analyzed %d files.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">_total</span><span class="p">);</span>
 <span class="w">        </span><span class="n">notify_rk</span><span class="p">(</span><span class="n">ALERT_OK</span><span class="p">,</span><span class="w"> </span><span class="n">op_msg</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
+
 <p>从相应的源码看，agent是读取文件内容，然后匹配正则，（特征：#!/bin/sh）可以看下面的ps 样本,为什么又有host呢，它会把相应的域名指向其他ip，主要是阻止访问对应网站</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 
-<span class="k">for</span><span class="w"> </span>arg<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">"</span><span class="nv">$*</span><span class="s2">"</span><span class="p">;</span><span class="k">do</span>
+<span class="k">for</span><span class="w"> </span>arg<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$*</span><span class="s2">&quot;</span><span class="p">;</span><span class="k">do</span>
 
-ips<span class="w"> </span><span class="nv">$arg</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"589a2ec0c1"</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"4b74cd2dba"</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"ips"</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"grep"</span>
+ips<span class="w"> </span><span class="nv">$arg</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;589a2ec0c1&quot;</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;4b74cd2dba&quot;</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;ips&quot;</span><span class="p">|</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;grep&quot;</span>
 
 <span class="k">done</span><span class="p">;</span><span class="nb">exit</span>
 </code></pre></div>

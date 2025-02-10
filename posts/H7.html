@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-06T13:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Wed 06 June 2018
+        三 06 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -116,43 +116,50 @@ var _hmt = _hmt || [];
 
 <span class="c1"># yum install librdkafka  librdkafka-devel -y</span>
 </code></pre></div>
+
 <p>把bro 添加到环境变量  （/etc/profile）</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">BRO_HOME</span><span class="o">=</span>/opt/bro
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$BRO_HOME</span>/bin
 </code></pre></div>
+
 <p>注意：</p>
 <p>bro-2.5.5.tar.gz  解压后的源码目录不要删除，后面有用</p>
 <div class="highlight"><pre><span></span><code><span class="c1">#  pip install zkg</span>
 <span class="c1">#  zkg autoconfig</span>
 </code></pre></div>
+
 <p>bro-pkg 是bro的包管理器，在包安装的过程中，会依赖bro源码目录，不然某些bro插件安装会报错</p>
 <p>安装metron-bro-plugin-kafka插件</p>
 <div class="highlight"><pre><span></span><code><span class="c1">#  zkg install apache/metron-bro-plugin-kafka --version master</span>
 </code></pre></div>
+
 <p>编译 bro 的 kafka插件</p>
 <div class="highlight"><pre><span></span><code><span class="c1">#cd bro-2.5.5/aux/plugins/kafka/</span>
 <span class="c1"># ./configure --bro-dist=../../.. --install-root=/opt/bro/lib/bro/plugins</span>
 <span class="c1"># make &amp;&amp; make install</span>
 </code></pre></div>
+
 <p>测试</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># bro -N Bro::Kafka</span>
 Bro::Kafka<span class="w"> </span>-<span class="w"> </span>Writes<span class="w"> </span>logs<span class="w"> </span>to<span class="w"> </span>Kafka<span class="w"> </span><span class="o">(</span>dynamic,<span class="w"> </span>version<span class="w"> </span><span class="m">0</span>.1<span class="o">)</span>
 </code></pre></div>
+
 <h4>配置</h4>
 <div class="highlight"><pre><span></span><code>@load<span class="w"> </span>Bro/Kafka/logs-to-kafka.bro
 redef<span class="w"> </span>Kafka::logs_to_send<span class="w"> </span><span class="o">=</span><span class="w"> </span>set<span class="o">(</span>Conn::LOG,<span class="w"> </span>HTTP::LOG<span class="o">)</span><span class="p">;</span>
 redef<span class="w"> </span>Kafka::kafka_conf<span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="w">    </span><span class="o">[</span><span class="s2">"metadata.broker.list"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"localhost:9092"</span>
+<span class="w">    </span><span class="o">[</span><span class="s2">&quot;metadata.broker.list&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;localhost:9092&quot;</span>
 <span class="o">)</span><span class="p">;</span>
-redef<span class="w"> </span>Kafka::topic_name<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"bro"</span><span class="p">;</span>
+redef<span class="w"> </span>Kafka::topic_name<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bro&quot;</span><span class="p">;</span>
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>@load<span class="w"> </span>Apache/Kafka
 
 redef<span class="w"> </span>Kafka::logs_to_send<span class="w"> </span><span class="o">=</span><span class="w"> </span>set<span class="o">(</span>Conn::LOG,<span class="w"> </span>DNS::LOG,<span class="w"> </span>SSH::LOG,SNMP::LOG,<span class="w"> </span>SMTP::LOG,<span class="w"> </span>mysql::LOG,<span class="w"> </span>NTLM::LOG,<span class="w"> </span>HTTP::LOG<span class="o">)</span><span class="p">;</span>
 
-redef<span class="w"> </span>Kafka::topic_name<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"bro_all"</span><span class="p">;</span>
+redef<span class="w"> </span>Kafka::topic_name<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bro_all&quot;</span><span class="p">;</span>
 redef<span class="w"> </span>Kafka::kafka_conf<span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="o">[</span><span class="s2">"metadata.broker.list"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"10.10.128.9:9092"</span>
+<span class="o">[</span><span class="s2">&quot;metadata.broker.list&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;10.10.128.9:9092&quot;</span>
 
 <span class="o">)</span><span class="p">;</span>
 <span class="c1">#redef Kafka::tag_json = T;</span>
@@ -161,82 +168,84 @@ event<span class="w"> </span>bro_init<span class="o">()</span><span class="w"> <
 <span class="o">{</span>
 <span class="w">    </span><span class="c1"># handles HTTP</span>
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>http_filter:<span class="w"> </span>Log::Filter<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
-<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kafka-http"</span>,
+<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kafka-http&quot;</span>,
 <span class="w">        </span><span class="nv">$writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Log::WRITER_KAFKAWRITER,
 <span class="w">        </span><span class="nv">$config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="w">                </span><span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"http"</span><span class="w">       </span>
+<span class="w">                </span><span class="o">[</span><span class="s2">&quot;topic_name&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;http&quot;</span><span class="w">       </span>
 <span class="o">)</span>
 <span class="w">    </span><span class="o">]</span><span class="p">;</span>
 <span class="w">    </span>Log::add_filter<span class="o">(</span>HTTP::LOG,<span class="w"> </span>http_filter<span class="o">)</span><span class="p">;</span>
 
 
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>dns_filter:<span class="w"> </span>Log::Filter<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
-<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kafka-dns"</span>,
+<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kafka-dns&quot;</span>,
 <span class="w">        </span><span class="nv">$writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Log::WRITER_KAFKAWRITER,
 <span class="w">        </span><span class="nv">$config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="w">                </span><span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dns"</span><span class="w"> </span><span class="o">)</span>
+<span class="w">                </span><span class="o">[</span><span class="s2">&quot;topic_name&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dns&quot;</span><span class="w"> </span><span class="o">)</span>
 <span class="w">    </span><span class="o">]</span><span class="p">;</span>
 <span class="w">    </span>Log::add_filter<span class="o">(</span>DNS::LOG,<span class="w"> </span>dns_filter<span class="o">)</span><span class="p">;</span>
 
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>mysql_filter:<span class="w"> </span>Log::Filter<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
-<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kafka-mysql"</span>,<span class="w"> </span>
+<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kafka-mysql&quot;</span>,<span class="w"> </span>
 <span class="w">        </span><span class="nv">$writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Log::WRITER_KAFKAWRITER,<span class="w"> </span>
 <span class="w">        </span><span class="nv">$config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="w">                </span><span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"mysql"</span><span class="w"> </span><span class="o">)</span>
+<span class="w">                </span><span class="o">[</span><span class="s2">&quot;topic_name&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;mysql&quot;</span><span class="w"> </span><span class="o">)</span>
 <span class="w">    </span><span class="o">]</span><span class="p">;</span><span class="w"> </span>
 <span class="w">    </span>Log::add_filter<span class="o">(</span>mysql::LOG,<span class="w"> </span>mysql_filter<span class="o">)</span><span class="p">;</span>
 
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>conn_filter:<span class="w"> </span>Log::Filter<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
-<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kafka-conn"</span>,<span class="w"> </span>
+<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kafka-conn&quot;</span>,<span class="w"> </span>
 <span class="w">        </span><span class="nv">$writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Log::WRITER_KAFKAWRITER,<span class="w"> </span>
 <span class="w">        </span><span class="nv">$config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="w">                </span><span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"conn"</span><span class="w"> </span><span class="o">)</span>
+<span class="w">                </span><span class="o">[</span><span class="s2">&quot;topic_name&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;conn&quot;</span><span class="w"> </span><span class="o">)</span>
 <span class="w">    </span><span class="o">]</span><span class="p">;</span><span class="w"> </span>
 <span class="w">    </span>Log::add_filter<span class="o">(</span>Conn::LOG,<span class="w"> </span>conn_filter<span class="o">)</span><span class="p">;</span>
 
 
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>ntlm_filter:<span class="w"> </span>Log::Filter<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
-<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kafka-ntlm"</span>,<span class="w"> </span>
+<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kafka-ntlm&quot;</span>,<span class="w"> </span>
 <span class="w">        </span><span class="nv">$writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Log::WRITER_KAFKAWRITER,<span class="w"> </span>
 <span class="w">        </span><span class="nv">$config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="w">                </span><span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ntlm"</span><span class="w"> </span><span class="o">)</span>
+<span class="w">                </span><span class="o">[</span><span class="s2">&quot;topic_name&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ntlm&quot;</span><span class="w"> </span><span class="o">)</span>
 <span class="w">    </span><span class="o">]</span><span class="p">;</span><span class="w"> </span>
 <span class="w">    </span>Log::add_filter<span class="o">(</span>NTLM::LOG,<span class="w"> </span>ntlm_filter<span class="o">)</span><span class="p">;</span>
 
 
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>ssh_filter:<span class="w"> </span>Log::Filter<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
-<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kafka-ssh"</span>,<span class="w"> </span>
+<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kafka-ssh&quot;</span>,<span class="w"> </span>
 <span class="w">        </span><span class="nv">$writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Log::WRITER_KAFKAWRITER,<span class="w"> </span>
 <span class="w">        </span><span class="nv">$config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="w">                </span><span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ssh"</span><span class="w"> </span><span class="o">)</span>
+<span class="w">                </span><span class="o">[</span><span class="s2">&quot;topic_name&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ssh&quot;</span><span class="w"> </span><span class="o">)</span>
 <span class="w">    </span><span class="o">]</span><span class="p">;</span><span class="w"> </span>
 <span class="w">    </span>Log::add_filter<span class="o">(</span>SSH::LOG,<span class="w"> </span>ssh_filter<span class="o">)</span><span class="p">;</span>
 
 
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>smtp_filter:<span class="w"> </span>Log::Filter<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
-<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kafka-smtp"</span>,
+<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kafka-smtp&quot;</span>,
 <span class="w">        </span><span class="nv">$writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Log::WRITER_KAFKAWRITER,
 <span class="w">        </span><span class="nv">$config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="w">                </span><span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"smtp"</span><span class="w"> </span><span class="o">)</span>
+<span class="w">                </span><span class="o">[</span><span class="s2">&quot;topic_name&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;smtp&quot;</span><span class="w"> </span><span class="o">)</span>
 <span class="w">    </span><span class="o">]</span><span class="p">;</span>
 <span class="w">    </span>Log::add_filter<span class="o">(</span>SMTP::LOG,<span class="w"> </span>smtp_filter<span class="o">)</span><span class="p">;</span>
 
 
 
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>snmp_filter:<span class="w"> </span>Log::Filter<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
-<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kafka-snmp"</span>,
+<span class="w">        </span><span class="nv">$name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;kafka-snmp&quot;</span>,
 <span class="w">        </span><span class="nv">$writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Log::WRITER_KAFKAWRITER,
 <span class="w">        </span><span class="nv">$config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>table<span class="o">(</span>
-<span class="w">                </span><span class="o">[</span><span class="s2">"topic_name"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"snmp"</span><span class="w"> </span><span class="o">)</span>
+<span class="w">                </span><span class="o">[</span><span class="s2">&quot;topic_name&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;snmp&quot;</span><span class="w"> </span><span class="o">)</span>
 <span class="w">    </span><span class="o">]</span><span class="p">;</span>
 <span class="w">    </span>Log::add_filter<span class="o">(</span>SNMP::LOG,<span class="w"> </span>snmp_filter<span class="o">)</span><span class="p">;</span>
 
 <span class="o">}</span>
 </code></pre></div>
+
 <p>启动</p>
 <div class="highlight"><pre><span></span><code><span class="c1">#./broctl deploy</span>
 <span class="c1">#./broctl start</span>
 </code></pre></div>
+
 <h4>测试</h4>
 <div class="highlight"><pre><span></span><code><span class="c1">#./ kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bro</span>
 

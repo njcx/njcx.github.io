@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-01-15T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sun 15 January 2017
+        日 15 一月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -112,13 +112,14 @@ var _hmt = _hmt || [];
 curl<span class="w"> </span>-fsSL<span class="w"> </span>https://download.docker.com/linux/ubuntu/gpg<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>apt-key<span class="w"> </span>add<span class="w"> </span>-
 
 sudo<span class="w"> </span>add-apt-repository<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span><span class="s2">"deb [arch=amd64] https://download.docker.com/linux/ubuntu \</span>
+<span class="w">       </span><span class="s2">&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu \</span>
 <span class="s2">       </span><span class="k">$(</span>lsb_release<span class="w"> </span>-cs<span class="k">)</span><span class="s2"> \</span>
-<span class="s2">       stable"</span>
+<span class="s2">       stable&quot;</span>
 
 sudo<span class="w"> </span>apt-get<span class="w"> </span>update
 sudo<span class="w"> </span>apt-get<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>docker-ce
 </code></pre></div>
+
 <h2>Docker的三个基本概念</h2>
 <ul>
 <li>镜像</li>

@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-07-24T20:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Tue 24 July 2018
+        二 24 七月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -117,24 +117,25 @@ make<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </
 cp<span class="w"> </span>/usr/local/lib/pkgconfig/yara.pc<span class="w">   </span>/usr/lib64/pkgconfig<span class="w"> </span>
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">YARA_SRC</span><span class="o">=</span>~/go/src/yara-3.11.0
-<span class="nb">export</span><span class="w"> </span><span class="nv">CGO_CFLAGS</span><span class="o">=</span><span class="s2">"-I</span><span class="si">${</span><span class="nv">YARA_SRC</span><span class="si">}</span><span class="s2">/libyara/include"</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CGO_LDFLAGS</span><span class="o">=</span><span class="s2">"-L</span><span class="si">${</span><span class="nv">YARA_SRC</span><span class="si">}</span><span class="s2">/libyara/.libs -lyara -lm"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CGO_CFLAGS</span><span class="o">=</span><span class="s2">&quot;-I</span><span class="si">${</span><span class="nv">YARA_SRC</span><span class="si">}</span><span class="s2">/libyara/include&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CGO_LDFLAGS</span><span class="o">=</span><span class="s2">&quot;-L</span><span class="si">${</span><span class="nv">YARA_SRC</span><span class="si">}</span><span class="s2">/libyara/.libs -lyara -lm&quot;</span>
 
 go<span class="w"> </span>get<span class="w"> </span>github.com/hillu/go-yara
 <span class="nb">cd</span><span class="w"> </span>go-yara/
 git<span class="w"> </span>checkout<span class="w"> </span>v3.x
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="p">(</span>
-<span class="w">        </span><span class="s">"github.com/hillu/go-yara"</span>
+<span class="w">        </span><span class="s">&quot;github.com/hillu/go-yara&quot;</span>
 
-<span class="w">        </span><span class="s">"errors"</span>
-<span class="w">        </span><span class="s">"flag"</span>
-<span class="w">        </span><span class="s">"log"</span>
-<span class="w">        </span><span class="s">"os"</span>
-<span class="w">        </span><span class="s">"strconv"</span>
-<span class="w">        </span><span class="s">"strings"</span>
+<span class="w">        </span><span class="s">&quot;errors&quot;</span>
+<span class="w">        </span><span class="s">&quot;flag&quot;</span>
+<span class="w">        </span><span class="s">&quot;log&quot;</span>
+<span class="w">        </span><span class="s">&quot;os&quot;</span>
+<span class="w">        </span><span class="s">&quot;strconv&quot;</span>
+<span class="w">        </span><span class="s">&quot;strings&quot;</span>
 <span class="p">)</span>
 
 <span class="kd">type</span><span class="w"> </span><span class="nx">rule</span><span class="w"> </span><span class="kd">struct</span><span class="p">{</span><span class="w"> </span><span class="nx">namespace</span><span class="p">,</span><span class="w"> </span><span class="nx">filename</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}</span>
@@ -142,9 +143,9 @@ git<span class="w"> </span>checkout<span class="w"> </span>v3.x
 
 <span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">rules</span><span class="p">)</span><span class="w"> </span><span class="nx">Set</span><span class="p">(</span><span class="nx">arg</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">arg</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">"empty rule specification"</span><span class="p">)</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;empty rule specification&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="nx">a</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">SplitN</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span><span class="w"> </span><span class="s">":"</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">a</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">SplitN</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;:&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
 <span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
 <span class="w">                </span><span class="o">*</span><span class="nx">r</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="o">*</span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="p">{</span><span class="nx">filename</span><span class="p">:</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]})</span>
@@ -158,10 +159,10 @@ git<span class="w"> </span>checkout<span class="w"> </span>v3.x
 <span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="kt">string</span>
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="o">*</span><span class="nx">r</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="nx">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s">" "</span>
+<span class="w">                        </span><span class="nx">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s">&quot; &quot;</span>
 <span class="w">                </span><span class="p">}</span>
-<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">namespace</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="nx">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">namespace</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">":"</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">namespace</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nx">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">namespace</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;:&quot;</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">                </span><span class="nx">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span>
 <span class="w">        </span><span class="p">}</span>
@@ -172,13 +173,13 @@ git<span class="w"> </span>checkout<span class="w"> </span>v3.x
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">m</span><span class="p">)</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                        </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">match</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"- [%s] %s "</span><span class="p">,</span><span class="w"> </span><span class="nx">match</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">,</span><span class="w"> </span><span class="nx">match</span><span class="p">.</span><span class="nx">Rule</span><span class="p">)</span>
+<span class="w">                                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;- [%s] %s &quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">match</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">,</span><span class="w"> </span><span class="nx">match</span><span class="p">.</span><span class="nx">Rule</span><span class="p">)</span>
 <span class="w">                        </span><span class="p">}</span>
 <span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">"no matches."</span><span class="p">)</span>
+<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">&quot;no matches.&quot;</span><span class="p">)</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"error: %s."</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;error: %s.&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -188,23 +189,23 @@ git<span class="w"> </span>checkout<span class="w"> </span>v3.x
 <span class="w">                </span><span class="nx">processScan</span><span class="w"> </span><span class="kt">bool</span>
 <span class="w">                </span><span class="nx">pids</span><span class="w">        </span><span class="p">[]</span><span class="kt">int</span>
 <span class="w">        </span><span class="p">)</span>
-<span class="w">        </span><span class="nx">flag</span><span class="p">.</span><span class="nx">BoolVar</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">processScan</span><span class="p">,</span><span class="w"> </span><span class="s">"processes"</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="s">"scan processes instead of files"</span><span class="p">)</span>
-<span class="w">        </span><span class="nx">flag</span><span class="p">.</span><span class="nx">Var</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rules</span><span class="p">,</span><span class="w"> </span><span class="s">"rule"</span><span class="p">,</span><span class="w"> </span><span class="s">"add rule"</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">flag</span><span class="p">.</span><span class="nx">BoolVar</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">processScan</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;processes&quot;</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;scan processes instead of files&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">flag</span><span class="p">.</span><span class="nx">Var</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rules</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;rule&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;add rule&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="nx">flag</span><span class="p">.</span><span class="nx">Parse</span><span class="p">()</span>
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">rules</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">"no rules specified"</span><span class="p">)</span>
+<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">&quot;no rules specified&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="nx">args</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">flag</span><span class="p">.</span><span class="nx">Args</span><span class="p">()</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">"no files or processes specified"</span><span class="p">)</span>
+<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">&quot;no files or processes specified&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">processScan</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">arg</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">args</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                        </span><span class="k">if</span><span class="w"> </span><span class="nx">pid</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">strconv</span><span class="p">.</span><span class="nx">Atoi</span><span class="p">(</span><span class="nx">arg</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Could not parse %s ad number"</span><span class="p">,</span><span class="w"> </span><span class="nx">arg</span><span class="p">)</span>
+<span class="w">                                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Could not parse %s ad number&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">arg</span><span class="p">)</span>
 <span class="w">                        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                                </span><span class="nx">pids</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">pids</span><span class="p">,</span><span class="w"> </span><span class="nx">pid</span><span class="p">)</span>
 <span class="w">                        </span><span class="p">}</span>
@@ -213,46 +214,48 @@ git<span class="w"> </span>checkout<span class="w"> </span>v3.x
 
 <span class="w">        </span><span class="nx">c</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">yara</span><span class="p">.</span><span class="nx">NewCompiler</span><span class="p">()</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Failed to initialize YARA compiler: %s"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Failed to initialize YARA compiler: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">rules</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="nx">f</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span><span class="p">)</span>
 <span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Could not open rule file %s: %s"</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Could not open rule file %s: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">                </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">AddFile</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">namespace</span><span class="p">)</span>
 <span class="w">                </span><span class="nx">f</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
 <span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Could not parse rule file %s: %s"</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Could not parse rule file %s: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">GetRules</span><span class="p">()</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">"Failed to compile rules: %s"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">                </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Failed to compile rules: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">processScan</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">pid</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">pids</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"Scanning process %d..."</span><span class="p">,</span><span class="w"> </span><span class="nx">pid</span><span class="p">)</span>
+<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Scanning process %d...&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pid</span><span class="p">)</span>
 <span class="w">                        </span><span class="nx">m</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">ScanProc</span><span class="p">(</span><span class="nx">pid</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 <span class="w">                        </span><span class="nx">printMatches</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">filename</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">args</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"Scanning file %s... "</span><span class="p">,</span><span class="w"> </span><span class="nx">filename</span><span class="p">)</span>
+<span class="w">                        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Scanning file %s... &quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">filename</span><span class="p">)</span>
 <span class="w">                        </span><span class="nx">m</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">ScanFile</span><span class="p">(</span><span class="nx">filename</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 <span class="w">                        </span><span class="nx">printMatches</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>go<span class="w"> </span>build<span class="w"> </span>--ldflags<span class="w"> </span><span class="s1">'-extldflags "-static -lm"'</span><span class="w"> </span>test.go<span class="w">  </span>
+
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span>build<span class="w"> </span>--ldflags<span class="w"> </span><span class="s1">&#39;-extldflags &quot;-static -lm&quot;&#39;</span><span class="w"> </span>test.go<span class="w">  </span>
 </code></pre></div>
+
 <p>方法2 </p>
 <div class="highlight"><pre><span></span><code>https://github.com/Velocidex/go-yara
 该库集成了yara<span class="w"> </span>的c代码
 
-go<span class="w"> </span>build<span class="w"> </span>--ldflags<span class="w"> </span><span class="s1">'-extldflags "-static -lm"'</span><span class="w"> </span>test.go<span class="w">  </span>
+go<span class="w"> </span>build<span class="w"> </span>--ldflags<span class="w"> </span><span class="s1">&#39;-extldflags &quot;-static -lm&quot;&#39;</span><span class="w"> </span>test.go<span class="w">  </span>
 </code></pre></div>
   </div>
 </article>

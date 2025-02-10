@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-03-20T10:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Mon 20 March 2017
+        一 20 三月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -119,30 +119,30 @@ var _hmt = _hmt || [];
 <ul>
 <li>Python类的写法</li>
 </ul>
-<p><img alt="选区_001.png" class="img-fluid" src="../images/选区_001.png"/></p>
+<p><img alt="选区_001.png" src="../images/选区_001.png"></p>
 <ul>
 <li>Python经典类</li>
 </ul>
-<p><img alt="选区_003.png" class="img-fluid" src="../images/选区_003.png"/></p>
+<p><img alt="选区_003.png" src="../images/选区_003.png"></p>
 <ul>
 <li>Python新式类</li>
 </ul>
-<p><img alt="选区_002.png" class="img-fluid" src="../images/选区_002.png"/></p>
+<p><img alt="选区_002.png" src="../images/选区_002.png"></p>
 <p>Python由于历史原因导致多继承方法存在多样性，其中经典类是深度优先搜索方法，新式类是广度优先搜索。Python的多态和C# Java不同，Python崇尚“鸭子类型”。“当看到一只鸟走起来像鸭子、游泳起来像鸭子、叫起来也像鸭子，那么这只鸟就可以被称为鸭子。”我们并不关心对象是什么类型，到底是不是鸭子，只关心行为"。</p>
 <div class="highlight"><pre><span></span><code><span class="c1">#coding=utf-8  </span>
-<span class="k">class</span> <span class="nc">Duck</span><span class="p">:</span>  
-    <span class="k">def</span> <span class="nf">quack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  
-        <span class="nb">print</span> <span class="s2">"Quaaaaaack!"</span>  
+<span class="k">class</span><span class="w"> </span><span class="nc">Duck</span><span class="p">:</span>  
+    <span class="k">def</span><span class="w"> </span><span class="nf">quack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  
+        <span class="nb">print</span> <span class="s2">&quot;Quaaaaaack!&quot;</span>  
 
-<span class="k">class</span> <span class="nc">Bird</span><span class="p">:</span>  
-    <span class="k">def</span> <span class="nf">quack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  
-        <span class="nb">print</span> <span class="s2">"bird imitate duck."</span>  
+<span class="k">class</span><span class="w"> </span><span class="nc">Bird</span><span class="p">:</span>  
+    <span class="k">def</span><span class="w"> </span><span class="nf">quack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  
+        <span class="nb">print</span> <span class="s2">&quot;bird imitate duck.&quot;</span>  
 
-<span class="k">class</span> <span class="nc">Doge</span><span class="p">:</span>  
-    <span class="k">def</span> <span class="nf">quack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  
-        <span class="nb">print</span> <span class="s2">"doge imitate duck."</span>  
+<span class="k">class</span><span class="w"> </span><span class="nc">Doge</span><span class="p">:</span>  
+    <span class="k">def</span><span class="w"> </span><span class="nf">quack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  
+        <span class="nb">print</span> <span class="s2">&quot;doge imitate duck.&quot;</span>  
 
-<span class="k">def</span> <span class="nf">in_the_forest</span><span class="p">(</span><span class="n">duck</span><span class="p">):</span>  
+<span class="k">def</span><span class="w"> </span><span class="nf">in_the_forest</span><span class="p">(</span><span class="n">duck</span><span class="p">):</span>  
     <span class="n">duck</span><span class="o">.</span><span class="n">quack</span><span class="p">()</span>  
 
 <span class="n">duck</span> <span class="o">=</span> <span class="n">Duck</span><span class="p">()</span>  
@@ -151,6 +151,7 @@ var _hmt = _hmt || [];
 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">duck</span><span class="p">,</span> <span class="n">bird</span><span class="p">,</span> <span class="n">doge</span><span class="p">]:</span>  
     <span class="n">in_the_forest</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  
 </code></pre></div>
+
 <h2>应用场景</h2>
 <ul>
 <li>

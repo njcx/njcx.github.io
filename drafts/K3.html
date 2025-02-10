@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-05-27T14:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 27 May 2017
+        六 27 五月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -107,17 +107,22 @@ var _hmt = _hmt || [];
 <h4>chkrootkit安装</h4>
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>gcc<span class="w"> </span>gcc-c++<span class="w"> </span>net-snmp-utils<span class="w"> </span>net-tools<span class="w"> </span>make<span class="w"> </span>glibc-static<span class="w"> </span>-y
 </code></pre></div>
+
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-LS<span class="w"> </span>ftp://ftp.pangeia.com.br/pub/seg/pac/chkrootkit.tar.gz<span class="w"> </span><span class="p">|</span><span class="w">  </span>tar<span class="w"> </span>zx<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>chkrootkit-0.52<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>sense
 </code></pre></div>
+
 <h4>chkrootkit使用</h4>
 <div class="highlight"><pre><span></span><code>./chkrootkit<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>INFECTED
 </code></pre></div>
+
 <p>我测试了一下，新安装的centos7.3，居然,额</p>
 <div class="highlight"><pre><span></span><code>Searching<span class="w"> </span><span class="k">for</span><span class="w"> </span>Linux.Xor.DDoS<span class="w"> </span>...<span class="w"> </span>INFECTED:<span class="w"> </span>Possible<span class="w"> </span>Malicious<span class="w"> </span>Linux.Xor.DDoS<span class="w"> </span>installed
 </code></pre></div>
+
 <h4>rootkit hunter 安装</h4>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-LS<span class="w">  </span>https://nchc.dl.sourceforge.net/project/rkhunter/rkhunter/1.4.6/rkhunter-1.4.6.tar.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>tar<span class="w"> </span>zx<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>rkhunter-1.4.6<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sh<span class="w"> </span>installer.sh<span class="w"> </span>--layout<span class="w"> </span>default<span class="w"> </span>--install
 </code></pre></div>
+
 <h4>rootkit hunter 使用</h4>
 <div class="highlight"><pre><span></span><code>/usr/local/bin/rkhunter<span class="w"> </span>--propupd
 

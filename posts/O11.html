@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2018-06-09T03:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 09 June 2018
+        六 09 六月 2018
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -106,6 +106,7 @@ var _hmt = _hmt || [];
 <h4>Windows 痕迹清理</h4>
 <div class="highlight"><pre><span></span><code>https://github.com/hlldz/Invoke-Phant0m.git
 </code></pre></div>
+
 <p>Windows的日志文件通常有应用程序日志，安全日志、系统日志、DNS服务器日志、FTP日志、WWW日志等等。
 应用程序日志文件：%systemroot%\system32\config\AppEvent.EVT;</p>
 <p>安全日志文件：%systemroot%\system32\config\SecEvent.EVT;</p>
@@ -123,6 +124,7 @@ var _hmt = _hmt || [];
 @del<span class="w"> </span>c:<span class="se">\%</span>systemroot%<span class="se">\*</span>.log
 @del<span class="w"> </span>cl.bat
 </code></pre></div>
+
 <h4>Linux痕迹清理</h4>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># echo &gt; /var/log/wtmp //此文件默认打开时乱码，可查到ip等信息</span>
 <span class="o">[</span>root@localhost<span class="w"> </span>root<span class="o">]</span><span class="c1"># last //此时即查不到用户登录信息</span>
@@ -144,7 +146,7 @@ var _hmt = _hmt || [];
 
 清空命令记录
 
-<span class="m">1</span>）echo<span class="w"> </span><span class="s2">"'"</span><span class="w"> </span>&gt;<span class="w"> </span>log.txt
+<span class="m">1</span>）echo<span class="w"> </span><span class="s2">&quot;&#39;&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>log.txt
 <span class="m">2</span>）echo<span class="w"> </span>&gt;<span class="w"> </span>log.txt<span class="w"> </span>，这种文件里会存在空格
 <span class="m">3</span>）cat<span class="w"> </span>/dev/null<span class="w"> </span>&gt;<span class="w"> </span>log.txt
 

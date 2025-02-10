@@ -87,7 +87,7 @@ var _hmt = _hmt || [];
     <ul class="list-inline">
       <li class="list-inline-item text-muted" title="2017-05-20T13:20:00+03:00">
         <i class="fa fa-clock-o"></i>
-        Sat 20 May 2017
+        六 20 五月 2017
       </li>
       <li class="list-inline-item">
         <i class="fa fa-folder-open-o"></i>
@@ -104,10 +104,10 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>问题</h4>
 <p>在图的左边有一些点，我们用肉眼可以看出来有四个点群，但是我们怎么通过计算机程序找出这几个点群来呢？于是就出现了我们的K-Means算法</p>
-<p><img alt="ml2" class="img-fluid" src="../images/K-Means.gif"/></p>
+<p><img alt="ml2" src="../images/K-Means.gif"></p>
 <h4>算法概要</h4>
 <p>这个算法其实很简单，如下图所示：</p>
-<p><img alt="ml2" class="img-fluid" src="../images/K-Means.jpg"/></p>
+<p><img alt="ml2" src="../images/K-Means.jpg"></p>
 <p>从上图中，我们可以看到，A, B, C, D, E 是五个在图中点。而灰色的点是我们的种子点，也就是我们用来找点群的点。有两个种子点，所以K=2。</p>
 <p>然后，K-Means的算法如下：</p>
 <ul>
@@ -117,8 +117,8 @@ var _hmt = _hmt || [];
 <li>然后重复第2）和第3）步，直到，种子点没有移动（我们可以看到图中的第四步上面的种子点聚合了A,B,C，下面的种子点聚合了D，E）。</li>
 <li>这个算法很简单，但是有些细节我要提一下，距离的公式。我重点想说一下“求点群中心的算法”</li>
 </ul>
-<p><img alt="ml2" class="img-fluid" src="../images/4630.png"/>
-<img alt="ml2" class="img-fluid" src="../images/选区003.png"/></p>
+<p><img alt="ml2" src="../images/4630.png">
+<img alt="ml2" src="../images/选区003.png"></p>
 <h4>K-Means ++ 算法</h4>
 <p>K-Means主要有两个最重大的缺陷——都和初始值有关：</p>
 <ul>
@@ -133,7 +133,7 @@ var _hmt = _hmt || [];
 <li>4,重复第（2）和第（3）步直到所有的K个种子点都被选出来。</li>
 <li>进行K-Means算法。</li>
 </ul>
-<p><img alt="ml2" class="img-fluid" src="../images/40.png"/></p>
+<p><img alt="ml2" src="../images/40.png"></p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
