@@ -104,11 +104,11 @@ var _hmt = _hmt || [];
   <div class="content">
     <h4>介绍</h4>
 <p>IEEE 802.1X是由IEEE制定的关于用户接入网络的认证标准，全称是“基于端口的网络接入控制”。它于2001年正式颁布，最初是为有线网络设计，之后为了配合无线网络的接入进行修订改版，并于2004年完成。
-   <br>
+   <br/>
      当主机接到开启了IEEE 802.1x认证的接口上，就有可能被认证，否则就有可能被拒绝访问网络。在接口上开启IEEE 802.1x认证后，在没有通过认证之前，只有IEEE 802.1x认证消息，CDP，以及STP的数据包能够通过。  因为主机接到开启了IEEE 802.1x认证的接口后，需要通过认证才能访问网络，要通过认证，只要输入合法的用户名和密码即可。交换机收到用户输入的账户信息后，要判断该账户是否合法，就必须和用户数据库做个较对，如果是数据库中存在的，则认证通过，否则认证失败，最后拒绝该用户访问网络。交换机提供给IEEE 802.1x认证的数据库可以是交换机本地的，也可以是远程服务器上的，这需要通过AAA来定义，如果AAA指定认证方式为本地用户数据库（Local），则读取本地的账户信息，如果AAA指定的认证方式为远程服务器，则读取远程服务器的账户信息，AAA为IEEE 802.1x提供的远程服务器认证只能是RADIUS服务器，该RADIUS服务器只要运行Access Control Server Version 3.0（ACS 3.0）或更高版本即可。
-   <br>
-<br>
-<br>
+   <br/>
+<br/>
+<br/>
 　 RADIUS 是一种 C/S 结构的协议，它的客户端最初就是 NAS （ Net Access Server ）服务器，现在任何运行 RADIUS 客户端软件的计算机都可以成为 RADIUS 的客户端。 RADIUS 协议认证机制灵活，可以采用 PAP 、 CHAP 或者 Unix 登录认证等多种方式。 RADIUS 是一种可扩展的协议，它进行的全部工作都是基于 Attribute-Length-Value 的向量进行的。 RADIUS 也支持厂商扩充厂家专有属性。</p>
 <p>RADIUS 的基本工作原理。用户接入 NAS ， NAS 向 RADIUS 服务器使用 Access-Require 数据包提交用户信息，包括用户名、密码等相关信息，其中用户密码是经过 MD5 加密的，双方使用共享密钥，这个密钥不经过网络传播； RADIUS 服务器对用户名和密码的合法性进行检验，必要时可以提出一个Challenge ，要求进一步对用户认证，也可以对 NAS 进行类似的认证；如果合法，给 NAS 返回 Access-Accept 数据包，允许用户进行下一步工作，否则返回 Access-Reject 数据包，拒绝用户访问；如果允许访问， NAS 向RADIUS 服务器提出计费请求 Account- Require ， RADIUS 服务器响应Account-Accept ，对用户的计费开始，同时用户可以进行自己的相关操作。</p>
 <p>RADIUS 还支持代理和漫游功能。简单地说，代理就是一台服务器，可以作为其他 RADIUS 服务器的代理，负责转发 RADIUS 认证和计费数据包。所谓漫游功能，就是代理的一个具体实现，这样可以让用户通过本来和其无关的RADIUS 服务器进行认证，用户到非归属运营商所在地也可以得到服务，也可以实现虚拟运营。</p>
@@ -120,7 +120,6 @@ var _hmt = _hmt || [];
 
 yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>freeradius<span class="w"> </span>freeradius-utils<span class="w">  </span>freeradius-ldap
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="c1"># ldap 安装</span>
 
 
@@ -141,7 +140,6 @@ systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> 
 <span class="c1"># 查看状态，正常启动则ok</span>
 systemctl<span class="w"> </span>status<span class="w"> </span>slapd
 </code></pre></div>
-
 <p>安装openldap后，会有三个命令用于修改配置文件，分别为ldapadd, ldapmodify, ldapdelete，顾名思义就是添加，修改和删除。而需要修改或增加配置时，则需要先写一个ldif后缀的配置文件，然后通过命令将写的配置更新到slapd.d目录下的配置文件中去，完整的配置过程如下，跟着我做就可以了：</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># 生成管理员密码,记录下这个密码，后面需要用到</span>
 slappasswd<span class="w"> </span>-s<span class="w"> </span><span class="m">123456</span>
@@ -165,7 +163,6 @@ olcRootPW:<span class="w"> </span><span class="o">{</span>SSHA<span class="o">}<
 <span class="c1"># 执行命令，修改ldap配置，通过-f执行文件</span>
 ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>changepwd.ldif
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="c1"># 我们需要向 LDAP 中导入一些基本的 Schema。这些 Schema 文件位于 /etc/openldap/schema/ 目录中，schema控制着条目拥有哪些对象类和属性，可以自行选择需要的进行导入，</span>
 <span class="c1"># 依次执行下面的命令，导入基础的一些配置,我这里将所有的都导入一下，其中core.ldif是默认已经加载了的，不用导入</span>
 ldapadd<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>/etc/openldap/schema/cosine.ldif
@@ -191,7 +188,7 @@ vim<span class="w"> </span>changedomain.ldif
 dn:<span class="w"> </span><span class="nv">olcDatabase</span><span class="o">={</span><span class="m">1</span><span class="o">}</span>monitor,cn<span class="o">=</span>config
 changetype:<span class="w"> </span>modify
 replace:<span class="w"> </span>olcAccess
-olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">0</span><span class="o">}</span>to<span class="w"> </span>*<span class="w"> </span>by<span class="w"> </span>dn.base<span class="o">=</span><span class="s2">&quot;gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth&quot;</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>by<span class="w"> </span>dn.base<span class="o">=</span><span class="s2">&quot;cn=admin,dc=njcx,dc=com&quot;</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span>none
+olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">0</span><span class="o">}</span>to<span class="w"> </span>*<span class="w"> </span>by<span class="w"> </span>dn.base<span class="o">=</span><span class="s2">"gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth"</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>by<span class="w"> </span>dn.base<span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span>none
 
 dn:<span class="w"> </span><span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
 changetype:<span class="w"> </span>modify
@@ -211,16 +208,15 @@ olcRootPW:<span class="w"> </span><span class="o">{</span>SSHA<span class="o">}<
 dn:<span class="w"> </span><span class="nv">olcDatabase</span><span class="o">={</span><span class="m">2</span><span class="o">}</span>hdb,cn<span class="o">=</span>config
 changetype:<span class="w"> </span>modify
 add:<span class="w"> </span>olcAccess
-olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">0</span><span class="o">}</span>to<span class="w"> </span><span class="nv">attrs</span><span class="o">=</span>userPassword,shadowLastChange<span class="w"> </span>by<span class="w"> </span><span class="nv">dn</span><span class="o">=</span><span class="s2">&quot;cn=admin,dc=njcx,dc=com&quot;</span><span class="w"> </span>write<span class="w"> </span>by<span class="w"> </span>anonymous<span class="w"> </span>auth<span class="w"> </span>by<span class="w"> </span>self<span class="w"> </span>write<span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span>none
-olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">1</span><span class="o">}</span>to<span class="w"> </span>dn.base<span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span><span class="nb">read</span>
-olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">2</span><span class="o">}</span>to<span class="w"> </span>*<span class="w"> </span>by<span class="w"> </span><span class="nv">dn</span><span class="o">=</span><span class="s2">&quot;cn=admin,dc=njcx,dc=com&quot;</span><span class="w"> </span>write<span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span><span class="nb">read</span>
+olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">0</span><span class="o">}</span>to<span class="w"> </span><span class="nv">attrs</span><span class="o">=</span>userPassword,shadowLastChange<span class="w"> </span>by<span class="w"> </span><span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span><span class="w"> </span>write<span class="w"> </span>by<span class="w"> </span>anonymous<span class="w"> </span>auth<span class="w"> </span>by<span class="w"> </span>self<span class="w"> </span>write<span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span>none
+olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">1</span><span class="o">}</span>to<span class="w"> </span>dn.base<span class="o">=</span><span class="s2">""</span><span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span><span class="nb">read</span>
+olcAccess:<span class="w"> </span><span class="o">{</span><span class="m">2</span><span class="o">}</span>to<span class="w"> </span>*<span class="w"> </span>by<span class="w"> </span><span class="nv">dn</span><span class="o">=</span><span class="s2">"cn=admin,dc=njcx,dc=com"</span><span class="w"> </span>write<span class="w"> </span>by<span class="w"> </span>*<span class="w"> </span><span class="nb">read</span>
 -------------------------------------------------------------------------
 
 
 <span class="c1"># 执行命令，修改配置</span>
 ldapmodify<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class="w"> </span>-H<span class="w"> </span>ldapi:///<span class="w"> </span>-f<span class="w"> </span>changedomain.ldif
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="c"># 新增add</span><span class="nb">-</span><span class="c">memberof</span><span class="nt">.</span><span class="c">ldif</span><span class="nt">,</span><span class="c"> #开启memberof支持并新增用户支持memberof配置</span>
 <span class="c">vim add</span><span class="nb">-</span><span class="c">memberof</span><span class="nt">.</span><span class="c">ldif</span>
 <span class="nb">-------------------------------------------------------------</span>
@@ -270,7 +266,6 @@ ldapmodify<span class="w"> </span>-Y<span class="w"> </span>EXTERNAL<span class=
 <span class="c">ldapadd </span><span class="nb">-</span><span class="c">Q </span><span class="nb">-</span><span class="c">Y EXTERNAL </span><span class="nb">-</span><span class="c">H ldapi:/// </span><span class="nb">-</span><span class="c">f refint2</span><span class="nt">.</span><span class="c">ldif</span>
 <span class="c">————————————————</span>
 </code></pre></div>
-
 <p>到此，配置修改完了，在上述基础上，我们来创建一个叫做 njcx company 的组织，并在其下创建一个 admin 的组织角色（该组织角色内的用户具有管理整个 LDAP 的权限）和 People 和 Group 两个组织单元：</p>
 <div class="highlight"><pre><span></span><code># 新增配置文件
 vim base.ldif
@@ -298,70 +293,69 @@ cn: Group
 ldapadd -x -D cn=admin,dc=njcx,dc=com -W -f base.ldif
 ————————————————
 </code></pre></div>
-
 <p>通过以上的所有步骤，我们就设置好了一个 LDAP 目录树：其中基准 dc=njcx,dc=com 是该树的根节点，其下有一个管理域 cn=admin,dc=njcx,dc=com 和两个组织单元 ou=People,dc=njcx,dc=com 及 ou=Group,dc=njcx,dc=com。</p>
 <p>打通 radius 和 ldap</p>
 <p>/etc/raddb/mods-available/ldap文件</p>
 <div class="highlight"><pre><span></span><code>ldap<span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="nv">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;111.111.111.111&#39;</span>
+<span class="w">    </span><span class="nv">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'111.111.111.111'</span>
 <span class="w">    </span><span class="nv">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">389</span>
-<span class="w">    </span><span class="nv">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;ou=People,dc=njcx,dc=com&#39;</span>
+<span class="w">    </span><span class="nv">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ou=People,dc=njcx,dc=com'</span>
 <span class="w">    </span><span class="nv">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">123456</span>
-<span class="w">    </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;dc=njcx,dc=com&#39;</span>
+<span class="w">    </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'dc=njcx,dc=com'</span>
 <span class="w">    </span>sasl<span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>update<span class="w"> </span><span class="o">{</span>
-<span class="w">        </span>control:Password-With-Header<span class="w">    </span>+<span class="o">=</span><span class="w"> </span><span class="s1">&#39;userPassword&#39;</span>
-<span class="w">        </span>control:<span class="w">            </span>+<span class="o">=</span><span class="w"> </span><span class="s1">&#39;radiusControlAttribute&#39;</span>
-<span class="w">        </span>request:<span class="w">            </span>+<span class="o">=</span><span class="w"> </span><span class="s1">&#39;radiusRequestAttribute&#39;</span>
-<span class="w">        </span>reply:<span class="w">              </span>+<span class="o">=</span><span class="w"> </span><span class="s1">&#39;radiusReplyAttribute&#39;</span>
+<span class="w">        </span>control:Password-With-Header<span class="w">    </span>+<span class="o">=</span><span class="w"> </span><span class="s1">'userPassword'</span>
+<span class="w">        </span>control:<span class="w">            </span>+<span class="o">=</span><span class="w"> </span><span class="s1">'radiusControlAttribute'</span>
+<span class="w">        </span>request:<span class="w">            </span>+<span class="o">=</span><span class="w"> </span><span class="s1">'radiusRequestAttribute'</span>
+<span class="w">        </span>reply:<span class="w">              </span>+<span class="o">=</span><span class="w"> </span><span class="s1">'radiusReplyAttribute'</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>user<span class="w"> </span><span class="o">{</span>
-<span class="w">        </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="w">        </span><span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;(uid=%{%{Stripped-User-Name}:-%{User-Name}})&quot;</span>
+<span class="w">        </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
+<span class="w">        </span><span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"(uid=%{%{Stripped-User-Name}:-%{User-Name}})"</span>
 <span class="w">        </span>sasl<span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>group<span class="w"> </span><span class="o">{</span>
-<span class="w">        </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="w">        </span><span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;(objectClass=posixGroup)&#39;</span>
-<span class="w">        </span><span class="nv">membership_attribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;memberOf&#39;</span>
+<span class="w">        </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
+<span class="w">        </span><span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'(objectClass=posixGroup)'</span>
+<span class="w">        </span><span class="nv">membership_attribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'memberOf'</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>profile<span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>client<span class="w"> </span><span class="o">{</span>
-<span class="w">        </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="w">        </span><span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;(objectClass=radiusClient)&#39;</span>
+<span class="w">        </span><span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="p">..base_dn</span><span class="si">}</span><span class="s2">"</span>
+<span class="w">        </span><span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'(objectClass=radiusClient)'</span>
 <span class="w">        </span>template<span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">        </span>attribute<span class="w"> </span><span class="o">{</span>
-<span class="w">            </span><span class="nv">ipaddr</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;radiusClientIdentifier&#39;</span>
-<span class="w">            </span><span class="nv">secret</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;radiusClientSecret&#39;</span>
+<span class="w">            </span><span class="nv">ipaddr</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s1">'radiusClientIdentifier'</span>
+<span class="w">            </span><span class="nv">secret</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s1">'radiusClientSecret'</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>accounting<span class="w"> </span><span class="o">{</span>
-<span class="w">        </span><span class="nv">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;%{tolower:type.%{Acct-Status-Type}}&quot;</span>
+<span class="w">        </span><span class="nv">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"%{tolower:type.%{Acct-Status-Type}}"</span>
 <span class="w">        </span><span class="nb">type</span><span class="w"> </span><span class="o">{</span>
 <span class="w">            </span>start<span class="w"> </span><span class="o">{</span>
 <span class="w">                </span>update<span class="w"> </span><span class="o">{</span>
-<span class="w">                    </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">&quot;Online at %S&quot;</span>
+<span class="w">                    </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">"Online at %S"</span>
 <span class="w">                </span><span class="o">}</span>
 <span class="w">            </span><span class="o">}</span>
 <span class="w">            </span>interim-update<span class="w"> </span><span class="o">{</span>
 <span class="w">                </span>update<span class="w"> </span><span class="o">{</span>
-<span class="w">                    </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">&quot;Last seen at %S&quot;</span>
+<span class="w">                    </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">"Last seen at %S"</span>
 <span class="w">                </span><span class="o">}</span>
 <span class="w">            </span><span class="o">}</span>
 <span class="w">            </span>stop<span class="w"> </span><span class="o">{</span>
 <span class="w">                </span>update<span class="w"> </span><span class="o">{</span>
-<span class="w">                    </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">&quot;Offline at %S&quot;</span>
+<span class="w">                    </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">"Offline at %S"</span>
 <span class="w">                </span><span class="o">}</span>
 <span class="w">            </span><span class="o">}</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>post-auth<span class="w"> </span><span class="o">{</span>
 <span class="w">        </span>update<span class="w"> </span><span class="o">{</span>
-<span class="w">            </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">&quot;Authenticated at %S&quot;</span>
+<span class="w">            </span>description<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">"Authenticated at %S"</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>options<span class="w"> </span><span class="o">{</span>
@@ -389,7 +383,6 @@ ldapadd -x -D cn=admin,dc=njcx,dc=com -W -f base.ldif
 <span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="w"> </span>/etc/raddb/sites-available/site_ldap文件内容如下
 
 cat<span class="w">  </span>/etc/raddb/sites-available/site_ldap
@@ -416,7 +409,6 @@ server<span class="w"> </span>site_ldap<span class="w"> </span><span class="o">{
 <span class="w"> </span><span class="o">}</span>
 <span class="w"> </span>
 </code></pre></div>
-
 <p>ln -s /etc/raddb/sites-available/site_ldap  /etc/raddb/sites-enabled/</p>
 <p>修改/etc/raddb/sites-enabled/default的配置信息，如果你的ldap是注释状态，你需要把注释去掉，保存退出。</p>
 <p>重启systemctl restart radiusd</p>
@@ -433,7 +425,6 @@ radius-server<span class="w"> </span>retransmit<span class="w"> </span><span cla
 radius-server<span class="w"> </span>key<span class="w"> </span><span class="m">7</span><span class="w"> </span>cisco
 radius-server<span class="w"> </span>vsa<span class="w"> </span>send<span class="w"> </span>authentication<span class="w">        </span><span class="c1">#如果需要802.1x指定端口vlan需要配置这个</span>
 </code></pre></div>
-
 <p>端口配置，interface G1/0/1</p>
 <div class="highlight"><pre><span></span><code><span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport mode access</span>
 <span class="o">(</span>config-if<span class="o">)</span><span class="c1"># switchport access vlan 10       #配置该端口默认为vlan10</span>

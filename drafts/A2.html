@@ -107,15 +107,14 @@ var _hmt = _hmt || [];
 <li>kvm</li>
 <li>ubuntu16.04 server x2</li>
 </ul>
-<p><img alt="mysql1" src="../images/mysql1.png"></p>
+<p><img alt="mysql1" class="img-fluid" src="../images/mysql1.png"/></p>
 <h2>安装mysql</h2>
 <div class="highlight"><pre><span></span><code><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>mysql-server
 </code></pre></div>
-
 <h2>配置</h2>
 <div class="highlight"><pre><span></span><code>mysql&gt;create<span class="w"> </span>user<span class="w"> </span>repl<span class="p">;</span><span class="w"> </span>//创建新用户
 //repl用户必须具有REPLICATION<span class="w"> </span>SLAVE权限，除此之外没有必要添加不必要的权限，密码为mysql。说明一下192.168.0.%，这个配置是指明repl用户所在服务器，这里%是通配符，表示192.168.0.0-192.168.0.255的Server都可以以repl用户登陆主服务器。当然你也可以指定固定Ip。
-mysql&gt;<span class="w"> </span>GRANT<span class="w"> </span>REPLICATION<span class="w"> </span>SLAVE<span class="w"> </span>ON<span class="w"> </span>*.*<span class="w"> </span>TO<span class="w"> </span><span class="s1">&#39;repl&#39;</span>@<span class="s1">&#39;192.168.122.%&#39;</span><span class="w"> </span>IDENTIFIED<span class="w"> </span>BY<span class="w"> </span><span class="s1">&#39;123456&#39;</span><span class="p">;</span>
+mysql&gt;<span class="w"> </span>GRANT<span class="w"> </span>REPLICATION<span class="w"> </span>SLAVE<span class="w"> </span>ON<span class="w"> </span>*.*<span class="w"> </span>TO<span class="w"> </span><span class="s1">'repl'</span>@<span class="s1">'192.168.122.%'</span><span class="w"> </span>IDENTIFIED<span class="w"> </span>BY<span class="w"> </span><span class="s1">'123456'</span><span class="p">;</span>
 </code></pre></div>
   </div>
 </article>

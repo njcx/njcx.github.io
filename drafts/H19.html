@@ -111,44 +111,37 @@ var _hmt = _hmt || [];
 
 wget<span class="w"> </span>http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz
 </code></pre></div>
-
 <p>tar -zxvf hadoop-2.7.7.tar.gz &amp;&amp; tar -zxvf jdk-8u181-linux-x64.tar.gz</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
 <span class="s2">export JRE_HOME=\${JAVA_HOME}/jre \n\</span>
 <span class="s2">export CLASSPATH=.:\${JAVA_HOME}/lib:\${JRE_HOME}/lib \n\</span>
 <span class="s2">export PATH=\${JAVA_HOME}/bin:\$PATH \n\</span>
-<span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/profile<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>/etc/profile
+<span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/profile<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>/etc/profile
 </code></pre></div>
-
 <h4>配置</h4>
 <p>3台 vps</p>
 <div class="highlight"><pre><span></span><code><span class="m">192</span>.168.1.110<span class="w">  </span>Master
 <span class="m">192</span>.168.1.107<span class="w">  </span>Slave1
 <span class="m">192</span>.168.1.108<span class="w">  </span>Slave2
 </code></pre></div>
-
 <p>把上面的内容加入master节点　vim /etc/hosts</p>
 <div class="highlight"><pre><span></span><code>scp<span class="w"> </span>/etc/hosts<span class="w"> </span>root@192.168.1.107:/etc
 scp<span class="w"> </span>/etc/hosts<span class="w"> </span>root@192.168.1.108:/etc
 </code></pre></div>
-
 <p>vim /etc/ssh/sshd_config</p>
 <div class="highlight"><pre><span></span><code>RSAAuthentication<span class="w"> </span>yes<span class="w"> </span><span class="c1"># 启用 RSA 认证</span>
 PubkeyAuthentication<span class="w"> </span>yes<span class="w"> </span><span class="c1"># 启用公钥私钥配对认证方式</span>
 AuthorizedKeysFile<span class="w"> </span>.ssh/authorized_keys<span class="w"> </span><span class="c1"># 公钥文件路径（和上面生成的文件同）</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>scp<span class="w">  </span>/etc/ssh/sshd_config<span class="w"> </span>root@192.168.1.107:/etc/ssh/
 scp<span class="w">  </span>/etc/ssh/sshd_config<span class="w"> </span>root@192.168.1.108:/etc/ssh/
 </code></pre></div>
-
 <p>生成ssh-key  ：  ssh-keygen -t rsa -P ''</p>
 <p>cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
 在这里把彼此的公钥都加入进去，也随便把控制机的公钥加入了</p>
 <div class="highlight"><pre><span></span><code>scp<span class="w"> </span>~/.ssh/authorized_keys<span class="w"> </span>root@192.168.1.108:~/.ssh/
 scp<span class="w"> </span>~/.ssh/authorized_keys<span class="w"> </span>root@192.168.1.107:~/.ssh/
 </code></pre></div>
-
 <p>加入hadoop环境变量配置</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_HOME</span><span class="o">=</span>/opt/hadoop-2.7.7/
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HADOOP_HOME</span>/bin
@@ -158,9 +151,8 @@ scp<span class="w"> </span>~/.ssh/authorized_keys<span class="w"> </span>root@19
 <span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_HDFS_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">YARN_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_COMMON_LIB_NATIVE_DIR</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>/lib/native
-<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_OPTS</span><span class="o">=</span><span class="s2">&quot;-Djava.library.path=</span><span class="nv">$HADOOP_HOME</span><span class="s2">/lib&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HADOOP_OPTS</span><span class="o">=</span><span class="s2">"-Djava.library.path=</span><span class="nv">$HADOOP_HOME</span><span class="s2">/lib"</span>
 </code></pre></div>
-
 <p>/opt/hadoop-2.7.7目录下创建数据存放的文件夹，tmp、hdfs、hdfs/data、hdfs/name</p>
 <p>配置hadoop-2.7.7/etc/hadoop目录下的core-site.xml</p>
 <div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nt">&lt;configuration&gt;</span>
@@ -178,7 +170,6 @@ scp<span class="w"> </span>~/.ssh/authorized_keys<span class="w"> </span>root@19
 <span class="w">    </span><span class="nt">&lt;/property&gt;</span>
 <span class="w"> </span><span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
-
 <p>配置hadoop-2.7.7/etc/hadoop目录下的hdfs-site.xml</p>
 <div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nt">&lt;configuration&gt;</span>
 <span class="w">    </span><span class="nt">&lt;property&gt;</span>
@@ -199,7 +190,6 @@ scp<span class="w"> </span>~/.ssh/authorized_keys<span class="w"> </span>root@19
 <span class="w">    </span><span class="nt">&lt;/property&gt;</span>
 <span class="w"> </span><span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
-
 <p>配置hadoop-2.7.7/etc/hadoop目录下的mapred-site.xml</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&lt;configuration&gt;</span>
 <span class="w">    </span><span class="nt">&lt;property&gt;</span><span class="w">  </span>
@@ -208,7 +198,6 @@ scp<span class="w"> </span>~/.ssh/authorized_keys<span class="w"> </span>root@19
 <span class="w">    </span><span class="nt">&lt;/property&gt;</span><span class="w">  </span>
 <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
-
 <p>配置hadoop-2.7.7/etc/hadoop目录下的yarn-site.xml</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&lt;configuration&gt;</span>
 <span class="w">    </span><span class="nt">&lt;property&gt;</span>
@@ -217,21 +206,17 @@ scp<span class="w"> </span>~/.ssh/authorized_keys<span class="w"> </span>root@19
 <span class="w">    </span><span class="nt">&lt;/property&gt;</span>
 <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
-
 <p>然后在 hadoop-env.sh 里面添加如下，不然可能会出现 JAVA_HOME找不到现象。</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">JAVA_HOME</span><span class="o">=</span>/opt/jdk1.8.0_181
 </code></pre></div>
-
 <p>vim slaves </p>
 <div class="highlight"><pre><span></span><code>Slave1
 Slave2
 </code></pre></div>
-
 <p>然后把hadoop文件夹scp 到slave1，slave2</p>
 <div class="highlight"><pre><span></span><code>scp<span class="w"> </span>-r<span class="w"> </span>hadoop-2.7.7<span class="w"> </span>root@192.168.1.107:/opt
 scp<span class="w"> </span>-r<span class="w"> </span>hadoop-2.7.7<span class="w"> </span>root@192.168.1.108:/opt
 </code></pre></div>
-
 <p>在master机器上，任意目录输入 hdfs namenode -format 格式化namenode，第一次使用需格式化一次，之后就不用再格式化，如果改一些配置文件了，可能还需要再次格式化</p>
 <p>启动 ： start-all.sh</p>
 <p>输入 jps 查看当前java的进程</p>

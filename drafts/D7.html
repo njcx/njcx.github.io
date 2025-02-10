@@ -111,23 +111,19 @@ index-url<span class="w"> </span><span class="o">=</span><span class="w"> </span
 <span class="o">[</span>install<span class="o">]</span>
 trusted-host<span class="o">=</span>pypi.douban.com
 </code></pre></div>
-
 <p>安装方式：</p>
 <div class="highlight"><pre><span></span><code><span class="n">Python</span>
 <span class="o">&gt;</span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">pip</span> <span class="o">-</span><span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">tornado</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="n">PyPy</span>
 <span class="o">&gt;</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">wget</span> <span class="n">pypy</span> <span class="n">pypy</span><span class="o">-</span><span class="n">lib</span> <span class="n">pypy</span><span class="o">-</span><span class="n">dev</span> <span class="o">-</span><span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bootstrap</span><span class="o">.</span><span class="n">pypa</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">tornado</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>MySQL<span class="w"> </span>数据库安装
 &gt;apt-get<span class="w"> </span>install<span class="w"> </span>mysql-server<span class="w"> </span>libmysqlclient-dev<span class="w"> </span>-y
 &gt;pypy<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>mysql-python
 或者
 &gt;python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>mysql-python
 </code></pre></div>
-
 <h4>模块</h4>
 <p>Tornado包含以下模块，和Django、Flask 不同，Tornado没有用二级目录作为模块的名字(Django、Flask喜欢把类和方法集中到__init__.py里面)，而是直接用Py文件作为模块</p>
 <ul>
@@ -186,15 +182,15 @@ trusted-host<span class="o">=</span>pypi.douban.com
 <span class="kn">from</span><span class="w"> </span><span class="nn">tornado.ioloop</span><span class="w"> </span><span class="kn">import</span> <span class="n">IOLoop</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tornado.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">define</span><span class="p">,</span><span class="n">options</span><span class="p">,</span><span class="n">parse_command_line</span>
 
-<span class="n">define</span><span class="p">(</span><span class="s2">&quot;port&quot;</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mi">8081</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">&quot;run on the given port&quot;</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">define</span><span class="p">(</span><span class="s2">"port"</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mi">8081</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">"run on the given port"</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Index</span><span class="p">(</span><span class="n">RequestHandler</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">welcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;greeting&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">welcome</span> <span class="o">+</span> <span class="s1">&#39;, friendly user!&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+        <span class="n">welcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">'greeting'</span><span class="p">,</span> <span class="s1">'Hello'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">welcome</span> <span class="o">+</span> <span class="s1">', friendly user!'</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">parse_command_line</span><span class="p">()</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="p">[(</span><span class="sa">r</span><span class="s2">&quot;/&quot;</span><span class="p">,</span><span class="n">Index</span><span class="p">)])</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="p">[(</span><span class="sa">r</span><span class="s2">"/"</span><span class="p">,</span><span class="n">Index</span><span class="p">)])</span>
     <span class="n">http_server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
     <span class="n">http_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
     <span class="n">IOLoop</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>

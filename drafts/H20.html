@@ -114,9 +114,9 @@ Topology处理的最小的消息单位是一个Tuple，也就是一个任意对�
 <li>Topology由Spout和Bolt构成。Spout是发出Tuple的结点。Bolt可以随意订阅某个Spout或者Bolt发出的Tuple。Spout和Bolt都统称为component。
 下图是一个Topology设计的逻辑图的例子。</li>
 </ul>
-<p><img alt="topology" src="../images/topology.jpg"></p>
+<p><img alt="topology" class="img-fluid" src="../images/topology.jpg"/></p>
 <p>下图是Storm的数据交互图。可以看出两个模块Nimbus和Supervisor之间没有直接交互。状态都是保存在Zookeeper上。Worker之间通过ZeroMQ传送数据。</p>
-<p><img alt="topology01" src="../images/topology01.png"></p>
+<p><img alt="topology01" class="img-fluid" src="../images/topology01.png"/></p>
 <h4>安装</h4>
 <p>版本 ：apache-storm-1.1.1 ,jdk-8u181,zookeeper-3.4.10</p>
 <p>目录 ： /opt </p>
@@ -126,22 +126,19 @@ wget<span class="w"> </span>http://download.oracle.com/otn-pub/java/jdk/8u181-b1
 
 wget<span class="w"> </span>http://ftp.kddilabs.jp/infosystems/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
 </code></pre></div>
-
 <p>tar -zxvf apache-storm-1.1.1.tar.gz &amp;&amp; tar -zxvf jdk-8u181-linux-x64.tar.gz &amp;&amp; tar -zxvf zookeeper-3.4.10.tar.gz</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"export JAVA_HOME=/opt/jdk1.8.0_181 \n\</span>
 <span class="s2">export JRE_HOME=\${JAVA_HOME}/jre \n\</span>
 <span class="s2">export CLASSPATH=.:\${JAVA_HOME}/lib:\${JRE_HOME}/lib \n\</span>
 <span class="s2">export PATH=\${JAVA_HOME}/bin:\$PATH \n\</span>
-<span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/profile<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>/etc/profile
+<span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/profile<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>/etc/profile
 </code></pre></div>
-
 <h4>zk配置</h4>
 <p>3台机器</p>
 <div class="highlight"><pre><span></span><code><span class="m">172</span>.16.131.134<span class="w"> </span>master<span class="w">       </span>Zookeeper<span class="w"> </span>（有）<span class="w"> </span>Nimbus（有）<span class="w"> </span>Supervisor（无）
 <span class="m">172</span>.16.131.133<span class="w"> </span>slave_1<span class="w">      </span>Zookeeper<span class="w"> </span>（有）<span class="w"> </span>Nimbus<span class="w"> </span><span class="o">(</span>无<span class="o">)</span><span class="w"> </span>Supervisor（有）
 <span class="m">172</span>.16.131.135<span class="w"> </span>slave_2<span class="w">      </span>Zookeeper<span class="w"> </span>（有）<span class="w"> </span>Nimbus<span class="w"> </span>（无）Supervisor（有
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="nv">tickTime</span><span class="o">=</span><span class="m">2000</span>
 <span class="c1"># The number of ticks that the initial</span>
 <span class="c1"># synchronization phase can take</span>
@@ -160,50 +157,44 @@ server.1<span class="o">=</span><span class="m">172</span>.16.131.134:2888:3888
 server.2<span class="o">=</span><span class="m">172</span>.16.131.133:2888:3888
 server.3<span class="o">=</span><span class="m">172</span>.16.131.135:2888:3888
 </code></pre></div>
-
 <p>在zookeeper-3.4.10目录里面创建log data 目录</p>
 <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>log<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdir<span class="w"> </span>data
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="m">134</span><span class="w"> </span>/data
-<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>data/myid
+<span class="nb">echo</span><span class="w"> </span><span class="s1">'1'</span><span class="w"> </span>&gt;<span class="w"> </span>data/myid
 
 <span class="m">133</span><span class="w"> </span>/data
-<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;2&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>data/myid
+<span class="nb">echo</span><span class="w"> </span><span class="s1">'2'</span><span class="w"> </span>&gt;<span class="w"> </span>data/myid
 
 <span class="m">135</span><span class="w"> </span>/data
-<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;3&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>data/myid
+<span class="nb">echo</span><span class="w"> </span><span class="s1">'3'</span><span class="w"> </span>&gt;<span class="w"> </span>data/myid
 </code></pre></div>
-
 <p>在3台机器上的bin目录里面启动</p>
 <div class="highlight"><pre><span></span><code>./zkServer.sh<span class="w"> </span>start
 ./zkServer.sh<span class="w"> </span>status
 </code></pre></div>
-
 <h4>storm配置</h4>
 <p>vim conf/storm.yaml</p>
 <div class="highlight"><pre><span></span><code>storm.zookeeper.servers:
-<span class="w">     </span>-<span class="w"> </span><span class="s2">&quot;172.16.131.134&quot;</span>
-<span class="w">     </span>-<span class="w"> </span><span class="s2">&quot;172.16.131.133&quot;</span>
-<span class="w">     </span>-<span class="w"> </span><span class="s2">&quot;172.16.131.135&quot;</span>
+<span class="w">     </span>-<span class="w"> </span><span class="s2">"172.16.131.134"</span>
+<span class="w">     </span>-<span class="w"> </span><span class="s2">"172.16.131.133"</span>
+<span class="w">     </span>-<span class="w"> </span><span class="s2">"172.16.131.135"</span>
 storm.zookeeper.port:<span class="w"> </span><span class="m">2181</span>
-nimbus.host:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;172.16.131.134&quot;</span><span class="o">]</span>
-nimbus.seeds:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;172.16.131.134&quot;</span><span class="o">]</span>
+nimbus.host:<span class="w"> </span><span class="o">[</span><span class="s2">"172.16.131.134"</span><span class="o">]</span>
+nimbus.seeds:<span class="w"> </span><span class="o">[</span><span class="s2">"172.16.131.134"</span><span class="o">]</span>
 ui.port:8090
-storm.local.dir:<span class="w"> </span><span class="s2">&quot;/opt/apache-storm-1.1.3/data&quot;</span>
+storm.local.dir:<span class="w"> </span><span class="s2">"/opt/apache-storm-1.1.3/data"</span>
 supervisor.slots.ports:
 <span class="w">    </span>-<span class="w"> </span><span class="m">6700</span>
 <span class="w">    </span>-<span class="w"> </span><span class="m">6701</span>
 <span class="w">    </span>-<span class="w"> </span><span class="m">6702</span>
 <span class="w">    </span>-<span class="w"> </span><span class="m">6703</span>
 </code></pre></div>
-
 <p>然后，在slave_1 和 slave_2上再复制同样的配置
 在master节点</p>
 <div class="highlight"><pre><span></span><code>./storm<span class="w"> </span>ui<span class="w"> </span><span class="p">&amp;</span>
 ./storm<span class="w"> </span>nimbus<span class="w"> </span><span class="p">&amp;</span>
 </code></pre></div>
-
 <p>在 slave节点上</p>
 <div class="highlight"><pre><span></span><code><span class="w"> </span>./storm<span class="w"> </span>ui<span class="w"> </span><span class="p">&amp;</span>
 <span class="w"> </span>./storm<span class="w"> </span>supervisor<span class="w"> </span><span class="p">&amp;</span>

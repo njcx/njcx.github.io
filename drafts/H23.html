@@ -113,25 +113,21 @@ var _hmt = _hmt || [];
 
 <span class="c1"># curl -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="c1"># curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | sudo bash</span>
 <span class="c1"># sudo yum install erlang-20.3.8.9-1.el7.centos.x86_64 (可以不用，由下面自行处理依赖，以免出现兼容性问题)</span>
 
 <span class="c1"># curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | sudo bash</span>
 <span class="c1"># yum install rabbitmq-server-3.7.8-1.el7.noarch</span>
 </code></pre></div>
-
 <p>这里注意rabbitmq-server 和 erlang的兼容性，到这里基本安装完了。</p>
 <h4>配置</h4>
 <p>/etc/rabbitmq/rabbitmq.config</p>
 <div class="highlight"><pre><span></span><code><span class="o">[{</span>rabbit,<span class="w"> </span><span class="o">[{</span>loopback_users,<span class="w"> </span><span class="o">[]}]}]</span>.
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>rabbitmq-plugins<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>rabbitmq_management<span class="w"> </span>
 
 service<span class="w"> </span>rabbitmq-server<span class="w"> </span>start
 </code></pre></div>
-
 <p>启动</p>
 <p>访问 http://IP:15672/，账号 ：guest ： guest</p>
 <p>然后，我们就可以访问该IP了</p>

@@ -107,12 +107,10 @@ var _hmt = _hmt || [];
 <span class="c1">#  wget http://fast.dpdk.org/rel/dpdk-18.11.tar.xz</span>
 <span class="c1">#  tar xvJf  dpdk-18.11.tar.xz </span>
 </code></pre></div>
-
 <p>下面这一步，很重要，可以避免很多错误</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># export  RTE_SDK=/opt/dpdk-18.11/</span>
 <span class="c1"># export  RTE_TARGET=x86_64-native-linuxapp-gcc</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="c1">#  cd /opt/dpdk-18.11/usertools</span>
 <span class="c1"># ./dpdk-setup.sh</span>
 
@@ -139,26 +137,25 @@ Loading<span class="w"> </span>DPDK<span class="w"> </span>UIO<span class="w"> <
 
 Network<span class="w"> </span>devices<span class="w"> </span>using<span class="w"> </span>DPDK-compatible<span class="w"> </span><span class="nv">driver</span>
 <span class="o">============================================</span>
-<span class="m">0000</span>:02:06.0<span class="w"> </span><span class="s1">&#39;82545EM Gigabit Ethernet Controller (Copper) 100f&#39;</span><span class="w"> </span><span class="nv">drv</span><span class="o">=</span>igb_uio<span class="w"> </span><span class="nv">unused</span><span class="o">=</span>e1000
+<span class="m">0000</span>:02:06.0<span class="w"> </span><span class="s1">'82545EM Gigabit Ethernet Controller (Copper) 100f'</span><span class="w"> </span><span class="nv">drv</span><span class="o">=</span>igb_uio<span class="w"> </span><span class="nv">unused</span><span class="o">=</span>e1000
 
 Network<span class="w"> </span>devices<span class="w"> </span>using<span class="w"> </span>kernel<span class="w"> </span><span class="nv">driver</span>
 <span class="o">===================================</span>
-<span class="m">0000</span>:02:01.0<span class="w"> </span><span class="s1">&#39;82545EM Gigabit Ethernet Controller (Copper) 100f&#39;</span><span class="w"> </span><span class="k">if</span><span class="o">=</span>ens33<span class="w"> </span><span class="nv">drv</span><span class="o">=</span>e1000<span class="w"> </span><span class="nv">unused</span><span class="o">=</span>igb_uio<span class="w"> </span>*Active*
-<span class="m">0000</span>:02:05.0<span class="w"> </span><span class="s1">&#39;82545EM Gigabit Ethernet Controller (Copper) 100f&#39;</span><span class="w"> </span><span class="k">if</span><span class="o">=</span>ens37<span class="w"> </span><span class="nv">drv</span><span class="o">=</span>e1000<span class="w"> </span><span class="nv">unused</span><span class="o">=</span>igb_uio<span class="w"> </span>*Active*
+<span class="m">0000</span>:02:01.0<span class="w"> </span><span class="s1">'82545EM Gigabit Ethernet Controller (Copper) 100f'</span><span class="w"> </span><span class="k">if</span><span class="o">=</span>ens33<span class="w"> </span><span class="nv">drv</span><span class="o">=</span>e1000<span class="w"> </span><span class="nv">unused</span><span class="o">=</span>igb_uio<span class="w"> </span>*Active*
+<span class="m">0000</span>:02:05.0<span class="w"> </span><span class="s1">'82545EM Gigabit Ethernet Controller (Copper) 100f'</span><span class="w"> </span><span class="k">if</span><span class="o">=</span>ens37<span class="w"> </span><span class="nv">drv</span><span class="o">=</span>e1000<span class="w"> </span><span class="nv">unused</span><span class="o">=</span>igb_uio<span class="w"> </span>*Active*
 
-No<span class="w"> </span><span class="s1">&#39;Crypto&#39;</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
+No<span class="w"> </span><span class="s1">'Crypto'</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
 <span class="o">============================</span>
 
-No<span class="w"> </span><span class="s1">&#39;Eventdev&#39;</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
+No<span class="w"> </span><span class="s1">'Eventdev'</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
 <span class="o">==============================</span>
 
-No<span class="w"> </span><span class="s1">&#39;Mempool&#39;</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
+No<span class="w"> </span><span class="s1">'Mempool'</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
 <span class="o">=============================</span>
 
-No<span class="w"> </span><span class="s1">&#39;Compress&#39;</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
+No<span class="w"> </span><span class="s1">'Compress'</span><span class="w"> </span>devices<span class="w"> </span><span class="nv">detected</span>
 <span class="o">==============================</span>
 </code></pre></div>
-
 <p>手动安装，绑定网卡（备选）</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># make config T=x86_64-native-linuxapp-gcc</span>
 <span class="c1"># make</span>
@@ -177,7 +174,6 @@ No<span class="w"> </span><span class="s1">&#39;Compress&#39;</span><span class=
 <span class="c1"># mount -t hugetlbfs nodev /mnt/huge</span>
 <span class="c1"># echo 1024&gt;/sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages</span>
 </code></pre></div>
-
 <h4>测试</h4>
 <div class="highlight"><pre><span></span><code><span class="w"> </span><span class="c1">#cd dpdk-18.11/examples/helloworld</span>
 <span class="w"> </span><span class="c1"># make</span>
@@ -201,7 +197,6 @@ EAL:<span class="w">   </span>Invalid<span class="w"> </span>NUMA<span class="w"
 EAL:<span class="w">   </span>probe<span class="w"> </span>driver:<span class="w"> </span><span class="m">8086</span>:100f<span class="w"> </span>net_e1000_em
 hello<span class="w"> </span>from<span class="w"> </span>core<span class="w"> </span><span class="m">0</span>
 </code></pre></div>
-
 <p>安装到这里，就结束了</p>
   </div>
 </article>

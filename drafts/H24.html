@@ -112,17 +112,15 @@ var _hmt = _hmt || [];
 <li>什么是backend？</li>
 </ul>
 <p>通常程序发送的消息，发完就完了，可能都不知道对方时候接受了。为此，celery实现了一个backend，用于存储这些消息以及celery执行的一些消息和结果。Backend是在Celery的配置中的一个配置项 CELERY_RESULT_BACKEND ，作用是保存结果和状态，如果你需要跟踪任务的状态，那么需要设置这一项，可以是Database backend，也可以是Cache backend，具体可以参考这里：CELERY_RESULT_BACKEND 。至于 backend，就是数据库。backend我使用的是redis</p>
-<p><img alt="CELERY" src="../images/celery.png"></p>
+<p><img alt="CELERY" class="img-fluid" src="../images/celery.png"/></p>
 <h4>安装</h4>
 <div class="highlight"><pre><span></span><code><span class="c1"># wget http://download.redis.io/releases/redis-4.0.11.tar.gz</span>
 <span class="c1"># tar -zxvf redis-4.0.11.tar.gz</span>
 <span class="c1"># cd redis-4.0.11 &amp;&amp; make &amp;&amp; make install </span>
 </code></pre></div>
-
 <p>然后进入utils 目录</p>
 <div class="highlight"><pre><span></span><code>./install_server.sh
 </code></pre></div>
-
 <p>redis 就把 服务添加到 /etc/init.d/目录了，并且 开机自动启动了，服务名称redis_6379 ，如果更改了默认端口，服务名称就是 redis_端口号。</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | sudo bash</span>
 <span class="c1"># sudo yum install erlang-20.3.8.9-1.el7.centos.x86_64 (可以不用，由下面自行处理依赖，以免出现兼容性问题)</span>
@@ -130,17 +128,14 @@ var _hmt = _hmt || [];
 <span class="c1"># curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | sudo bash</span>
 <span class="c1"># yum install rabbitmq-server-3.7.8-1.el7.noarch</span>
 </code></pre></div>
-
 <h4>配置</h4>
 <p>vim /etc/rabbitmq/rabbitmq.config</p>
 <div class="highlight"><pre><span></span><code><span class="o">[{</span>rabbit,<span class="w"> </span><span class="o">[{</span>loopback_users,<span class="w"> </span><span class="o">[]}]}]</span>.
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>rabbitmq-plugins<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>rabbitmq_management<span class="w"> </span>
 
 service<span class="w"> </span>rabbitmq-server<span class="w"> </span>start
 </code></pre></div>
-
 <p>启动</p>
 <p>访问 http://IP:15672/，账号 ：guest ： guest</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># rabbitmqctl add_user njcx test   </span>
@@ -152,7 +147,7 @@ service<span class="w"> </span>rabbitmq-server<span class="w"> </span>start
 <span class="c1">#  #创建了一个虚拟主机，主机名为njcxtest</span>
 
 
-<span class="c1"># rabbitmqctl set_permissions -p njcxtest test &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;</span>
+<span class="c1"># rabbitmqctl set_permissions -p njcxtest test ".*" ".*" ".*"</span>
 
 <span class="c1"># 设置权限。允许用户njcx访问虚拟主机njcxtest，因为RabbitMQ通过主机名来与节点通信</span>
 </code></pre></div>

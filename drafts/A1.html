@@ -229,7 +229,6 @@ var _hmt = _hmt || [];
 <span class="w">            </span><span class="o">}</span>
 <span class="w">        </span><span class="o">}</span>
 </code></pre></div>
-
 <p>BACKUP</p>
 <div class="highlight"><pre><span></span><code><span class="w">        </span>vrrp_instance<span class="w"> </span>VI_1<span class="w"> </span><span class="o">{</span>
 <span class="w">            </span>state<span class="w"> </span>BACKP<span class="w">            </span><span class="c1"># 状态实际BACKUP</span>
@@ -238,12 +237,11 @@ var _hmt = _hmt || [];
 <span class="w">            </span>...
 <span class="w">        </span><span class="o">}</span>
 </code></pre></div>
-
 <p>realserver</p>
 <div class="highlight"><pre><span></span><code><span class="w"> </span><span class="c1">#!/bin/bash</span>
 <span class="w">        </span><span class="nv">VIP</span><span class="o">=</span><span class="m">172</span>.28.14.227
 <span class="w">        </span>.<span class="w"> </span>/etc/rc.d/init.d/functions
-<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">in</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span><span class="w"> </span><span class="k">in</span>
 <span class="w">        </span>start<span class="o">)</span>
 <span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>&gt;<span class="w"> </span>/proc/sys/net/ipv4/conf/lo/arp_ignore
 <span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>&gt;<span class="w"> </span>/proc/sys/net/ipv4/conf/lo/arp_announce
@@ -252,7 +250,7 @@ var _hmt = _hmt || [];
 <span class="w">            </span>ifconfig<span class="w"> </span>lo:0<span class="w"> </span><span class="nv">$VIP</span><span class="w"> </span>broadcast<span class="w"> </span><span class="nv">$VIP</span><span class="w"> </span>netmask<span class="w"> </span><span class="m">255</span>.255.255.255<span class="w"> </span>up
 <span class="w">            </span>/sbin/route<span class="w"> </span>add<span class="w"> </span>-host<span class="w"> </span><span class="nv">$VIP</span><span class="w"> </span>dev<span class="w"> </span>lo:0
 <span class="w">            </span>sysctl<span class="w"> </span>-p<span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
-<span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;realserver start OK&quot;</span>
+<span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"realserver start OK"</span>
 <span class="w">            </span><span class="p">;;</span>
 <span class="w">        </span>stop<span class="o">)</span>
 <span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>/proc/sys/net/ipv4/conf/lo/arp_ignore
@@ -261,15 +259,14 @@ var _hmt = _hmt || [];
 <span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>/proc/sys/net/ipv4/conf/all/arp_announce
 <span class="w">            </span>ifconfig<span class="w"> </span>lo:0<span class="w"> </span>down
 <span class="w">            </span>/sbin/route<span class="w"> </span>del<span class="w"> </span><span class="nv">$VIP</span><span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
-<span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;realserver stoped&quot;</span>
+<span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"realserver stoped"</span>
 <span class="w">            </span><span class="p">;;</span>
 <span class="w">        </span>*<span class="o">)</span>
-<span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Usage:</span><span class="nv">$0</span><span class="s2"> {start|stop}&quot;</span>
+<span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Usage:</span><span class="nv">$0</span><span class="s2"> {start|stop}"</span>
 <span class="w">            </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="w">        </span><span class="k">esac</span>
 <span class="w">        </span><span class="nb">exit</span><span class="w"> </span><span class="m">0</span>
 </code></pre></div>
-
 <h2>测试</h2>
 <p>把两个web server 页面设置不同实测.</p>
   </div>

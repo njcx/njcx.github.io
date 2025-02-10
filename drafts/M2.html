@@ -110,18 +110,15 @@ var _hmt = _hmt || [];
 <span class="m">172</span>.16.202.143<span class="w">    </span>zk2
 <span class="m">172</span>.16.202.145<span class="w">    </span>zk3
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="c1"># yum install -y wget java-1.8.0-openjdk  java-1.8.0-openjdk-devel </span>
 <span class="c1"># cd /opt &amp;&amp; wget https://archive.apache.org/dist/zookeeper/zookeeper-3.4.12/zookeeper-3.4.12.tar.gz</span>
 <span class="c1"># tar -zxvf zookeeper-3.4.12.tar.gz</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>//<span class="w"> </span>复制zoo.cfg文件
 cp<span class="w"> </span>zoo_sample.cfg<span class="w"> </span>zoo.cfg
 //<span class="w"> </span>打开zoo.cfg文件，然后按后面的配置信息进行配置
 vim<span class="w"> </span>zoo.zfg
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="nv">tickTime</span><span class="o">=</span><span class="m">2000</span>
 <span class="nv">initLimit</span><span class="o">=</span><span class="m">10</span>
 <span class="nv">syncLimit</span><span class="o">=</span><span class="m">5</span>
@@ -132,24 +129,20 @@ server.1<span class="o">=</span><span class="m">172</span>.16.202.144:12888:1388
 server.2<span class="o">=</span><span class="m">172</span>.16.202.143:12888:13888
 server.3<span class="o">=</span><span class="m">172</span>.16.202.145:12888:13888
 </code></pre></div>
-
 <p>填入这三个地址。第一个端口是master和slave之间的通信端口，默认是2888，第二个端口是leader选举的端口，集群刚启动的时候选举或者leader挂掉之后进行新的选举的端口默认是3888.然后</p>
 <div class="highlight"><pre><span></span><code>scp<span class="w"> </span>zoo.cfg<span class="w"> </span>root@172.16.202.143：/opt/zookeeper-3.4.12/conf
 scp<span class="w"> </span>zoo.cfg<span class="w"> </span>root@172.16.202.145：/opt/zookeeper-3.4.12/conf
 </code></pre></div>
-
 <p>同样在 另外两个机器下面，zk目录下面创建 zkdata 和 zklog目录，这里的myid代表机器编号，不相同就OK，然后</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/opt/zookeeper-3.4.12/zkdata/myid<span class="w">  </span>//<span class="w"> </span>zk1
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/opt/zookeeper-3.4.12/zkdata/myid<span class="w">  </span>//<span class="w"> </span>zk2
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;3&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/opt/zookeeper-3.4.12/zkdata/myid<span class="w">  </span>//<span class="w"> </span>zk3
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">"1"</span><span class="w"> </span>&gt;<span class="w"> </span>/opt/zookeeper-3.4.12/zkdata/myid<span class="w">  </span>//<span class="w"> </span>zk1
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"2"</span><span class="w"> </span>&gt;<span class="w"> </span>/opt/zookeeper-3.4.12/zkdata/myid<span class="w">  </span>//<span class="w"> </span>zk2
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"3"</span><span class="w"> </span>&gt;<span class="w"> </span>/opt/zookeeper-3.4.12/zkdata/myid<span class="w">  </span>//<span class="w"> </span>zk3
 </code></pre></div>
-
 <p>然后，把3台vps 的防火墙都关了（生产环境请开策略）</p>
 <div class="highlight"><pre><span></span><code>systemctl<span class="w"> </span>stop<span class="w">  </span>firewalld<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ystemctl<span class="w"> </span>disable<span class="w">  </span>firewalld<span class="w">   </span>//<span class="w"> </span>zk1
 systemctl<span class="w"> </span>stop<span class="w">  </span>firewalld<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ystemctl<span class="w"> </span>disable<span class="w">  </span>firewalld<span class="w">   </span>//<span class="w"> </span>zk2
 systemctl<span class="w"> </span>stop<span class="w">  </span>firewalld<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ystemctl<span class="w"> </span>disable<span class="w">  </span>firewalld<span class="w">   </span>//<span class="w"> </span>zk3
 </code></pre></div>
-
 <p>然后。在3台vps上都启动</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>root@zk1<span class="w"> </span>bin<span class="o">]</span><span class="c1"># ./zkServer.sh start</span>
 

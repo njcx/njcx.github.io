@@ -114,88 +114,70 @@ var _hmt = _hmt || [];
 <span class="nv">gpgkey</span><span class="o">=</span>https://mirrors.aliyun.com/zabbix/RPM-GPG-KEY-ZABBIX
 EOF
 </code></pre></div>
-
 <p>这里没有用zabbix官网的源，不知道是不是挂了，一直time out，所以我把baseurl 改为阿里源的。</p>
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>zabbix-server-mysql<span class="w"> </span>zabbix-web-mysql<span class="w"> </span>zabbix-agent<span class="w"> </span>-y
 </code></pre></div>
-
 <p>这里会报错</p>
 <p>Requires: libiksemel.so.3()(64bit)</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># wget ftp://ftp.pbone.net/mirror/ftp5.gwdg.de/pub/opensuse/repositories/home:/aevseev/CentOS_CentOS-6/x86_64/iksemel-1.4-20.1.x86_64.rpm</span>
 <span class="c1"># yum install iksemel-1.4-20.1.x86_64.rpm</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>mariadb-server<span class="w"> </span>-y
 </code></pre></div>
-
 <h4>配置</h4>
 <p>首先启动MariaDB</p>
 <div class="highlight"><pre><span></span><code>systemctl<span class="w"> </span>start<span class="w"> </span>mariadb
 </code></pre></div>
-
 <p>设置开机启动</p>
 <div class="highlight"><pre><span></span><code>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>mariadb
 </code></pre></div>
-
 <p>接下来进行MariaDB的相关简单配置</p>
 <div class="highlight"><pre><span></span><code>mysql_secure_installation
 </code></pre></div>
-
 <p>首先是设置密码，会提示先输入密码
 配置MariaDB的字符集</p>
 <p>vim /etc/my.cnf</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>mysqld<span class="o">]</span>
-<span class="nv">init_connect</span><span class="o">=</span><span class="s1">&#39;SET collation_connection = utf8_general_ci&#39;</span><span class="w"> </span>
-<span class="nv">init_connect</span><span class="o">=</span><span class="s1">&#39;SET NAMES utf8&#39;</span><span class="w"> </span>
+<span class="nv">init_connect</span><span class="o">=</span><span class="s1">'SET collation_connection = utf8_general_ci'</span><span class="w"> </span>
+<span class="nv">init_connect</span><span class="o">=</span><span class="s1">'SET NAMES utf8'</span><span class="w"> </span>
 character-set-server<span class="o">=</span>utf8<span class="w"> </span>
 collation-server<span class="o">=</span>utf8_general_ci<span class="w"> </span>
 skip-character-set-client-handshake
 </code></pre></div>
-
 <p>vim /etc/my.cnf.d/client.cnf
 在[client]中添加</p>
 <div class="highlight"><pre><span></span><code>default-character-set<span class="o">=</span>utf8
 </code></pre></div>
-
 <p>vim /etc/my.cnf.d/mysql-clients.cnf
 在[mysql]中添加</p>
 <div class="highlight"><pre><span></span><code>default-character-set<span class="o">=</span>utf8
 </code></pre></div>
-
 <p>全部配置完成，重启mariadb</p>
 <div class="highlight"><pre><span></span><code>systemctl<span class="w"> </span>restart<span class="w"> </span>mariadb
 </code></pre></div>
-
 <p>之后进入MariaDB查看字符集</p>
-<div class="highlight"><pre><span></span><code>mysql&gt;<span class="w"> </span>show<span class="w"> </span>variables<span class="w"> </span>like<span class="w"> </span><span class="s2">&quot;%character%&quot;</span><span class="p">;</span>show<span class="w"> </span>variables<span class="w"> </span>like<span class="w"> </span><span class="s2">&quot;%collation%&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code>mysql&gt;<span class="w"> </span>show<span class="w"> </span>variables<span class="w"> </span>like<span class="w"> </span><span class="s2">"%character%"</span><span class="p">;</span>show<span class="w"> </span>variables<span class="w"> </span>like<span class="w"> </span><span class="s2">"%collation%"</span><span class="p">;</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>mysql&gt;<span class="w"> </span>create<span class="w"> </span>database<span class="w"> </span>zabbix<span class="p">;</span>
-mysql&gt;<span class="w"> </span>grant<span class="w"> </span>all<span class="w"> </span>privileges<span class="w"> </span>on<span class="w"> </span>zabbix.*<span class="w"> </span>to<span class="w"> </span>njcx@localhost<span class="w"> </span>identified<span class="w"> </span>by<span class="w"> </span><span class="s1">&#39;qwaszxerdfcv&#39;</span><span class="p">;</span>
+mysql&gt;<span class="w"> </span>grant<span class="w"> </span>all<span class="w"> </span>privileges<span class="w"> </span>on<span class="w"> </span>zabbix.*<span class="w"> </span>to<span class="w"> </span>njcx@localhost<span class="w"> </span>identified<span class="w"> </span>by<span class="w"> </span><span class="s1">'qwaszxerdfcv'</span><span class="p">;</span>
 mysql&gt;<span class="w"> </span>quit<span class="p">;</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="w"> </span>zcat<span class="w"> </span>/usr/share/doc/zabbix-server-mysql*/create.sql.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>mysql<span class="w"> </span>-unjcx<span class="w"> </span>-p<span class="w"> </span>zabbix
 </code></pre></div>
-
 <p>启动 zabbix_server 报错</p>
-<div class="highlight"><pre><span></span><code><span class="m">29225</span>:20180714:084923.611<span class="w"> </span>cannot<span class="w"> </span>start<span class="w"> </span>preprocessing<span class="w"> </span>service:<span class="w"> </span>Cannot<span class="w"> </span><span class="nb">bind</span><span class="w"> </span>socket<span class="w"> </span>to<span class="w"> </span><span class="s2">&quot;/var/run/zabbix/zabbix_server_preprocessing.sock&quot;</span>:<span class="w"> </span><span class="o">[</span><span class="m">13</span><span class="o">]</span><span class="w"> </span>Permission<span class="w"> </span>denied.
+<div class="highlight"><pre><span></span><code><span class="m">29225</span>:20180714:084923.611<span class="w"> </span>cannot<span class="w"> </span>start<span class="w"> </span>preprocessing<span class="w"> </span>service:<span class="w"> </span>Cannot<span class="w"> </span><span class="nb">bind</span><span class="w"> </span>socket<span class="w"> </span>to<span class="w"> </span><span class="s2">"/var/run/zabbix/zabbix_server_preprocessing.sock"</span>:<span class="w"> </span><span class="o">[</span><span class="m">13</span><span class="o">]</span><span class="w"> </span>Permission<span class="w"> </span>denied.
 </code></pre></div>
-
 <p>关闭selinux 即可, 先临时关闭，setenforce 0</p>
 <p>vim /etc/selinux/config</p>
 <div class="highlight"><pre><span></span><code>SELINUX=disabled
 </code></pre></div>
-
 <p>永久关闭</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># vim /etc/php.ini</span>
 date.timezone<span class="w"> </span><span class="o">=</span><span class="w"> </span>Asia/Shanghai
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>systemctl<span class="w"> </span>restart<span class="w"> </span>zabbix-server<span class="w"> </span>zabbix-agent<span class="w"> </span>mariadb<span class="w">  </span>httpd
 systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>zabbix-server<span class="w"> </span>zabbix-agent<span class="w"> </span>mariadb<span class="w">  </span>httpd
 </code></pre></div>
-
 <p>访问 http://192.168.1.110/zabbix/ 就OK，配置一下，默认用户密码 Admin/zabbix</p>
   </div>
 </article>

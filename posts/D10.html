@@ -109,48 +109,41 @@ var _hmt = _hmt || [];
 <p>我用的是PyPy替代了CPython,在纯Python项目上还没有遇到幺蛾子，性能提升看得见。先把nginx和supervisor装上，这里用supervisor监控进程的状态以及开机启动下文用到的uwsgi</p>
 <div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>nginx<span class="w"> </span>pypy<span class="w"> </span>pypy-lib<span class="w"> </span>pypy-dev<span class="w"> </span>supervisor
 </code></pre></div>
-
 <p>我们可以配置pip国内源，把下面内容写到 ～/.pip/pip.conf 文件中,这样就可以用豆瓣的pip源加速了</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>global<span class="o">]</span>
 index-url<span class="w"> </span><span class="o">=</span><span class="w"> </span>http://pypi.douban.com/simple
 <span class="o">[</span>install<span class="o">]</span>
 trusted-host<span class="o">=</span>pypi.douban.com
 </code></pre></div>
-
 <p>下面我们为PyPy 安装pip和virtualenv、uwsgi</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libpcre3</span> <span class="n">libpcre3</span><span class="o">-</span><span class="n">dev</span> <span class="o">-</span><span class="n">y</span>
 <span class="o">&gt;</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bootstrap</span><span class="o">.</span><span class="n">pypa</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="n">get</span><span class="o">-</span><span class="n">pip</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;&amp;</span> <span class="n">pypy</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenv</span> <span class="n">uwsgi</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>MySQL<span class="w"> </span>数据库安装<span class="o">(</span>好像在本文用不到，先安装再说<span class="o">)</span>
 &gt;apt-get<span class="w"> </span>install<span class="w"> </span>mysql-server<span class="w"> </span>libmysqlclient-dev<span class="w"> </span>-y
 &gt;pypy<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>mysql-python
 </code></pre></div>
-
 <p>我们先创建一个PyPy的虚拟环境,就叫env</p>
 <div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>pypy<span class="w"> </span>-m<span class="w"> </span>virtualenv<span class="w"> </span>env
 &gt;<span class="w"> </span><span class="nb">source</span><span class="w"> </span>env/bin/activate
 &gt;<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>django<span class="w"> </span>tornado<span class="w"> </span>flask<span class="w"> </span>mysql-python
 </code></pre></div>
-
 <p>下面，我们就要要配置这些nginx、supervisor、uwsgi,我们通过supervisor来管理uwsgi，</p>
 <p>先简单的建一个django的项目,叫blog，再创建一个blogapp</p>
 <div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>django-admin<span class="w"> </span>startproject<span class="w"> </span>blog
 &gt;<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>blog<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>django-admin<span class="w"> </span>startapp<span class="w"> </span>blogapp
 </code></pre></div>
-
 <p>通过django内置的wsgi服务器测试，是正常的</p>
 <div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>pypy<span class="w"> </span>manage.py<span class="w"> </span>runserver<span class="w"> </span><span class="m">0</span>.0.0.0:8080
 </code></pre></div>
-
 <p>下面我们把django和uwsgi桥接在一起,写一个桥接django_uwsgi.py 文件，放在blog目录里面</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">django</span>
 <span class="n">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">'utf8'</span><span class="p">)</span>
 
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;DJANGO_SETTINGS_MODULE&quot;</span><span class="p">,</span> <span class="s2">&quot;blog.settings&quot;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"DJANGO_SETTINGS_MODULE"</span><span class="p">,</span> <span class="s2">"blog.settings"</span><span class="p">)</span>
 
 <span class="c1">#from django.core.wsgi import get_wsgi_application</span>
 <span class="c1">#application = get_wsgi_application()</span>
@@ -158,7 +151,6 @@ trusted-host<span class="o">=</span>pypi.douban.com
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.core.handlers.wsgi</span><span class="w"> </span><span class="kn">import</span> <span class="n">WSGIHandler</span>
 <span class="n">application</span> <span class="o">=</span> <span class="n">WSGIHandler</span><span class="p">()</span>
 </code></pre></div>
-
 <p>下面我们再写一个uwsgi的配置文件（还没有优化),就叫django.xml，也放到blog文件夹里面</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&lt;uwsgi&gt;</span>
 <span class="w">    </span><span class="nt">&lt;socket&gt;</span>127.0.0.1:8521<span class="nt">&lt;/socket&gt;</span>
@@ -168,7 +160,6 @@ trusted-host<span class="o">=</span>pypi.douban.com
 <span class="w">    </span><span class="nt">&lt;daemonize&gt;</span>uwsgi.log<span class="nt">&lt;/daemonize&gt;</span>
 <span class="nt">&lt;/uwsgi&gt;</span>
 </code></pre></div>
-
 <p>nginx 的配置文件，不过没有做静态文件处理，django的后台显示不正常</p>
 <div class="highlight"><pre><span></span><code>server<span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>listen<span class="w">   </span><span class="m">80</span><span class="p">;</span><span class="w"> </span><span class="c1">## listen for ipv4; this line is default and implied</span>
@@ -186,23 +177,19 @@ trusted-host<span class="o">=</span>pypi.douban.com
 
 <span class="o">}</span>
 </code></pre></div>
-
 <p>然后，给我们自己开发的应用程序编写一个配置文件，让supervisor来管理它。每个进程的配置文件都可以单独分拆，放在/etc/supervisor/conf.d/目录下，以.conf作为扩展名,就叫django_app.conf</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>program:app<span class="o">]</span>
 <span class="nv">command</span><span class="o">=</span>uwsgi<span class="w"> </span>-x<span class="w"> </span>django.xml
 <span class="nv">directory</span><span class="o">=</span>/root/.pip/blog
 <span class="nv">user</span><span class="o">=</span>root
 </code></pre></div>
-
 <p>其中，进程app定义在[program:app]中，command是命令，directory是进程的当前目录，user是进程运行的用户身份。</p>
 <p>重启supervisor，让配置文件生效，然后运行命令supervisorctl启动进程：</p>
 <div class="highlight"><pre><span></span><code>supervisorctl<span class="w"> </span>start<span class="w"> </span>app
 </code></pre></div>
-
 <p>停止进程：</p>
 <div class="highlight"><pre><span></span><code>supervisorctl<span class="w"> </span>stop<span class="w"> </span>app
 </code></pre></div>
-
 <p>这样，系统重启的时候，uwsgi 也会自动启动，省的我们手动启动它了，我是用的root用户配置的，生产环境不推荐这样做，全文基本搭建完了，运行也是正常的，后期，再深入一点，优化一下性能。</p>
   </div>
 </article>

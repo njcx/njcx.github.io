@@ -108,10 +108,8 @@ var _hmt = _hmt || [];
 <p>Redis 可以编译安装,也可以apt-get /yum安装,一般编译安装的版本比较新一些</p>
 <div class="highlight"><pre><span></span><code>centos/rhce<span class="w"> </span>:<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>redis<span class="w"> </span>-y
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>debian/ubuntu<span class="w"> </span>:<span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>redis-server<span class="w"> </span>-y
 </code></pre></div>
-
 <p>编译安装,</p>
 <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>http://download.redis.io/releases/redis-3.2.9.tar.gz<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>tar<span class="w"> </span>-xzvf<span class="w"> </span>redis-3.2.9.tar.gz<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>redis-3.2.9
 
@@ -119,16 +117,13 @@ make<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </
 
 cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/usr/local/redis/bin/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>redis-benchmark<span class="w"> </span>redis-cli<span class="w"> </span>redis-server<span class="w"> </span>/usr/bin/
 </code></pre></div>
-
 <h4>使用</h4>
 <p>先通过读取配置文件启动服务端,我通过apt-get 安装的,默认配置文件在 /etc/redis/redis.conf,先启动服务端</p>
 <div class="highlight"><pre><span></span><code>redis-server<span class="w"> </span>/etc/redis/redis.conf
 </code></pre></div>
-
 <p>再启动客服端</p>
 <div class="highlight"><pre><span></span><code>redis-cli
 </code></pre></div>
-
 <h4>命令</h4>
 <p>Redis的命令主要围绕着:配置,以及相关数据类型的操作的.</p>
 <ul>
@@ -139,13 +134,11 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>CONFIG<span class="w"> </span>GET<span class="w"> </span>loglevel<span class="w">  </span>
 </code></pre></div>
-
 <p>更改配置</p>
 <div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>CONFIG<span class="w"> </span>SET<span class="w"> </span>CONFIG_SETTING_NAME<span class="w"> </span>NEW_CONFIG_VALUE
 
-<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>CONFIG<span class="w"> </span>SET<span class="w"> </span>loglevel<span class="w"> </span><span class="s2">&quot;notice&quot;</span><span class="w"> </span>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>CONFIG<span class="w"> </span>SET<span class="w"> </span>loglevel<span class="w"> </span><span class="s2">"notice"</span><span class="w"> </span>
 </code></pre></div>
-
 <ul>
 <li>Redis 键命令</li>
 </ul>
@@ -165,7 +158,6 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>RENAMENX<span class="w"> </span>key<span class="w"> </span>newkey<span class="w">         </span>//<span class="w"> </span>如果新键不存在，重命名键
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>TYPE<span class="w"> </span>key<span class="w">                   </span>//<span class="w"> </span>返回key的数据类型
 </code></pre></div>
-
 <ul>
 <li>Redis 字符串命令</li>
 </ul>
@@ -190,7 +182,6 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>DECRBY<span class="w"> </span>key<span class="w"> </span>decrement<span class="w">              </span>//<span class="w">  </span>按给定数值减少键的整数值
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>APPEND<span class="w"> </span>key<span class="w"> </span>value<span class="w">                 </span>//<span class="w">     </span>将指定值附加到键
 </code></pre></div>
-
 <ul>
 <li>Redis 哈希命令</li>
 </ul>
@@ -208,7 +199,6 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HDEL<span class="w"> </span>key<span class="w"> </span>field2<span class="w"> </span><span class="o">[</span>field2<span class="o">]</span><span class="w">                       </span>//<span class="w"> </span>删除一个或多个哈希字段
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>HVALS<span class="w"> </span>key<span class="w">                                   </span>//<span class="w"> </span>获取哈希中的所有值
 </code></pre></div>
-
 <ul>
 <li>Redis 列表命令</li>
 </ul>
@@ -230,7 +220,6 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LPUSHX<span class="w"> </span>key<span class="w"> </span>value<span class="w">                  </span>//仅当列表存在时，才向列表添加值
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>LRANGE<span class="w"> </span>key<span class="w"> </span>start<span class="w"> </span>stop<span class="w">          </span>//<span class="w"> </span>从列表中获取一系列元素
 </code></pre></div>
-
 <ul>
 <li>Redis 集合命令</li>
 </ul>
@@ -249,7 +238,6 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SUNIONSTORE<span class="w"> </span>destination<span class="w"> </span>key1<span class="w"> </span><span class="o">[</span>key2<span class="o">]</span><span class="w">   </span>//<span class="w"> </span>添加多个集并将结果集存储在键中
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>SSCAN<span class="w"> </span>key<span class="w"> </span>cursor<span class="w"> </span><span class="o">[</span>MATCH<span class="w"> </span>pattern<span class="o">]</span><span class="w"> </span><span class="o">[</span>COUNT<span class="w"> </span>count<span class="o">]</span><span class="w">  </span>//<span class="w">     </span>递增地迭代集合中的元素
 </code></pre></div>
-
 <ul>
 <li>Redis 有序集合(sorted set)</li>
 </ul>
@@ -274,7 +262,6 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZUNIONSTORE<span class="w"> </span>destination<span class="w"> </span>numkeys<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>...<span class="o">]</span><span class="w">   </span>//计算给定的一个或多个有序集的并集，并存储在新的<span class="w"> </span>key<span class="w"> </span>中
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>ZSCAN<span class="w"> </span>key<span class="w"> </span>cursor<span class="w"> </span><span class="o">[</span>MATCH<span class="w"> </span>pattern<span class="o">]</span><span class="w"> </span><span class="o">[</span>COUNT<span class="w"> </span>count<span class="o">]</span><span class="w">   </span>//迭代有序集合中的元素（包括元素成员和元素分值）
 </code></pre></div>
-
 <ul>
 <li>Redis HyperLogLog</li>
 </ul>
@@ -283,7 +270,6 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PFCOUNT<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>...<span class="o">]</span>.<span class="w">                        </span>//返回给定<span class="w"> </span>HyperLogLog<span class="w"> </span>的基数估算值。
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>PFMERGE<span class="w"> </span>destkey<span class="w"> </span>sourcekey<span class="w"> </span><span class="o">[</span>sourcekey<span class="w"> </span>...<span class="o">]</span><span class="w">     </span>//将多个<span class="w"> </span>HyperLogLog<span class="w"> </span>合并为一个<span class="w"> </span>HyperLogLog
 </code></pre></div>
-
 <ul>
 <li>Redis 发布订阅</li>
 </ul>
@@ -294,7 +280,6 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SUBSCRIBE<span class="w"> </span>channel<span class="w"> </span><span class="o">[</span>channel<span class="w"> </span>...<span class="o">]</span><span class="w">                </span>//订阅给定的一个或多个频道的信息。
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>UNSUBSCRIBE<span class="w"> </span><span class="o">[</span>channel<span class="w"> </span><span class="o">[</span>channel<span class="w"> </span>...<span class="o">]]</span><span class="w">            </span>//指退订给定的频道。
 </code></pre></div>
-
 <ul>
 <li>Redis 事务</li>
 </ul>
@@ -304,18 +289,17 @@ cp<span class="w"> </span>redis.conf<span class="w"> </span>/usr/local/redis/etc
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>UNWATCH<span class="w">                </span>//取消<span class="w"> </span>WATCH<span class="w"> </span>命令对所有<span class="w"> </span>key<span class="w"> </span>的监视。
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w">  </span>WATCH<span class="w"> </span>key<span class="w"> </span><span class="o">[</span>key<span class="w"> </span>...<span class="o">]</span><span class="w">    </span>//<span class="w"> </span>监视一个<span class="o">(</span>或多个<span class="o">)</span><span class="w"> </span>key<span class="w"> </span>，如果在事务执行之前这个<span class="o">(</span>或这些<span class="o">)</span><span class="w"> </span>key<span class="w"> </span>被其他命令所改动，那么事务将被打断
 </code></pre></div>
-
 <p>样例</p>
 <div class="highlight"><pre><span></span><code><span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>MULTI
 OK
 
-<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SET<span class="w"> </span>book-name<span class="w"> </span><span class="s2">&quot;Mastering C++ in 21 days&quot;</span>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SET<span class="w"> </span>book-name<span class="w"> </span><span class="s2">"Mastering C++ in 21 days"</span>
 QUEUED
 
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>GET<span class="w"> </span>book-name
 QUEUED
 
-<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SADD<span class="w"> </span>tag<span class="w"> </span><span class="s2">&quot;C++&quot;</span><span class="w"> </span><span class="s2">&quot;Programming&quot;</span><span class="w"> </span><span class="s2">&quot;Mastering Series&quot;</span>
+<span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SADD<span class="w"> </span>tag<span class="w"> </span><span class="s2">"C++"</span><span class="w"> </span><span class="s2">"Programming"</span><span class="w"> </span><span class="s2">"Mastering Series"</span>
 QUEUED
 
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>SMEMBERS<span class="w"> </span>tag
@@ -323,13 +307,12 @@ QUEUED
 
 <span class="m">127</span>.0.0.1:6379&gt;<span class="w"> </span>EXEC
 <span class="m">1</span><span class="o">)</span><span class="w"> </span>OK
-<span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="s2">&quot;Mastering C++ in 21 days&quot;</span>
+<span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="s2">"Mastering C++ in 21 days"</span>
 <span class="m">3</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>integer<span class="o">)</span><span class="w"> </span><span class="m">3</span>
-<span class="m">4</span><span class="o">)</span><span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="s2">&quot;Mastering Series&quot;</span>
-<span class="w">   </span><span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="s2">&quot;C++&quot;</span>
-<span class="w">   </span><span class="m">3</span><span class="o">)</span><span class="w"> </span><span class="s2">&quot;Programming&quot;</span>
+<span class="m">4</span><span class="o">)</span><span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="s2">"Mastering Series"</span>
+<span class="w">   </span><span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="s2">"C++"</span>
+<span class="w">   </span><span class="m">3</span><span class="o">)</span><span class="w"> </span><span class="s2">"Programming"</span>
 </code></pre></div>
-
 <ul>
 <li>Redis脚本</li>
 </ul>

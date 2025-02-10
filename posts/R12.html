@@ -105,7 +105,7 @@ var _hmt = _hmt || [];
     <h4>介绍</h4>
 <p>使用 cgroups + etcd + kafka 开发而成的hids的架构，agent 部分使用go 开发而成， 会把采集的数据写入到kafka里面，由后端的规则引擎（go开发而成）消费，配置部分以及agent存活使用etcd。关于agent 使用cgroups限制资源以及使用etcd做配置管理agent存活已经在前文介绍了一下。下面介绍一下agent抓取DNS请求和异常分析的部分。</p>
 <h6>DNS 响应报文格式介绍</h6>
-<p><img alt="agent" src="../images/dnsgenformat.png"></p>
+<p><img alt="agent" class="img-fluid" src="../images/dnsgenformat.png"/></p>
 <p>DNS 请求的格式和响应格式差不多，DNS 定义了一个用于查询和响应的报文格式。上图显示这个报文的总体格式。这个报文由 12 字节长的首部和 4 个长度可变的字段组成。</p>
 <p>DNS报文里的名字   说明</p>
 <ul>
@@ -121,10 +121,10 @@ var _hmt = _hmt || [];
 <li>Additional records    附加信息数据</li>
 </ul>
 <p>DNS 报文 12 字节长的首部格式如下图所示。</p>
-<p><img alt="agent" src="../images/dnsheaderformat.png"></p>
+<p><img alt="agent" class="img-fluid" src="../images/dnsheaderformat.png"/></p>
 <p>标识字段由客户程序设置并由服务器返回结果。 客户程序通过它来确定响应与查询是否匹配。</p>
 <p>16 bit 的标志字段被划分为若干子字段，如下图所示。</p>
-<p><img alt="agent" src="../images/02-DNS-Message-Header-Flags-Codes.png"></p>
+<p><img alt="agent" class="img-fluid" src="../images/02-DNS-Message-Header-Flags-Codes.png"/></p>
 <p>Transaction ID：这是由 client 端指定的标识数据，DNS server 会将这个字段原样返回，client 端可以用来区分不同的 DNS 请求
 RR：Resource Record 的缩写</p>
 <p>Flags</p>
@@ -156,13 +156,12 @@ RR：Resource Record 的缩写</p>
 <span class="m">9</span>：服务器不具备改管理区的权限
 <span class="m">10</span>：name<span class="w"> </span>不在管理区中
 </code></pre></div>
-
 <p>随后的 4 个 16 bit 字段说明最后 4 个变长字段中包含的条目数。
 对于查询报文，问题(question)数通常是 1，而其他 3 项则均为 0。
 类似地，对于应答报文，回答数至少是 1，剩下的两项可以是 0 或非 0。</p>
 <h6>DNS 查询报文中的问题部分</h6>
 <p>问题部分中每个问题的格式，通常只有一个问题。</p>
-<p><img alt="agent" src="../images/dnsquestionformat.png"></p>
+<p><img alt="agent" class="img-fluid" src="../images/dnsquestionformat.png"/></p>
 <p>查询名(Name)是要查找的名字，它是一个或多个标识符的序列。
 每个标识符以首字节的计数值来说明随后标识符的字节长度， 每个名字以最后字节为 0 结束，长度为 0 的标识符是根标识符。 计数字节的值必须是 0 ~ 63 的数，因为标识符的最大长度仅为 63 （我们会看到计数字节的最高两比特为 1，即值 192 ~ 255，将用于压缩格式）。 不像我们已经看到的许多其他报文格式，该字段无需以整 32 bit 边界结束，即无需填充字节。</p>
 <p>每个问题有一个查询类型(Type)，而每个响应（也称一个资源记录，我们下面将谈到）也有一个类型。 大约有 20 个不同的类型值，其中的一些目前已经过时。 下面列出：</p>
@@ -178,10 +177,9 @@ RR：Resource Record 的缩写</p>
 <span class="m">252</span><span class="w"> </span>AXFR<span class="w">    </span>传送整个区的请求
 <span class="m">255</span><span class="w"> </span>ANY<span class="w"> </span>对所有记录的请求
 </code></pre></div>
-
 <p>最常用的查询类型是 A 类型，表示期望获得查询名的 IP 地址。 一个 PTR 查询则请求获得一个 IP 地址对应的域名。查询类(Class)通常是 1，指互联网地址（某些站点也支持其他非 IP 地址）。</p>
 <h6>DNS 响应报文中的资源记录部分</h6>
-<p><img alt="agent" src="../images/dnsrrformat.png"></p>
+<p><img alt="agent" class="img-fluid" src="../images/dnsrrformat.png"/></p>
 <p>DNS 报文中最后的三个字段，回答字段、授权字段和附加信息字段， 均采用一种称为资源记录RR（Resource Record）的相同格式。 图显示了资源记录的格式。</p>
 <ul>
 <li>Ethereal 里的名字 说明</li>
@@ -200,12 +198,12 @@ RR：Resource Record 的缩写</p>
 <p>抓取dns记录，可以hook udp_recvmsg() udpv6_recvmsg() 函数，也可能直接用libpcap。libpcap的工作原理可以描述为，当一个数据包到达网卡时，通过网络分接口（即旁路机制）将数据包发给BPF过滤器，匹配通过的数据包可以被libpcap利用创建的套接字PF_PACKET从链路层驱动程序中获得。进而在用户空间提供独立于系统的用户级API接口。我们使用谷歌的包github.com/google/gopacket， gopacket构建在libpcap之上。配合 audit 或者hook 相关函数，可以清楚看到对应的uid pid。</p>
 <p>样例：</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;fmt&quot;</span>
-<span class="w">    </span><span class="s">&quot;log&quot;</span>
-<span class="w">    </span><span class="s">&quot;errors&quot;</span>
-<span class="w">    </span><span class="s">&quot;github.com/google/gopacket&quot;</span>
-<span class="w">    </span><span class="s">&quot;github.com/google/gopacket/layers&quot;</span>
-<span class="w">    </span><span class="s">&quot;github.com/google/gopacket/pcap&quot;</span>
+<span class="w">    </span><span class="s">"fmt"</span>
+<span class="w">    </span><span class="s">"log"</span>
+<span class="w">    </span><span class="s">"errors"</span>
+<span class="w">    </span><span class="s">"github.com/google/gopacket"</span>
+<span class="w">    </span><span class="s">"github.com/google/gopacket/layers"</span>
+<span class="w">    </span><span class="s">"github.com/google/gopacket/pcap"</span>
 
 <span class="p">)</span>
 
@@ -230,15 +228,15 @@ RR：Resource Record 的缩写</p>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">device</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;find device error&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">device</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">""</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">"find device error"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">    </span><span class="nx">h</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">pcap</span><span class="p">.</span><span class="nx">OpenLive</span><span class="p">(</span><span class="nx">device</span><span class="p">,</span><span class="w"> </span><span class="mi">65535</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nx">pcap</span><span class="p">.</span><span class="nx">BlockForever</span><span class="p">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;StartDnSMonitor&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">h</span><span class="p">.</span><span class="nx">SetBPFFilter</span><span class="p">(</span><span class="s">&quot;udp and port 53&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"StartDnSMonitor"</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">h</span><span class="p">.</span><span class="nx">SetBPFFilter</span><span class="p">(</span><span class="s">"udp and port 53"</span><span class="p">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
 <span class="w">    </span><span class="p">}</span>
@@ -255,9 +253,9 @@ RR：Resource Record 的缩写</p>
 <span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">payload</span><span class="w"> </span><span class="nx">gopacket</span><span class="p">.</span><span class="nx">Payload</span>
 
 <span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">resultdata</span><span class="w"> </span><span class="p">=</span><span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">h</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">getDnsPcapHandle</span><span class="p">(</span><span class="s">&quot;10.10.16.1&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">h</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">getDnsPcapHandle</span><span class="p">(</span><span class="s">"10.10.16.1"</span><span class="p">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;get pcaphandle failed, err:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"get pcaphandle failed, err:"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -266,7 +264,7 @@ RR：Resource Record 的缩写</p>
 <span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">h</span><span class="p">.</span><span class="nx">ReadPacketData</span><span class="p">()</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Error reading packet data: &quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">            </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"Error reading packet data: "</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="w">            </span><span class="k">continue</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">parser</span><span class="p">.</span><span class="nx">DecodeLayers</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">decodedLayers</span><span class="p">)</span>
@@ -278,12 +276,12 @@ RR：Resource Record 的缩写</p>
 <span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="nx">layers</span><span class="p">.</span><span class="nx">LayerTypeDNS</span><span class="p">:</span>
 <span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">dns</span><span class="p">.</span><span class="nx">QR</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                    </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">dnsQuestion</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">dns</span><span class="p">.</span><span class="nx">Questions</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">&quot;source&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;dns&quot;</span>
-<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">&quot;src&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">SrcIP</span>
-<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">&quot;dst&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">DstIP</span>
-<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">&quot;domain&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">string</span><span class="p">(</span><span class="nx">dnsQuestion</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
-<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">dnsQuestion</span><span class="p">.</span><span class="nx">Type</span><span class="p">.</span><span class="nx">String</span><span class="p">()</span>
-<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">&quot;class&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">dnsQuestion</span><span class="p">.</span><span class="nx">Class</span><span class="p">.</span><span class="nx">String</span><span class="p">()</span>
+<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">"source"</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">"dns"</span>
+<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">"src"</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">SrcIP</span>
+<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">"dst"</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">DstIP</span>
+<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">"domain"</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">string</span><span class="p">(</span><span class="nx">dnsQuestion</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">"type"</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">dnsQuestion</span><span class="p">.</span><span class="nx">Type</span><span class="p">.</span><span class="nx">String</span><span class="p">()</span>
+<span class="w">                        </span><span class="nx">resultdata</span><span class="p">[</span><span class="s">"class"</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">dnsQuestion</span><span class="p">.</span><span class="nx">Class</span><span class="p">.</span><span class="nx">String</span><span class="p">()</span>
 <span class="w">                        </span><span class="nx">resultChan</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nx">resultdata</span>
 
 <span class="w">                    </span><span class="p">}</span>
@@ -293,17 +291,16 @@ RR：Resource Record 的缩写</p>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-
 <p>上面给出了一个抓取dns请求的样例，比如，看下面这个DNS隧道：</p>
-<p><img alt="agent" src="../images/WechatIMG26.jpeg"></p>
-<p><img alt="agent" src="../images/WechatIMG21.jpeg"></p>
-<p><img alt="agent" src="../images/WechatIMG23.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG26.jpeg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG21.jpeg"/></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG23.jpeg"/></p>
 <p>特征很明显：</p>
 <p>1， 请求的Type一般都是TXT（为了返回的时候能够加入更多的信息）。】</p>
 <p>2， payload部分一般都会编码（可能为base64、2进制或16进制）后放到子域名里面，而且多变，不一致</p>
 <p>3， DNS发生频率很高，短时间为了发送大量数据，会产生大量请求</p>
 <p>我们也可以联动威胁情报</p>
-<p><img alt="agent" src="../images/WeChatbbbaf08c7e6210a037f98624f609c378.png"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WeChatbbbaf08c7e6210a037f98624f609c378.png"/></p>
 <p>在server 端做流式分析，挖掘 C2 、APT、 botnet 等等。</p>
   </div>
 </article>

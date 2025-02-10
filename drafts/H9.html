@@ -114,7 +114,7 @@ var _hmt = _hmt || [];
 <p>slave节点
 - kubelet Node节点中核心组件，负责执行Master下发的任务 
 - kube-proxy 代理，负责kubelet与apiserver网络。相当于负载均衡，将请求转到后端pod中</p>
-<p><img alt="k8s" src="../images/k8s.png"></p>
+<p><img alt="k8s" class="img-fluid" src="../images/k8s.png"/></p>
 <h4>安装</h4>
 <p>master </p>
 <p>包含kube-apiserver，kube-scheduler，kube-controller-manager</p>
@@ -122,20 +122,17 @@ var _hmt = _hmt || [];
 <span class="c1"># yum makecache </span>
 <span class="c1"># yum install -y etcd kubernetes-master kubernetes-client </span>
 </code></pre></div>
-
 <p>slave1</p>
 <p>包含 kubelet，kube-proxy，kubectl</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># yum install -y epel-release</span>
 <span class="c1"># yum makecache </span>
 <span class="c1"># yum install -y kubernetes-node</span>
 </code></pre></div>
-
 <p>slave2</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># yum install -y epel-release</span>
 <span class="c1"># yum makecache </span>
 <span class="c1"># yum install -y kubernetes-node</span>
 </code></pre></div>
-
 <h4>配置</h4>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl daemon-reload</span>
 <span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl enable etcd.service</span>
@@ -147,7 +144,6 @@ var _hmt = _hmt || [];
 <span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl enable kube-controller-manager.service</span>
 <span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl enable kube-scheduler.service</span>
 </code></pre></div>
-
 <p>slave1</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl daemon-reload</span>
 <span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl enable docker.service</span>
@@ -157,7 +153,6 @@ var _hmt = _hmt || [];
 <span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl enable kube-proxy.service</span>
 <span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl start kube-proxy.service</span>
 </code></pre></div>
-
 <p>slave2</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl daemon-reload</span>
 <span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span><span class="c1"># systemctl enable docker.service</span>

@@ -108,29 +108,24 @@ var _hmt = _hmt || [];
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>epel-release
 yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>salt-master<span class="w"> </span>salt-minion
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>service<span class="w"> </span>salt-master<span class="w"> </span>start
 service<span class="w"> </span>salt-minion<span class="w"> </span>start
 chkconfig<span class="w"> </span>salt-master<span class="w"> </span>on
 chkconfig<span class="w"> </span>salt-minion<span class="w"> </span>on
 setenforce<span class="w"> </span><span class="m">0</span>
 </code></pre></div>
-
 <p>客服端：172.16.131.136</p>
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>epel-release
 yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>salt-minion
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>service<span class="w"> </span>salt-minion<span class="w"> </span>start
 chkconfig<span class="w"> </span>salt-minion<span class="w"> </span>on
 setenforce<span class="w"> </span><span class="m">0</span>
 </code></pre></div>
-
 <h4>配置</h4>
 <p>vim /etc/salt/minion</p>
 <div class="highlight"><pre><span></span><code>master:<span class="w"> </span><span class="m">172</span>.16.131.134
 </code></pre></div>
-
 <p>vim /etc/salt/master</p>
 <p><code>bash
  auto_accept: True //这样服务端就可以自动接收key</code></p>
@@ -143,14 +138,12 @@ slave_1
 Denied<span class="w"> </span>Keys:
 Unaccepted<span class="w"> </span>Keys:
 </code></pre></div>
-
 <p>测试  salt '*' test.ping </p>
 <div class="highlight"><pre><span></span><code>slave_1:
 <span class="w">    </span>True
 master:
 <span class="w">    </span>True
 </code></pre></div>
-
 <p>测试 salt '*' cmd.run "df -h"</p>
 <div class="highlight"><pre><span></span><code><span class="w">    </span>Filesystem<span class="w">               </span>Size<span class="w">  </span>Used<span class="w"> </span>Avail<span class="w"> </span>Use%<span class="w"> </span>Mounted<span class="w"> </span>on
 <span class="w">    </span>/dev/mapper/centos-root<span class="w">   </span>17G<span class="w">  </span><span class="m">5</span>.0G<span class="w">   </span>13G<span class="w">  </span><span class="m">30</span>%<span class="w"> </span>/
@@ -170,7 +163,6 @@ master:
 <span class="w">    </span>/dev/sda1<span class="w">               </span>1014M<span class="w">  </span>130M<span class="w">  </span>885M<span class="w">  </span><span class="m">13</span>%<span class="w"> </span>/boot
 <span class="w">    </span>tmpfs<span class="w">                    </span>177M<span class="w">     </span><span class="m">0</span><span class="w">  </span>177M<span class="w">   </span><span class="m">0</span>%<span class="w"> </span>/run/user/0
 </code></pre></div>
-
 <p>如上，只是简单的测试，还有比较有趣的 grains，pillar</p>
   </div>
 </article>

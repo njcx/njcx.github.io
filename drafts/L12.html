@@ -115,19 +115,15 @@ var _hmt = _hmt || [];
 <span class="c1"># tar -zxvf kafka_2.12-2.1.0.tgz &amp;&amp; tar -zxvf scala-2.12.8.tgz</span>
 <span class="c1"># rm -rf kafka_2.12-2.1.0.tgz  scala-2.12.8.tgz</span>
 </code></pre></div>
-
 <p>然后，添加scala的环境变量</p>
 <div class="highlight"><pre><span></span><code>vim<span class="w"> </span>/etc/profile
 </code></pre></div>
-
 <p>填入</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">SCALA_HOME</span><span class="o">=</span>/opt/scala-2.12.8
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SCALA_HOME</span>/bin
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="nb">source</span><span class="w">  </span>/etc/profile
 </code></pre></div>
-
 <p>然后，把宿主机的key 加入 ssh的 authorized_keys，目前这个模板就做好了</p>
 <ul>
 <li>把模板拷贝4份</li>
@@ -138,7 +134,6 @@ var _hmt = _hmt || [];
 <span class="m">172</span>.16.202.140<span class="w">    </span>kafka3
 <span class="m">172</span>.16.202.142<span class="w">    </span>kafka4
 </code></pre></div>
-
 <p>然后加入宿主机的hosts文件里面，这样安装就OK了，宿主机就可以很方便的通过主机名访问对应的主机了</p>
 <h4>配置</h4>
 <p>zk集群 搭建的记录如下</p>
@@ -151,18 +146,16 @@ default.replication.factor<span class="o">=</span><span class="m">2</span>
 replica.fetch.max.bytes<span class="o">=</span><span class="m">5242880</span>
 zookeeper.connect<span class="o">=</span><span class="m">172</span>.16.202.144:2181,172.16.202.143:2181,172.16.202.145:2181
 </code></pre></div>
-
 <p>这里主要修改 broker.id 和 listeners 的ip，然后进入bin目录里面</p>
 <div class="highlight"><pre><span></span><code>./kafka-server-start.sh<span class="w"> </span>-daemon<span class="w"> </span>../config/server.properties
 </code></pre></div>
-
 <p>集群就启动了，我们进 zk 任何一个节点，</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># ./zkCli.sh</span>
 
 <span class="o">[</span>zk:<span class="w"> </span>localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span><span class="w"> </span><span class="m">8</span><span class="o">]</span><span class="w"> </span>ls<span class="w"> </span>/brokers/ids
 <span class="o">[</span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">4</span><span class="o">]</span>
 <span class="o">[</span>zk:<span class="w"> </span>localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span><span class="w"> </span><span class="m">9</span><span class="o">]</span><span class="w"> </span>get<span class="w"> </span>/brokers/ids/1
-<span class="o">{</span><span class="s2">&quot;listener_security_protocol_map&quot;</span>:<span class="o">{</span><span class="s2">&quot;PLAINTEXT&quot;</span>:<span class="s2">&quot;PLAINTEXT&quot;</span><span class="o">}</span>,<span class="s2">&quot;endpoints&quot;</span>:<span class="o">[</span><span class="s2">&quot;PLAINTEXT://172.16.202.139:9092&quot;</span><span class="o">]</span>,<span class="s2">&quot;jmx_port&quot;</span>:-1,<span class="s2">&quot;host&quot;</span>:<span class="s2">&quot;172.16.202.139&quot;</span>,<span class="s2">&quot;timestamp&quot;</span>:<span class="s2">&quot;1547395229963&quot;</span>,<span class="s2">&quot;port&quot;</span>:9092,<span class="s2">&quot;version&quot;</span>:4<span class="o">}</span>
+<span class="o">{</span><span class="s2">"listener_security_protocol_map"</span>:<span class="o">{</span><span class="s2">"PLAINTEXT"</span>:<span class="s2">"PLAINTEXT"</span><span class="o">}</span>,<span class="s2">"endpoints"</span>:<span class="o">[</span><span class="s2">"PLAINTEXT://172.16.202.139:9092"</span><span class="o">]</span>,<span class="s2">"jmx_port"</span>:-1,<span class="s2">"host"</span>:<span class="s2">"172.16.202.139"</span>,<span class="s2">"timestamp"</span>:<span class="s2">"1547395229963"</span>,<span class="s2">"port"</span>:9092,<span class="s2">"version"</span>:4<span class="o">}</span>
 <span class="nv">cZxid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x100000066
 <span class="nv">ctime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Sun<span class="w"> </span>Jan<span class="w"> </span><span class="m">13</span><span class="w"> </span><span class="m">11</span>:00:29<span class="w"> </span>EST<span class="w"> </span><span class="m">2019</span>
 <span class="nv">mZxid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x100000066
@@ -176,7 +169,6 @@ zookeeper.connect<span class="o">=</span><span class="m">172</span>.16.202.144:2
 <span class="nv">numChildren</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
 <span class="o">[</span>zk:<span class="w"> </span>localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span><span class="w"> </span><span class="m">10</span><span class="o">]</span>
 </code></pre></div>
-
 <p>可以看到4个节点</p>
 <h4>测试</h4>
 <div class="highlight"><pre><span></span><code><span class="c1">#./ kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test_topic</span>
@@ -199,7 +191,6 @@ zookeeper.connect<span class="o">=</span><span class="m">172</span>.16.202.144:2
 
 创建消费者（新版本）<span class="w">  </span>
 </code></pre></div>
-
 <h4>高可用HA</h4>
 <h4>监控</h4>
 <p>推荐使用</p>
@@ -207,11 +198,9 @@ zookeeper.connect<span class="o">=</span><span class="m">172</span>.16.202.144:2
 
 https://github.com/smartloli/kafka-eagle/archive/v1.2.8.tar.gz
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">KE_HOME</span><span class="o">=</span>/opt/kafka_eagle
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$KE_HOME</span>/bin
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="c1">######################################</span>
 <span class="c1"># multi zookeeper&amp;kafka cluster list</span>
 <span class="c1">######################################</span>

@@ -105,7 +105,7 @@ var _hmt = _hmt || [];
     <p>Web应用防护系统（也称为：网站应用级入侵防御系统。英文：Web Application Firewall，简称： WAF）。利用国际上公认的一种说法：Web应用防火墙是通过执行一系列针对HTTP/HTTPS的安全策略来专门为Web应用提供保护的一款产品。</p>
 <h4>架构</h4>
 <p>我们的流量第一层先到达高防抗D，做DDOS清洗，然后转发给WAF，由WAF做第二次清洗流控，转发给后端业务LB，整体架构如下，并旁路了分析引擎，弥补了WAF这一块无法做太复杂的计算缺陷，并把分析结果通过接口交给WAF执行。</p>
-<p><img alt="WAF" src="../images/WechatIMG9.jpeg"></p>
+<p><img alt="WAF" class="img-fluid" src="../images/WechatIMG9.jpeg"/></p>
 <h4>技术选型</h4>
 <p>目前，主流的自研WAF实现技术主要是依赖OpenResty技术栈（由中国人章亦春发起），代码部分主要是使用Lua编写,简单的安装如下：</p>
 <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://openresty.org/download/openresty-1.13.6.1.tar.gz
@@ -128,56 +128,53 @@ make<span class="w"> </span><span class="o">&amp;&amp;</span>make<span class="w"
 /usr/local/openresty/luajit/bin/luarocks<span class="w"> </span>install<span class="w"> </span>luasocket<span class="w">                                                                                                                                                                                  </span>//根据真实环境调整目录
 注意：<span class="w"> </span>这里有个bug，显示安装成功，其实没有安装成功，通过检查<span class="w"> </span>/usr/local/openresty/luajit/lib/lua/5.1<span class="w">  </span>目录下面，有没有mime<span class="w">  </span>socket<span class="w"> </span>目录来确定是否安装成功，否则再次执行安装步骤三，直到安装成功
 </code></pre></div>
-
 <h6>动态规则更新</h6>
 <p>比如，黑白IP的添加，域名URL的拦截封禁，流控CC规则的添加，这些动态的规则要求快速生效，这一块规则是存放在Redis里面的，通过API进行修改添加，WAF定时从Redis里面读取到共享内存中，Lua更新规则部分使用了redis-lua 2.0.5-dev类库和luasocket类库完成， 相关的代码放到init_worker.lua文件中， 如果有什么修改， nginx reload 即可，在 nginx reload 的过程中， master进程不退出，worker 进程陆续退出重启，这里特别注意，不然容易踩坑，比如，init.lua 在 nginx reload 的过后代码不会生效</p>
 <h6>传统规则引擎</h6>
 <p>一些安全拦截的规则，主要有GET和POST参数、Header里面的一些字段过滤，文件上传的拦截，是编写在json文件之中，就像下面列子一样，规则在OpenResty启动时候，由init_worker.lua写入共享内存，在 nginx reload 的过程中可完成更新，无缝对接更新规则</p>
 <div class="highlight"><pre><span></span><code><span class="o">{</span>
-<span class="w">    </span><span class="s2">&quot;state&quot;</span>:<span class="w"> </span><span class="s2">&quot;enable&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;rule_id&quot;</span>:<span class="s2">&quot;scanner_01&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;rule_tag&quot;</span>:<span class="s2">&quot;scanner&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;rule_name&quot;</span>:<span class="s2">&quot;scanner_hunter&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;useragent&quot;</span>:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;(dirbuster|pangolin|nmap|BBBike|sqlmap|w3af|owasp|Nikto|apachebench)&quot;</span>,<span class="s2">&quot;jios&quot;</span><span class="o">]</span>,
-<span class="w">    </span><span class="s2">&quot;action&quot;</span>:<span class="w"> </span><span class="s2">&quot;deny&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;info&quot;</span>:<span class="w"> </span><span class="s2">&quot;scanner attack&quot;</span>
+<span class="w">    </span><span class="s2">"state"</span>:<span class="w"> </span><span class="s2">"enable"</span>,
+<span class="w">    </span><span class="s2">"rule_id"</span>:<span class="s2">"scanner_01"</span>,
+<span class="w">    </span><span class="s2">"rule_tag"</span>:<span class="s2">"scanner"</span>,
+<span class="w">    </span><span class="s2">"rule_name"</span>:<span class="s2">"scanner_hunter"</span>,
+<span class="w">    </span><span class="s2">"useragent"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"(dirbuster|pangolin|nmap|BBBike|sqlmap|w3af|owasp|Nikto|apachebench)"</span>,<span class="s2">"jios"</span><span class="o">]</span>,
+<span class="w">    </span><span class="s2">"action"</span>:<span class="w"> </span><span class="s2">"deny"</span>,
+<span class="w">    </span><span class="s2">"info"</span>:<span class="w"> </span><span class="s2">"scanner attack"</span>
 <span class="o">}</span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="nb">local</span><span class="w"> </span><span class="nv">_basedir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>config.prod.config_rule_dir
-_M.rule_table.referer_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">&quot;referer.json&quot;</span><span class="o">)</span>
-_M.rule_table.uri_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">&quot;uri.json&quot;</span><span class="o">)</span>
-_M.rule_table.header_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">&quot;header.json&quot;</span><span class="o">)</span>
-_M.rule_table.useragent_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">&quot;useragent.json&quot;</span><span class="o">)</span>
-_M.rule_table.cookie_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">&quot;cookie.json&quot;</span><span class="o">)</span>
-_M.rule_table.args_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">&quot;args.json&quot;</span><span class="o">)</span>
-_M.rule_table.post_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">&quot;post.json&quot;</span><span class="o">)</span>
-rule_dict<span class="w"> </span>:safe_set<span class="o">(</span><span class="s2">&quot;rule&quot;</span>,cjson.encode<span class="o">(</span>_M.rule_table<span class="o">)</span>,0<span class="o">)</span>
+_M.rule_table.referer_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">"referer.json"</span><span class="o">)</span>
+_M.rule_table.uri_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">"uri.json"</span><span class="o">)</span>
+_M.rule_table.header_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">"header.json"</span><span class="o">)</span>
+_M.rule_table.useragent_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">"useragent.json"</span><span class="o">)</span>
+_M.rule_table.cookie_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">"cookie.json"</span><span class="o">)</span>
+_M.rule_table.args_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">"args.json"</span><span class="o">)</span>
+_M.rule_table.post_rule<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_json<span class="o">(</span>_basedir..<span class="s2">"post.json"</span><span class="o">)</span>
+rule_dict<span class="w"> </span>:safe_set<span class="o">(</span><span class="s2">"rule"</span>,cjson.encode<span class="o">(</span>_M.rule_table<span class="o">)</span>,0<span class="o">)</span>
 <span class="k">if</span><span class="w"> </span>info<span class="w"> </span><span class="k">then</span>
 <span class="w">    </span>util.waf_info_log<span class="o">(</span>util.table_to_json<span class="o">(</span>_M.rule_table<span class="o">))</span>
-<span class="w">    </span>util.waf_info_log<span class="o">(</span>env<span class="w"> </span>..<span class="w"> </span><span class="s1">&#39;:loadrule.lua work well&#39;</span><span class="o">)</span>
+<span class="w">    </span>util.waf_info_log<span class="o">(</span>env<span class="w"> </span>..<span class="w"> </span><span class="s1">':loadrule.lua work well'</span><span class="o">)</span>
 end
-rule_dict<span class="w"> </span>:safe_set<span class="o">(</span><span class="s2">&quot;rule_version&quot;</span>,1.2,0<span class="o">)</span>
+rule_dict<span class="w"> </span>:safe_set<span class="o">(</span><span class="s2">"rule_version"</span>,1.2,0<span class="o">)</span>
 </code></pre></div>
-
 <h6>CC算法</h6>
 <p>CC 模块位于access.lua 文件中，主要逻辑就是，把IP和当前的域名作为一个key写入共享内存，在单位内对该key累加计数，只要超过阀值，就拦截指定时间长度并返回一个拦截的页面，下一次访问的时候就直接拦截。见下面演示代码：</p>
 <div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span>cc_policy<span class="w">  </span><span class="k">then</span>
-<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nb">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy<span class="w"> </span>,<span class="w"> </span><span class="s2">&quot;,&quot;</span><span class="o">)[</span><span class="m">1</span><span class="o">])</span><span class="w">   </span>--<span class="w"> </span>单位时间
-<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nb">times</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy<span class="w"> </span>,<span class="w"> </span><span class="s2">&quot;,&quot;</span><span class="o">)[</span><span class="m">2</span><span class="o">])</span><span class="w">  </span>--<span class="w"> </span>请求次数
-<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">block_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy<span class="w"> </span>,<span class="w"> </span><span class="s2">&quot;,&quot;</span><span class="o">)[</span><span class="m">3</span><span class="o">])</span><span class="w">  </span>--<span class="w"> </span>封禁时间
-<span class="w">        </span><span class="nb">local</span><span class="w"> </span>req,<span class="w"> </span><span class="nv">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ngx.shared.cc:get<span class="o">(</span><span class="s2">&quot;cc_deny_&quot;</span>..host..real_ip<span class="o">)</span>
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nb">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy<span class="w"> </span>,<span class="w"> </span><span class="s2">","</span><span class="o">)[</span><span class="m">1</span><span class="o">])</span><span class="w">   </span>--<span class="w"> </span>单位时间
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nb">times</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy<span class="w"> </span>,<span class="w"> </span><span class="s2">","</span><span class="o">)[</span><span class="m">2</span><span class="o">])</span><span class="w">  </span>--<span class="w"> </span>请求次数
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">block_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>cc_policy<span class="w"> </span>,<span class="w"> </span><span class="s2">","</span><span class="o">)[</span><span class="m">3</span><span class="o">])</span><span class="w">  </span>--<span class="w"> </span>封禁时间
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span>req,<span class="w"> </span><span class="nv">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ngx.shared.cc:get<span class="o">(</span><span class="s2">"cc_deny_"</span>..host..real_ip<span class="o">)</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span>req<span class="w"> </span><span class="k">then</span>
-<span class="w">            </span>_M.log_record<span class="o">(</span><span class="s2">&quot;cc_module&quot;</span>,<span class="w"> </span><span class="s1">&#39;cc_01&#39;</span>,<span class="w"> </span><span class="s1">&#39;cc&#39;</span>,
-<span class="w">                    </span><span class="s1">&#39;cc&#39;</span>,<span class="s1">&#39;cc attack)</span>
+<span class="w">            </span>_M.log_record<span class="o">(</span><span class="s2">"cc_module"</span>,<span class="w"> </span><span class="s1">'cc_01'</span>,<span class="w"> </span><span class="s1">'cc'</span>,
+<span class="w">                    </span><span class="s1">'cc'</span>,<span class="s1">'cc attack)</span>
 <span class="s1">            util.waf_output(block_template_cc)</span>
 <span class="s1">            end</span>
 <span class="s1">        end</span>
 <span class="s1">        local req_h, _ = ngx.shared.cc:get(host..real_ip)</span>
 <span class="s1">        if req_h then</span>
 <span class="s1">            if req_h &gt;= times then</span>
-<span class="s1">                ngx.shared.cc:set(&quot;cc_deny_&quot;..host..real_ip, &quot;1&quot;, block_time*60)</span>
-<span class="s1">                _M.log_record(&quot;cc_module&quot;, &#39;</span>cc_01<span class="s1">&#39;, &#39;</span>cc<span class="s1">&#39;, &#39;</span>cc<span class="s1">&#39;,&#39;</span>cc<span class="w"> </span>attack<span class="err">&#39;</span><span class="o">)</span>
+<span class="s1">                ngx.shared.cc:set("cc_deny_"..host..real_ip, "1", block_time*60)</span>
+<span class="s1">                _M.log_record("cc_module", '</span>cc_01<span class="s1">', '</span>cc<span class="s1">', '</span>cc<span class="s1">','</span>cc<span class="w"> </span>attack<span class="err">'</span><span class="o">)</span>
 <span class="w">                </span>util.waf_output<span class="o">(</span>block_template_cc<span class="o">)</span>
 
 <span class="w">            </span><span class="k">else</span>
@@ -188,24 +185,23 @@ rule_dict<span class="w"> </span>:safe_set<span class="o">(</span><span class="s
 <span class="w">        </span>end
 <span class="w">    </span>end
 </code></pre></div>
-
 <h6>对域名的限流</h6>
 <p>对域名限流的模块位于access.lua 文件中，主要逻辑就是，把当前的域名作为一个key写入共享内存，在1s内对该key累加计数，把超过阀值的流量用IP标记，拦截指定时间并返回一个拦截的页面，完成流量置换。见下面演示代码：</p>
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">flow_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>flow_rate,<span class="w"> </span><span class="s2">&quot;,&quot;</span><span class="o">)[</span><span class="m">1</span><span class="o">])</span><span class="w">    </span>--<span class="w"> </span>qps
-<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">block_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>flow_rate,<span class="w"> </span><span class="s2">&quot;,&quot;</span><span class="o">)[</span><span class="m">2</span><span class="o">])</span><span class="w">  </span>--<span class="w"> </span>拦截时间
-<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ngx.shared.flow_control:get<span class="o">(</span><span class="s2">&quot;flow_deny_&quot;</span>..host..real_ip<span class="o">)</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">flow_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>flow_rate,<span class="w"> </span><span class="s2">","</span><span class="o">)[</span><span class="m">1</span><span class="o">])</span><span class="w">    </span>--<span class="w"> </span>qps
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">block_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>util.split_str_table<span class="o">(</span>flow_rate,<span class="w"> </span><span class="s2">","</span><span class="o">)[</span><span class="m">2</span><span class="o">])</span><span class="w">  </span>--<span class="w"> </span>拦截时间
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ngx.shared.flow_control:get<span class="o">(</span><span class="s2">"flow_deny_"</span>..host..real_ip<span class="o">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span>req<span class="w"> </span><span class="k">then</span>
-<span class="w">        </span>_M.log_record<span class="o">(</span><span class="s2">&quot;flow_module&quot;</span>,<span class="w"> </span><span class="s1">&#39;flow_01&#39;</span>,
-<span class="w">                </span><span class="s1">&#39;flow&#39;</span>,<span class="w"> </span><span class="s1">&#39;flow&#39;</span>,
-<span class="w">                </span><span class="s1">&#39;flow policy&#39;</span><span class="o">)</span>
+<span class="w">        </span>_M.log_record<span class="o">(</span><span class="s2">"flow_module"</span>,<span class="w"> </span><span class="s1">'flow_01'</span>,
+<span class="w">                </span><span class="s1">'flow'</span>,<span class="w"> </span><span class="s1">'flow'</span>,
+<span class="w">                </span><span class="s1">'flow policy'</span><span class="o">)</span>
 <span class="w">                </span>util.waf_output<span class="o">(</span>block_template_flow<span class="o">)</span>
 <span class="w">        </span>end
 <span class="w">    </span>end
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>flow_count,<span class="w"> </span><span class="nv">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ngx.shared.flow_control:get<span class="o">(</span>host<span class="o">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span>flow_count<span class="w"> </span><span class="k">then</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span>flow_count&gt;<span class="o">=</span><span class="w"> </span>flow_max<span class="w"> </span><span class="k">then</span>
-<span class="w">            </span>ngx.shared.flow_control:set<span class="o">(</span><span class="s2">&quot;flow_deny_&quot;</span>..host..real_ip,<span class="w"> </span><span class="s2">&quot;1&quot;</span>,<span class="w"> </span>block_time*60<span class="o">)</span>
-<span class="w">            </span>_M.log_record<span class="o">(</span><span class="s2">&quot;flow_module&quot;</span>,<span class="w"> </span><span class="s1">&#39;flow_01&#39;</span>,<span class="s1">&#39;flow&#39;</span>,<span class="w"> </span><span class="s1">&#39;flow&#39;</span>,<span class="s1">&#39;flow policy&#39;</span><span class="o">)</span>
+<span class="w">            </span>ngx.shared.flow_control:set<span class="o">(</span><span class="s2">"flow_deny_"</span>..host..real_ip,<span class="w"> </span><span class="s2">"1"</span>,<span class="w"> </span>block_time*60<span class="o">)</span>
+<span class="w">            </span>_M.log_record<span class="o">(</span><span class="s2">"flow_module"</span>,<span class="w"> </span><span class="s1">'flow_01'</span>,<span class="s1">'flow'</span>,<span class="w"> </span><span class="s1">'flow'</span>,<span class="s1">'flow policy'</span><span class="o">)</span>
 
 <span class="w">            </span>util.waf_output<span class="o">(</span>block_template_flow<span class="o">)</span>
 <span class="w">        </span><span class="k">else</span>
@@ -216,7 +212,6 @@ rule_dict<span class="w"> </span>:safe_set<span class="o">(</span><span class="s
 <span class="w">    </span>end
 end
 </code></pre></div>
-
 <h6>对IP的限流</h6>
 <p>对IP限流的模块位于access.lua 文件中，主要逻辑就是，把IP和当前的域名作为一个key写入共享内存，在1s内对该key累加计数，把超过阀值的流量拦截并返回一个拦截的页面。见下面演示代码：</p>
 <div class="highlight"><pre><span></span><code><span class="nv">flow_rate</span><span class="w"> </span><span class="o">=</span>ngx.shared.flow_ip_rules:get<span class="o">(</span>ip_str_key<span class="o">)</span><span class="w">   </span>--<span class="w"> </span>单个IP<span class="w"> </span>1s内最大请求数
@@ -224,7 +219,7 @@ end
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span>flow_count,<span class="w"> </span><span class="nv">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ngx.shared.flow_control:get<span class="o">(</span>host..real_ip<span class="o">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span>flow_count<span class="w"> </span><span class="k">then</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span>flow_count&gt;<span class="o">=</span><span class="w"> </span>tonumber<span class="o">(</span>flow_rate<span class="o">)</span><span class="w"> </span><span class="k">then</span>
-<span class="w">            </span>_M.log_record<span class="o">(</span><span class="s2">&quot;flow_module&quot;</span>,<span class="w"> </span><span class="s1">&#39;flow_ip_01&#39;</span>,<span class="s1">&#39;flow&#39;</span>,<span class="w"> </span><span class="s1">&#39;flow_ip&#39;</span>,<span class="s1">&#39;flow policy&#39;</span><span class="o">)</span>
+<span class="w">            </span>_M.log_record<span class="o">(</span><span class="s2">"flow_module"</span>,<span class="w"> </span><span class="s1">'flow_ip_01'</span>,<span class="s1">'flow'</span>,<span class="w"> </span><span class="s1">'flow_ip'</span>,<span class="s1">'flow policy'</span><span class="o">)</span>
 <span class="w">            </span>util.waf_output<span class="o">(</span>block_template_flow<span class="o">)</span>
 <span class="w">        </span><span class="k">else</span>
 <span class="w">            </span>ngx.shared.flow_control:incr<span class="o">(</span>host..real_ip,<span class="w"> </span><span class="m">1</span><span class="o">)</span>
@@ -234,7 +229,6 @@ end
 <span class="w">    </span>end
 end
 </code></pre></div>
-
 <h6>旁路分析</h6>
 <p>我们把流量解析后序列化写入log里面，然后，采集到kafka里面，用于与威胁情报联动拦截，以及业务安全上面的分析，比如，机器人爬虫、刷接口、刷单、撞库、恶意注册账号、薅羊毛、骗补贴等等</p>
 <div class="highlight"><pre><span></span><code><span class="nb">local</span><span class="w"> </span><span class="nv">client_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>client_ip
@@ -260,18 +254,17 @@ end
 <span class="w">    </span><span class="nv">waf_host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>waf_host
 <span class="o">}</span>
 <span class="nb">local</span><span class="w"> </span><span class="nv">log_line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>cjson.encode<span class="o">(</span>log_json_obj<span class="o">)</span>
-<span class="nb">local</span><span class="w"> </span><span class="nv">log_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>string.format<span class="o">(</span><span class="s2">&quot;%s/%s-access-waf.log&quot;</span>,<span class="w"> </span>log_path,<span class="w"> </span>os.date<span class="o">(</span><span class="s2">&quot;%Y-%m-%d&quot;</span><span class="o">))</span>
-<span class="nb">local</span><span class="w"> </span><span class="nv">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>io.open<span class="o">(</span>log_name,<span class="w"> </span><span class="s2">&quot;a&quot;</span><span class="o">)</span>
+<span class="nb">local</span><span class="w"> </span><span class="nv">log_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>string.format<span class="o">(</span><span class="s2">"%s/%s-access-waf.log"</span>,<span class="w"> </span>log_path,<span class="w"> </span>os.date<span class="o">(</span><span class="s2">"%Y-%m-%d"</span><span class="o">))</span>
+<span class="nb">local</span><span class="w"> </span><span class="nv">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>io.open<span class="o">(</span>log_name,<span class="w"> </span><span class="s2">"a"</span><span class="o">)</span>
 <span class="k">if</span><span class="w"> </span><span class="nv">file</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>nil<span class="w"> </span><span class="k">then</span>
 <span class="w">    </span><span class="k">return</span>
 end
-file:write<span class="o">(</span>string.format<span class="o">(</span><span class="s2">&quot;%s\n&quot;</span>,<span class="w"> </span>log_line<span class="o">))</span>
+file:write<span class="o">(</span>string.format<span class="o">(</span><span class="s2">"%s\n"</span>,<span class="w"> </span>log_line<span class="o">))</span>
 file:flush<span class="o">()</span>
 file:close<span class="o">()</span>
 </code></pre></div>
-
 <h4>数据传输</h4>
-<p><img alt="WAF" src="../images/WechatIMG7.jpeg"></p>
+<p><img alt="WAF" class="img-fluid" src="../images/WechatIMG7.jpeg"/></p>
 <p>WAF会把拦截记录序列化成json格式，写入log中，而不是直接写入任何数据库，因为这里对性能要求较高，综合考虑采取此方法，然后使用logstash写入kafka再写入es。WAF log输出是用的nginx 的worker 进程执行权限，一般www-data, 保证log输出目录，拥有对应权限，否则无log输出，且不报错。</p>
 <h4>压测</h4>
 <div class="highlight"><pre><span></span><code>WAF所在物理机：
@@ -296,7 +289,6 @@ Download:<span class="w"> </span><span class="m">500</span>.96<span class="w"> <
 Testing<span class="w"> </span>upload<span class="w"> </span>speed................
 Upload:<span class="w"> </span><span class="m">327</span>.65<span class="w"> </span>Mbit/s
 </code></pre></div>
-
 <p>http性能测试工具：  wrk</p>
 <p>公网测试：</p>
 <p>由请求机从公网链路发出请求，贴近真实场景</p>

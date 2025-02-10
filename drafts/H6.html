@@ -107,11 +107,9 @@ var _hmt = _hmt || [];
 <span class="c1"># tar -zxvf redis-4.0.11.tar.gz</span>
 <span class="c1"># cd redis-4.0.11 &amp;&amp; make &amp;&amp; make install </span>
 </code></pre></div>
-
 <p>然后进入utils 目录</p>
 <div class="highlight"><pre><span></span><code>./install_server.sh
 </code></pre></div>
-
 <p>redis 就把 服务添加到 /etc/init.d/目录了，并且 开机自动启动了，服务名称redis_6379 ，如果更改了默认端口，服务名称就是 redis_端口号。</p>
 <h4>配置</h4>
 <div class="highlight"><pre><span></span><code><span class="c1"># Redis配置文件样例</span>
@@ -163,7 +161,7 @@ loglevel<span class="w"> </span>verbose
 <span class="c1"># 日志记录方式，默认为标准输出，如果配置为redis为守护进程方式运行，而这里又配置为标准输出，则日志将会发送给/dev/null</span>
 logfile<span class="w"> </span>stdout
 
-<span class="c1"># To enable logging to the system logger, just set &#39;syslog-enabled&#39; to yes,</span>
+<span class="c1"># To enable logging to the system logger, just set 'syslog-enabled' to yes,</span>
 <span class="c1"># and optionally update the other syslog parameters to suit your needs.</span>
 <span class="c1"># syslog-enabled no</span>
 
@@ -226,17 +224,17 @@ dir<span class="w"> </span>./
 <span class="c1"># When a slave lost the connection with the master, or when the replication</span>
 <span class="c1"># is still in progress, the slave can act in two different ways:</span>
 <span class="c1">#</span>
-<span class="c1"># 1) if slave-serve-stale-data is set to &#39;yes&#39; (the default) the slave will</span>
+<span class="c1"># 1) if slave-serve-stale-data is set to 'yes' (the default) the slave will</span>
 <span class="c1">#    still reply to client requests, possibly with out of data data, or the</span>
 <span class="c1">#    data set may just be empty if this is the first synchronization.</span>
 <span class="c1">#</span>
-<span class="c1"># 2) if slave-serve-stale data is set to &#39;no&#39; the slave will reply with</span>
-<span class="c1">#    an error &quot;SYNC with master in progress&quot; to all the kind of commands</span>
+<span class="c1"># 2) if slave-serve-stale data is set to 'no' the slave will reply with</span>
+<span class="c1">#    an error "SYNC with master in progress" to all the kind of commands</span>
 <span class="c1">#    but to INFO and SLAVEOF.</span>
 <span class="c1">#</span>
 slave-serve-stale-data<span class="w"> </span>yes
 
-<span class="c1"># Slaves send PINGs to server in a predefined interval. It&#39;s possible to change</span>
+<span class="c1"># Slaves send PINGs to server in a predefined interval. It's possible to change</span>
 <span class="c1"># this interval with the repl_ping_slave_period option. The default value is 10</span>
 <span class="c1"># seconds.</span>
 <span class="c1">#</span>
@@ -273,7 +271,7 @@ slave-serve-stale-data<span class="w"> </span>yes
 <span class="c1"># It is also possilbe to completely kill a command renaming it into</span>
 <span class="c1"># an empty string:</span>
 <span class="c1">#</span>
-<span class="c1"># rename-command CONFIG &quot;&quot;</span>
+<span class="c1"># rename-command CONFIG ""</span>
 
 <span class="c1">################################### LIMITS ####################################</span>
 
@@ -281,7 +279,7 @@ slave-serve-stale-data<span class="w"> </span>yes
 <span class="c1"># 如果设置maxclients 0，表示不作限制。当客户端连接数到达限制时，Redis会关闭新的连接并向客户端返回max Number of clients reached错误信息</span>
 <span class="c1"># maxclients 128</span>
 
-<span class="c1"># Don&#39;t use more memory than the specified amount of bytes.</span>
+<span class="c1"># Don't use more memory than the specified amount of bytes.</span>
 <span class="c1"># When the memory limit is reached Redis will try to remove keys with an</span>
 <span class="c1"># EXPIRE set. It will try to start freeing keys that are going to expire</span>
 <span class="c1"># in little time and preserve keys with a longer time to live.</span>
@@ -292,10 +290,10 @@ slave-serve-stale-data<span class="w"> </span>yes
 <span class="c1"># to reply to most read-only commands like GET.</span>
 <span class="c1">#</span>
 <span class="c1"># WARNING: maxmemory can be a good idea mainly if you want to use Redis as a</span>
-<span class="c1"># &#39;state&#39; server or cache, not as a real DB. When Redis is used as a real</span>
+<span class="c1"># 'state' server or cache, not as a real DB. When Redis is used as a real</span>
 <span class="c1"># database the memory usage will grow over the weeks, it will be obvious if</span>
-<span class="c1"># it is going to use too much memory in the long run, and you&#39;ll have the time</span>
-<span class="c1"># to upgrade. With maxmemory after the limit is reached you&#39;ll start to get</span>
+<span class="c1"># it is going to use too much memory in the long run, and you'll have the time</span>
+<span class="c1"># to upgrade. With maxmemory after the limit is reached you'll start to get</span>
 <span class="c1"># errors for write operations, and this may even lead to DB inconsistency.</span>
 <span class="c1"># 指定Redis最大内存限制，Redis在启动时会把数据加载到内存中，达到最大内存后，Redis会先尝试清除已到期或即将到期的Key，</span>
 <span class="c1"># 当此方法处理后，仍然到达最大内存设置，将无法再进行写入操作，但仍然可以进行读取操作。</span>
@@ -310,7 +308,7 @@ slave-serve-stale-data<span class="w"> </span>yes
 <span class="c1"># volatile-random -&gt; remove a random key with an expire set</span>
 <span class="c1"># allkeys-&gt;random -&gt; remove a random key, any key</span>
 <span class="c1"># volatile-ttl -&gt; remove the key with the nearest expire time (minor TTL)</span>
-<span class="c1"># noeviction -&gt; don&#39;t expire at all, just return an error on write operations</span>
+<span class="c1"># noeviction -&gt; don't expire at all, just return an error on write operations</span>
 <span class="c1"># </span>
 <span class="c1"># Note: with all the kind of policies, Redis will return an error on write</span>
 <span class="c1">#       operations, when there are not suitable keys for eviction.</span>
@@ -337,7 +335,7 @@ slave-serve-stale-data<span class="w"> </span>yes
 
 <span class="c1"># </span>
 <span class="c1"># Note that you can have both the async dumps and the append only file if you</span>
-<span class="c1"># like (you have to comment the &quot;save&quot; statements above to disable the dumps).</span>
+<span class="c1"># like (you have to comment the "save" statements above to disable the dumps).</span>
 <span class="c1"># Still if append only mode is enabled Redis will load the data from the</span>
 <span class="c1"># log file at startup ignoring the dump.rdb file.</span>
 <span class="c1"># 指定是否在每次更新操作后进行日志记录，Redis在默认情况下是异步的把数据写入磁盘，如果不开启，可能会在断电时导致一段时间内的数据丢失。</span>
@@ -369,17 +367,17 @@ appendfsync<span class="w"> </span>everysec
 <span class="c1"># this currently, as even performing fsync in a different thread will block</span>
 <span class="c1"># our synchronous write(2) call.</span>
 <span class="c1">#</span>
-<span class="c1"># In order to mitigate this problem it&#39;s possible to use the following option</span>
+<span class="c1"># In order to mitigate this problem it's possible to use the following option</span>
 <span class="c1"># that will prevent fsync() from being called in the main process while a</span>
 <span class="c1"># BGSAVE or BGREWRITEAOF is in progress.</span>
 <span class="c1">#</span>
 <span class="c1"># This means that while another child is saving the durability of Redis is</span>
-<span class="c1"># the same as &quot;appendfsync none&quot;, that in pratical terms means that it is</span>
+<span class="c1"># the same as "appendfsync none", that in pratical terms means that it is</span>
 <span class="c1"># possible to lost up to 30 seconds of log in the worst scenario (with the</span>
 <span class="c1"># default Linux settings).</span>
 <span class="c1"># </span>
-<span class="c1"># If you have latency problems turn this to &quot;yes&quot;. Otherwise leave it as</span>
-<span class="c1"># &quot;no&quot; that is the safest pick from the point of view of durability.</span>
+<span class="c1"># If you have latency problems turn this to "yes". Otherwise leave it as</span>
+<span class="c1"># "no" that is the safest pick from the point of view of durability.</span>
 no-appendfsync-on-rewrite<span class="w"> </span>no
 
 <span class="c1"># Automatic rewrite of the append only file.</span>
@@ -446,7 +444,7 @@ vm-enabled<span class="w"> </span>no
 <span class="c1"># vm-enabled yes</span>
 
 <span class="c1"># This is the path of the Redis swap file. As you can guess, swap files</span>
-<span class="c1"># can&#39;t be shared by different Redis instances, so make sure to use a swap</span>
+<span class="c1"># can't be shared by different Redis instances, so make sure to use a swap</span>
 <span class="c1"># file for every redis process you are running. Redis will complain if the</span>
 <span class="c1"># swap file is already in use.</span>
 <span class="c1">#</span>
@@ -458,9 +456,9 @@ vm-enabled<span class="w"> </span>no
 vm-swap-file<span class="w"> </span>/tmp/redis.swap
 
 <span class="c1"># With vm-max-memory 0 the system will swap everything it can. Not a good</span>
-<span class="c1"># default, just specify the max amount of RAM you can in bytes, but it&#39;s</span>
+<span class="c1"># default, just specify the max amount of RAM you can in bytes, but it's</span>
 <span class="c1"># better to leave some margin. For instance specify an amount of RAM</span>
-<span class="c1"># that&#39;s more or less between 60 and 80% of your free RAM.</span>
+<span class="c1"># that's more or less between 60 and 80% of your free RAM.</span>
 <span class="c1"># 将所有大于vm-max-memory的数据存入虚拟内存，无论vm-max-memory设置多少，所有索引数据都是内存存储的（Redis的索引数据就是keys）</span>
 <span class="c1"># 也就是说当vm-max-memory设置为0的时候，其实是所有value都存在于磁盘。默认值为0</span>
 vm-max-memory<span class="w"> </span><span class="m">0</span>
@@ -475,14 +473,14 @@ vm-page-size<span class="w"> </span><span class="m">32</span>
 <span class="c1"># With the default of 32-bytes memory pages and 134217728 pages Redis will</span>
 <span class="c1"># use a 4 GB swap file, that will use 16 MB of RAM for the page table.</span>
 <span class="c1">#</span>
-<span class="c1"># It&#39;s better to use the smallest acceptable value for your application,</span>
+<span class="c1"># It's better to use the smallest acceptable value for your application,</span>
 <span class="c1"># but the default is large in order to work in most conditions.</span>
 vm-pages<span class="w"> </span><span class="m">134217728</span>
 
 <span class="c1"># Max number of VM I/O threads running at the same time.</span>
 <span class="c1"># This threads are used to read/write data from/to swap file, since they</span>
 <span class="c1"># also encode and decode objects from disk to memory or the reverse, a bigger</span>
-<span class="c1"># number of threads can help with big objects even if they can&#39;t help with</span>
+<span class="c1"># number of threads can help with big objects even if they can't help with</span>
 <span class="c1"># I/O itself as the physical device may not be able to couple with many</span>
 <span class="c1"># reads/writes operations at the same time.</span>
 <span class="c1"># 设置访问swap文件的I/O线程数，最后不要超过机器的核数，如果设置为0，那么所有对swap文件的操作都是串行的，可能会造成比较长时间的延迟，默认值为4</span>
@@ -521,7 +519,7 @@ zset-max-ziplist-value<span class="w"> </span><span class="m">64</span>
 <span class="c1"># order to help rehashing the main Redis hash table (the one mapping top-level</span>
 <span class="c1"># keys to values). The hash table implementation redis uses (see dict.c)</span>
 <span class="c1"># performs a lazy rehashing: the more operation you run into an hash table</span>
-<span class="c1"># that is rhashing, the more rehashing &quot;steps&quot; are performed, so if the</span>
+<span class="c1"># that is rhashing, the more rehashing "steps" are performed, so if the</span>
 <span class="c1"># server is idle the rehashing is never complete and some more memory is used</span>
 <span class="c1"># by the hash table.</span>
 <span class="c1"># </span>
@@ -529,7 +527,7 @@ zset-max-ziplist-value<span class="w"> </span><span class="m">64</span>
 <span class="c1"># active rehashing the main dictionaries, freeing memory when possible.</span>
 <span class="c1">#</span>
 <span class="c1"># If unsure:</span>
-<span class="c1"># use &quot;activerehashing no&quot; if you have hard latency requirements and it is</span>
+<span class="c1"># use "activerehashing no" if you have hard latency requirements and it is</span>
 <span class="c1"># not a good thing in your environment that Redis can reply form time to time</span>
 <span class="c1"># to queries with 2 milliseconds delay.</span>
 <span class="c1"># 指定是否激活重置哈希，默认为开启</span>
@@ -541,11 +539,9 @@ activerehashing<span class="w"> </span>yes
 <span class="c1"># include /path/to/local.conf</span>
 <span class="c1"># include /path/to/other.conf</span>
 </code></pre></div>
-
 <h4>redis 密码</h4>
 <div class="highlight"><pre><span></span><code><span class="c1"># requirepass foobared</span>
 </code></pre></div>
-
 <p>该字段注释去掉，后面就是密码</p>
 <h4>备份</h4>
 <p>127.0.0.1:6379&gt; SAVE</p>

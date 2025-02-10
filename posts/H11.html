@@ -112,7 +112,7 @@ rmmod e1000e </p>
 &gt;<span class="w"> </span>&gt;<span class="w"> </span>tar<span class="w"> </span>-zxvf<span class="w"> </span>bro-2.5.5.tar.gz
 &gt;<span class="w"> </span>&gt;<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>make<span class="w"> </span>gcc<span class="w"> </span>gcc-c++<span class="w"> </span>flex<span class="w"> </span>bison<span class="w"> </span>libpcap-devel<span class="w"> </span>openssl-devel<span class="w"> </span>python-devel<span class="w"> </span>swig<span class="w"> </span>zlib-devel<span class="w"> </span>-y
 &gt;<span class="w"> </span>&gt;<span class="w"> </span>
-&gt;<span class="w"> </span>&gt;<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;kernel-devel-uname-r == </span><span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>-y
+&gt;<span class="w"> </span>&gt;<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span><span class="s2">"kernel-devel-uname-r == </span><span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span><span class="s2">"</span><span class="w"> </span>-y
 &gt;<span class="w"> </span>&gt;<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ntop/PF_RING.git
 &gt;<span class="w"> </span>&gt;<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>PF_RING/kernel
 &gt;<span class="w"> </span>&gt;<span class="w"> </span>make
@@ -152,31 +152,27 @@ ip<span class="w"> </span>addr<span class="w"> </span>查看网卡
 &gt;<span class="w"> </span>&gt;<span class="w"> </span>./configure<span class="w"> </span>--bro-dist<span class="o">=</span>../../..<span class="w"> </span>--with-pfring<span class="o">=</span>/opt/pfring<span class="w"> </span>--install-root<span class="o">=</span>/opt/bro/lib/bro/plugins
 &gt;<span class="w"> </span>&gt;<span class="w"> </span>make<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>install
 &gt;<span class="w"> </span>&gt;<span class="w"> </span>
-&gt;<span class="w"> </span>&gt;<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;/opt/pfring/lib&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/ld.so.conf
+&gt;<span class="w"> </span>&gt;<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"/opt/pfring/lib"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/ld.so.conf
 &gt;<span class="w"> </span>&gt;<span class="w"> </span>ldconfig
 </code></pre></div>
-
 <h4>验证</h4>
 <div class="highlight"><pre><span></span><code>./bro<span class="w"> </span>-N<span class="w"> </span>Bro::PF_RING
 </code></pre></div>
-
 <p>打印如下，代表安装正常</p>
 <div class="highlight"><pre><span></span><code>Bro::PF_RING<span class="w"> </span>-<span class="w"> </span>Packet<span class="w"> </span>acquisition<span class="w"> </span>via<span class="w"> </span>PF_RING<span class="w"> </span><span class="o">(</span>dynamic,<span class="w"> </span>version<span class="w"> </span><span class="m">1</span>.0<span class="o">)</span>
 </code></pre></div>
-
 <h4>使用</h4>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>bro<span class="o">]</span>
 <span class="nv">type</span><span class="o">=</span>standalone
 <span class="nv">host</span><span class="o">=</span>localhost
 <span class="nv">interface</span><span class="o">=</span>pf_ring::ens33
 </code></pre></div>
-
 <p>在网卡前面加个 pf_ring::, 即可使用</p>
 <div class="highlight"><pre><span></span><code><span class="c1">#./broctl</span>
 
 Welcome<span class="w"> </span>to<span class="w"> </span>BroControl<span class="w"> </span><span class="m">1</span>.7
 
-Type<span class="w"> </span><span class="s2">&quot;help&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>help.
+Type<span class="w"> </span><span class="s2">"help"</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>help.
 
 <span class="o">[</span>BroControl<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>install
 

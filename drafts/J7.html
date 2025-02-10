@@ -110,12 +110,10 @@ var _hmt = _hmt || [];
 <div class="highlight"><pre><span></span><code><span class="c1"># wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz</span>
 <span class="c1"># tar -zxvf apache-maven-3.5.4-bin.tar.gz</span>
 </code></pre></div>
-
 <p>添加环境变量</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">MAVEN_HOME</span><span class="o">=</span>/opt/apache-maven-3.5.4
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">MAVEN_HOME</span><span class="si">}</span>/bin:<span class="si">${</span><span class="nv">PATH</span><span class="si">}</span>
 </code></pre></div>
-
 <p>source /etc/profile  </p>
 <p>找到conf/settings.xml,修改Maven源</p>
 <div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nt">&lt;mirrors&gt;</span><span class="w">    </span>
@@ -143,7 +141,6 @@ var _hmt = _hmt || [];
 <span class="w">        </span><span class="nt">&lt;/mirror&gt;</span>
 <span class="w">  </span><span class="nt">&lt;/mirrors&gt;</span><span class="w"> </span>
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code><span class="c1"># wget https://mirrors.aliyun.com/apache/ambari/ambari-2.7.1/apache-ambari-2.7.1-src.tar.gz </span>
 <span class="c1"># tar -zxvf apache-ambari-2.7.1-src.tar.gz</span>
 <span class="c1"># cd apache-ambari-2.7.1-src</span>
@@ -153,45 +150,38 @@ mvn<span class="w"> </span>versions:set<span class="w"> </span>-DnewVersion<span
 mvn<span class="w"> </span>versions:set<span class="w"> </span>-DnewVersion<span class="o">=</span><span class="m">2</span>.7.1.0.0
 <span class="nb">popd</span>
 </code></pre></div>
-
 <p>接下来会开启啰嗦模式~，耐心休息休息</p>
-<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>-B<span class="w"> </span>clean<span class="w"> </span>install<span class="w"> </span>rpm:rpm<span class="w"> </span>-DnewVersion<span class="o">=</span><span class="m">2</span>.7.1.0.0<span class="w"> </span>-DbuildNumber<span class="o">=</span>90430db08a5f543a97d97918cf5f711f2786ad8a<span class="w"> </span>-DskipTests<span class="w"> </span>-Dpython.ver<span class="o">=</span><span class="s2">&quot;python &gt;= 2.6&quot;</span>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>-B<span class="w"> </span>clean<span class="w"> </span>install<span class="w"> </span>rpm:rpm<span class="w"> </span>-DnewVersion<span class="o">=</span><span class="m">2</span>.7.1.0.0<span class="w"> </span>-DbuildNumber<span class="o">=</span>90430db08a5f543a97d97918cf5f711f2786ad8a<span class="w"> </span>-DskipTests<span class="w"> </span>-Dpython.ver<span class="o">=</span><span class="s2">"python &gt;= 2.6"</span>
 </code></pre></div>
-
 <ul>
 <li>server安装</li>
 </ul>
 <p>编译后，在如下目录查找，ambari-server/target/rpm/ambari-server/RPMS/noarch/</p>
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>ambari-server*.rpm
 </code></pre></div>
-
 <div class="highlight"><pre><span></span><code>ambari-server<span class="w"> </span>setup
 ambari-server<span class="w"> </span>start
 </code></pre></div>
-
 <ul>
 <li>agent 安装
 编译后，在如下目录查找，ambari-agent/target/rpm/ambari-agent/RPMS/x86_64/ </li>
 </ul>
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>ambari-agent*.rpm
 </code></pre></div>
-
 <p>vim /etc/ambari-agent/ambari.ini</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>server<span class="o">]</span>
 <span class="nv">hostname</span><span class="o">=</span>localhost
 </code></pre></div>
-
 <p>ambari-agent start</p>
 <p>访问页面
 http://<ambari-server-host>:8080
-账户：admin：admin</p>
+账户：admin：admin</ambari-server-host></p>
 <p>方法二：</p>
 <p>master</p>
 <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>-nv<span class="w"> </span>http://public-repo-1.hortonwor.com/ambari/centos7/2.x/updates/2.7.1.0/ambari.repo<span class="w"> </span>-O<span class="w"> </span>/etc/yum.repos.d/ambari.repo
 
 yum<span class="w"> </span>install<span class="w"> </span>ambari-server<span class="w"> </span>-y
 </code></pre></div>
-
 <p>slave1</p>
 <div class="highlight"><pre><span></span><code>yum<span class="w"> </span>install<span class="w"> </span>ambari-agent<span class="w"> </span>-y
 </code></pre></div>

