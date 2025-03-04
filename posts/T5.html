@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>让packetbeat 插上dpdk的翅膀 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/T5.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="让packetbeat 插上dpdk的翅膀 ~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.anquanke.com/member/154147" target="_blank">安全客</a></li>
+                <li class="list-inline-item"><a href="https://www.freebuf.com/column/1481" target="_blank">Freebuf</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>让packetbeat 插上dpdk的翅膀
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2023-09-29T20:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        五 29 九月 2023
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/qi-ye-an-quan-jian-she.html">#企业安全建设</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>介绍</h4>
+<p>Falco 由 Sysdig 于 2016 年创建，是第一个作为孵化级项目加入 CNCF 的运行时安全项目。Falco可以对Linux系统调用行为进行监控，提供了lkm 内核模块驱动和eBPF 驱动。Falco的主要功能如下：从内核运行时采集Linux系统调用，提供了一套强大的规则引擎，用于对Linux系统调用行为进行监控，当系统调用违反规则时，会触发相应的告警。</p>
+<p>安装文档地址如下：</p>
+<p>https://falco.org/docs/getting-started/installation/</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>https://falco.org/repo/falcosecurity-3672BA8F.asc<span class="w"> </span><span class="p">|</span><span class="w"> </span>apt-key<span class="w"> </span>add<span class="w"> </span>-
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"deb https://download.falco.org/packages/deb stable main"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/apt/sources.list.d/falcosecurity.list
+
+apt-get<span class="w"> </span>update<span class="w"> </span>-y
+apt-get<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>linux-headers-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
+apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>falco
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>rpm<span class="w"> </span>--import<span class="w"> </span>https://falco.org/repo/falcosecurity-3672BA8F.asc
+curl<span class="w"> </span>-s<span class="w"> </span>-o<span class="w"> </span>/etc/yum.repos.d/falcosecurity.repo<span class="w"> </span>https://falco.org/repo/falcosecurity-rpm.repo
+yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>kernel-devel-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
+yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>falco
+</code></pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/imag1e.png"/></p>
+<p>Falco规则文件是包含三种类型元素的YAML文件：</p>
+<p>Rules 、Macros、Lists</p>
+<p>Rules就是生成告警的条件以及一下描述性输出字符串。Macros 是可以在规则或者其他宏中重复使用的规则条件片段。Lists 类似Python 列表，定义了一个变量集合。</p>
+<p>Falco 使用了Sysdig， 在rule的 condition里面,任何 Sysdig 过滤器都可以在 Falco 中使用。</p>
+<p>参考如下：</p>
+<div class="highlight"><pre><span></span><code>https://github.com/draios/sysdig/wiki/sysdig-user-guide#filtering
+</code></pre></div>
+<p>这是一个rule的 condition条件示例，在容器内运行 bash shell 时发出警报：</p>
+<p>container.id != host and proc.name = bash</p>
+<p>第一个子句检查事件是否发生在容器中（Sysdig 事件有一个container字段，该字段等于"host"事件是否发生在host主机上）。第二个子句检查进程名称是否为bash。</p>
+<p>举个完整的列子</p>
+<div class="highlight"><pre><span></span><code>-<span class="w"> </span>list:<span class="w"> </span>my_programs
+<span class="w">  </span>items:<span class="w"> </span><span class="o">[</span>ls,<span class="w"> </span>cat,<span class="w">  </span>bash<span class="o">]</span>
+
+-<span class="w"> </span>macro:<span class="w"> </span>access_file
+<span class="w">  </span>condition:<span class="w"> </span>evt.type<span class="o">=</span>open
+
+-<span class="w"> </span>rule:<span class="w"> </span>program_accesses_file
+<span class="w">  </span>desc:<span class="w"> </span>track<span class="w"> </span>whenever<span class="w"> </span>a<span class="w"> </span><span class="nb">set</span><span class="w"> </span>of<span class="w"> </span>programs<span class="w"> </span>opens<span class="w"> </span>a<span class="w"> </span>file
+<span class="w">  </span>condition:<span class="w"> </span>proc.name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">(</span>my_programs<span class="o">)</span><span class="w"> </span>and<span class="w"> </span><span class="o">(</span>access_file<span class="o">)</span>
+<span class="w">  </span>output:<span class="w"> </span>a<span class="w"> </span>tracked<span class="w"> </span>program<span class="w"> </span>opened<span class="w"> </span>a<span class="w"> </span>file<span class="w"> </span><span class="o">(</span><span class="nv">user</span><span class="o">=</span>%user.name<span class="w"> </span><span class="nv">command</span><span class="o">=</span>%proc.cmdline<span class="w"> </span><span class="nv">file</span><span class="o">=</span>%fd.name<span class="o">)</span>
+<span class="w">  </span>priority:<span class="w"> </span>INFO
+</code></pre></div>
+<p>web应用进程java，php，apache，httpd，tomcat 中运行其他进程falco demo，图片来自，字节沙龙</p>
+<p><img alt="agent" class="img-fluid" src="../images/WeChat75bf2513db53caf1119297cd792517bc.png"/></p>
+<p>web应用进程java，php，apache，httpd，tomcat 中读取查看敏感文件falco demo，图片来自，字节沙龙</p>
+<p><img alt="agent" class="img-fluid" src="../images/WeChat4321cd4e842d96ac351039ceee990d69.png"/></p>
+<p>下面，我们修改falco 的配置，/etc/falco/falco.yaml </p>
+<div class="highlight"><pre><span></span><code>json_output:<span class="w"> </span><span class="nb">true</span>
+json_include_output_property:<span class="w"> </span><span class="nb">true</span>
+http_output:
+<span class="w">  </span>enabled:<span class="w"> </span><span class="nb">true</span>
+<span class="w">  </span>url:<span class="w"> </span><span class="s2">"http://localhost:2801"</span>
+</code></pre></div>
+<p>启动falco</p>
+<div class="highlight"><pre><span></span><code>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>falco<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w">  </span>systemctl<span class="w"> </span>start<span class="w"> </span>falco
+</code></pre></div>
+<p>https://github.com/falcosecurity/falcosidekick.git</p>
+<p>falcosidekick 是一个管道工具，接受 Falco的事件并将它们发送到不同的持久化工具中。我们使用falcosidekick把falco post 过来的数据写入es ，也可以写入kafka。我们也读取kafka里面的东西完成告警， 也可以用 Prometheus 和falco-exporter 完成告警。如下图。</p>
+<div class="highlight"><pre><span></span><code>elasticsearch:
+<span class="w">   </span>hostport:<span class="w"> </span><span class="s2">"http://10.10.116.177:9200"</span><span class="w"> </span>
+<span class="w">   </span>index:<span class="w"> </span><span class="s2">"falco"</span><span class="w"> </span>
+<span class="w">   </span>type:<span class="w"> </span><span class="s2">"event"</span>
+<span class="w">   </span>minimumpriority:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+<span class="w">   </span>suffix:<span class="w"> </span><span class="s2">"daily"</span><span class="w"> </span>
+<span class="w">   </span>mutualtls:<span class="w"> </span><span class="nb">false</span><span class="w"> </span>
+<span class="w">   </span>checkcert:<span class="w"> </span><span class="nb">true</span><span class="w"> </span>
+<span class="w">   </span>username:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+<span class="w">   </span>password:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+
+
+kafka:
+<span class="w">  </span>hostport:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+<span class="w">  </span>topic:<span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+<span class="w">  </span><span class="c1"># minimumpriority: "debug" </span>
+</code></pre></div>
+<p><img alt="agent" class="img-fluid" src="../images/WechatIMG171123.jpeg"/></p>
+<h4>批量部署&amp;更新规则</h4>
+<p>我们在生产环境中需要批量部署和更新规则需求，所以我们可以使用saltstack 或者 ansible 下发对应shell脚本来完成我们的需求。</p>
+<p>批量部署</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w">  </span>-n<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>uname<span class="w"> </span>-a<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Ubuntu<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w">       </span><span class="c1"># 按实际情况修改</span>
+<span class="w">        </span>curl<span class="w"> </span>-s<span class="w"> </span>https://falco.org/repo/falcosecurity-3672BA8F.asc<span class="w"> </span><span class="p">|</span><span class="w"> </span>apt-key<span class="w"> </span>add<span class="w"> </span>-
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"deb https://download.falco.org/packages/deb stable main"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/apt/sources.list.d/falcosecurity.list
+<span class="w">        </span>apt-get<span class="w"> </span>update<span class="w"> </span>-y
+<span class="w">        </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>falco
+<span class="k">else</span>
+<span class="w">        </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://falco.org/repo/falcosecurity-3672BA8F.asc
+<span class="w">        </span>curl<span class="w"> </span>-s<span class="w"> </span>-o<span class="w"> </span>/etc/yum.repos.d/falcosecurity.repo<span class="w"> </span>https://falco.org/repo/falcosecurity-rpm.repo
+<span class="w">        </span>yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>falco
+<span class="k">fi</span><span class="w">  </span>
+
+systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>falco<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>falco
+</code></pre></div>
+<p>批量更新规则</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="nv">BDATE</span><span class="o">=</span><span class="sb">`</span>date<span class="w"> </span>+%Y%m%d%H%M%S<span class="sb">`</span>
+<span class="nv">URL</span><span class="o">=</span>http://8.8.8.8:8888/falco_update.tar.gz
+
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-d<span class="w"> </span>/etc/falco_bak<span class="w"> </span><span class="o">]</span>
+<span class="k">then</span>
+<span class="w">        </span>cp<span class="w"> </span>-r<span class="w"> </span>/etc/falco<span class="w">  </span>/etc/falco_bak/<span class="si">${</span><span class="nv">BDATE</span><span class="si">}</span>
+<span class="w">        </span>rm<span class="w"> </span>-rf<span class="w"> </span>/etc/falco_bak/falco_update.tar.gz
+<span class="k">else</span>
+<span class="w">        </span>mkdir<span class="w"> </span>/etc/falco_bak<span class="w"> </span>
+<span class="w">        </span>cp<span class="w"> </span>-r<span class="w"> </span>/etc/falco<span class="w">  </span>/etc/falco_bak/<span class="si">${</span><span class="nv">BDATE</span><span class="si">}</span>
+<span class="k">fi</span>
+
+curl<span class="w"> </span>-o<span class="w"> </span>/etc/falco_bak/falco_update.tar.gz<span class="w"> </span><span class="si">${</span><span class="nv">URL</span><span class="si">}</span><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>/etc/falco<span class="w"> </span>
+tar<span class="w"> </span>-xzvf<span class="w"> </span>/etc/falco_bak/falco_update.tar.gz<span class="w"> </span>-C<span class="w"> </span>/etc<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>falco
+</code></pre></div>
+<p>把规则falco_update.tar.gz，提前准备好，使用saltstack 推下去即可.saltstack demo 如下：</p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span>$<span class="w"> </span>cat<span class="w"> </span>/srv/salt/top.sls<span class="w">   </span>
+base:
+<span class="w">  </span><span class="s1">'*'</span>:
+<span class="w">    </span>-<span class="w"> </span>exec_shell_install
+
+<span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span>$<span class="w"> </span>cat<span class="w"> </span>/srv/salt/exec_shell_install.sls<span class="w">   </span>
+
+exec_shell_install:<span class="w">                                      </span>
+<span class="w">  </span>cmd.script:<span class="w">                                </span>
+<span class="w">    </span>-<span class="w"> </span>source:<span class="w"> </span>salt://falco_install.sh<span class="w">                           </span>
+<span class="w">    </span>-<span class="w"> </span>user:<span class="w"> </span>root<span class="w">                               </span>
+
+<span class="o">[</span>root@localhost<span class="w"> </span>~<span class="o">]</span>$<span class="w"> </span>salt<span class="w"> </span><span class="s1">'*'</span><span class="w"> </span>state.highstate<span class="w">  </span>
+</code></pre></div>
+<p>也可以使用ansible 推下去即可.ansible demo 如下：</p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>root@server81<span class="w"> </span>work<span class="o">]</span><span class="c1"># ansible servers -m shell -a "mkdir -p /var/falco_sh"</span>
+
+<span class="o">[</span>root@server81<span class="w"> </span>ansible<span class="o">]</span><span class="c1"># ansible servers -m copy -a "src=/root/ansible/falco_install.sh  dest=/var/falco_sh/falco_install.sh mode=0755"</span>
+<span class="m">172</span>.16.5.193<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">CHANGED</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">{</span>
+
+<span class="o">[</span>root@server81<span class="w"> </span>ansible<span class="o">]</span><span class="c1"># ansible servers -m shell -a "/var/falco_sh/falco_install.sh"</span>
+<span class="m">172</span>.16.5.193<span class="w"> </span><span class="p">|</span><span class="w"> </span>CHANGED<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">rc</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>&gt;&gt;
+</code></pre></div>
+<h4>可视化</h4>
+<p>Kibana是一个开源的分析与可视化平台，设计出来用于和Elasticsearch一起使用的。你可以用kibana搜索、查看存放在Elasticsearch中的数据。Kibana与Elasticsearch的交互方式是各种不同的图表、表格、地图等，直观的展示数据，从而达到高级的数据分析与可视化的目的。
+Elasticsearch、Logstash和Kibana这三个技术就是我们常说的ELK技术栈，可以说这三个技术的组合是大数据领域中一个很巧妙的设计。一种很典型的MVC思想，模型持久层，视图层和控制层。Logstash担任控制层的角色，负责搜集和过滤数据。Elasticsearch担任数据持久层的角色，负责储存数据。而我们这章的主题Kibana担任视图层角色，拥有各种维度的查询和分析，并使用图形化的界面展示存放在Elasticsearch中的数据。</p>
+<p>因为我们使用了， es 推荐使用kibana 做一下可视化， 也可以使用grafana 做可视化。demo 如下图：</p>
+<p><img alt="agent" class="img-fluid" src="../images/kibana11.png"/></p>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
