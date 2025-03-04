@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Windows环境的下提权方式总结 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/drafts/O5.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="Windows环境的下提权方式总结~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.anquanke.com/member/154147" target="_blank">安全客</a></li>
+                <li class="list-inline-item"><a href="https://www.freebuf.com/column/1481" target="_blank">Freebuf</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Windows环境的下提权方式总结
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-06-14T03:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        四 14 六月 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/windows.html">#Windows</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>安装</h4>
+<p>工具镇楼：</p>
+<div class="highlight"><pre><span></span><code>https://github.com/SecWiki/windows-kernel-exploits
+
+https://github.com/AonCyberLabs/Windows-Exploit-Suggester<span class="w">  </span>//比较老了，可以考虑用下面的
+
+https://github.com/johnchakauya/wesng.git
+
+https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS
+
+https://github.com/PowerShellMafia/PowerSploit/tree/master/Privesc
+
+https://github.com/rasta-mouse/Watson
+
+https://github.com/GhostPack/Seatbelt
+
+https://github.com/411Hall/JAWS
+</code></pre></div>
+<p>1， 系统内核溢出漏洞提权</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#手工查找补丁情况</span>
+systeminfo
+Wmic<span class="w"> </span>qfe<span class="w"> </span>get<span class="w"> </span>Caption,Description,HotFixID,InstalledOn
+
+<span class="c1">#MSF后渗透扫描</span>
+post/windows/gather/enum_patches
+
+<span class="c1">#Powershell扫描</span>
+Import-Module<span class="w"> </span>C:<span class="se">\S</span>herlock.ps1
+Find-AllVulns
+
+<span class="c1">#Empire内置模块</span>
+usemodule<span class="w"> </span>privesc/powerup/allchecks
+execute
+</code></pre></div>
+<p>使用 cve-2019-1458 提权</p>
+<p><img alt="提权" class="img-fluid" src="../images/WechatIMG13.jpeg"/></p>
+<p>使用  CVE-2020-0787 提权</p>
+<p><img alt="提权" class="img-fluid" src="../images/WechatIMG14.jpeg"/></p>
+<p><img alt="提权" class="img-fluid" src="../images/WechatIMG15.jpeg"/></p>
+<p>2，系统配置错误提权</p>
+<p>3， DLL 劫持提权</p>
+<p>4， 令牌窃取</p>
+<p>5，组策略首选项提权</p>
+<p>6， 绕过UAC提权</p>
+<p>7， 第三方软件/WEB 提权</p>
+<h6>参考</h6>
+<div class="highlight"><pre><span></span><code><span class="c1">#Security Bulletin #KB #Description #Operating System</span>
+CVE-2017-0213<span class="w"> 　</span><span class="o">[</span>Windows<span class="w"> </span>COM<span class="w"> </span>Elevation<span class="w"> </span>of<span class="w"> </span>Privilege<span class="w"> </span>Vulnerability<span class="o">]</span><span class="w">　　</span><span class="o">(</span>windows<span class="w"> </span><span class="m">10</span>/8.1/7/2016/2010/2008<span class="o">)</span>
+MS17-010<span class="w"> 　</span><span class="o">[</span>KB4013389<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Windows<span class="w"> </span>Kernel<span class="w"> </span>Mode<span class="w"> </span>Drivers<span class="o">]</span><span class="w">　　</span><span class="o">(</span>windows<span class="w"> </span><span class="m">7</span>/2008/2003/XP<span class="o">)</span>
+MS16-135<span class="w"> 　</span><span class="o">[</span>KB3199135<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Windows<span class="w"> </span>Kernel<span class="w"> </span>Mode<span class="w"> </span>Drivers<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2016</span><span class="o">)</span>
+MS16-098<span class="w"> 　</span><span class="o">[</span>KB3178466<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Kernel<span class="w"> </span>Driver<span class="o">]</span><span class="w">　　</span><span class="o">(</span>Win<span class="w"> </span><span class="m">8</span>.1<span class="o">)</span>
+MS16-075<span class="w"> 　</span><span class="o">[</span>KB3164038<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Hot<span class="w"> </span>Potato<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/7/8/2012<span class="o">)</span>
+MS16-032<span class="w"> 　</span><span class="o">[</span>KB3143141<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Secondary<span class="w"> </span>Logon<span class="w"> </span>Handle<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2008</span>/7/8/10/2012<span class="o">)</span>
+MS16-016<span class="w"> 　</span><span class="o">[</span>KB3136041<span class="o">]</span><span class="w">　　</span><span class="o">[</span>WebDAV<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2008</span>/Vista/7<span class="o">)</span>
+MS15-097<span class="w"> 　</span><span class="o">[</span>KB3089656<span class="o">]</span><span class="w">　　</span><span class="o">[</span>remote<span class="w"> </span>code<span class="w"> </span>execution<span class="o">]</span><span class="w">　　</span><span class="o">(</span>win8.1/2012<span class="o">)</span>
+MS15-076<span class="w"> 　</span><span class="o">[</span>KB3067505<span class="o">]</span><span class="w">　　</span><span class="o">[</span>RPC<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/7/8/2012<span class="o">)</span>
+MS15-077<span class="w"> 　</span><span class="o">[</span>KB3077657<span class="o">]</span><span class="w">　　</span><span class="o">[</span>ATM<span class="o">]</span><span class="w">　　</span><span class="o">(</span>XP/Vista/Win7/Win8/2000/2003/2008/2012<span class="o">)</span>
+MS15-061<span class="w"> 　</span><span class="o">[</span>KB3057839<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Kernel<span class="w"> </span>Driver<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/7/8/2012<span class="o">)</span>
+MS15-051<span class="w"> 　</span><span class="o">[</span>KB3057191<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Windows<span class="w"> </span>Kernel<span class="w"> </span>Mode<span class="w"> </span>Drivers<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/7/8/2012<span class="o">)</span>
+MS15-010<span class="w"> 　</span><span class="o">[</span>KB3036220<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Kernel<span class="w"> </span>Driver<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/7/8<span class="o">)</span>
+MS15-015<span class="w"> 　</span><span class="o">[</span>KB3031432<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Kernel<span class="w"> </span>Driver<span class="o">]</span><span class="w">　　</span><span class="o">(</span>Win7/8/8.1/2012/RT/2012<span class="w"> </span>R2/2008<span class="w"> </span>R2<span class="o">)</span>
+MS15-001<span class="w"> 　</span><span class="o">[</span>KB3023266<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Kernel<span class="w"> </span>Driver<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2008</span>/2012/7/8<span class="o">)</span>
+MS14-070<span class="w"> 　</span><span class="o">[</span>KB2989935<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Kernel<span class="w"> </span>Driver<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span><span class="o">)</span>
+MS14-068<span class="w"> 　</span><span class="o">[</span>KB3011780<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Domain<span class="w"> </span>Privilege<span class="w"> </span>Escalation<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/2012/7/8<span class="o">)</span>
+MS14-058<span class="w"> 　</span><span class="o">[</span>KB3000061<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Win32k.sys<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/2012/7/8<span class="o">)</span>
+MS14-040<span class="w"> 　</span><span class="o">[</span>KB2975684<span class="o">]</span><span class="w">　　</span><span class="o">[</span>AFD<span class="w"> </span>Driver<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/2012/7/8<span class="o">)</span>
+MS14-002<span class="w"> 　</span><span class="o">[</span>KB2914368<span class="o">]</span><span class="w">　　</span><span class="o">[</span>NDProxy<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/XP<span class="o">)</span>
+MS13-053<span class="w"> 　</span><span class="o">[</span>KB2850851<span class="o">]</span><span class="w">　　</span><span class="o">[</span>win32k.sys<span class="o">]</span><span class="w">　　</span><span class="o">(</span>XP/Vista/2003/2008/win<span class="w"> </span><span class="m">7</span><span class="o">)</span>
+MS13-046<span class="w"> 　</span><span class="o">[</span>KB2840221<span class="o">]</span><span class="w">　　</span><span class="o">[</span>dxgkrnl.sys<span class="o">]</span><span class="w">　　</span><span class="o">(</span>Vista/2003/2008/2012/7<span class="o">)</span>
+MS13-005<span class="w"> 　</span><span class="o">[</span>KB2778930<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Kernel<span class="w"> </span>Mode<span class="w"> </span>Driver<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/2012/win7/8<span class="o">)</span>
+MS12-042<span class="w"> 　</span><span class="o">[</span>KB2972621<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Service<span class="w"> </span>Bus<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2008</span>/2012/win7<span class="o">)</span>
+MS12-020<span class="w"> 　</span><span class="o">[</span>KB2671387<span class="o">]</span><span class="w">　　</span><span class="o">[</span>RDP<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/7/XP<span class="o">)</span>
+MS11-080<span class="w"> 　</span><span class="o">[</span>KB2592799<span class="o">]</span><span class="w">　　</span><span class="o">[</span>AFD.sys<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/XP<span class="o">)</span>
+MS11-062<span class="w"> 　</span><span class="o">[</span>KB2566454<span class="o">]</span><span class="w">　　</span><span class="o">[</span>NDISTAPI<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/XP<span class="o">)</span>
+MS11-046<span class="w"> 　</span><span class="o">[</span>KB2503665<span class="o">]</span><span class="w">　　</span><span class="o">[</span>AFD.sys<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/7/XP<span class="o">)</span>
+MS11-011<span class="w"> 　</span><span class="o">[</span>KB2393802<span class="o">]</span><span class="w">　　</span><span class="o">[</span>kernel<span class="w"> </span>Driver<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/7/XP/Vista<span class="o">)</span>
+MS10-092<span class="w"> 　</span><span class="o">[</span>KB2305420<span class="o">]</span><span class="w">　　</span><span class="o">[</span>Task<span class="w"> </span>Scheduler<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2008</span>/7<span class="o">)</span>
+MS10-065<span class="w"> 　</span><span class="o">[</span>KB2267960<span class="o">]</span><span class="w">　　</span><span class="o">[</span>FastCGI<span class="o">]</span><span class="w">　　</span><span class="o">(</span>IIS<span class="w"> </span><span class="m">5</span>.1,<span class="w"> </span><span class="m">6</span>.0,<span class="w"> </span><span class="m">7</span>.0,<span class="w"> </span>and<span class="w"> </span><span class="m">7</span>.5<span class="o">)</span>
+MS10-059<span class="w"> 　</span><span class="o">[</span>KB982799<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>ACL-Churraskito<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2008</span>/7/Vista<span class="o">)</span>
+MS10-048<span class="w"> 　</span><span class="o">[</span>KB2160329<span class="o">]</span><span class="w">　　</span><span class="o">[</span>win32k.sys<span class="o">]</span><span class="w">　　</span><span class="o">(</span>XP<span class="w"> </span>SP2<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>SP3/2003<span class="w"> </span>SP2/Vista<span class="w"> </span>SP1<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>SP2/2008<span class="w"> </span>Gold<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>SP2<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>R2/Win7<span class="o">)</span>
+MS10-015<span class="w"> 　</span><span class="o">[</span>KB977165<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>KiTrap0D<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/2008/7/XP<span class="o">)</span>
+MS09-050<span class="w"> 　</span><span class="o">[</span>KB975517<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>Remote<span class="w"> </span>Code<span class="w"> </span>Execution<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2008</span>/Vista<span class="o">)</span>
+MS09-020<span class="w"> 　</span><span class="o">[</span>KB970483<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>IIS<span class="w"> </span><span class="m">6</span>.0<span class="o">]</span><span class="w">　　</span><span class="o">(</span>IIS<span class="w"> </span><span class="m">5</span>.1<span class="w"> </span>and<span class="w"> </span><span class="m">6</span>.0<span class="o">)</span>
+MS09-012<span class="w"> 　</span><span class="o">[</span>KB959454<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>Chimichurri<span class="o">]</span><span class="w">　　</span><span class="o">(</span>Vista/win7/2008/Vista<span class="o">)</span>
+MS08-068<span class="w"> 　</span><span class="o">[</span>KB957097<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>Remote<span class="w"> </span>Code<span class="w"> </span>Execution<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2000</span>/XP<span class="o">)</span>
+MS08-067<span class="w"> 　</span><span class="o">[</span>KB958644<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>Remote<span class="w"> </span>Code<span class="w"> </span>Execution<span class="o">]</span><span class="w">　　</span><span class="o">(</span>Windows<span class="w"> </span><span class="m">2000</span>/XP/Server<span class="w"> </span><span class="m">2003</span>/Vista/Server<span class="w"> </span><span class="m">2008</span><span class="o">)</span>
+MS08-025<span class="w"> 　</span><span class="o">[</span>KB941693<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>Win32.sys<span class="o">]</span><span class="w">　　</span><span class="o">(</span>XP/2003/2008/Vista<span class="o">)</span>
+MS06-040<span class="w"> 　</span><span class="o">[</span>KB921883<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>Remote<span class="w"> </span>Code<span class="w"> </span>Execution<span class="o">]</span><span class="w">　　</span><span class="o">(</span><span class="m">2003</span>/xp/2000<span class="o">)</span>
+MS05-039<span class="w"> 　</span><span class="o">[</span>KB899588<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>PnP<span class="w"> </span>Service<span class="o">]</span><span class="w">　　</span><span class="o">(</span>Win<span class="w"> </span>9X/ME/NT/2000/XP/2003<span class="o">)</span>
+MS03-026<span class="w"> 　</span><span class="o">[</span>KB823980<span class="o">]</span><span class="w">　　 </span><span class="o">[</span>Buffer<span class="w"> </span>Overrun<span class="w"> </span>In<span class="w"> </span>RPC<span class="w"> </span>Interface<span class="o">]</span><span class="w">　　</span><span class="o">(</span>/NT/2000/XP/2003<span class="o">)</span>
+</code></pre></div>
+<p>https://www.520mwx.com/view/32787</p>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
