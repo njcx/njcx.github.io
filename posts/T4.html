@@ -159,6 +159,109 @@ func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span
 <span class="w">    </span>C.puts<span class="o">(</span>C.CString<span class="o">(</span><span class="s2">"Hello, this is a CGO demo.\n"</span><span class="o">))</span>
 <span class="o">}</span>
 </code></pre></div>
+<p>Go的int类型对应于C的int类型。但需要注意的是，Go中的int大小是平台相关的（32位或64位），而C的int通常是32位。如果需要明确指定大小，可以使用固定宽度的类型如int32或int64来匹配C的int32_t或int64_t。Go的float64可以直接转换为C的double，float32转换为C的float。</p>
+<div class="highlight"><pre><span></span><code>var<span class="w"> </span>y<span class="w"> </span><span class="nv">float64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>.14
+C.some_function<span class="o">(</span>C.double<span class="o">(</span>y<span class="o">))</span>
+</code></pre></div>
+<p>Go的字符串需要通过C.CString()函数转换为C风格的字符串(char*)，并且记得用C.free()释放由C.CString()分配的内存。</p>
+<div class="highlight"><pre><span></span><code>str<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">"Hello, C!"</span>
+cstr<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>C.CString<span class="o">(</span>str<span class="o">)</span>
+defer<span class="w"> </span>C.free<span class="o">(</span>unsafe.Pointer<span class="o">(</span>cstr<span class="o">))</span>
+C.some_function<span class="o">(</span>cstr<span class="o">)</span>
+</code></pre></div>
+<p>使用unsafe.Pointer可以在Go指针和C指针之间进行转换。例如，将一个Go切片传递给C函数时，可以通过(*C.type)(unsafe.Pointer(&amp;slice[0]))这样的方式转换。</p>
+<div class="highlight"><pre><span></span><code>slice<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[]</span>int<span class="o">{</span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span><span class="o">}</span>
+C.some_function<span class="o">((</span>*C.int<span class="o">)(</span>unsafe.Pointer<span class="o">(</span><span class="p">&amp;</span>slice<span class="o">[</span><span class="m">0</span><span class="o">]))</span>,<span class="w"> </span>C.int<span class="o">(</span>len<span class="o">(</span>slice<span class="o">)))</span>
+</code></pre></div>
+<h4>DPDK 的初始化</h4>
+<h4>Demo</h4>
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
+
+import<span class="w"> </span><span class="o">(</span>
+<span class="w">    </span><span class="s2">"fmt"</span>
+<span class="w">    </span><span class="s2">"github.com/njcx/gopacket_dpdk"</span>
+<span class="w">    </span><span class="s2">"github.com/njcx/gopacket_dpdk/dpdk"</span>
+<span class="w">    </span><span class="s2">"github.com/njcx/gopacket_dpdk/layers"</span>
+<span class="w">    </span><span class="s2">"log"</span>
+<span class="w">    </span><span class="s2">"os"</span>
+<span class="o">)</span>
+
+func<span class="w"> </span>processPacket<span class="o">(</span>data<span class="w"> </span><span class="o">[]</span>byte<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>packet<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>gopacket_dpdk.NewPacket<span class="o">(</span>data,<span class="w"> </span>layers.LayerTypeEthernet,<span class="w"> </span>gopacket_dpdk.Default<span class="o">)</span>
+<span class="w">    </span>ethernetLayer<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>packet.Layer<span class="o">(</span>layers.LayerTypeEthernet<span class="o">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>ethernetLayer<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>eth,<span class="w"> </span>_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>ethernetLayer.<span class="o">(</span>*layers.Ethernet<span class="o">)</span>
+<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">"Source MAC: %s, Destination MAC: %s\n"</span>,<span class="w"> </span>eth.SrcMAC,<span class="w"> </span>eth.DstMAC<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>//<span class="w"> </span>Parse<span class="w"> </span>IP<span class="w"> </span>layer
+<span class="w">    </span>ipLayer<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>packet.Layer<span class="o">(</span>layers.LayerTypeIPv4<span class="o">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>ipLayer<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>ip,<span class="w"> </span>ok<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>ipLayer.<span class="o">(</span>*layers.IPv4<span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>!ok<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>fmt.Println<span class="o">(</span><span class="s2">"Failed to parse IPv4 layer"</span><span class="o">)</span>
+<span class="w">            </span><span class="k">return</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">"Source IP: %s, Destination IP: %s\n"</span>,<span class="w"> </span>ip.SrcIP,<span class="w"> </span>ip.DstIP<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>var<span class="w"> </span>resultDataList<span class="w"> </span><span class="o">[]</span>map<span class="o">[</span>string<span class="o">]</span>string
+<span class="w">    </span>//<span class="w"> </span>解析DNS层
+<span class="w">    </span>dnsLayer<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>packet.Layer<span class="o">(</span>layers.LayerTypeDNS<span class="o">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>dnsLayer<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>dns,<span class="w"> </span>ok<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>dnsLayer.<span class="o">(</span>*layers.DNS<span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>!ok<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>fmt.Println<span class="o">(</span><span class="s2">"Failed to parse DNS layer"</span><span class="o">)</span>
+<span class="w">            </span><span class="k">return</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>!dns.QR<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span>_,<span class="w"> </span>dnsQuestion<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>dns.Questions<span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>dns.Questions<span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                    </span><span class="k">continue</span>
+<span class="w">                </span><span class="o">}</span>
+<span class="w">                </span>resultdata<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">(</span>map<span class="o">[</span>string<span class="o">]</span>string<span class="o">)</span>
+<span class="w">                </span>resultdata<span class="o">[</span><span class="s2">"source"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dns"</span>
+<span class="w">                </span>resultdata<span class="o">[</span><span class="s2">"domain"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>string<span class="o">(</span>dnsQuestion.Name<span class="o">)</span>
+<span class="w">                </span>resultdata<span class="o">[</span><span class="s2">"type"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>string<span class="o">(</span>dnsQuestion.Type<span class="o">)</span>
+<span class="w">                </span>resultdata<span class="o">[</span><span class="s2">"class"</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>string<span class="o">(</span>dnsQuestion.Class<span class="o">)</span>
+<span class="w">                </span><span class="nv">resultDataList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>append<span class="o">(</span>resultDataList,<span class="w"> </span>resultdata<span class="o">)</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span>_,<span class="w"> </span>data<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>resultDataList<span class="w"> </span><span class="o">{</span>
+<span class="w">                </span>fmt.Printf<span class="o">(</span><span class="s2">"%+v\n"</span>,<span class="w"> </span>data<span class="o">)</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span>Initialize<span class="w"> </span>DPDK
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>os.Geteuid<span class="o">()</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>log.Fatal<span class="o">(</span><span class="s2">"Root permission is required to execute"</span><span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>args<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="o">[]</span>string<span class="o">{</span>
+<span class="w">        </span><span class="s2">"dpdk_app_dns"</span>,
+<span class="w">        </span><span class="s2">"-l"</span>,<span class="w"> </span><span class="s2">"0-3"</span>,
+<span class="w">        </span><span class="s2">"-n"</span>,<span class="w"> </span><span class="s2">"4"</span>,
+<span class="w">        </span><span class="s2">"--proc-type=auto"</span>,
+<span class="w">        </span><span class="s2">"--file-prefix=dpdk_dns_"</span>,
+<span class="w">        </span><span class="s2">"--huge-dir"</span>,<span class="w"> </span><span class="s2">"/dev/hugepages"</span>,
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>dpdk.InitDPDK<span class="o">(</span>args<span class="o">)</span><span class="p">;</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>log.Fatalf<span class="o">(</span><span class="s2">"Failed to initialize DPDK: %v"</span>,<span class="w"> </span>err<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>handle,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>dpdk.NewDPDKHandle<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+
+<span class="w">    </span>handle.SetBPFFilter<span class="o">(</span><span class="s2">"udp and port 53"</span><span class="o">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>log.Fatalf<span class="o">(</span><span class="s2">"Failed to create DPDK handler: %v"</span>,<span class="w"> </span>err<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>defer<span class="w"> </span>handle.Close<span class="o">()</span>
+<span class="w">    </span>//<span class="w"> </span>Start<span class="w"> </span>receiving<span class="w"> </span>and<span class="w"> </span>processing<span class="w"> </span>packets
+<span class="w">    </span>handle.ReceivePacketsCallBack<span class="o">(</span>processPacket<span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>代码在这里  https://github.com/njcx/gopacket_dpdk 。</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
