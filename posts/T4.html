@@ -121,24 +121,26 @@ var _hmt = _hmt || [];
 </ul>
 <p>DPDK被广泛应用于需要高吞吐量、低延迟的网络环境中，通过使用DPDK，开发者可以构建出比传统方法更快、更高效的网络应用程序，这对于满足日益增长的数据流量需求至关重要。</p>
 <h4>DPDK的安装</h4>
-<p>```bash</p>
-<p>CentOS</p>
-<h1>yum install -y libpcap-devel gcc gcc-c++ make meson ninja  numactl-devel  numactl  net-tools pciutils</h1>
-<h1>yum install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)</h1>
-<p>Debian + Ubuntu</p>
-<h1>apt install -y libpcap-dev gcc g++ make meson ninja-build libnuma-dev numactl net-tools pciutils</h1>
-<h1>apt install -y linux-headers-$(uname -r)</h1>
-<h1>wget http://fast.dpdk.org/rel/dpdk-20.11.10.tar.xz</h1>
-<h1>tar -Jxvf dpdk-20.11.10.tar.xz</h1>
-<h1>cd dpdk-stable-20.11.10 &amp;&amp; meson build &amp;&amp; cd build &amp;&amp; ninja &amp;&amp; ninja install</h1>
-<h1>export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH</h1>
-<h1>git clone git://dpdk.org/dpdk-kmods &amp;&amp; cd  dpdk-kmods/linux/igb_uio</h1>
-<h1>make</h1>
-<h1>modprobe uio  &amp;&amp;  insmod igb_uio.ko</h1>
-<h1>dpdk-devbind.py --status</h1>
-<h1># ifconfig ens38 down   ## 填写实际网卡</h1>
-<h1>dpdk-devbind.py -b igb_uio 0000:03:00.0(pci-addr)  ## 根据实际填写</h1>
-<p>```</p>
+<div class="highlight"><pre><span></span><code>CentOS
+<span class="c1">#  yum install -y libpcap-devel gcc gcc-c++ make meson ninja  numactl-devel  numactl  net-tools pciutils</span>
+<span class="c1">#  yum install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)</span>
+
+Debian<span class="w"> </span>+<span class="w"> </span>Ubuntu
+<span class="c1"># apt install -y libpcap-dev gcc g++ make meson ninja-build libnuma-dev numactl net-tools pciutils</span>
+<span class="c1"># apt install -y linux-headers-$(uname -r)</span>
+
+
+<span class="c1">#  wget http://fast.dpdk.org/rel/dpdk-20.11.10.tar.xz</span>
+<span class="c1">#  tar -Jxvf dpdk-20.11.10.tar.xz</span>
+<span class="c1">#  cd dpdk-stable-20.11.10 &amp;&amp; meson build &amp;&amp; cd build &amp;&amp; ninja &amp;&amp; ninja install</span>
+<span class="c1">#  export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH</span>
+<span class="c1">#  git clone git://dpdk.org/dpdk-kmods &amp;&amp; cd  dpdk-kmods/linux/igb_uio</span>
+<span class="c1">#  make</span>
+<span class="c1">#  modprobe uio  &amp;&amp;  insmod igb_uio.ko</span>
+<span class="c1">#  dpdk-devbind.py --status</span>
+<span class="c1">#  # ifconfig ens38 down   ## 填写实际网卡</span>
+<span class="c1">#  dpdk-devbind.py -b igb_uio 0000:03:00.0(pci-addr)  ## 根据实际填写</span>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
