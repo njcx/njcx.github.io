@@ -177,6 +177,194 @@ C.some_function<span class="o">(</span>cstr<span class="o">)</span>
 C.some_function<span class="o">((</span>*C.int<span class="o">)(</span>unsafe.Pointer<span class="o">(</span><span class="p">&amp;</span>slice<span class="o">[</span><span class="m">0</span><span class="o">]))</span>,<span class="w"> </span>C.int<span class="o">(</span>len<span class="o">(</span>slice<span class="o">)))</span>
 </code></pre></div>
 <h4>DPDK 的初始化</h4>
+<div class="highlight"><pre><span></span><code>int<span class="w"> </span>init_dpdk<span class="o">(</span>int<span class="w"> </span>argc,<span class="w"> </span>char<span class="w"> </span>**argv<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span>int<span class="w"> </span>ret<span class="p">;</span>
+<span class="w">    </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rte_eal_init<span class="o">(</span>argc,<span class="w"> </span>argv<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>printf<span class="o">(</span><span class="s2">"DPDK Version: %s\n"</span>,<span class="w"> </span>rte_version<span class="o">())</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ret<span class="w"> </span>&lt;<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>printf<span class="o">(</span><span class="s2">"Error: Cannot init EAL: %s\n"</span>,<span class="w"> </span>rte_strerror<span class="o">(</span>rte_errno<span class="o">))</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">     </span><span class="k">return</span><span class="w"> </span>ret<span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nt">int</span><span class="w"> </span><span class="nt">init_port</span><span class="o">(</span><span class="nt">uint16_t</span><span class="w"> </span><span class="nt">port_id</span><span class="o">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="err">int</span><span class="w"> </span><span class="err">ret</span><span class="p">;</span>
+<span class="w">    </span><span class="err">unsigned</span><span class="w"> </span><span class="err">nb_ports</span><span class="p">;</span>
+<span class="w">    </span><span class="err">uint16_t</span><span class="w"> </span><span class="err">i</span><span class="p">;</span>
+<span class="w">    </span><span class="err">struct</span><span class="w"> </span><span class="err">rte_eth_conf</span><span class="w"> </span><span class="err">port_conf</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">port_conf_default</span><span class="p">;</span>
+
+<span class="w">    </span><span class="err">nb_ports</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">rte_eth_dev_count_avail()</span><span class="p">;</span>
+<span class="w">    </span><span class="err">printf("Number</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">available</span><span class="w"> </span><span class="n">ports</span><span class="p">:</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="s2">", nb_ports);</span>
+<span class="s2">    if (nb_ports &lt; 1) {</span>
+<span class="s2">        printf("</span><span class="n">Warning</span><span class="o">:</span><span class="w"> </span><span class="n">No</span><span class="w"> </span><span class="n">Ethernet</span><span class="w"> </span><span class="n">ports</span><span class="w"> </span><span class="n">available</span><span class="err">\</span><span class="n">n</span><span class="s2">");</span>
+<span class="s2">        return -1;</span>
+<span class="s2">    }</span>
+<span class="s2">    printf("</span><span class="n">Configuring</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="o">...</span><span class="err">\</span><span class="n">n</span><span class="s2">", port_id);</span>
+
+<span class="s2">    if (!rte_eth_dev_is_valid_port(port_id)) {</span>
+<span class="s2">        printf("</span><span class="n">Invalid</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="n">ID</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="s2">", port_id);</span>
+<span class="s2">        return -1;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    mbuf_pool = rte_pktmbuf_pool_create("</span><span class="n">MBUF_POOL</span><span class="s2">", NUM_MBUFS,</span>
+<span class="s2">                                        MBUF_CACHE_SIZE, 0,</span>
+<span class="s2">                                        RTE_MBUF_DEFAULT_BUF_SIZE,</span>
+<span class="s2">                                        rte_socket_id());</span>
+<span class="s2">    if (mbuf_pool == NULL) {</span>
+<span class="s2">        printf("</span><span class="n">Error</span><span class="o">:</span><span class="w"> </span><span class="n">Cannot</span><span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">mbuf</span><span class="w"> </span><span class="n">pool</span><span class="err">\</span><span class="n">n</span><span class="s2">");</span>
+<span class="s2">        return -1;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    ret = rte_eth_dev_configure(port_id, 1, 1, &amp;port_conf);</span>
+<span class="s2">    if (ret &lt; 0) {</span>
+<span class="s2">        printf("</span><span class="n">Warning</span><span class="o">:</span><span class="w"> </span><span class="n">Cannot</span><span class="w"> </span><span class="n">configure</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="s2">", port_id);</span>
+<span class="s2">        return -1;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    ret = rte_eth_rx_queue_setup(port_id, 0, RX_RING_SIZE,</span>
+<span class="s2">                                 rte_eth_dev_socket_id(port_id),</span>
+<span class="s2">                                 NULL, mbuf_pool);</span>
+<span class="s2">    if (ret &lt; 0) {</span>
+<span class="s2">        printf("</span><span class="n">Warning</span><span class="o">:</span><span class="w"> </span><span class="n">Cannot</span><span class="w"> </span><span class="n">setup</span><span class="w"> </span><span class="n">RX</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="s2">", port_id);</span>
+<span class="s2">        return -1;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    ret = rte_eth_tx_queue_setup(port_id, 0, TX_RING_SIZE,</span>
+<span class="s2">                                 rte_eth_dev_socket_id(port_id),</span>
+<span class="s2">                                 NULL);</span>
+<span class="s2">    if (ret &lt; 0) {</span>
+<span class="s2">        printf("</span><span class="n">Warning</span><span class="o">:</span><span class="w"> </span><span class="n">Cannot</span><span class="w"> </span><span class="n">setup</span><span class="w"> </span><span class="n">TX</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="err">"</span><span class="p">,</span><span class="w"> </span><span class="n">port_id</span><span class="p">);</span>
+<span class="w">        </span><span class="err">return</span><span class="w"> </span><span class="err">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nt">return</span><span class="w"> </span><span class="nt">0</span><span class="o">;</span>
+<span class="err">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>int<span class="w"> </span>start_port<span class="o">(</span>uint16_t<span class="w"> </span>port_id<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>int<span class="w"> </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rte_eth_dev_start<span class="o">(</span>port_id<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ret<span class="w"> </span>&lt;<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>ret<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>rte_eth_promiscuous_enable<span class="o">(</span>port_id<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>printf<span class="o">(</span><span class="s2">"Port %u started successfully\n"</span>,<span class="w"> </span>port_id<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>uint16_t<span class="w"> </span>receive_packets<span class="o">(</span>uint16_t<span class="w"> </span>port_id,<span class="w"> </span>struct<span class="w"> </span>rte_mbuf<span class="w"> </span>**rx_pkts,<span class="w"> </span>uint16_t<span class="w"> </span>nb_pkts<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>rte_eth_rx_burst<span class="o">(</span>port_id,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>rx_pkts,<span class="w"> </span>nb_pkts<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span>DPDKHandle<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>portID<span class="w">        </span>uint16
+<span class="w">    </span>bpfFilter<span class="w">     </span>*C.dpdk_bpf_filter
+<span class="w">    </span>Initialized<span class="w">   </span>bool
+<span class="w">    </span>mbufs<span class="w">         </span><span class="o">[]</span>*C.struct_rte_mbuf
+<span class="w">    </span>currentIdx<span class="w">    </span>int
+<span class="w">    </span>nbRx<span class="w">          </span>int
+<span class="w">    </span>mu<span class="w">            </span>sync.Mutex
+<span class="w">    </span>lastStats<span class="w">     </span>*C.struct_rte_eth_stats
+<span class="w">    </span>lastStatsTime<span class="w"> </span>time.Time
+<span class="o">}</span>
+
+func<span class="w"> </span>InitDPDK<span class="o">(</span>args<span class="w"> </span><span class="o">[]</span>string<span class="o">)</span><span class="w"> </span>error<span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span>var<span class="w"> </span>initErr<span class="w"> </span>error
+<span class="w">    </span>initializedOnce.Do<span class="o">(</span>func<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>dpdkMutex.Lock<span class="o">()</span>
+<span class="w">        </span>defer<span class="w"> </span>dpdkMutex.Unlock<span class="o">()</span>
+
+<span class="w">        </span>now<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>time.Now<span class="o">()</span>.UTC<span class="o">()</span>.Format<span class="o">(</span><span class="s2">"2006-01-02 15:04:05"</span><span class="o">)</span>
+<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">"[%s] Initializing DPDK...\n"</span>,<span class="w"> </span>now<span class="o">)</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>args<span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="nv">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span>string<span class="o">{</span><span class="s2">"gopacket_dpdk"</span><span class="o">}</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>argc<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>C.int<span class="o">(</span>len<span class="o">(</span>args<span class="o">))</span>
+<span class="w">        </span>cargs<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>make<span class="o">([]</span>*C.char,<span class="w"> </span>len<span class="o">(</span>args<span class="o">))</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span>i,<span class="w"> </span>arg<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>args<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>cargs<span class="o">[</span>i<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>C.CString<span class="o">(</span>arg<span class="o">)</span>
+<span class="w">            </span>defer<span class="w"> </span>C.free<span class="o">(</span>unsafe.Pointer<span class="o">(</span>cargs<span class="o">[</span>i<span class="o">]))</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>ret<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>C.init_dpdk<span class="o">(</span>argc,<span class="w"> </span><span class="o">(</span>**C.char<span class="o">)(</span><span class="p">&amp;</span>cargs<span class="o">[</span><span class="m">0</span><span class="o">]))</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>ret<span class="w"> </span>&lt;<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="nv">initErr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"DPDK initialization failed: %d"</span>,<span class="w"> </span>ret<span class="o">)</span>
+<span class="w">            </span><span class="k">return</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>fmt.Printf<span class="o">(</span><span class="s2">"[%s] DPDK initialization successful\n"</span>,<span class="w"> </span>now<span class="o">)</span>
+<span class="w">    </span><span class="o">})</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>initErr
+
+<span class="o">}</span>
+
+func<span class="w"> </span>NewDPDKHandle<span class="o">(</span>portID<span class="w"> </span>uint16<span class="o">)</span><span class="w"> </span><span class="o">(</span>*DPDKHandle,<span class="w"> </span>error<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>handle<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="p">&amp;</span>DPDKHandle<span class="o">{</span>
+<span class="w">        </span>portID:<span class="w">    </span>portID,
+<span class="w">        </span>mbufs:<span class="w">     </span>make<span class="o">([]</span>*C.struct_rte_mbuf,<span class="w"> </span>BURST_SIZE<span class="o">)</span>,
+<span class="w">        </span>bpfFilter:<span class="w"> </span><span class="p">&amp;</span>C.dpdk_bpf_filter<span class="o">{}</span>,
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>ret<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>C.init_port<span class="o">(</span>C.uint16_t<span class="o">(</span>portID<span class="o">))</span><span class="p">;</span><span class="w"> </span>ret<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>nil,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"port initialization failed: %d"</span>,<span class="w"> </span>ret<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>ret<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>C.start_port<span class="o">(</span>C.uint16_t<span class="o">(</span>portID<span class="o">))</span><span class="p">;</span><span class="w"> </span>ret<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>nil,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"port start failed: %d"</span>,<span class="w"> </span>ret<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>handle.Initialized<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>handle,<span class="w"> </span>nil
+<span class="o">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span><span class="o">(</span>h<span class="w"> </span>*DPDKHandle<span class="o">)</span><span class="w"> </span>ReadPacketData<span class="o">()</span><span class="w"> </span><span class="o">([]</span>byte,<span class="w"> </span>gopacket_dpdk.CaptureInfo,<span class="w"> </span>error<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>h.mu.Lock<span class="o">()</span>
+<span class="w">    </span>defer<span class="w"> </span>h.mu.Unlock<span class="o">()</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>h.currentIdx<span class="w"> </span>&gt;<span class="o">=</span><span class="w"> </span>h.nbRx<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>h.nbRx<span class="w"> </span><span class="o">=</span><span class="w"> </span>int<span class="o">(</span>C.receive_packets<span class="o">(</span>C.uint16_t<span class="o">(</span>h.portID<span class="o">)</span>,
+<span class="w">            </span><span class="o">(</span>**C.struct_rte_mbuf<span class="o">)(</span>unsafe.Pointer<span class="o">(</span><span class="p">&amp;</span>h.mbufs<span class="o">[</span><span class="m">0</span><span class="o">]))</span>,
+<span class="w">            </span>C.uint16_t<span class="o">(</span>BURST_SIZE<span class="o">)))</span>
+
+<span class="w">        </span>h.currentIdx<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>h.nbRx<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>nil,<span class="w"> </span>gopacket_dpdk.CaptureInfo<span class="o">{}</span>,<span class="w"> </span>nil
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>h.currentIdx<span class="w"> </span>&lt;<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>h.currentIdx<span class="w"> </span>&gt;<span class="o">=</span><span class="w"> </span>len<span class="o">(</span>h.mbufs<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>nil,<span class="w"> </span>gopacket_dpdk.CaptureInfo<span class="o">{}</span>,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"currentIdx out of bounds: %d"</span>,<span class="w"> </span>h.currentIdx<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>mbuf<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>h.mbufs<span class="o">[</span>h.currentIdx<span class="o">]</span>
+<span class="w">    </span>data<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>C.get_mbuf_data<span class="o">(</span>mbuf<span class="o">)</span>
+<span class="w">    </span>length<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>C.get_mbuf_data_len<span class="o">(</span>mbuf<span class="o">)</span>
+
+<span class="w">    </span>packet<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>C.GoBytes<span class="o">(</span>unsafe.Pointer<span class="o">(</span>data<span class="o">)</span>,<span class="w"> </span>C.int<span class="o">(</span>length<span class="o">))</span>
+<span class="w">    </span>totalLength<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>int<span class="o">(</span>C.get_mbuf_pkt_len<span class="o">(</span>mbuf<span class="o">))</span>
+
+<span class="w">    </span>captureInfo<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>gopacket_dpdk.CaptureInfo<span class="o">{</span>
+<span class="w">        </span>Timestamp:<span class="w">     </span>time.Now<span class="o">()</span>,<span class="w"> </span>//<span class="w"> </span>Current<span class="w"> </span>timestamp<span class="w"> </span>when<span class="w"> </span>packet<span class="w"> </span>is<span class="w"> </span>captured
+<span class="w">        </span>CaptureLength:<span class="w"> </span>len<span class="o">(</span>packet<span class="o">)</span>,
+<span class="w">        </span>Length:<span class="w">        </span>totalLength,
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>h.bpfFilter<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>C.apply_bpf_filter<span class="o">(</span>h.bpfFilter,
+<span class="w">            </span><span class="o">(</span>*C.uchar<span class="o">)(</span>unsafe.Pointer<span class="o">(</span>data<span class="o">))</span>,
+<span class="w">            </span>C.uint32_t<span class="o">(</span>length<span class="o">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>C.free_mbuf<span class="o">(</span>mbuf<span class="o">)</span>
+<span class="w">            </span>h.currentIdx++
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>nil,<span class="w"> </span>gopacket_dpdk.CaptureInfo<span class="o">{}</span>,<span class="w"> </span>nil
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>C.free_mbuf<span class="o">(</span>mbuf<span class="o">)</span>
+<span class="w">    </span>h.currentIdx++
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>packet,<span class="w"> </span>captureInfo,<span class="w"> </span>nil
+<span class="o">}</span>
+</code></pre></div>
 <h4>Demo</h4>
 <div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
 
