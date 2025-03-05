@@ -146,6 +146,9 @@ Debian<span class="w"> </span>+<span class="w"> </span>Ubuntu
 <span class="c1">#  dpdk-devbind.py --status</span>
 <span class="c1">#  ifconfig ens38 down   ## 填写实际网卡</span>
 <span class="c1">#  dpdk-devbind.py -b igb_uio 0000:03:00.0(pci-addr)  ## 根据实际填写</span>
+
+<span class="c1">#  echo "vm.nr_hugepages=1024" | tee -a /etc/sysctl.conf</span>
+<span class="c1">#  sysctl -p</span>
 </code></pre></div>
 <h4>开绑</h4>
 <p>gopacket 绑定 DPDK， 必然会遇到一个问题，就是Go调用C的问题，Go语言中调用C代码主要通过cgo工具实现。cgo允许Go代码与C代码进行互操作，这包括直接调用C函数、使用C的数据类型以及嵌入C代码片段等。</p>
