@@ -177,6 +177,11 @@ C.some_function<span class="o">(</span>cstr<span class="o">)</span>
 C.some_function<span class="o">((</span>*C.int<span class="o">)(</span>unsafe.Pointer<span class="o">(</span><span class="p">&amp;</span>slice<span class="o">[</span><span class="m">0</span><span class="o">]))</span>,<span class="w"> </span>C.int<span class="o">(</span>len<span class="o">(</span>slice<span class="o">)))</span>
 </code></pre></div>
 <h4>DPDK 的初始化</h4>
+<p>DPDK（Data Plane Development Kit）初始化过程涉及多个步骤，主要是为了准备环境以便高效处理网络数据包。以下是DPDK初始化过程中的一些关键步骤和内容：</p>
+<ul>
+<li>EAL（Environment Abstraction Layer）初始化：这是DPDK初始化的核心部分。EAL提供了对底层硬件资源的抽象，包括内存管理、CPU核心分配、设备识别与初始化等。通过调用rte_eal_init()函数来完成，此过程会解析命令行参数，并设置好运行时环境。</li>
+<li>内存分配：DPDK需要大量的连续物理内存来存储数据包和执行高效的数据传输。在EAL初始化阶段，会预留一块大页内存（hugepage），用于后续的数据包处理操作。</li>
+</ul>
 <div class="highlight"><pre><span></span><code>int<span class="w"> </span>init_dpdk<span class="o">(</span>int<span class="w"> </span>argc,<span class="w"> </span>char<span class="w"> </span>**argv<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 
 <span class="w">    </span>int<span class="w"> </span>ret<span class="p">;</span>
@@ -189,58 +194,58 @@ C.some_function<span class="o">((</span>*C.int<span class="o">)(</span>unsafe.Po
 <span class="w">     </span><span class="k">return</span><span class="w"> </span>ret<span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nt">int</span><span class="w"> </span><span class="nt">init_port</span><span class="o">(</span><span class="nt">uint16_t</span><span class="w"> </span><span class="nt">port_id</span><span class="o">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="err">int</span><span class="w"> </span><span class="err">ret</span><span class="p">;</span>
-<span class="w">    </span><span class="err">unsigned</span><span class="w"> </span><span class="err">nb_ports</span><span class="p">;</span>
-<span class="w">    </span><span class="err">uint16_t</span><span class="w"> </span><span class="err">i</span><span class="p">;</span>
-<span class="w">    </span><span class="err">struct</span><span class="w"> </span><span class="err">rte_eth_conf</span><span class="w"> </span><span class="err">port_conf</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">port_conf_default</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code>int<span class="w"> </span>init_port<span class="o">(</span>uint16_t<span class="w"> </span>port_id<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>int<span class="w"> </span>ret<span class="p">;</span>
+<span class="w">    </span>unsigned<span class="w"> </span>nb_ports<span class="p">;</span>
+<span class="w">    </span>uint16_t<span class="w"> </span>i<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>rte_eth_conf<span class="w"> </span><span class="nv">port_conf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>port_conf_default<span class="p">;</span>
 
-<span class="w">    </span><span class="err">nb_ports</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">rte_eth_dev_count_avail()</span><span class="p">;</span>
-<span class="w">    </span><span class="err">printf("Number</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">available</span><span class="w"> </span><span class="n">ports</span><span class="p">:</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="s2">", nb_ports);</span>
-<span class="s2">    if (nb_ports &lt; 1) {</span>
-<span class="s2">        printf("</span><span class="n">Warning</span><span class="o">:</span><span class="w"> </span><span class="n">No</span><span class="w"> </span><span class="n">Ethernet</span><span class="w"> </span><span class="n">ports</span><span class="w"> </span><span class="n">available</span><span class="err">\</span><span class="n">n</span><span class="s2">");</span>
-<span class="s2">        return -1;</span>
-<span class="s2">    }</span>
-<span class="s2">    printf("</span><span class="n">Configuring</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="o">...</span><span class="err">\</span><span class="n">n</span><span class="s2">", port_id);</span>
+<span class="w">    </span><span class="nv">nb_ports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rte_eth_dev_count_avail<span class="o">()</span><span class="p">;</span>
+<span class="w">    </span>printf<span class="o">(</span><span class="s2">"Number of available ports: %u\n"</span>,<span class="w"> </span>nb_ports<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>nb_ports<span class="w"> </span>&lt;<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>printf<span class="o">(</span><span class="s2">"Warning: No Ethernet ports available\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>printf<span class="o">(</span><span class="s2">"Configuring port %u...\n"</span>,<span class="w"> </span>port_id<span class="o">)</span><span class="p">;</span>
 
-<span class="s2">    if (!rte_eth_dev_is_valid_port(port_id)) {</span>
-<span class="s2">        printf("</span><span class="n">Invalid</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="n">ID</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="s2">", port_id);</span>
-<span class="s2">        return -1;</span>
-<span class="s2">    }</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!rte_eth_dev_is_valid_port<span class="o">(</span>port_id<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>printf<span class="o">(</span><span class="s2">"Invalid port ID %u\n"</span>,<span class="w"> </span>port_id<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
 
-<span class="s2">    mbuf_pool = rte_pktmbuf_pool_create("</span><span class="n">MBUF_POOL</span><span class="s2">", NUM_MBUFS,</span>
-<span class="s2">                                        MBUF_CACHE_SIZE, 0,</span>
-<span class="s2">                                        RTE_MBUF_DEFAULT_BUF_SIZE,</span>
-<span class="s2">                                        rte_socket_id());</span>
-<span class="s2">    if (mbuf_pool == NULL) {</span>
-<span class="s2">        printf("</span><span class="n">Error</span><span class="o">:</span><span class="w"> </span><span class="n">Cannot</span><span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">mbuf</span><span class="w"> </span><span class="n">pool</span><span class="err">\</span><span class="n">n</span><span class="s2">");</span>
-<span class="s2">        return -1;</span>
-<span class="s2">    }</span>
+<span class="w">    </span><span class="nv">mbuf_pool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rte_pktmbuf_pool_create<span class="o">(</span><span class="s2">"MBUF_POOL"</span>,<span class="w"> </span>NUM_MBUFS,
+<span class="w">                                        </span>MBUF_CACHE_SIZE,<span class="w"> </span><span class="m">0</span>,
+<span class="w">                                        </span>RTE_MBUF_DEFAULT_BUF_SIZE,
+<span class="w">                                        </span>rte_socket_id<span class="o">())</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">mbuf_pool</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>NULL<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>printf<span class="o">(</span><span class="s2">"Error: Cannot create mbuf pool\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
 
-<span class="s2">    ret = rte_eth_dev_configure(port_id, 1, 1, &amp;port_conf);</span>
-<span class="s2">    if (ret &lt; 0) {</span>
-<span class="s2">        printf("</span><span class="n">Warning</span><span class="o">:</span><span class="w"> </span><span class="n">Cannot</span><span class="w"> </span><span class="n">configure</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="s2">", port_id);</span>
-<span class="s2">        return -1;</span>
-<span class="s2">    }</span>
+<span class="w">    </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rte_eth_dev_configure<span class="o">(</span>port_id,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="p">&amp;</span>port_conf<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ret<span class="w"> </span>&lt;<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>printf<span class="o">(</span><span class="s2">"Warning: Cannot configure port %u\n"</span>,<span class="w"> </span>port_id<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
 
-<span class="s2">    ret = rte_eth_rx_queue_setup(port_id, 0, RX_RING_SIZE,</span>
-<span class="s2">                                 rte_eth_dev_socket_id(port_id),</span>
-<span class="s2">                                 NULL, mbuf_pool);</span>
-<span class="s2">    if (ret &lt; 0) {</span>
-<span class="s2">        printf("</span><span class="n">Warning</span><span class="o">:</span><span class="w"> </span><span class="n">Cannot</span><span class="w"> </span><span class="n">setup</span><span class="w"> </span><span class="n">RX</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="s2">", port_id);</span>
-<span class="s2">        return -1;</span>
-<span class="s2">    }</span>
+<span class="w">    </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rte_eth_rx_queue_setup<span class="o">(</span>port_id,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>RX_RING_SIZE,
+<span class="w">                                 </span>rte_eth_dev_socket_id<span class="o">(</span>port_id<span class="o">)</span>,
+<span class="w">                                 </span>NULL,<span class="w"> </span>mbuf_pool<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ret<span class="w"> </span>&lt;<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>printf<span class="o">(</span><span class="s2">"Warning: Cannot setup RX queue for port %u\n"</span>,<span class="w"> </span>port_id<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
 
-<span class="s2">    ret = rte_eth_tx_queue_setup(port_id, 0, TX_RING_SIZE,</span>
-<span class="s2">                                 rte_eth_dev_socket_id(port_id),</span>
-<span class="s2">                                 NULL);</span>
-<span class="s2">    if (ret &lt; 0) {</span>
-<span class="s2">        printf("</span><span class="n">Warning</span><span class="o">:</span><span class="w"> </span><span class="n">Cannot</span><span class="w"> </span><span class="n">setup</span><span class="w"> </span><span class="n">TX</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">%</span><span class="n">u</span><span class="err">\</span><span class="n">n</span><span class="err">"</span><span class="p">,</span><span class="w"> </span><span class="n">port_id</span><span class="p">);</span>
-<span class="w">        </span><span class="err">return</span><span class="w"> </span><span class="err">-1</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rte_eth_tx_queue_setup<span class="o">(</span>port_id,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>TX_RING_SIZE,
+<span class="w">                                 </span>rte_eth_dev_socket_id<span class="o">(</span>port_id<span class="o">)</span>,
+<span class="w">                                 </span>NULL<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ret<span class="w"> </span>&lt;<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>printf<span class="o">(</span><span class="s2">"Warning: Cannot setup TX queue for port %u\n"</span>,<span class="w"> </span>port_id<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
 
-<span class="w">    </span><span class="nt">return</span><span class="w"> </span><span class="nt">0</span><span class="o">;</span>
-<span class="err">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="o">}</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>int<span class="w"> </span>start_port<span class="o">(</span>uint16_t<span class="w"> </span>port_id<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>int<span class="w"> </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>rte_eth_dev_start<span class="o">(</span>port_id<span class="o">)</span><span class="p">;</span>
