@@ -244,6 +244,122 @@ func<span class="w"> </span><span class="o">(</span>s<span class="w"> </span>*Sn
 <span class="w">  </span><span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
+<h4>让Packetbeat 支持DPDK</h4>
+<p>DPDK（Data Plane Development Kit）初始化过程涉及多个步骤，主要是为了准备环境以便高效处理网络数据包。以下是DPDK初始化过程中的一些关键步骤和内容：</p>
+<ul>
+<li>EAL（Environment Abstraction Layer）初始化：这是DPDK初始化的核心部分。EAL提供了对底层硬件资源的抽象，包括内存管理、CPU核心分配、设备识别与初始化等。通过调用rte_eal_init()函数来完成，此过程会解析命令行参数，并设置好运行时环境。</li>
+<li>内存分配：DPDK需要大量的连续物理内存来存储数据包和执行高效的数据传输。在EAL初始化阶段，会预留一块大页内存（hugepage），用于后续的数据包处理操作。</li>
+</ul>
+<p>特别要注意的是：EAL 初始化和 DPDK端口初始化，要在主线程初始化。不然会报错如下：</p>
+<div class="highlight"><pre><span></span><code>EAL:<span class="w"> </span>Detected<span class="w"> </span><span class="m">40</span><span class="w"> </span>lcore<span class="o">(</span>s<span class="o">)</span>
+EAL:<span class="w"> </span>Detected<span class="w"> </span><span class="m">2</span><span class="w"> </span>NUMA<span class="w"> </span>nodes
+EAL:<span class="w"> </span>Error<span class="w"> </span>creating<span class="w"> </span><span class="s1">'/var/run/dpdk'</span>:<span class="w"> </span>Operation<span class="w"> </span>not<span class="w"> </span>permitted
+EAL:<span class="w"> </span>Cannot<span class="w"> </span>create<span class="w"> </span>runtime<span class="w"> </span>directory
+EAL:<span class="w"> </span>FATAL:<span class="w"> </span>Invalid<span class="w"> </span><span class="s1">'command line'</span><span class="w"> </span>arguments.
+EAL:<span class="w"> </span>Invalid<span class="w"> </span><span class="s1">'command line'</span><span class="w"> </span>arguments.
+</code></pre></div>
+<p>由于 Packetbeat 使用了 Cobra, 并且初始化的操作都是在 Cobra的子命令里面完成的, Cobra 的子命令都是非主线程, 如果把DPDK的初始化放到package sniffer 里面, 则会报错如上。所以修改main.go, 把DPDK 的初始化放到  Cobra 的子命令初始化之前.</p>
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>main
+
+import<span class="w"> </span><span class="o">(</span>
+<span class="w">    </span><span class="s2">"github.com/njcx/packetbeat7_dpdk/cmd"</span>
+<span class="w">    </span><span class="s2">"github.com/njcx/packetbeat7_dpdk/dpdkinit"</span>
+<span class="w">    </span><span class="s2">"os"</span>
+<span class="o">)</span>
+
+var<span class="w"> </span><span class="nv">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"packetbeat"</span>
+
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>dpdkinit.DpdkInit<span class="o">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>cmd.RootCmd.Execute<span class="o">()</span><span class="p">;</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>os.Exit<span class="o">(</span><span class="m">1</span><span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>由于,我们把DPDK 的初始化放到  Cobra 的子命令初始化之前, 导致我们无法读取 Cobra的命令, 也无法利用后续的配置文件初始化. 所以, 我们可以在里面添加一些命令行参数, 用于DPDK 的初始化, 不能用spf13/pflag 和 标准库flag, 会和后续初始化产生冲突. 简单实现一个命令行参数提取代码 : </p>
+<div class="highlight"><pre><span></span><code>package<span class="w"> </span>dpdkinit
+
+import<span class="w"> </span><span class="o">(</span>
+<span class="w">    </span><span class="s2">"fmt"</span>
+<span class="w">    </span><span class="s2">"os"</span>
+<span class="w">    </span><span class="s2">"strings"</span>
+<span class="o">)</span>
+
+func<span class="w"> </span>Parse<span class="o">(</span>key<span class="w"> </span>string<span class="o">)</span><span class="w"> </span><span class="o">(</span>string,<span class="w"> </span>error<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>args<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>os.Args<span class="o">[</span><span class="m">1</span>:<span class="o">]</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>i<span class="w"> </span>&lt;<span class="w"> </span>len<span class="o">(</span>args<span class="o">)</span><span class="p">;</span><span class="w"> </span>i++<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>arg<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>args<span class="o">[</span>i<span class="o">]</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>strings.HasPrefix<span class="o">(</span>arg,<span class="w"> </span><span class="s2">"--"</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>name<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.TrimPrefix<span class="o">(</span>arg,<span class="w"> </span><span class="s2">"--"</span><span class="o">)</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span>i+1<span class="w"> </span>&gt;<span class="o">=</span><span class="w"> </span>len<span class="o">(</span>args<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="s2">""</span>,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"no value provided for flag: %s"</span>,<span class="w"> </span>name<span class="o">)</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>args<span class="o">[</span>i+1<span class="o">]</span>,<span class="w"> </span>nil
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>strings.HasPrefix<span class="o">(</span>arg,<span class="w"> </span><span class="s2">"-"</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>shorthand<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.TrimPrefix<span class="o">(</span>arg,<span class="w"> </span><span class="s2">"-"</span><span class="o">)</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span>i+1<span class="w"> </span>&gt;<span class="o">=</span><span class="w"> </span>len<span class="o">(</span>args<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="s2">""</span>,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"no value provided for flag: %s"</span>,<span class="w"> </span>shorthand<span class="o">)</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>args<span class="o">[</span>i+1<span class="o">]</span>,<span class="w"> </span>nil
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s2">""</span>,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"cant find this key: %s"</span>,<span class="w"> </span>key<span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>DPDK 初始化：</p>
+<div class="highlight"><pre><span></span><code>var<span class="w"> </span>DPdk<span class="w"> </span>*dpdk.DPDKHandle
+
+func<span class="w"> </span>DpdkInit<span class="o">()</span><span class="w"> </span>error<span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span>dpdkPort,<span class="w"> </span>_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>Parse<span class="o">(</span><span class="s2">"dpdk_port"</span><span class="o">)</span>
+<span class="w">    </span>dpdkStatus,<span class="w"> </span>_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>Parse<span class="o">(</span><span class="s2">"dpdk_status"</span><span class="o">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">dpdkStatus</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"enable"</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>dpdk.InitDPDK<span class="o">([]</span>string<span class="o">{})</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>err
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>num16,<span class="w"> </span>_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strconv.ParseUint<span class="o">(</span>dpdkPort,<span class="w"> </span><span class="m">10</span>,<span class="w"> </span><span class="m">16</span><span class="o">)</span>
+<span class="w">        </span>port<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>uint16<span class="o">(</span>num16<span class="o">)</span>
+
+<span class="w">        </span>h,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>dpdk.NewDPDKHandle<span class="o">(</span>port<span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>h.Close<span class="o">()</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>err
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span><span class="nv">DPdk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>h
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>nil
+<span class="o">}</span>
+</code></pre></div>
+<p>DPDKHandle 已经实现了 snifferHandle的接口，直接赋值：</p>
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span>openDpdk<span class="o">(</span>filter<span class="w"> </span>string<span class="o">)</span><span class="w"> </span><span class="o">(</span>snifferHandle,<span class="w"> </span>error<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span>h<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>dpdkinit.DPdk
+<span class="w">    </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>h.SetBPFFilter<span class="o">(</span>filter<span class="o">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>h.Close<span class="o">()</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>nil,<span class="w"> </span>err
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>h,<span class="w"> </span>nil
+<span class="o">}</span>
+</code></pre></div>
+<p>构建：</p>
+<div class="highlight"><pre><span></span><code><span class="nv">CGO_CFLAGS</span><span class="o">=</span><span class="s2">"-msse4.2 -fno-strict-aliasing "</span><span class="w"> </span><span class="nv">CGO_LDFLAGS</span><span class="o">=</span><span class="s2">" -lrte_eal -lrte_mbuf -lrte_mempool -lrte_ethdev -lpcap"</span><span class="w"> </span>go<span class="w"> </span>build
+</code></pre></div>
+<p>执行：</p>
+<div class="highlight"><pre><span></span><code>./packetbeat8_dpdk<span class="w"> </span>--dpdk_status<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--dpdk_port<span class="w"> </span><span class="m">0</span><span class="w"> </span>-c<span class="w"> </span>~/go/packetbeat.dpdk.yml<span class="w"> </span>
+</code></pre></div>
+<p>在配置文件里面标记输入源， 用于后续初始化：</p>
+<div class="highlight"><pre><span></span><code>packetbeat.interfaces.device:<span class="w"> </span><span class="m">0</span>
+packetbeat.interfaces.snaplen:<span class="w"> </span><span class="m">1514</span>
+packetbeat.interfaces.type:<span class="w"> </span>dpdk
+packetbeat.interfaces.buffer_size_mb:<span class="w"> </span><span class="m">100</span>
+</code></pre></div>
+<p>运行正常，全文完。</p>
+<p><img alt="dpdk" class="img-fluid" src="../images/WechatIMG1166.jpg"/></p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
