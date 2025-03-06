@@ -110,7 +110,7 @@ var _hmt = _hmt || [];
 <li>协议解码：一旦抓取到数据包，Packetbeat会根据配置解析不同的协议，提取出相关的请求和响应信息。</li>
 <li>数据发送：处理完的数据会被发送到指定的输出位置，通常是Elasticsearch，也可以是Logstash或者其他兼容的系统。</li>
 </ul>
-<p>Packetbeat非常适合用于需要对网络流量进行深度分析的环境，例如企业内部网、云服务提供商、以及任何希望提升其应用性能和安全性的地方。结合Elastic Stack的其他组件（如Kibana），用户可以创建强大的可视化面板，以便更好地理解和管理他们的网络数据。早期的Packetbeat 支持Pf-ring，后来就不再支持了。为Packetbeat添加DPDK（Data Plane Development Kit）支持，可以显著提高其网络数据包处理能力，特别是对于高吞吐量和低延迟要求的场景。DPDK是一个优化了的数据包处理框架，它绕过了操作系统内核协议栈，直接在用户空间处理网络数据包，从而实现了高效的数据传输。</p>
+<p>Packetbeat非常适合用于需要对网络流量进行深度分析的环境，例如企业内部网、云服务提供商、以及任何希望提升其应用性能和安全性的地方。结合Elastic Stack的其他组件（如Kibana），用户可以创建强大的可视化面板，以便更好地理解和管理他们的网络数据。早期的Packetbeat 支持Pf-ring，后来就不再支持了。为Packetbeat添加DPDK（Data Plane Development Kit）支持，可以显著提高其网络数据包处理能力，特别是对于高吞吐量和低延迟要求的场景。DPDK是一个优化了的数据包处理框架，它绕过了操作系统内核协议栈，直接在用户空间处理网络数据包，从而实现了高效的数据传输。Packetbeat依赖gopacket, 建议先读这个文章,作为前置知识, 当让gopacket 支持DPDK, 约等于让Packetbeat支持DPDK 。 https://www.njcx.bid/posts/T4.html</p>
 <h4>DPDK的安装</h4>
 <div class="highlight"><pre><span></span><code>CentOS
 <span class="c1">#  yum install -y libpcap-devel gcc gcc-c++ make meson ninja  numactl-devel  numactl  net-tools pciutils</span>
@@ -134,6 +134,115 @@ Debian<span class="w"> </span>+<span class="w"> </span>Ubuntu
 
 <span class="c1">#  echo "vm.nr_hugepages=1024" | tee -a /etc/sysctl.conf</span>
 <span class="c1">#  sysctl -p</span>
+</code></pre></div>
+<h4>Packetbeat 拆解</h4>
+<p>Packetbeat 7 的函数调用链:</p>
+<div class="highlight"><pre><span></span><code>主程序入口<span class="w"> </span><span class="o">(</span>main.go<span class="o">)</span>
+<span class="w">  </span>↓
+命令行初始化<span class="w"> </span><span class="o">(</span>cmd/root.go<span class="o">)</span><span class="w"> </span>
+<span class="w">  </span>↓<span class="w">  </span>
+Beater初始化与运行<span class="w"> </span><span class="o">(</span>beater/packetbeat.go<span class="o">)</span>
+<span class="w">  </span>↓
+协议注册和管理<span class="w"> </span><span class="o">(</span>protos/registry.go<span class="o">)</span>
+<span class="w">  </span>↓<span class="w"> </span>
+网络协议处理<span class="w"> </span><span class="o">(</span>TCP/UDP<span class="o">)</span><span class="w"> </span><span class="o">(</span>protos/tcp/tcp.go,<span class="w"> </span>protos/udp/udp.go<span class="o">)</span>
+<span class="w">  </span>↓
+应用协议解析<span class="w"> </span><span class="o">(</span>protos/<span class="o">{</span>http,mysql,redis等<span class="o">})</span>
+<span class="w">  </span>↓
+事件发布<span class="w"> </span><span class="o">(</span>publish/publish.go<span class="o">)</span>
+</code></pre></div>
+<p>Beater组件 (packetbeat.go):</p>
+<ul>
+<li>负责整体生命周期管理</li>
+<li>配置加载和验证</li>
+<li>网络接口初始化</li>
+<li>协议处理器注册</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span>packetbeat<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>config<span class="w"> </span>*conf.C<span class="w"> </span>
+<span class="w">  </span>factory<span class="w"> </span>*processorFactory
+<span class="w">  </span>overwritePipelines<span class="w"> </span>bool
+<span class="w">  </span><span class="k">done</span><span class="w"> </span>chan<span class="w"> </span>struct<span class="o">{}</span>
+<span class="w">  </span>stopOnce<span class="w"> </span>sync.Once
+<span class="o">}</span>
+</code></pre></div>
+<p>协议注册中心 (registry.go):</p>
+<ul>
+<li>管理所有注册的协议处理器</li>
+<li>提供协议查找和插件管理功能</li>
+<li>定义协议插件接口规范</li>
+</ul>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>协议插件接口
+<span class="nb">type</span><span class="w"> </span>Plugin<span class="w"> </span>interface<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>GetPorts<span class="o">()</span><span class="w"> </span><span class="o">[]</span>int
+<span class="o">}</span>
+
+<span class="nb">type</span><span class="w"> </span>TCPPlugin<span class="w"> </span>interface<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>Plugin
+<span class="w">  </span>Parse<span class="o">(</span>pkt<span class="w"> </span>*Packet,<span class="w"> </span>...<span class="o">)</span><span class="w"> </span>ProtocolData
+<span class="w">  </span>ReceivedFin<span class="o">(</span>...<span class="o">)</span><span class="w"> </span>ProtocolData<span class="w">  </span>
+<span class="w">  </span>GapInStream<span class="o">(</span>...<span class="o">)</span><span class="w"> </span><span class="o">(</span>ProtocolData,<span class="w"> </span>bool<span class="o">)</span>
+<span class="o">}</span>
+
+<span class="nb">type</span><span class="w"> </span>UDPPlugin<span class="w"> </span>interface<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>Plugin
+<span class="w">  </span>ParseUDP<span class="o">(</span>pkt<span class="w"> </span>*Packet<span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>数据处理流程</p>
+<ul>
+<li>网卡/pcap读取原始数据包</li>
+<li>TCP/UDP层识别和处理  </li>
+<li>根据端口映射确定应用协议</li>
+<li>调用对应协议插件进行解析</li>
+</ul>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>判断数据采集方式
+
+func<span class="w"> </span><span class="o">(</span>s<span class="w"> </span>*Sniffer<span class="o">)</span><span class="w"> </span>open<span class="o">()</span><span class="w"> </span><span class="o">(</span>snifferHandle,<span class="w"> </span>error<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>s.config.File<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>newFileHandler<span class="o">(</span>s.config.File,<span class="w"> </span>s.config.TopSpeed,<span class="w"> </span>s.config.Loop<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>switch<span class="w"> </span>s.config.Type<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">"pcap"</span>:
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>openPcap<span class="o">(</span>s.filter,<span class="w"> </span><span class="p">&amp;</span>s.config<span class="o">)</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">"af_packet"</span>:
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>openAFPacket<span class="o">(</span>s.filter,<span class="w"> </span><span class="p">&amp;</span>s.config<span class="o">)</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">"dpdk"</span>:
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>openDpdk<span class="o">(</span>s.filter<span class="o">)</span>
+<span class="w">    </span>default:
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>nil,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"Unknown sniffer type: %s"</span>,<span class="w"> </span>s.config.Type<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span><span class="o">(</span>stream<span class="w"> </span>*TCPStream<span class="o">)</span><span class="w"> </span>addPacket<span class="o">(</span>pkt<span class="w"> </span>*protos.Packet,<span class="w"> </span>tcphdr<span class="w"> </span>*layers.TCP<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>//<span class="w"> </span><span class="m">1</span>.<span class="w"> </span>获取协议处理器
+<span class="w">  </span>mod<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>conn.tcp.protocols.GetTCP<span class="o">(</span>conn.protocol<span class="o">)</span>
+
+<span class="w">  </span>//<span class="w"> </span><span class="m">2</span>.<span class="w"> </span>调用协议解析
+<span class="w">  </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>pkt.Payload<span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>conn.data<span class="w"> </span><span class="o">=</span><span class="w"> </span>mod.Parse<span class="o">(</span>pkt,<span class="w"> </span><span class="p">&amp;</span>conn.tcptuple,<span class="w"> </span>stream.dir,<span class="w"> </span>conn.data<span class="o">)</span>
+<span class="w">  </span><span class="o">}</span>
+
+<span class="w">  </span>//<span class="w"> </span><span class="m">3</span>.<span class="w"> </span>处理FIN标记
+<span class="w">  </span><span class="k">if</span><span class="w"> </span>tcphdr.FIN<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>conn.data<span class="w"> </span><span class="o">=</span><span class="w"> </span>mod.ReceivedFin<span class="o">(</span><span class="p">&amp;</span>conn.tcptuple,<span class="w"> </span>stream.dir,<span class="w"> </span>conn.data<span class="o">)</span><span class="w"> </span>
+<span class="w">  </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>事件发布写出</p>
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span><span class="o">(</span>p<span class="w"> </span>*TransactionPublisher<span class="o">)</span><span class="w"> </span>worker<span class="o">(</span>ch<span class="w"> </span>chan<span class="w"> </span>beat.Event,<span class="w"> </span>client<span class="w"> </span>beat.Client<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span>event<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>&lt;-ch:
+<span class="w">      </span>//<span class="w"> </span>处理和发布事件
+<span class="w">      </span>pub,<span class="w"> </span>_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>p.processor.Run<span class="o">(</span><span class="p">&amp;</span>event<span class="o">)</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span>pub<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>client.Publish<span class="o">(</span>*pub<span class="o">)</span>
+<span class="w">      </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">  </span><span class="o">}</span>
+<span class="o">}</span>
 </code></pre></div>
   </div>
 </article>
