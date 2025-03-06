@@ -220,9 +220,9 @@ int<span class="w"> </span>xdp_prog<span class="o">(</span>struct<span class="w"
 <ul>
 <li>获取Redis中的IP和端口列表。</li>
 <li>遍历IP和端口列表，解析每个IP和端口。</li>
-<li>将解析后的IP和端口存入eBPF映射中。</li>
+<li>将解析后的IP和端口存入eBPF MAP中。</li>
 </ul>
-<p>eBPF 的key ，可以是一个结构体。</p>
+<p>eBPF MAP 的key ，可以是一个结构体。</p>
 <div class="highlight"><pre><span></span><code>func<span class="w"> </span>updateMapKeyV<span class="o">(</span>client<span class="w"> </span>*redis.Client,<span class="w"> </span>updateMap<span class="w"> </span>*ebpf.Map<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>ctx<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>context.Background<span class="o">()</span>
 <span class="w">    </span>ipList,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>client.LRange<span class="o">(</span>ctx,<span class="w"> </span><span class="s2">"xdp_drop_ip_port"</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>-1<span class="o">)</span>.Result<span class="o">()</span>
