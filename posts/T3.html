@@ -120,6 +120,168 @@ XDP：通过使用eBPF（Extended Berkeley Packet Filter），XDP提供了高度
 Netfilter：主要通过iptables命令行工具或nftables来进行配置，对于简单的规则集非常直观，但对于复杂逻辑可能不如XDP灵活。</li>
 </ul>
 <p>总结来说，如果应用需要极高的性能和低延迟，则XDP可能是更好的选择， 选用Netfilter则可能 Too late。</p>
+<h4>开发</h4>
+<p>利用XDP开发的快速丢包工具， 快速丢弃指定IP请求的包，减少协议栈的计算开销，减少CPU和网卡的负载。Loader 是使用 Go + github.com/cilium/ebpf 开发而成， 从Redis List 读取 IP(source ip) + Port(dest port),将IP + Port 加入到eBPF MAP中，拦截指定ip到本机端口的包，不区分TCP/UDP， 当Port 为0时，拦截所有的包。</p>
+<p>处理第4层（传输层）的TCP或UDP协议。首先计算第4层头部位置，检查是否超出数据范围。如果是TCP或UDP协议，则提取目标端口号并存储在key中.</p>
+<div class="highlight"><pre><span></span><code>static<span class="w"> </span>__always_inline<span class="w"> </span>int<span class="w"> </span>process_l4<span class="o">(</span>struct<span class="w"> </span>iphdr<span class="w"> </span>*ip,<span class="w"> </span>void<span class="w"> </span>*data_end,
+<span class="w">                                      </span>struct<span class="w"> </span>ip_port_key<span class="w"> </span>*key<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>struct<span class="w"> </span>tcphdr<span class="w"> </span>*tcp<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>udphdr<span class="w"> </span>*udp<span class="p">;</span>
+<span class="w">    </span>void<span class="w"> </span>*l4_hdr<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)</span>ip<span class="w"> </span>+<span class="w"> </span><span class="o">(</span>ip-&gt;ihl<span class="w"> </span>*<span class="w"> </span><span class="m">4</span><span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>l4_hdr<span class="w"> </span>+<span class="w"> </span>sizeof<span class="o">(</span>struct<span class="w"> </span>tcphdr<span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span>data_end<span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>XDP_PASS<span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ip-&gt;protocol<span class="w"> </span><span class="o">==</span><span class="w"> </span>IPPROTO_TCP<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>struct<span class="w"> </span>tcphdr<span class="w"> </span>*<span class="o">)</span>l4_hdr<span class="p">;</span>
+<span class="w">        </span>key-&gt;port<span class="w"> </span><span class="o">=</span><span class="w"> </span>bpf_ntohs<span class="o">(</span>tcp-&gt;dest<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span>bpf_debug<span class="o">(</span><span class="s2">"TCP Port: %d"</span>,<span class="w"> </span>key-&gt;port<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ip-&gt;protocol<span class="w"> </span><span class="o">==</span><span class="w"> </span>IPPROTO_UDP<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">udp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>struct<span class="w"> </span>udphdr<span class="w"> </span>*<span class="o">)</span>l4_hdr<span class="p">;</span>
+<span class="w">        </span>key-&gt;port<span class="w"> </span><span class="o">=</span><span class="w"> </span>bpf_ntohs<span class="o">(</span>udp-&gt;dest<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span>bpf_debug<span class="o">(</span><span class="s2">"UDP Port: %d"</span>,<span class="w"> </span>key-&gt;port<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>bpf_debug<span class="o">(</span><span class="s2">"Not TCP/UDP"</span>,<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>在网络数据包进入内核之前进行处理。主要功能包括：</p>
+<ul>
+<li>检查并解析以太网帧和IP头部。</li>
+<li>如果不是IPv4数据包或IP头部不合法，则直接放行。</li>
+<li>查找是否需要丢弃该IP的数据包。</li>
+<li>处理四层协议，并再次检查是否需要丢弃。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>SEC<span class="o">(</span><span class="s2">"xdp"</span><span class="o">)</span>
+int<span class="w"> </span>xdp_prog<span class="o">(</span>struct<span class="w"> </span>xdp_md<span class="w"> </span>*ctx<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>void<span class="w"> </span>*data<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)(</span>long<span class="o">)</span>ctx-&gt;data<span class="p">;</span>
+<span class="w">    </span>void<span class="w"> </span>*data_end<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)(</span>long<span class="o">)</span>ctx-&gt;data_end<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>ethhdr<span class="w"> </span>*eth<span class="w"> </span><span class="o">=</span><span class="w"> </span>data<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>iphdr<span class="w"> </span>*ip<span class="p">;</span>
+<span class="w">    </span>__u32<span class="w"> </span>*drop_flag<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>ip_port_key<span class="w"> </span><span class="nv">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{}</span><span class="p">;</span>
+
+<span class="w">    </span>CHECK<span class="o">(</span>data,<span class="w"> </span>data_end,<span class="w"> </span>eth,<span class="w"> </span>sizeof<span class="o">(</span>*eth<span class="o">))</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>eth-&gt;h_proto<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>bpf_htons<span class="o">(</span>ETH_P_IP<span class="o">))</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>XDP_PASS<span class="p">;</span>
+
+<span class="w">    </span><span class="nv">ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>struct<span class="w"> </span>iphdr<span class="w"> </span>*<span class="o">)(</span>eth<span class="w"> </span>+<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>CHECK<span class="o">(</span>data,<span class="w"> </span>data_end,<span class="w"> </span>ip,<span class="w"> </span>sizeof<span class="o">(</span>*ip<span class="o">))</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ip-&gt;version<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>XDP_PASS<span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>ip-&gt;ihl<span class="w"> </span>&lt;<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>ip-&gt;ihl<span class="w"> </span>&gt;<span class="w"> </span><span class="m">15</span><span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>XDP_PASS<span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">((</span>void<span class="w"> </span>*<span class="o">)</span>ip<span class="w"> </span>+<span class="w"> </span><span class="o">(</span>ip-&gt;ihl<span class="w"> </span>*<span class="w"> </span><span class="m">4</span><span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span>data_end<span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>XDP_PASS<span class="p">;</span>
+
+
+<span class="w">    </span>key.ip<span class="w"> </span><span class="o">=</span><span class="w"> </span>bpf_ntohl<span class="o">(</span>ip-&gt;saddr<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>key.port<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nv">drop_flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>bpf_map_lookup_elem<span class="o">(</span><span class="p">&amp;</span>drop_ips_ports,<span class="w"> </span><span class="p">&amp;</span>key<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>drop_flag<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>*drop_flag<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>XDP_DROP<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>process_l4<span class="o">(</span>ip,<span class="w"> </span>data_end,<span class="w"> </span><span class="p">&amp;</span>key<span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">drop_flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>bpf_map_lookup_elem<span class="o">(</span><span class="p">&amp;</span>drop_ips_ports,<span class="w"> </span><span class="p">&amp;</span>key<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>drop_flag<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>*drop_flag<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>XDP_DROP<span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>XDP_PASS<span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>将IPv4地址字符串转换为32位无符号整数。注意大端序问题， 具体步骤如下：</p>
+<ul>
+<li>解析输入的IP地址字符串。</li>
+<li>将IPv4地址的四个字节按位移操作组合成一个32位整数并返回。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span>ipToUint32<span class="o">(</span>ipStr<span class="w"> </span>string<span class="o">)</span><span class="w"> </span><span class="o">(</span>uint32,<span class="w"> </span>error<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>ip<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>net.ParseIP<span class="o">(</span>ipStr<span class="o">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">ip</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"invalid IP address: %s"</span>,<span class="w"> </span>ipStr<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>ipv4<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>ip.To4<span class="o">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">ipv4</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"not an IPv4 address: %s"</span>,<span class="w"> </span>ipStr<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>uint32<span class="o">(</span>ipv4<span class="o">[</span><span class="m">0</span><span class="o">])</span><span class="s">&lt;&lt;24 | uint32</span><span class="o">(</span>ipv4<span class="o">[</span><span class="m">1</span><span class="o">])</span>&lt;&lt;<span class="m">16</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>uint32<span class="o">(</span>ipv4<span class="o">[</span><span class="m">2</span><span class="o">])</span>&lt;&lt;<span class="m">8</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>uint32<span class="o">(</span>ipv4<span class="o">[</span><span class="m">3</span><span class="o">])</span>,<span class="w"> </span>nil
+<span class="o">}</span>
+</code></pre></div>
+<p>从Redis中获取IP和端口列表，并将这些IP和端口转换为结构体后存入eBPF映射中。具体步骤如下：</p>
+<ul>
+<li>获取Redis中的IP和端口列表。</li>
+<li>遍历IP和端口列表，解析每个IP和端口。</li>
+<li>将解析后的IP和端口存入eBPF映射中。</li>
+</ul>
+<p>eBPF 的key ，可以是一个结构体。</p>
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span>updateMapKeyV<span class="o">(</span>client<span class="w"> </span>*redis.Client,<span class="w"> </span>updateMap<span class="w"> </span>*ebpf.Map<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>ctx<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>context.Background<span class="o">()</span>
+<span class="w">    </span>ipList,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>client.LRange<span class="o">(</span>ctx,<span class="w"> </span><span class="s2">"xdp_drop_ip_port"</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>-1<span class="o">)</span>.Result<span class="o">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>redis.Nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>log.Fatal<span class="o">(</span><span class="s2">"xdp_drop_ip_port key does not exist"</span><span class="o">)</span>
+<span class="w">    </span><span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>log.Fatal<span class="o">(</span>err<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>log.Println<span class="o">(</span><span class="s2">"IpList"</span>,<span class="w"> </span>ipList<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="nb">type</span><span class="w"> </span>ipPortKey<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>IP<span class="w">   </span>uint32
+<span class="w">        </span>Port<span class="w"> </span>uint16
+<span class="w">        </span>_<span class="w">    </span>uint16
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>ipList<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>log.Println<span class="o">(</span><span class="s2">"Processing IP:Port"</span>,<span class="w"> </span>ipList<span class="o">[</span>i<span class="o">])</span>
+<span class="w">        </span>split<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.Split<span class="o">(</span>ipList<span class="o">[</span>i<span class="o">]</span>,<span class="w"> </span><span class="s2">":"</span><span class="o">)</span>
+<span class="w">        </span>ip,<span class="w"> </span>_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>ipToUint32<span class="o">(</span>split<span class="o">[</span><span class="m">0</span><span class="o">])</span>
+<span class="w">        </span>port64,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strconv.ParseUint<span class="o">(</span>split<span class="o">[</span><span class="m">1</span><span class="o">]</span>,<span class="w"> </span><span class="m">10</span>,<span class="w"> </span><span class="m">16</span><span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>log.Fatalf<span class="o">(</span><span class="s2">"invalid port number: %s"</span>,<span class="w"> </span>split<span class="o">[</span><span class="m">1</span><span class="o">])</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>port<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>uint16<span class="o">(</span>port64<span class="o">)</span>
+
+<span class="w">        </span>key<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>ipPortKey<span class="o">{</span>
+<span class="w">            </span>IP:<span class="w">   </span>ip,
+<span class="w">            </span>Port:<span class="w"> </span>port,
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>value<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>uint32<span class="o">(</span><span class="m">1</span><span class="o">)</span>
+<span class="w">        </span>log.Println<span class="o">(</span><span class="s2">"Adding IP:Port to map:"</span>,<span class="w"> </span>ip,<span class="w"> </span>port,<span class="w"> </span>key,<span class="w"> </span>value<span class="o">)</span>
+
+<span class="w">        </span><span class="nv">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>updateMap.Put<span class="o">(</span>key,<span class="w"> </span>value<span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>log.Fatalf<span class="o">(</span><span class="s2">"Failed to update map: %v"</span>,<span class="w"> </span>err<span class="o">)</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>ubuntu 24.04 下编译：</p>
+<div class="highlight"><pre><span></span><code>apt<span class="w"> </span>install<span class="w">  </span>clang<span class="w"> </span>llvm<span class="w"> </span>git<span class="w"> </span>golang<span class="w"> </span>make<span class="w"> </span>gcc-multilib<span class="w"> </span>-y
+
+make
+</code></pre></div>
+<p>启动方法：</p>
+<p>./fastdrop  + 网卡名, 比如 ./fastdrop  ens33</p>
+<p>redis list 数据格式：</p>
+<ul>
+<li>172.16.251.209:80</li>
+<li>172.16.251.201:53</li>
+<li>172.16.251.208:0</li>
+</ul>
+<p>使用场景： 抗D 、 WAF、 网关、 CDN， 等等。 全文完。</p>
+<p>代码地址</p>
+<div class="highlight"><pre><span></span><code>https://github.com/njcx/fastdrop
+</code></pre></div>
+<p><img alt="dpdk" class="img-fluid" src="../images/imgxdp.png"/></p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
