@@ -114,33 +114,33 @@ var _hmt = _hmt || [];
 <p><img alt="dns" class="img-fluid" src="../images/dnsq.jpeg"/></p>
 <p>关于DNS请求的方式如图，
 具体可描述如下： </p>
-<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="n">主机先向本地域名服务器进行递归查询</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="m">1</span>.<span class="w"> </span>主机先向本地域名服务器进行递归查询<span class="w"> </span>
 
-<span class="mf">2.</span><span class="w"> </span><span class="n">本地域名服务器采用迭代查询</span><span class="err">，</span><span class="n">向一个根域名服务器进行查询</span>
+<span class="w">    </span><span class="m">2</span>.<span class="w"> </span>本地域名服务器采用迭代查询，向一个根域名服务器进行查询<span class="w"> </span>
 
-<span class="mf">3.</span><span class="w"> </span><span class="n">根域名服务器告诉本地域名服务器</span><span class="err">，</span><span class="n">下一次应该查询的顶级域名服务器的IP地址</span>
+<span class="w">    </span><span class="m">3</span>.<span class="w"> </span>根域名服务器告诉本地域名服务器，下一次应该查询的顶级域名服务器的IP地址<span class="w"> </span>
 
-<span class="mf">4.</span><span class="w"> </span><span class="n">本地域名服务器向顶级域名服务器进行查询</span>
+<span class="w">    </span><span class="m">4</span>.<span class="w"> </span>本地域名服务器向顶级域名服务器进行查询<span class="w"> </span>
 
-<span class="mf">5.</span><span class="w"> </span><span class="n">顶级域名服务器告诉本地域名服务器</span><span class="err">，</span><span class="n">下一步查询权限服务器的IP地址</span>
+<span class="w">    </span><span class="m">5</span>.<span class="w"> </span>顶级域名服务器告诉本地域名服务器，下一步查询权限服务器的IP地址<span class="w"> </span>
 
-<span class="mf">6.</span><span class="w"> </span><span class="n">本地域名服务器向权威服务器进行查询</span>
+<span class="w">    </span><span class="m">6</span>.<span class="w"> </span>本地域名服务器向权威服务器进行查询<span class="w"> </span>
 
-<span class="mf">7.</span><span class="w"> </span><span class="n">权限服务器告诉本地域名服务器所查询的主机的IP地址</span>
+<span class="w">    </span><span class="m">7</span>.<span class="w"> </span>权限服务器告诉本地域名服务器所查询的主机的IP地址<span class="w"> </span>
 
-<span class="mf">8.</span><span class="w"> </span><span class="n">本地域名服务器最后把查询结果告诉主机</span>
+<span class="w">    </span><span class="m">8</span>.<span class="w"> </span>本地域名服务器最后把查询结果告诉主机<span class="w"> </span>
 </code></pre></div>
 <p><img alt="dns" class="img-fluid" src="../images/dnstun.jpeg"/></p>
 <p>如果在企业内网，那么黑客的攻击机器，就是所谓的权威服务器</p>
-<div class="highlight"><pre><span></span><code><span class="err">第一步</span><span class="o">:</span><span class="w"> </span><span class="err">受控机向内部</span><span class="n">dns服务器发送一个查询NKNFjklKLuJNVIUM</span><span class="o">.</span><span class="na">ml</span><span class="o">.</span><span class="na">org的请求</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span>第一步:<span class="w"> </span>受控机向内部dns服务器发送一个查询NKNFjklKLuJNVIUM.ml.org的请求
 
-<span class="err">第二步：内部</span><span class="n">dns服务器通过防火墙向根dns服务器发出查询请求</span>
+<span class="w">    </span>第二步：内部dns服务器通过防火墙向根dns服务器发出查询请求
 
-<span class="err">第三步：经过大量迭代后，</span><span class="n">DNS请求到达NKNFjklKLuJNVIUM</span><span class="o">.</span><span class="na">ml</span><span class="o">.</span><span class="na">org的权威DNS服务器</span><span class="err">（黑客所控制）</span>
+<span class="w">    </span>第三步：经过大量迭代后，DNS请求到达NKNFjklKLuJNVIUM.ml.org的权威DNS服务器（黑客所控制）
 
-<span class="err">第四步：受控机请求查询的响应通过防火墙返回到内部</span><span class="n">DNS服务器</span>
+<span class="w">    </span>第四步：受控机请求查询的响应通过防火墙返回到内部DNS服务器
 
-<span class="err">第五步：内部</span><span class="n">DNS服务器将响应结果返回给受控机</span>
+<span class="w">    </span>第五步：内部DNS服务器将响应结果返回给受控机
 </code></pre></div>
 <p>上面的流程展示了一个受控机在连接外部网络时dns解析的一个过程。由于防火墙并没有对dns协议做任何处理，所以我们可以通过这种方式来穿透防火墙。</p>
 <p>这里很多人会有一个疑问，关于dns 请求查询NKNFjklKLuJNVIUMvKL.ml.org 是怎么到达黑客所控制的权威DNS服务器的？</p>
@@ -200,9 +200,9 @@ var _hmt = _hmt || [];
 <p><img alt="dnsshell" class="img-fluid" src="../images/WechatIMG23.jpeg"/></p>
 <h4>检测</h4>
 <p>我们可以看出一些特征 ：</p>
-<div class="highlight"><pre><span></span><code><span class="mi">1</span><span class="err">，</span><span class="w"> </span><span class="err">请求的</span><span class="n">Type一般都是TXT</span><span class="err">（为了返回的时候能够加入更多的信息）。</span>
-<span class="mi">2</span><span class="err">，</span><span class="w"> </span><span class="n">payload部分一般都会编码</span><span class="err">（可能为</span><span class="n">base64</span><span class="err">、</span><span class="mi">2</span><span class="err">进制或</span><span class="mi">16</span><span class="err">进制）后放到子域名里面，而且多变，不一致</span>
-<span class="mi">3</span><span class="err">，</span><span class="w"> </span><span class="n">DNS发生频率很高</span><span class="err">，短时间为了发送大量数据，会产生大量请求</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="m">1</span>，<span class="w"> </span>请求的Type一般都是TXT（为了返回的时候能够加入更多的信息）。
+<span class="w">    </span><span class="m">2</span>，<span class="w"> </span>payload部分一般都会编码（可能为base64、2进制或16进制）后放到子域名里面，而且多变，不一致
+<span class="w">    </span><span class="m">3</span>，<span class="w"> </span>DNS发生频率很高，短时间为了发送大量数据，会产生大量请求
 </code></pre></div>
 <p>比如，DNS  TXT请求频率过高，就报警，例子如下</p>
 <div class="highlight"><pre><span></span><code>alert<span class="w"> </span>udp<span class="w"> </span>any<span class="w"> </span>any<span class="w"> </span>-&gt;<span class="w"> </span>any<span class="w"> </span><span class="m">53</span><span class="w"> </span><span class="o">(</span>msg:<span class="s2">"High TXT requests - Potential DNS Tunneling"</span><span class="p">;</span><span class="w"> </span>content:<span class="s2">"|01 00|"</span><span class="p">;</span><span class="w"> </span>offset:2<span class="p">;</span><span class="w"> </span>within<span class="w"> </span>:4<span class="p">;</span><span class="w"> </span>content:<span class="s2">"|00 00 10 00 01|"</span><span class="p">;</span><span class="w"> </span>offset:12<span class="p">;</span><span class="w"> </span>within:255<span class="p">;</span><span class="w"> </span>threshold:<span class="w"> </span><span class="nb">type</span><span class="w"> </span>threshold,<span class="w"> </span>track<span class="w"> </span>by_src,<span class="w"> </span>count<span class="w"> </span><span class="m">10</span>,<span class="w"> </span>seconds<span class="w"> </span><span class="m">5</span><span class="p">;</span><span class="w"> </span>sid:<span class="w"> </span><span class="m">5700002</span><span class="p">;</span><span class="w"> </span>rev:<span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="o">)</span>
