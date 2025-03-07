@@ -118,25 +118,25 @@ var _hmt = _hmt || [];
 低成本混合接入：Portal + MAC旁路。
 </code></pre></div>
 <p><img alt="ac" class="img-fluid" src="../images/WechatIMG123.jpeg"/></p>
-<div class="highlight"><pre><span></span><code><span class="mf">1</span><span class="err">）</span><span class="n">用户访问任意网站</span><span class="err">，</span><span class="n">经过AC判断该用户未完成认证</span><span class="err">，</span><span class="n">发送HTTP</span><span class="w"> </span><span class="mf">302</span><span class="n">请求到用户端</span><span class="err">，</span><span class="n">要求重定向到Portal</span><span class="w"> </span><span class="n">Server的URL</span><span class="err">；</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="m">1</span>）用户访问任意网站，经过AC判断该用户未完成认证，发送HTTP<span class="w"> </span>302请求到用户端，要求重定向到Portal<span class="w"> </span>Server的URL；
 
-<span class="mf">2</span><span class="err">）</span><span class="n">用户收到重定向报文</span><span class="err">，</span><span class="n">再次请求portal</span><span class="w"> </span><span class="n">server的URL</span><span class="err">；</span>
+<span class="w">    </span><span class="m">2</span>）用户收到重定向报文，再次请求portal<span class="w"> </span>server的URL；
 
-<span class="mf">3</span><span class="err">）</span><span class="n">Portal</span><span class="w"> </span><span class="n">Server推送统一的URL认证页面</span><span class="err">；</span>
+<span class="w">    </span><span class="m">3</span>）Portal<span class="w"> </span>Server推送统一的URL认证页面；
 
-<span class="mf">4</span><span class="err">）</span><span class="n">用户填入用户名</span><span class="err">、</span><span class="n">密码</span><span class="err">，</span><span class="n">提交页面</span><span class="err">，</span><span class="n">向Portal</span><span class="w"> </span><span class="n">Server发起连接请求</span><span class="err">；</span>
+<span class="w">    </span><span class="m">4</span>）用户填入用户名、密码，提交页面，向Portal<span class="w"> </span>Server发起连接请求；
 
-<span class="mf">5</span><span class="err">）</span><span class="n">Portal</span><span class="w"> </span><span class="n">Server向AC发起认证请求</span><span class="err">，</span><span class="n">请求中携带用户名和密码</span><span class="err">（</span><span class="n">已经加密</span><span class="err">）；</span>
+<span class="w">    </span><span class="m">5</span>）Portal<span class="w"> </span>Server向AC发起认证请求，请求中携带用户名和密码（已经加密）；
 
-<span class="mf">6</span><span class="err">）</span><span class="n">而后AC进行RADIUS认证</span><span class="err">，</span><span class="n">发送Access</span><span class="o">-</span><span class="n">Request请求</span><span class="err">；</span>
+<span class="w">    </span><span class="m">6</span>）而后AC进行RADIUS认证，发送Access-Request请求；
 
-<span class="mf">7</span><span class="err">）</span><span class="n">AC接收Radius响应Access</span><span class="o">-</span><span class="n">Accept</span><span class="err">（</span><span class="n">Access</span><span class="o">-</span><span class="n">Reject等</span><span class="err">）</span><span class="n">消息</span><span class="err">；</span>
+<span class="w">    </span><span class="m">7</span>）AC接收Radius响应Access-Accept（Access-Reject等）消息；
 
-<span class="mf">8</span><span class="err">）</span><span class="n">AC向Portal</span><span class="w"> </span><span class="n">Server发送认证结果</span><span class="err">；</span>
+<span class="w">    </span><span class="m">8</span>）AC向Portal<span class="w"> </span>Server发送认证结果；
 
-<span class="mf">9</span><span class="p">)</span><span class="w"> </span><span class="n">Portal</span><span class="w"> </span><span class="n">Server回应确认收到认证结果的报文</span><span class="err">。</span>
+<span class="w">    </span><span class="m">9</span><span class="o">)</span><span class="w"> </span>Portal<span class="w"> </span>Server回应确认收到认证结果的报文。
 
-<span class="mf">10</span><span class="err">）</span><span class="n">Portal</span><span class="w"> </span><span class="n">Server推送认证结果给用户</span><span class="err">。</span>
+<span class="w">    </span><span class="m">10</span>）Portal<span class="w"> </span>Server推送认证结果给用户。
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">3306</span>:3306<span class="w"> </span>--name<span class="w"> </span>mysql<span class="w"> </span>-e<span class="w"> </span><span class="nv">MYSQL_ROOT_PASSWORD</span><span class="o">=</span><span class="m">208512512</span><span class="w"> </span>-d<span class="w"> </span>mysql:5.7
 </code></pre></div>
