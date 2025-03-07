@@ -110,6 +110,9 @@ https://github.com/m0nad/Diamorphine.git
 https://github.com/unix-thrust/beurk.git
 https://github.com/mempodippy/vlany.git
 https://github.com/hanj4096/wukong.git
+https://github.com/ldpreload/Medusa.git
+https://github.com/mav8557/Father.git
+https://github.com/imlk0/yark.git
 </code></pre></div>
 <p>linux rootkit 主要分为两种，一种是用户态的rootkit，一种是内核态的rootkit。rootkit的主要目的是为了隐蔽地获取对操作系统的控制权或访问权限，同时尽量避免被检测到。用户态的rootkit主要是动态链接库（LD_PRELOAD）注入，通过设置环境变量 LD_PRELOAD 来加载恶意的共享库。这种方法可以拦截并修改标准库函数的行为，例如文件操作、网络通信等，从而隐蔽地执行某些操作，还有替换相关系统命令完成(通过替换ps、top、ls、ss、netstat等系统工具)。内核态的rootkit主要是可装载内核模块（LKM）实现， 主要是修改操作系统的核心部分，修改内部的数据结构或者进行系统函数HOOK，以此来隐藏其存在，例如隐藏特定的文件、进程和网络连接等。</p>
 <p>无论是用户态rootkit还是内核的rootkit，都会把隐藏自己，作为核心功能存在， 都会有下面4个核心功能点，只是实现的方法，各有不同。</p>
