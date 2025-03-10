@@ -372,6 +372,45 @@ void<span class="w"> </span>hook_sys_call_table<span class="o">(</span>long<span
 <span class="w">    </span>write_cr0_forced<span class="o">(</span>cr0<span class="o">)</span><span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
+<p>下面完整展示了， HOOK __NR_kill指向的函数，防止特定进程被SIGKILL或SIGTERM信号终止：</p>
+<ul>
+<li>protect_proccess：检查是否阻止对指定PID发送SIGKILL或SIGTERM信号。</li>
+<li>hook_sys_kill：钩住系统调用sys_kill，先调用protect_proccess，若返回1则不执行原系统调用并返回0；否则执行原系统调用。</li>
+<li>protect_proc_init：初始化时将sys_kill替换为hook_sys_kill。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>static<span class="w"> </span>int<span class="w"> </span>protect_proccess<span class="o">(</span>pid_t<span class="w"> </span>pid,int<span class="w"> </span>sig<span class="o">){</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">sig</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>SIGKILL<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nv">sig</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>SIGTERM<span class="o">){</span>
+<span class="w">        </span>struct<span class="w"> </span>protect_proc_info<span class="w"> </span>*pos<span class="p">;</span>
+<span class="w">        </span>list_for_each_entry<span class="o">(</span>pos,<span class="p">&amp;</span>protect_proc_info_list,list<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>pos-&gt;pid<span class="w"> </span><span class="o">==</span><span class="w"> </span>pid<span class="o">){</span>
+<span class="w">                </span>pr_info<span class="o">(</span>LOG_PREFIX<span class="w"> </span><span class="s2">"prevent user kill pid %d,QWQ...\n"</span>,pid<span class="o">)</span><span class="p">;</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="m">1</span><span class="p">;</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="o">}</span>
+
+static<span class="w"> </span>asmlinkage<span class="w"> </span>long<span class="w"> </span><span class="o">(</span>*orig_sys_kill<span class="o">)(</span>const<span class="w"> </span>struct<span class="w"> </span>pt_regs<span class="w"> </span>*<span class="o">)</span><span class="p">;</span>
+
+asmlinkage<span class="w"> </span>long<span class="w"> </span>hook_sys_kill<span class="o">(</span>const<span class="w"> </span>struct<span class="w"> </span>pt_regs<span class="w"> </span>*regs<span class="o">)</span>
+<span class="o">{</span>
+<span class="w">    </span>pid_t<span class="w"> </span><span class="nv">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>regs-&gt;di<span class="p">;</span>
+<span class="w">    </span>int<span class="w"> </span><span class="nv">sig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>regs-&gt;si<span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>protect_proccess<span class="o">(</span>pid,sig<span class="o">)){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>orig_sys_kill<span class="o">(</span>regs<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+
+
+
+int<span class="w"> </span>protect_proc_init<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>pr_info<span class="o">(</span>LOG_PREFIX<span class="w"> </span><span class="s2">"call protect_proc_init()\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>hook_sys_call_table<span class="o">(</span>__NR_kill,<span class="w"> </span>hook_sys_kill,<span class="w"> </span><span class="p">&amp;</span>orig_sys_kill<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
