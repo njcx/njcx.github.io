@@ -376,33 +376,60 @@ void<span class="w"> </span>hook_sys_call_table<span class="o">(</span>long<span
 <span class="w">    </span>write_cr0_forced<span class="o">(</span>cr0<span class="o">)</span><span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>void<span class="w"> </span>analyze_modules<span class="o">(</span>void<span class="o">){</span>
-<span class="w">    </span>struct<span class="w"> </span>kset<span class="w"> </span>*mod_kset<span class="p">;</span>
-<span class="w">    </span>struct<span class="w"> </span>kobject<span class="w"> </span>*cur,<span class="w"> </span>*tmp<span class="p">;</span>
-<span class="w">    </span>struct<span class="w"> </span>module_kobject<span class="w"> </span>*kobj<span class="p">;</span>
+<p>下面我们了解一下怎么检测：</p>
+<p>先查找内核中的特定符号地址，比如系统调用表（sys_call_table）和核心内核文本函数（core_kernel_text)，由于内核版本不一样，lookup_name 实现的方法不一样，做了条件编译：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#if LINUX_VERSION_CODE &gt;= KERNEL_VERSION(5,7,0)</span>
 
-<span class="w">    </span>INFO<span class="o">(</span><span class="s2">"Analyzing Module List\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="c1">#include &lt;linux/kprobes.h&gt;</span>
 
-<span class="w">    </span><span class="nv">mod_kset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)</span>lookup_name<span class="o">(</span><span class="s2">"module_kset"</span><span class="o">)</span><span class="p">;</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!mod_kset<span class="o">)</span>
-<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+static<span class="w"> </span>struct<span class="w"> </span>kprobe<span class="w"> </span>kp<span class="p">;</span>
 
-<span class="w">    </span>list_for_each_entry_safe<span class="o">(</span>cur,<span class="w"> </span>tmp,<span class="w"> </span><span class="p">&amp;</span>mod_kset-&gt;list,<span class="w"> </span>entry<span class="o">){</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!kobject_name<span class="o">(</span>tmp<span class="o">))</span>
-<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+unsigned<span class="w"> </span>long<span class="w"> </span>lookup_name<span class="o">(</span>const<span class="w"> </span>char<span class="w"> </span>*name<span class="o">){</span>
+<span class="w">    </span>kp.symbol_name<span class="w"> </span><span class="o">=</span><span class="w"> </span>name<span class="p">;</span>
 
-<span class="w">        </span><span class="nv">kobj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>container_of<span class="o">(</span>tmp,<span class="w"> </span>struct<span class="w"> </span>module_kobject,<span class="w"> </span>kobj<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>register_kprobe<span class="o">(</span><span class="p">&amp;</span>kp<span class="o">)</span><span class="w"> </span>&lt;<span class="w"> </span><span class="m">0</span><span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>kobj<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kobj-&gt;mod<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kobj-&gt;mod-&gt;name<span class="o">){</span>
-<span class="w">            </span>mutex_lock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
-<span class="w">            </span><span class="k">if</span><span class="o">(</span>!find_module<span class="o">(</span>kobj-&gt;mod-&gt;name<span class="o">))</span>
-<span class="w">                </span>ALERT<span class="o">(</span><span class="s2">"Module [%s] hidden.\n"</span>,<span class="w"> </span>kobj-&gt;mod-&gt;name<span class="o">)</span><span class="p">;</span>
-<span class="w">            </span>mutex_unlock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
-<span class="w">        </span><span class="o">}</span>
-<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>unregister_kprobe<span class="o">(</span><span class="p">&amp;</span>kp<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">(</span>unsigned<span class="w"> </span>long<span class="o">)</span>kp.addr<span class="p">;</span>
+<span class="o">}</span>
+
+<span class="c1">#else</span>
+
+unsigned<span class="w"> </span>long<span class="w"> </span>lookup_name<span class="o">(</span>const<span class="w"> </span>char<span class="w"> </span>*name<span class="o">){</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>kallsyms_lookup_name<span class="o">(</span>name<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+
+<span class="c1">#endif</span>
+
+
+unsigned<span class="w"> </span>long<span class="w"> </span>*sct<span class="w"> </span><span class="o">=</span><span class="w"> </span>NULL<span class="p">;</span><span class="w"> </span>/*<span class="w"> </span>Syscall<span class="w"> </span>Table<span class="w"> </span>*/
+int<span class="w"> </span><span class="o">(</span>*ckt<span class="o">)(</span>unsigned<span class="w"> </span>long<span class="w"> </span>addr<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>NULL<span class="p">;</span><span class="w"> </span>/*<span class="w"> </span>core_kernel_text<span class="w"> </span>*/<span class="w">  </span>检查某个地址是否为核心内核文本段的一部分
+struct<span class="w"> </span>kset<span class="w"> </span>*mod_kset<span class="w"> </span><span class="o">=</span><span class="w"> </span>NUll<span class="p">;</span><span class="w">  </span>/*<span class="w"> </span>mod_kset<span class="w"> </span>*/<span class="w">  </span>包含所有已加载模块的集合
+
+static<span class="w"> </span>int<span class="w"> </span>init_kernel_syms<span class="o">(</span>void<span class="o">){</span>
+<span class="w">    </span><span class="nv">sct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)</span>lookup_name<span class="o">(</span><span class="s2">"sys_call_table"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">ckt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)</span>lookup_name<span class="o">(</span><span class="s2">"core_kernel_text"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">   </span><span class="nv">mod_kset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)</span>lookup_name<span class="o">(</span><span class="s2">"module_kset"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!sct<span class="w"> </span><span class="o">||</span><span class="w"> </span>!ckt<span class="w"> </span><span class="o">||</span><span class="w"> </span>!mod_kset<span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>-1<span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>void<span class="w"> </span>analyze_syscalls<span class="o">(</span>void<span class="o">){</span>
+<p>检测sys_call_table HOOK 思路 ：</p>
+<ul>
+<li>使用 for 循环遍历所有的系统调用（NR_syscalls 是系统调用的数量）。</li>
+<li>获取每个系统调用的地址 addr。</li>
+<li>检查是否为内核核心文本段：</li>
+<li>使用 ckt(addr) 函数检查给定地址是否属于核心内核文本段。如果 ckt(addr) 返回 false，则表示该地址不属于核心内核文本段，可能是被某个模块挂钩了。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>struct<span class="w"> </span>module<span class="w"> </span>*get_module_from_addr<span class="o">(</span>unsigned<span class="w"> </span>long<span class="w"> </span>addr<span class="o">){</span>
+<span class="w">    </span><span class="k">return</span><span class="w">  </span>__module_address<span class="o">(</span>addr<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+
+void<span class="w"> </span>analyze_syscalls<span class="o">(</span>void<span class="o">){</span>
 <span class="w">    </span>int<span class="w"> </span>i<span class="p">;</span>
 <span class="w">    </span>const<span class="w"> </span>char<span class="w"> </span>*mod_name<span class="p">;</span>
 <span class="w">    </span>unsigned<span class="w"> </span>long<span class="w"> </span>addr<span class="p">;</span>
@@ -425,6 +452,31 @@ void<span class="w"> </span>hook_sys_call_table<span class="o">(</span>long<span
 <span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>mod_name<span class="o">)</span>
 <span class="w">                    </span>ALERT<span class="o">(</span><span class="s2">"Hidden module [%s] hooked syscall [%d].\n"</span>,<span class="w"> </span>mod_name,<span class="w"> </span>i<span class="o">)</span><span class="p">;</span>
 <span class="w">            </span><span class="o">}</span>
+<span class="w">            </span>mutex_unlock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>void<span class="w"> </span>analyze_modules<span class="o">(</span>void<span class="o">){</span>
+<span class="w">    </span>struct<span class="w"> </span>kset<span class="w"> </span>*mod_kset<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>kobject<span class="w"> </span>*cur,<span class="w"> </span>*tmp<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>module_kobject<span class="w"> </span>*kobj<span class="p">;</span>
+
+<span class="w">    </span>INFO<span class="o">(</span><span class="s2">"Analyzing Module List\n"</span><span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!mod_kset<span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">    </span>list_for_each_entry_safe<span class="o">(</span>cur,<span class="w"> </span>tmp,<span class="w"> </span><span class="p">&amp;</span>mod_kset-&gt;list,<span class="w"> </span>entry<span class="o">){</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!kobject_name<span class="o">(</span>tmp<span class="o">))</span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+
+<span class="w">        </span><span class="nv">kobj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>container_of<span class="o">(</span>tmp,<span class="w"> </span>struct<span class="w"> </span>module_kobject,<span class="w"> </span>kobj<span class="o">)</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>kobj<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kobj-&gt;mod<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kobj-&gt;mod-&gt;name<span class="o">){</span>
+<span class="w">            </span>mutex_lock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="o">(</span>!find_module<span class="o">(</span>kobj-&gt;mod-&gt;name<span class="o">))</span>
+<span class="w">                </span>ALERT<span class="o">(</span><span class="s2">"Module [%s] hidden.\n"</span>,<span class="w"> </span>kobj-&gt;mod-&gt;name<span class="o">)</span><span class="p">;</span>
 <span class="w">            </span>mutex_unlock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>
