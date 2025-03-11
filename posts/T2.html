@@ -457,29 +457,50 @@ void<span class="w"> </span>analyze_syscalls<span class="o">(</span>void<span cl
 <span class="w">    </span><span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>void<span class="w"> </span>analyze_modules<span class="o">(</span>void<span class="o">){</span>
+<p>lkm模块隐藏检测思路， 遍历模块链表并检查隐藏模块和检查内核符号表 ：</p>
+<ul>
+<li>遍历模块链表并检查隐藏模块，确保其在系统中存在。如果发现模块不存在，则输出警告信息。</li>
+<li>遍历内核符号表，检查每个地址所属的模块。如果发现某个模块存在于符号表中但不在模块链表中，则输出警告信息。</li>
+</ul>
+<div class="highlight"><pre><span></span><code>extern<span class="w"> </span>struct<span class="w"> </span>module<span class="w"> </span>*<span class="o">(</span>*find_module<span class="o">)(</span>const<span class="w"> </span>char<span class="w"> </span>*name<span class="o">)</span><span class="p">;</span>
+extern<span class="w"> </span>unsigned<span class="w"> </span>long<span class="w"> </span>*module_addr<span class="p">;</span>
+
+void<span class="w"> </span>analyze_modules<span class="o">(</span>void<span class="o">)</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>struct<span class="w"> </span>kset<span class="w"> </span>*mod_kset<span class="p">;</span>
 <span class="w">    </span>struct<span class="w"> </span>kobject<span class="w"> </span>*cur,<span class="w"> </span>*tmp<span class="p">;</span>
 <span class="w">    </span>struct<span class="w"> </span>module_kobject<span class="w"> </span>*kobj<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>module<span class="w"> </span>*mod<span class="p">;</span>
+<span class="w">    </span>unsigned<span class="w"> </span>long<span class="w"> </span>addr<span class="p">;</span>
 
-<span class="w">    </span>INFO<span class="o">(</span><span class="s2">"Analyzing Module List\n"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>printk<span class="o">(</span>KERN_INFO<span class="w"> </span><span class="s2">"Analyzing Module List\n"</span><span class="o">)</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!mod_kset<span class="o">)</span>
-<span class="w">        </span><span class="k">return</span><span class="p">;</span>
 
-<span class="w">    </span>list_for_each_entry_safe<span class="o">(</span>cur,<span class="w"> </span>tmp,<span class="w"> </span><span class="p">&amp;</span>mod_kset-&gt;list,<span class="w"> </span>entry<span class="o">){</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!kobject_name<span class="o">(</span>tmp<span class="o">))</span>
-<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span>mutex_lock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
 
-<span class="w">        </span><span class="nv">kobj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>container_of<span class="o">(</span>tmp,<span class="w"> </span>struct<span class="w"> </span>module_kobject,<span class="w"> </span>kobj<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>list_for_each_entry_safe<span class="o">(</span>cur,<span class="w"> </span>tmp,<span class="w"> </span><span class="p">&amp;</span>mod_kset-&gt;list,<span class="w"> </span>entry<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!kobject_name<span class="o">(</span>cur<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>kobj<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kobj-&gt;mod<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kobj-&gt;mod-&gt;name<span class="o">){</span>
-<span class="w">            </span>mutex_lock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
-<span class="w">            </span><span class="k">if</span><span class="o">(</span>!find_module<span class="o">(</span>kobj-&gt;mod-&gt;name<span class="o">))</span>
-<span class="w">                </span>ALERT<span class="o">(</span><span class="s2">"Module [%s] hidden.\n"</span>,<span class="w"> </span>kobj-&gt;mod-&gt;name<span class="o">)</span><span class="p">;</span>
-<span class="w">            </span>mutex_unlock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="nv">kobj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>container_of<span class="o">(</span>cur,<span class="w"> </span>struct<span class="w"> </span>module_kobject,<span class="w"> </span>kobj<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!kobj<span class="w"> </span><span class="o">||</span><span class="w"> </span>!kobj-&gt;mod<span class="w"> </span><span class="o">||</span><span class="w"> </span>!kobj-&gt;mod-&gt;name<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span><span class="nv">mod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>find_module<span class="o">(</span>kobj-&gt;mod-&gt;name<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!mod<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>ALERT<span class="o">(</span><span class="s2">"Hidden module detected: [%s]\n"</span>,<span class="w"> </span>kobj-&gt;mod-&gt;name<span class="o">)</span><span class="p">;</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="o">(</span><span class="nv">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>unsigned<span class="w"> </span>long<span class="o">)</span>_stext<span class="p">;</span><span class="w"> </span>addr<span class="w"> </span>&lt;<span class="w"> </span><span class="o">(</span>unsigned<span class="w"> </span>long<span class="o">)</span>_etext<span class="p">;</span><span class="w"> </span>addr++<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>struct<span class="w"> </span>module<span class="w"> </span>*owner<span class="w"> </span><span class="o">=</span><span class="w"> </span>module_text_address<span class="o">(</span>addr<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>owner<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>!find_module<span class="o">(</span>owner-&gt;name<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>ALERT<span class="o">(</span><span class="s2">"Hidden module detected via symbol table: [%s]\n"</span>,<span class="w"> </span>owner-&gt;name<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>mutex_unlock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
 <p>全文完，代码在这里。</p>
