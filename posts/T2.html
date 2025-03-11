@@ -322,8 +322,8 @@ func<span class="w"> </span>getPsProcesses<span class="o">(</span>minAge<span cl
 <span class="o">}</span>
 </code></pre></div>
 <h4>Linux 内核态rootkit检测</h4>
-<p>Linux 内核态 rootkit 通过编写自定义的内核模块并将其加载到运行中的内核中，rootkit 可以获得更高的权限和更大的灵活性 。这类 rootkit 通常比用户态的更难检测和移除，因为它们在系统层次上运作，能够绕过大多数用户空间的安全机制。内核态 rootkit主要是修改内核的数据结构或者进行系统函数HOOK来实现隐藏和操控系统的行为, 那么我们就聚焦关注两个点：修改哪些数据结构， 怎么HOOK与HOOK哪些函数。</p>
-<p>隐藏模块。具体功能如下：</p>
+<p>Linux 内核态 rootkit 通过编写自定义的内核模块并将其加载到运行中的内核中，rootkit 可以获得更高的权限和更大的灵活性 。这类 rootkit 通常比用户态的更难检测和移除，因为它们在系统层次上运作，能够绕过大多数用户空间的安全机制。内核态 rootkit主要是修改内核的数据结构或者进行系统函数HOOK来实现隐藏和操控系统的行为, 那么我们内核态rootkit检测就聚焦关注两个点：检测内核特定数据结构有没有被修改，系统函数有没有被替换 。</p>
+<p>这个是rootkit 隐藏lkm模块。具体功能如下：</p>
 <ul>
 <li>记录当前模块的链表前驱节点。</li>
 <li>从模块链表中删除当前模块。</li>
@@ -347,7 +347,7 @@ void<span class="w"> </span>module_hide<span class="o">(</span>void<span class="
 <span class="w">    </span><span class="nv">module_hidden</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>!module_hidden<span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
-<p>这段代码的功能是将系统调用表中的某个系统调用替换为自定义的函数:</p>
+<p>这个是rootkit HOOK  sys_call_table:</p>
 <ul>
 <li>读取并保存当前CR0寄存器值。</li>
 <li>将原系统调用保存到orig_fn。</li>
@@ -376,6 +376,62 @@ void<span class="w"> </span>hook_sys_call_table<span class="o">(</span>long<span
 <span class="w">    </span>write_cr0_forced<span class="o">(</span>cr0<span class="o">)</span><span class="p">;</span>
 <span class="o">}</span>
 </code></pre></div>
+<div class="highlight"><pre><span></span><code>void<span class="w"> </span>analyze_modules<span class="o">(</span>void<span class="o">){</span>
+<span class="w">    </span>struct<span class="w"> </span>kset<span class="w"> </span>*mod_kset<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>kobject<span class="w"> </span>*cur,<span class="w"> </span>*tmp<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>module_kobject<span class="w"> </span>*kobj<span class="p">;</span>
+
+<span class="w">    </span>INFO<span class="o">(</span><span class="s2">"Analyzing Module List\n"</span><span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nv">mod_kset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>void<span class="w"> </span>*<span class="o">)</span>lookup_name<span class="o">(</span><span class="s2">"module_kset"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!mod_kset<span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">    </span>list_for_each_entry_safe<span class="o">(</span>cur,<span class="w"> </span>tmp,<span class="w"> </span><span class="p">&amp;</span>mod_kset-&gt;list,<span class="w"> </span>entry<span class="o">){</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!kobject_name<span class="o">(</span>tmp<span class="o">))</span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+
+<span class="w">        </span><span class="nv">kobj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>container_of<span class="o">(</span>tmp,<span class="w"> </span>struct<span class="w"> </span>module_kobject,<span class="w"> </span>kobj<span class="o">)</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>kobj<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kobj-&gt;mod<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kobj-&gt;mod-&gt;name<span class="o">){</span>
+<span class="w">            </span>mutex_lock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="o">(</span>!find_module<span class="o">(</span>kobj-&gt;mod-&gt;name<span class="o">))</span>
+<span class="w">                </span>ALERT<span class="o">(</span><span class="s2">"Module [%s] hidden.\n"</span>,<span class="w"> </span>kobj-&gt;mod-&gt;name<span class="o">)</span><span class="p">;</span>
+<span class="w">            </span>mutex_unlock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>void<span class="w"> </span>analyze_syscalls<span class="o">(</span>void<span class="o">){</span>
+<span class="w">    </span>int<span class="w"> </span>i<span class="p">;</span>
+<span class="w">    </span>const<span class="w"> </span>char<span class="w"> </span>*mod_name<span class="p">;</span>
+<span class="w">    </span>unsigned<span class="w"> </span>long<span class="w"> </span>addr<span class="p">;</span>
+<span class="w">    </span>struct<span class="w"> </span>module<span class="w"> </span>*mod<span class="p">;</span>
+
+<span class="w">    </span>INFO<span class="o">(</span><span class="s2">"Analyzing Syscall Hooks\n"</span><span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!sct<span class="w"> </span><span class="o">||</span><span class="w"> </span>!ckt<span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="o">(</span><span class="nv">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>i<span class="w"> </span>&lt;<span class="w"> </span>NR_syscalls<span class="p">;</span><span class="w"> </span>i++<span class="o">){</span>
+<span class="w">        </span><span class="nv">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>sct<span class="o">[</span>i<span class="o">]</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!ckt<span class="o">(</span>addr<span class="o">)){</span>
+<span class="w">            </span>mutex_lock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
+<span class="w">            </span><span class="nv">mod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>get_module_from_addr<span class="o">(</span>addr<span class="o">)</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>mod<span class="o">){</span>
+<span class="w">                </span>ALERT<span class="o">(</span><span class="s2">"Module [%s] hooked syscall [%d].\n"</span>,<span class="w"> </span>mod-&gt;name,<span class="w"> </span>i<span class="o">)</span><span class="p">;</span>
+<span class="w">            </span><span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="nv">mod_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>find_hidden_module<span class="o">(</span>addr<span class="o">)</span><span class="p">;</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>mod_name<span class="o">)</span>
+<span class="w">                    </span>ALERT<span class="o">(</span><span class="s2">"Hidden module [%s] hooked syscall [%d].\n"</span>,<span class="w"> </span>mod_name,<span class="w"> </span>i<span class="o">)</span><span class="p">;</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">            </span>mutex_unlock<span class="o">(</span><span class="p">&amp;</span>module_mutex<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>全文完，代码在这里。</p>
+<p>https://github.com/njcx/rootkit_scanner</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
