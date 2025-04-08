@@ -108,12 +108,13 @@ var _hmt = _hmt || [];
 <p>IP分片重组：当一个IP数据报由于过大而无法在一个物理网络上进行传输时，它可能会被分成多个较小的片段（分片），每个分片作为一个独立的IP数据报进行传输。这些分片最终需要在目的地处重新组装成原始的数据报。这个过程称为IP分片重组。IP头部包含了一个标识字段、一个标志字段和一个分片偏移字段，它们共同作用以帮助目的主机正确地重组这些分片。</p>
 <p>TCP段重组：TCP（传输控制协议）是面向连接的，并提供可靠的数据传输服务。在数据传输过程中，发送方可能会将数据分割成多个TCP段进行发送。因为网络中的路由和延迟不同，这些TCP段可能不会按照它们被发送的顺序到达接收方。TCP使用序列号和确认机制来确保所有发送的数据都能够按照正确的顺序被重组。接收方根据序列号对收到的TCP段进行排序，并在必要时等待丢失段的重传，从而实现数据的正确重组。</p>
 <p>为什么NIDS 涉及到IP分片重组和TCP段重组 ？ 这些不是TCP/IP协议栈的事情吗？
-因为NIDS使用 libpcap 或者 DPDK， 抓取的都是一帧， 一个IP分片通常被封装成一帧进行传输。 当数据比较大的时候，比如 http post 一个稍大的json， 经过TCP段重组，才能看到完整的 json。在TCP/IP协议栈中， 每一层对上都是透明的， 而在NIDS 中，每一层都需要自己重组。</p>
+因为NIDS使用 libpcap 或者 DPDK， 抓取的都是一帧， 一个IP分片通常被封装成一帧进行传输。 当数据比较大的时候，比如 http post 一个稍大的json， 经过TCP段重组（没有IP分片），才能看到完整的 json。在TCP/IP协议栈中， 每一层对上都是透明的， 而在NIDS 中，每一层都需要自己重组。</p>
 <p>IP分片和TCP分段是一回事吗 ？</p>
 <p>IP分片和TCP分段不是一回事，它们是发生在网络协议栈不同层次的数据切分机制, 一般不同时发生。具体区别如下：</p>
 <div class="highlight"><pre><span></span><code>IP分片：发生在网络层，由IP协议处理，由于网络链路层的MTU（最大传输单元）限制，当IP数据报大小超过MTU时，需要进行分片。
 TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大分段大小），避免IP层分片，TCP会根据MSS对数据进行分段。
 </code></pre></div>
+<p>TCP分段是非常常见的，因为几乎所有的HTTP、FTP等基于TCP的应用层协议都依赖于这种机制来传输数据。TCP协议的设计本身就支持这种分段和重组操作，以适应各种网络状况并保证数据传输的可靠性。而IP分片则更多是一种在网络层面上处理特殊情况的机制，理想情况下应该尽量避免，因为它带来的问题比它解决的问题还要多。</p>
 <p>IP 分片示例</p>
 <p>假设主机 A 要通过以太网向主机 B 发送一个总大小为 <strong>4000 字节</strong>的 IP 数据报。  </p>
 <ul>
@@ -290,6 +291,78 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <li>主机 B 通过 <strong>TCP 序列号</strong>，能够准确地将分段重组为原始数据。</li>
 <li>在本例中，由于网络路径的 MTU 为 1500 字节，且 MSS 为 1460 字节，因此无需进行 IP 分片。</li>
 </ul>
+<h4>IP分片重组</h4>
+<p>我们看一下, Suricata 是怎么处理IP分片重组的:</p>
+<p>1,核心数据结构:</p>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>defrag.h<span class="w"> </span>-<span class="w"> </span>分片重组的主要数据结构
+typedef<span class="w"> </span>struct<span class="w"> </span>DefragTracker_<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>SCMutex<span class="w"> </span>lock<span class="p">;</span><span class="w">        </span>//<span class="w"> </span>互斥锁保护
+<span class="w">    </span>uint32_t<span class="w"> </span>id<span class="p">;</span><span class="w">         </span>//<span class="w"> </span>IP<span class="w"> </span>包<span class="w"> </span>ID
+<span class="w">    </span>uint8_t<span class="w"> </span>proto<span class="p">;</span><span class="w">       </span>//<span class="w"> </span>IP<span class="w"> </span>协议
+<span class="w">    </span>uint8_t<span class="w"> </span>policy<span class="p">;</span><span class="w">      </span>//<span class="w"> </span>重组策略
+<span class="w">    </span>uint8_t<span class="w"> </span>af<span class="p">;</span><span class="w">          </span>//<span class="w"> </span>地址族<span class="o">(</span>IPv4/IPv6<span class="o">)</span>
+<span class="w">    </span>uint8_t<span class="w"> </span>seen_last<span class="p">;</span><span class="w">   </span>//<span class="w"> </span>是否看到最后一个分片
+<span class="w">    </span>Address<span class="w"> </span>src_addr<span class="p">;</span><span class="w">    </span>//<span class="w"> </span>源地址
+<span class="w">    </span>Address<span class="w"> </span>dst_addr<span class="p">;</span><span class="w">    </span>//<span class="w"> </span>目的地址
+<span class="w">    </span>struct<span class="w"> </span>IP_FRAGMENTS<span class="w"> </span>fragment_tree<span class="p">;</span><span class="w"> </span>//<span class="w"> </span>分片树
+<span class="o">}</span><span class="w"> </span>DefragTracker<span class="p">;</span>
+
+//<span class="w"> </span>单个分片的结构
+typedef<span class="w"> </span>struct<span class="w"> </span>Frag_<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>uint16_t<span class="w"> </span>offset<span class="p">;</span><span class="w">     </span>//<span class="w"> </span>分片偏移<span class="w"> </span>
+<span class="w">    </span>uint32_t<span class="w"> </span>len<span class="p">;</span><span class="w">        </span>//<span class="w"> </span>分片长度
+<span class="w">    </span>uint8_t<span class="w"> </span>more_frags<span class="p">;</span><span class="w">  </span>//<span class="w"> </span>是否还有更多分片
+<span class="w">    </span>uint8_t<span class="w"> </span>*pkt<span class="p">;</span><span class="w">        </span>//<span class="w"> </span>实际分片数据
+<span class="w">    </span>RB_ENTRY<span class="o">(</span>Frag_<span class="o">)</span><span class="w"> </span>rb<span class="p">;</span><span class="w">  </span>//<span class="w"> </span>红黑树节点
+<span class="o">}</span><span class="w"> </span>Frag<span class="p">;</span>
+</code></pre></div>
+<p>2, 重组流程:</p>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>decode-ipv4.c<span class="w"> </span>中的处理流程
+int<span class="w"> </span>DecodeIPV4<span class="o">(</span>ThreadVars<span class="w"> </span>*tv,<span class="w"> </span>DecodeThreadVars<span class="w"> </span>*dtv,<span class="w"> </span>Packet<span class="w"> </span>*p,<span class="w"> </span>const<span class="w"> </span>uint8_t<span class="w"> </span>*pkt,<span class="w"> </span>uint16_t<span class="w"> </span>len<span class="o">)</span>
+<span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span><span class="m">1</span>.<span class="w"> </span>检测到分片标记
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>IPV4_GET_RAW_FRAGOFFSET<span class="o">(</span>ip4h<span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>IPV4_GET_RAW_FLAG_MF<span class="o">(</span>ip4h<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>//<span class="w"> </span><span class="m">2</span>.<span class="w"> </span>调用<span class="w"> </span>Defrag<span class="w"> </span>进行重组
+<span class="w">        </span>Packet<span class="w"> </span>*rp<span class="w"> </span><span class="o">=</span><span class="w"> </span>Defrag<span class="o">(</span>tv,<span class="w"> </span>dtv,<span class="w"> </span>p<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>rp<span class="w"> </span>!<span class="o">=</span><span class="w"> </span>NULL<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>//<span class="w"> </span><span class="m">3</span>.<span class="w"> </span>重组成功,将重组后的包加入队列
+<span class="w">            </span>PacketEnqueueNoLock<span class="o">(</span><span class="p">&amp;</span>tv-&gt;decode_pq,<span class="w"> </span>rp<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">        </span>p-&gt;flags<span class="w"> </span><span class="p">|</span><span class="o">=</span><span class="w"> </span>PKT_IS_FRAGMENT<span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>TM_ECODE_OK<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>IPv4 通过检查分片偏移(Fragment Offset)和 More Fragments 标志位识别分片, IPv6 通过分片扩展头(Fragment Extension Header)识别分片. 使用红黑树存储各个分片, 按照偏移量排序, 通过 DefragTracker 跟踪同一数据包的所有分片, 设置超时机制避免资源耗尽.</p>
+<p>重要函数:</p>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>分片重组的主函数
+Packet<span class="w"> </span>*Defrag<span class="o">(</span>ThreadVars<span class="w"> </span>*tv,<span class="w"> </span>DecodeThreadVars<span class="w"> </span>*dtv,<span class="w"> </span>Packet<span class="w"> </span>*p<span class="o">)</span><span class="w"> </span>
+<span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span><span class="m">1</span>.<span class="w"> </span>创建/查找分片追踪器
+<span class="w">    </span>//<span class="w"> </span><span class="m">2</span>.<span class="w"> </span>将分片加入分片树
+<span class="w">    </span>//<span class="w"> </span><span class="m">3</span>.<span class="w"> </span>检查是否可以重组
+<span class="w">    </span>//<span class="w"> </span><span class="m">4</span>.<span class="w"> </span>重组分片生成新包
+<span class="w">    </span>//<span class="w"> </span><span class="m">5</span>.<span class="w"> </span>返回重组后的包
+<span class="o">}</span>
+
+//<span class="w"> </span>处理<span class="w"> </span>IPv6<span class="w"> </span>分片头
+void<span class="w"> </span>DecodeIPV6FragHeader<span class="o">(</span>Packet<span class="w"> </span>*p,<span class="w"> </span>const<span class="w"> </span>uint8_t<span class="w"> </span>*pkt,<span class="w"> </span>uint16_t<span class="w"> </span>hdrextlen,<span class="w"> </span>
+<span class="w">                         </span>uint16_t<span class="w"> </span>plen,<span class="w"> </span>uint16_t<span class="w"> </span>prev_hdrextlen<span class="o">)</span>
+<span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span>解析分片头
+<span class="w">    </span>//<span class="w"> </span>设置分片标记
+<span class="w">    </span>//<span class="w"> </span>进行合法性检查
+<span class="o">}</span>
+</code></pre></div>
+<p>所以总的来说,Suricata 的 IP 分片重组实现主要基于:</p>
+<div class="highlight"><pre><span></span><code>使用分片跟踪器(DefragTracker)和分片树管理分片
+支持 IPv4 和 IPv6 协议
+有完善的错误检测机制
+通过队列管理重组后的包
+采用互斥锁保证线程安全
+这个实现比较完整地覆盖了 IP 分片重组的各个方面,包括分片识别、存储、重组、验证等环节。
+</code></pre></div>
+<h4>TCP段重组</h4>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
