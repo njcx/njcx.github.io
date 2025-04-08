@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>介绍</h4>
-<p>NIDS（Network Intrusion Detection System，网络入侵检测系统）开发过程中，主要拆解成两个部分开发， 第一的DPI深度包解析，第二就是规则引擎。DPI深度包解析是指NIDS通过监听网络流量来捕捉数据包、协议识别、拆解成字段过程。这些数据包包含了从网络的一个点传输到另一个点的信息。DPI是NIDS分析网络活动以检测潜在入侵行为的基础步骤， 捕捉数据包的工具有 libpcap 、PF_RING、DPDK等等。DPI深度包解析工具有PacketBeat、NDPI、Zeek等等。</p>
+<p>NIDS（Network Intrusion Detection System，网络入侵检测系统）开发过程中，主要拆解成两个部分开发， 第一的DPI深度包解析，第二就是规则引擎。DPI深度包解析是指NIDS通过监听网络流量来捕捉数据包、协议识别、拆解成字段过程。这些数据包包含了从网络的一个点传输到另一个点的信息。DPI是NIDS分析网络活动以检测潜在入侵行为的基础步骤， 捕捉数据包的工具有 libpcap 、PF_RING、DPDK等等。DPI深度包解析工具有PacketBeat、NDPI、Zeek、Suricata等等。</p>
 <p>在TCP/IP协议栈中，数据包的重组主要涉及两个方面：IP分片重组和TCP段重组。</p>
 <p>IP分片重组：当一个IP数据报由于过大而无法在一个物理网络上进行传输时，它可能会被分成多个较小的片段（分片），每个分片作为一个独立的IP数据报进行传输。这些分片最终需要在目的地处重新组装成原始的数据报。这个过程称为IP分片重组。IP头部包含了一个标识字段、一个标志字段和一个分片偏移字段，它们共同作用以帮助目的主机正确地重组这些分片。</p>
 <p>TCP段重组：TCP（传输控制协议）是面向连接的，并提供可靠的数据传输服务。在数据传输过程中，发送方可能会将数据分割成多个TCP段进行发送。因为网络中的路由和延迟不同，这些TCP段可能不会按照它们被发送的顺序到达接收方。TCP使用序列号和确认机制来确保所有发送的数据都能够按照正确的顺序被重组。接收方根据序列号对收到的TCP段进行排序，并在必要时等待丢失段的重传，从而实现数据的正确重组。</p>
@@ -137,7 +137,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <p>IP 分片详细信息</p>
 </li>
 </ol>
-<table class="table-striped table table-hover">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>分片编号</th>
@@ -241,7 +241,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <p>TCP 分段详细信息</p>
 </li>
 </ol>
-<table class="table-striped table table-hover">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>分段编号</th>
@@ -363,6 +363,141 @@ void<span class="w"> </span>DecodeIPV6FragHeader<span class="o">(</span>Packet<s
 这个实现比较完整地覆盖了 IP 分片重组的各个方面,包括分片识别、存储、重组、验证等环节。
 </code></pre></div>
 <h4>TCP段重组</h4>
+<p>Zeek 中 TCP 分段重组的实现:</p>
+<p>1.核心数据结构</p>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>src/analyzer/protocol/tcp/TCP_Reassembler.h
+//<span class="w"> </span>TCP_Reassembler<span class="w"> </span>类
+class<span class="w"> </span>TCP_Reassembler<span class="w"> </span>final<span class="w"> </span>:<span class="w"> </span>public<span class="w"> </span>Reassembler<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>enum<span class="w"> </span>Type<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>Direct,<span class="w">  </span>//<span class="w"> </span>直接传递到目标分析器<span class="w"> </span>
+<span class="w">        </span>Forward<span class="w">  </span>//<span class="w"> </span>转发到目标分析器的子节点
+<span class="w">    </span><span class="o">}</span><span class="p">;</span><span class="w"> </span>
+
+<span class="w">    </span>TCP_Endpoint*<span class="w"> </span>endp<span class="p">;</span><span class="w">        </span>//<span class="w"> </span>TCP<span class="w"> </span>端点
+<span class="w">    </span>bool<span class="w"> </span>had_gap<span class="p">;</span><span class="w">             </span>//<span class="w"> </span>是否有数据空洞
+<span class="w">    </span>bool<span class="w"> </span>deliver_tcp_contents<span class="p">;</span><span class="w"> </span>//<span class="w"> </span>是否传递TCP内容
+<span class="w">    </span>uint64_t<span class="w"> </span>seq_to_skip<span class="p">;</span><span class="w">     </span>//<span class="w"> </span>要跳过的序列号
+<span class="w">    </span>FilePtr<span class="w"> </span>record_contents_file<span class="p">;</span><span class="w"> </span>//<span class="w"> </span>记录内容的文件
+<span class="o">}</span><span class="p">;</span>
+
+//<span class="w"> </span>src/packet_analysis/protocol/tcp/TCPSessionAdapter.h
+//<span class="w"> </span>TCPSessionAdapter<span class="w"> </span>类
+class<span class="w"> </span>TCPSessionAdapter<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>TCP_Endpoint*<span class="w"> </span>orig<span class="p">;</span><span class="w">         </span>//<span class="w"> </span>发起方端点
+<span class="w">    </span>TCP_Endpoint*<span class="w"> </span>resp<span class="p">;</span><span class="w">         </span>//<span class="w"> </span>响应方端点
+<span class="w">    </span>bool<span class="w"> </span>reassembling<span class="p">;</span><span class="w">          </span>//<span class="w"> </span>是否正在重组
+<span class="w">    </span>bool<span class="w"> </span>is_partial<span class="p">;</span><span class="w">            </span>//<span class="w"> </span>是否部分连接
+<span class="w">    </span>uint64_t<span class="w"> </span>rel_data_seq<span class="p">;</span><span class="w">      </span>//<span class="w"> </span>相对数据序列号
+<span class="o">}</span><span class="p">;</span>
+</code></pre></div>
+<p>2, 重组流程</p>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>启用重组:
+void<span class="w"> </span>TCPSessionAdapter::EnableReassembly<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>SetReassembler<span class="o">(</span>
+<span class="w">        </span>new<span class="w"> </span>TCP_Reassembler<span class="o">(</span>this,<span class="w"> </span>TCP_Reassembler::Forward,<span class="w"> </span>orig<span class="o">)</span>,
+<span class="w">        </span>new<span class="w"> </span>TCP_Reassembler<span class="o">(</span>this,<span class="w"> </span>TCP_Reassembler::Forward,<span class="w"> </span>resp<span class="o">)</span>
+<span class="w">    </span><span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+
+//<span class="w"> </span>数据到达处理:
+//<span class="w"> </span>src/analyzer/protocol/tcp/TCP_Reassembler.cc<span class="w"> </span>-<span class="w"> </span>TCP<span class="w"> </span>重组器实现
+
+void<span class="w"> </span>TCP_Reassembler::DataSent<span class="o">(</span>double<span class="w"> </span>t,<span class="w"> </span>uint64_t<span class="w"> </span>seq,<span class="w"> </span>int<span class="w"> </span>len,<span class="w"> </span>
+<span class="w">                              </span>const<span class="w"> </span>u_char*<span class="w"> </span>data<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span>//<span class="w"> </span>检查是否需要跳过
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>IsSkippedContents<span class="o">(</span>seq,<span class="w"> </span>len<span class="o">))</span><span class="w"> </span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>处理数据空洞
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>seq<span class="w"> </span>&gt;<span class="w"> </span>last_reassem_seq<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>Gap<span class="o">(</span>last_reassem_seq,<span class="w"> </span>seq<span class="w"> </span>-<span class="w"> </span>last_reassem_seq<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="nv">had_gap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>true<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>//<span class="w"> </span>交付数据
+<span class="w">    </span>DeliverBlock<span class="o">(</span>seq,<span class="w"> </span>len,<span class="w"> </span>data<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+
+//<span class="w"> </span>src/packet_analysis/protocol/tcp/TCPSessionAdapter.cc
+void<span class="w"> </span>TCPSessionAdapter::Process<span class="o">(</span>bool<span class="w"> </span>is_orig,<span class="w"> </span>const<span class="w"> </span>struct<span class="w"> </span>tcphdr*<span class="w"> </span>tp,
+<span class="w">                              </span>int<span class="w"> </span>len,<span class="w"> </span>const<span class="w"> </span>IP_Hdr*<span class="w"> </span>ip<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span>获取序列号<span class="w">    </span>
+<span class="w">    </span>uint32_t<span class="w"> </span><span class="nv">base_seq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ntohl<span class="o">(</span>tp-&gt;th_seq<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>处理标志位
+<span class="w">    </span>TCP_Flags<span class="w"> </span>flags<span class="o">(</span>tp<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>分析状态
+<span class="w">    </span>UpdateStateMachine<span class="o">(</span>t,<span class="w"> </span>endpoint,<span class="w"> </span>peer,<span class="w"> </span>base_seq,<span class="w"> </span>flags<span class="o">)</span><span class="p">;</span><span class="w"> </span>
+
+<span class="w">    </span>//<span class="w"> </span>数据重组
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>len<span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>!flags.RST<span class="o">())</span>
+<span class="w">        </span>endpoint-&gt;DataSent<span class="o">(</span>t,<span class="w"> </span>base_seq,<span class="w"> </span>len,<span class="w"> </span>data<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+
+
+
+//<span class="w">  </span>空洞处理:
+void<span class="w"> </span>TCP_Reassembler::Gap<span class="o">(</span>uint64_t<span class="w"> </span>seq,<span class="w"> </span>uint64_t<span class="w"> </span>len<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span>报告空洞
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>report_gap<span class="o">(</span>endp,<span class="w"> </span>endp-&gt;peer<span class="o">))</span>
+<span class="w">        </span>dst_analyzer-&gt;EnqueueConnEvent<span class="o">(</span>content_gap,<span class="w"> </span>...<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>更新状态
+<span class="w">    </span><span class="nv">had_gap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>true<span class="p">;</span>
+<span class="o">}</span>
+
+
+//<span class="w"> </span>跟踪<span class="w"> </span>TCP<span class="w"> </span>状态:
+void<span class="w"> </span>TCPSessionAdapter::UpdateStateMachine<span class="o">(</span>TCP_Endpoint*<span class="w"> </span>endpoint,
+<span class="w">    </span>TCP_Endpoint*<span class="w"> </span>peer,<span class="w"> </span>uint32_t<span class="w"> </span>seq,<span class="w"> </span>TCP_Flags<span class="w"> </span>flags<span class="o">)</span>
+<span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span>SYN<span class="w"> </span>处理
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>flags.SYN<span class="o">())</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>is_orig<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>endpoint-&gt;SetState<span class="o">(</span>TCP_ENDPOINT_SYN_SENT<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>endpoint-&gt;SetState<span class="o">(</span>TCP_ENDPOINT_ESTABLISHED<span class="o">)</span><span class="p">;</span><span class="w"> </span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>//<span class="w"> </span>FIN<span class="w"> </span>处理<span class="w">  </span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>flags.FIN<span class="o">())</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>endpoint-&gt;SetState<span class="o">(</span>TCP_ENDPOINT_CLOSED<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>//<span class="w"> </span>RST<span class="w"> </span>处理
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>flags.RST<span class="o">())</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>endpoint-&gt;SetState<span class="o">(</span>TCP_ENDPOINT_RESET<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>Zeek 使用两个主要组件来处理 TCP 分段重组:</p>
+<div class="highlight"><pre><span></span><code><span class="n">TCP_Reassembler</span><span class="o">:</span><span class="w"> </span><span class="err">专门负责重组的核心组件</span>
+<span class="n">TCPSessionAdapter</span><span class="o">:</span><span class="w"> </span><span class="err">管理整个</span><span class="w"> </span><span class="n">TCP</span><span class="w"> </span><span class="err">会话的组件</span>
+</code></pre></div>
+<p>就像是一个拼图游戏,TCP_Reassembler 负责把所有碎片(TCP分段)拼在一起,而 TCPSessionAdapter 则像是一个总管理员,负责监督整个拼图过程。</p>
+<p>当一个 TCP 包到达时,处理流程是:</p>
+<div class="highlight"><pre><span></span><code>数据排序
+检查序列号是否连续
+如果是期望的下一个序列号,直接处理
+如果不是,放入缓存等待处理
+空洞处理
+当发现序列号不连续时,记录为"空洞"
+继续接收后续数据,等待空洞被填补
+</code></pre></div>
+<p>Zeek 使用几个关键机制来管理数据:</p>
+<div class="highlight"><pre><span></span><code>序列号跟踪
+记录已处理的最后序列号
+检查新数据的序列号是否符合预期
+缓存管理
+对乱序到达的数据进行缓存
+定期清理过期的缓存数据
+状态跟踪
+跟踪连接状态(SYN, FIN, RST等)
+根据状态决定如何处理数据
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
