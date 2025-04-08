@@ -136,7 +136,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <p>IP 分片详细信息</p>
 </li>
 </ol>
-<table class="table-hover table-striped table">
+<table class="table-striped table table-hover">
 <thead>
 <tr>
 <th>分片编号</th>
@@ -194,7 +194,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <ul>
 <li><strong>标识符</strong>: 12345</li>
 <li><strong>MF 标志位</strong>: 1 （表示还有后续分片）</li>
-<li><strong>偏移量</strong>: 185 （$1480 ÷ 8 = 185$）</li>
+<li><strong>偏移量</strong>: 185 （1480 ÷ 8 = 185）</li>
 <li><strong>数据负载</strong>: 接下来的 1480 字节的数据</li>
 <li><strong>总长度</strong>: 1500 字节（1480 + 20）</li>
 </ul>
@@ -202,7 +202,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <ul>
 <li><strong>标识符</strong>: 12345</li>
 <li><strong>MF 标志位</strong>: 0 （表示这是最后一个分片）</li>
-<li><strong>偏移量</strong>: 370 （$2960 ÷ 8 = 370$）</li>
+<li><strong>偏移量</strong>: 370 （2960 ÷ 8 = 370）</li>
 <li><strong>数据负载</strong>: 最后的 1040 字节的数据</li>
 <li><strong>总长度</strong>: 1060 字节（1040 + 20）</li>
 </ul>
@@ -240,7 +240,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <p>TCP 分段详细信息</p>
 </li>
 </ol>
-<table class="table-hover table-striped table">
+<table class="table-striped table table-hover">
 <thead>
 <tr>
 <th>分段编号</th>
