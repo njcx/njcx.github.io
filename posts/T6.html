@@ -474,8 +474,8 @@ void<span class="w"> </span>TCPSessionAdapter::UpdateStateMachine<span class="o"
 <span class="o">}</span>
 </code></pre></div>
 <p>Zeek 使用两个主要组件来处理 TCP 分段重组:</p>
-<div class="highlight"><pre><span></span><code><span class="n">TCP_Reassembler</span><span class="o">:</span><span class="w"> </span><span class="err">专门负责重组的核心组件</span>
-<span class="n">TCPSessionAdapter</span><span class="o">:</span><span class="w"> </span><span class="err">管理整个</span><span class="w"> </span><span class="n">TCP</span><span class="w"> </span><span class="err">会话的组件</span>
+<div class="highlight"><pre><span></span><code>    TCP_Reassembler: 专门负责重组的核心组件
+    TCPSessionAdapter: 管理整个 TCP 会话的组件
 </code></pre></div>
 <p>就像是一个拼图游戏,TCP_Reassembler 负责把所有碎片(TCP分段)拼在一起,而 TCPSessionAdapter 则像是一个总管理员,负责监督整个拼图过程。</p>
 <p>当一个 TCP 包到达时,处理流程是:</p>
