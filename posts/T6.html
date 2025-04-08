@@ -508,6 +508,68 @@ void<span class="w"> </span>TCPSessionAdapter::UpdateStateMachine<span class="o"
 </code></pre></div>
 <p>Zeek 就是在做类似的工作,但是它同时在处理两个方向的"明信片集",而且速度要快得多。
 这种实现方式既保证了数据的完整性和正确性,又提供了足够的灵活性和性能,使得 Zeek 能够有效地分析网络流量。</p>
+<h4>Demo</h4>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>TCP<span class="w"> </span>流结构
+typedef<span class="w"> </span>struct<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>uint32_t<span class="w"> </span>src_ip<span class="p">;</span>
+<span class="w">    </span>uint32_t<span class="w"> </span>dst_ip<span class="p">;</span>
+<span class="w">    </span>uint16_t<span class="w"> </span>src_port<span class="p">;</span>
+<span class="w">    </span>uint16_t<span class="w"> </span>dst_port<span class="p">;</span>
+<span class="w">    </span>uint32_t<span class="w"> </span>next_seq<span class="p">;</span><span class="w">    </span>//<span class="w"> </span>关键字段：下一个期望的序列号
+<span class="w">    </span>uint32_t<span class="w"> </span>init_seq<span class="p">;</span><span class="w">    </span>//<span class="w"> </span>初始序列号
+<span class="w">    </span>time_t<span class="w"> </span>last_seen<span class="p">;</span>
+<span class="w">    </span>unsigned<span class="w"> </span>char<span class="w"> </span>*stream<span class="p">;</span><span class="w">  </span>//<span class="w"> </span>存储重组数据的缓冲区
+<span class="w">    </span>int<span class="w"> </span>stream_size<span class="p">;</span><span class="w">       </span>//<span class="w"> </span>当前已重组的数据大小
+<span class="w">    </span>flow_state<span class="w"> </span>state<span class="p">;</span>
+<span class="w">    </span>char<span class="w"> </span>src_ip_str<span class="o">[</span>INET_ADDRSTRLEN<span class="o">]</span><span class="p">;</span>
+<span class="w">    </span>char<span class="w"> </span>dst_ip_str<span class="o">[</span>INET_ADDRSTRLEN<span class="o">]</span><span class="p">;</span>
+<span class="o">}</span><span class="w"> </span>tcp_flow_t<span class="p">;</span>
+
+//<span class="w"> </span>全局变量
+tcp_flow_t<span class="w"> </span>flows<span class="o">[</span>MAX_FLOWS<span class="o">]</span><span class="p">;</span>
+int<span class="w"> </span><span class="nv">flow_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>void<span class="w"> </span>handle_tcp_packet<span class="o">(</span>const<span class="w"> </span>struct<span class="w"> </span>ip<span class="w"> </span>*ip_header,<span class="w"> </span>const<span class="w"> </span>struct<span class="w"> </span>tcphdr<span class="w"> </span>*tcp_header,
+<span class="w">                       </span>const<span class="w"> </span>unsigned<span class="w"> </span>char<span class="w"> </span>*payload,<span class="w"> </span>int<span class="w"> </span>payload_len<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>tcp_flow_t<span class="w"> </span>*flow<span class="w"> </span><span class="o">=</span><span class="w"> </span>find_or_create_flow<span class="o">(</span>ip_header,<span class="w"> </span>tcp_header<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!flow<span class="o">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>tcp_header-&gt;th_flags<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>TH_SYN<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>flow-&gt;state<span class="w"> </span><span class="o">==</span><span class="w"> </span>FLOW_NEW<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>flow-&gt;state<span class="w"> </span><span class="o">=</span><span class="w"> </span>FLOW_ESTABLISHED<span class="p">;</span>
+<span class="w">            </span>flow-&gt;next_seq<span class="w"> </span><span class="o">=</span><span class="w"> </span>ntohl<span class="o">(</span>tcp_header-&gt;th_seq<span class="o">)</span><span class="w"> </span>+<span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w">  </span>//<span class="w"> </span>SYN包，序列号+1
+<span class="w">            </span>print_flow_info<span class="o">(</span>flow,<span class="w"> </span><span class="s2">"SYN"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>tcp_header-&gt;th_flags<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>TH_FIN<span class="w"> </span><span class="o">||</span><span class="w"> </span>tcp_header-&gt;th_flags<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>TH_RST<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>flow-&gt;state<span class="w"> </span><span class="o">=</span><span class="w"> </span>FLOW_CLOSED<span class="p">;</span>
+<span class="w">        </span>print_flow_info<span class="o">(</span>flow,<span class="w"> </span>tcp_header-&gt;th_flags<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>TH_FIN<span class="w"> </span>?<span class="w"> </span><span class="s2">"FIN"</span><span class="w"> </span>:<span class="w"> </span><span class="s2">"RST"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span>process_stream_data<span class="o">(</span>flow<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>payload_len<span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>uint32_t<span class="w"> </span><span class="nv">seq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ntohl<span class="o">(</span>tcp_header-&gt;th_seq<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">seq</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>flow-&gt;next_seq<span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w">  </span>//<span class="w"> </span>关键重组逻辑：检查序列号是否符合预期
+<span class="w">            </span>//<span class="w"> </span>确保不会超出缓冲区
+<span class="w">            </span>int<span class="w"> </span><span class="nv">copy_len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>payload_len<span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>flow-&gt;stream_size<span class="w"> </span>+<span class="w"> </span>copy_len<span class="w"> </span>&gt;<span class="w"> </span>MAX_STREAM_SIZE<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="nv">copy_len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>MAX_STREAM_SIZE<span class="w"> </span>-<span class="w"> </span>flow-&gt;stream_size<span class="p">;</span>
+<span class="w">            </span><span class="o">}</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>copy_len<span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span>//<span class="w"> </span>按序复制数据到重组缓冲区
+<span class="w">                </span>memcpy<span class="o">(</span>flow-&gt;stream<span class="w"> </span>+<span class="w"> </span>flow-&gt;stream_size,<span class="w"> </span>payload,<span class="w"> </span>copy_len<span class="o">)</span><span class="p">;</span>
+<span class="w">                </span>flow-&gt;stream_size<span class="w"> </span>+<span class="o">=</span><span class="w"> </span>copy_len<span class="p">;</span>
+<span class="w">                </span>flow-&gt;next_seq<span class="w"> </span><span class="o">=</span><span class="w"> </span>seq<span class="w"> </span>+<span class="w"> </span>copy_len<span class="p">;</span><span class="w">  </span>//<span class="w"> </span>更新下一个期望的序列号
+<span class="w">                </span>flow-&gt;state<span class="w"> </span><span class="o">=</span><span class="w"> </span>FLOW_DATA<span class="p">;</span>
+<span class="w">                </span>print_flow_info<span class="o">(</span>flow,<span class="w"> </span><span class="s2">"DATA"</span><span class="o">)</span><span class="p">;</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>实现了基本的流跟踪功能, 序列号检查, 按序重组数据, 状态跟踪（SYN, FIN, RST等）</p>
+<p>代码在这里:</p>
+<p>https://github.com/njcx/pcap_tcp_reassemble</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
