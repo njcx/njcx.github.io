@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>介绍</h4>
-<p>NIDS（Network Intrusion Detection System，网络入侵检测系统）开发过程中，主要分了两个部分， 第一的DPI深度包解析，第二就是规则引擎。DPI深度包解析是指NIDS通过监听网络流量来捕捉数据包、协议识别、拆解成字段过程。这些数据包包含了从网络的一个点传输到另一个点的信息。DPI是NIDS分析网络活动以检测潜在入侵行为的基础步骤， 捕捉数据包的工具有 libpcap 、PF_RING、DPDK等等。DPI深度包解析工具有PacketBeat、NDPI、Zeek等等</p>
+<p>NIDS（Network Intrusion Detection System，网络入侵检测系统）开发过程中，主要拆解成两个部分开发， 第一的DPI深度包解析，第二就是规则引擎。DPI深度包解析是指NIDS通过监听网络流量来捕捉数据包、协议识别、拆解成字段过程。这些数据包包含了从网络的一个点传输到另一个点的信息。DPI是NIDS分析网络活动以检测潜在入侵行为的基础步骤， 捕捉数据包的工具有 libpcap 、PF_RING、DPDK等等。DPI深度包解析工具有PacketBeat、NDPI、Zeek等等</p>
 <p>在TCP/IP协议栈中，数据包的重组主要涉及两个方面：IP分片重组和TCP段重组。</p>
 <p>IP分片重组：当一个IP数据报由于过大而无法在一个物理网络上进行传输时，它可能会被分成多个较小的片段（分片），每个分片作为一个独立的IP数据报进行传输。这些分片最终需要在目的地处重新组装成原始的数据报。这个过程称为IP分片重组。IP头部包含了一个标识字段、一个标志字段和一个分片偏移字段，它们共同作用以帮助目的主机正确地重组这些分片。</p>
 <p>TCP段重组：TCP（传输控制协议）是面向连接的，并提供可靠的数据传输服务。在数据传输过程中，发送方可能会将数据分割成多个TCP段进行发送。因为网络中的路由和延迟不同，这些TCP段可能不会按照它们被发送的顺序到达接收方。TCP使用序列号和确认机制来确保所有发送的数据都能够按照正确的顺序被重组。接收方根据序列号对收到的TCP段进行排序，并在必要时等待丢失段的重传，从而实现数据的正确重组。</p>
@@ -136,7 +136,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <p>TCP 分段详细信息</p>
 </li>
 </ol>
-<table class="table-striped table-hover table">
+<table class="table table-striped table-hover">
 <thead>
 <tr>
 <th>分段编号</th>
@@ -207,7 +207,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <li><strong>第二片</strong>: 包含剩余的 <strong>140 字节</strong>的数据，总长度为 <strong>160 字节</strong>。</li>
 </ol>
 <p>对比</p>
-<table class="table-striped table-hover table">
+<table class="table table-striped table-hover">
 <thead>
 <tr>
 <th><strong>阶段</strong></th>
