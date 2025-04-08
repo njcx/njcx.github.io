@@ -103,12 +103,12 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>介绍</h4>
-<p>NIDS（Network Intrusion Detection System，网络入侵检测系统）开发过程中，主要拆解成两个部分开发， 第一的DPI深度包解析，第二就是规则引擎。DPI深度包解析是指NIDS通过监听网络流量来捕捉数据包、协议识别、拆解成字段过程。这些数据包包含了从网络的一个点传输到另一个点的信息。DPI是NIDS分析网络活动以检测潜在入侵行为的基础步骤， 捕捉数据包的工具有 libpcap 、PF_RING、DPDK等等。DPI深度包解析工具有PacketBeat、NDPI、Zeek等等</p>
+<p>NIDS（Network Intrusion Detection System，网络入侵检测系统）开发过程中，主要拆解成两个部分开发， 第一的DPI深度包解析，第二就是规则引擎。DPI深度包解析是指NIDS通过监听网络流量来捕捉数据包、协议识别、拆解成字段过程。这些数据包包含了从网络的一个点传输到另一个点的信息。DPI是NIDS分析网络活动以检测潜在入侵行为的基础步骤， 捕捉数据包的工具有 libpcap 、PF_RING、DPDK等等。DPI深度包解析工具有PacketBeat、NDPI、Zeek等等。</p>
 <p>在TCP/IP协议栈中，数据包的重组主要涉及两个方面：IP分片重组和TCP段重组。</p>
 <p>IP分片重组：当一个IP数据报由于过大而无法在一个物理网络上进行传输时，它可能会被分成多个较小的片段（分片），每个分片作为一个独立的IP数据报进行传输。这些分片最终需要在目的地处重新组装成原始的数据报。这个过程称为IP分片重组。IP头部包含了一个标识字段、一个标志字段和一个分片偏移字段，它们共同作用以帮助目的主机正确地重组这些分片。</p>
 <p>TCP段重组：TCP（传输控制协议）是面向连接的，并提供可靠的数据传输服务。在数据传输过程中，发送方可能会将数据分割成多个TCP段进行发送。因为网络中的路由和延迟不同，这些TCP段可能不会按照它们被发送的顺序到达接收方。TCP使用序列号和确认机制来确保所有发送的数据都能够按照正确的顺序被重组。接收方根据序列号对收到的TCP段进行排序，并在必要时等待丢失段的重传，从而实现数据的正确重组。</p>
 <p>为什么NIDS 涉及到IP分片重组和TCP段重组 ？ 这些不是TCP/IP协议栈的事情吗？
-因为NIDS使用 libpcap 或者 DPDK， 抓取的都是一帧， 一个IP分片通常被封装成一帧进行传输。 当数据比较大的时候，比如 http post 一个稍大的json，  经过TCP段重组，才能看到完整的 json。在TCP/IP协议栈中， 每一层对上都是透明的， 而在NIDS 中，每一层都需要自己重组。</p>
+因为NIDS使用 libpcap 或者 DPDK， 抓取的都是一帧， 一个IP分片通常被封装成一帧进行传输。 当数据比较大的时候，比如 http post 一个稍大的json， 经过TCP段重组，才能看到完整的 json。在TCP/IP协议栈中， 每一层对上都是透明的， 而在NIDS 中，每一层都需要自己重组。</p>
 <p>IP分片和TCP分段是一回事吗 ？</p>
 <p>IP分片和TCP分段不是一回事，它们是发生在网络协议栈不同层次的数据切分机制, 一般不同时发生。具体区别如下：</p>
 <div class="highlight"><pre><span></span><code>IP分片：发生在网络层，由IP协议处理，由于网络链路层的MTU（最大传输单元）限制，当IP数据报大小超过MTU时，需要进行分片。
@@ -136,7 +136,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <p>IP 分片详细信息</p>
 </li>
 </ol>
-<table class="table-hover table table-striped">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>分片编号</th>
@@ -240,7 +240,7 @@ TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大�
 <p>TCP 分段详细信息</p>
 </li>
 </ol>
-<table class="table-hover table table-striped">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>分段编号</th>
