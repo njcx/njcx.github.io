@@ -103,12 +103,219 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <h4>介绍</h4>
-<p>NIDS（Network Intrusion Detection System，网络入侵检测系统）抓包是指NIDS通过监听网络流量来捕捉数据包的过程。这些数据包包含了从网络的一个点传输到另一个点的信息。抓包是NIDS分析网络活动以检测潜在入侵行为的基础步骤。</p>
+<p>NIDS（Network Intrusion Detection System，网络入侵检测系统）开发过程中，主要分了两个部分， 第一的DPI深度包解析，第二就是规则引擎。DPI深度包解析是指NIDS通过监听网络流量来捕捉数据包、协议识别、拆解成字段过程。这些数据包包含了从网络的一个点传输到另一个点的信息。DPI是NIDS分析网络活动以检测潜在入侵行为的基础步骤， 捕捉数据包的工具有 libpcap 、PF_RING、DPDK等等。DPI深度包解析工具有PacketBeat、NDPI、Zeek等等</p>
 <p>在TCP/IP协议栈中，数据包的重组主要涉及两个方面：IP分片重组和TCP段重组。</p>
 <p>IP分片重组：当一个IP数据报由于过大而无法在一个物理网络上进行传输时，它可能会被分成多个较小的片段（分片），每个分片作为一个独立的IP数据报进行传输。这些分片最终需要在目的地处重新组装成原始的数据报。这个过程称为IP分片重组。IP头部包含了一个标识字段、一个标志字段和一个分片偏移字段，它们共同作用以帮助目的主机正确地重组这些分片。</p>
 <p>TCP段重组：TCP（传输控制协议）是面向连接的，并提供可靠的数据传输服务。在数据传输过程中，发送方可能会将数据分割成多个TCP段进行发送。因为网络中的路由和延迟不同，这些TCP段可能不会按照它们被发送的顺序到达接收方。TCP使用序列号和确认机制来确保所有发送的数据都能够按照正确的顺序被重组。接收方根据序列号对收到的TCP段进行排序，并在必要时等待丢失段的重传，从而实现数据的正确重组。</p>
 <p>为什么NIDS 涉及到IP分片重组和TCP段重组 ？ 这些不是TCP/IP协议栈的事情吗？
 因为NIDS使用 libpcap 或者 DPDK， 抓取的都是一帧， 一个IP分片通常被封装成一帧进行传输。 当数据比较大的时候，比如 http post 一个稍大的json，  先经过 IP分片重组， 再经过TCP段重组，才能看到完整的 json。在TCP/IP协议栈中， 每一层对上都是透明的， 而在NIDS 中，每一层都需要自己重组。</p>
+<p>IP分片和TCP分段是一回事吗 ？</p>
+<p>IP分片和TCP分段不是一回事，它们是发生在网络协议栈不同层次的数据切分机制，但存在交叉。具体区别如下：</p>
+<div class="highlight"><pre><span></span><code>IP分片：发生在网络层，由IP协议处理，由于网络链路层的MTU（最大传输单元）限制，当IP数据报大小超过MTU时，需要进行分片。
+TCP分片：发生在传输层，由TCP协议处理，为了适应MSS（最大分段大小），避免IP层分片，TCP会根据MSS对数据进行分段。
+</code></pre></div>
+<p>以下是一个具体的 同时包含 TCP 分段和 IP 分片的示例：</p>
+<p>假设主机 A 要通过以太网向主机 B 发送一个总大小为 <strong>4000 字节</strong>的应用层数据。  </p>
+<ul>
+<li>网络路径的 MTU（最大传输单元）为 <strong>1500 字节</strong>。</li>
+<li>TCP 的 MSS（最大分段大小）协商后为 <strong>1460 字节</strong>（即 1500 - 20(IP首部) - 20(TCP首部)）。</li>
+<li>IP 首部长度为 <strong>20 字节</strong>。</li>
+</ul>
+<p>由于应用层数据的大小超过了 MSS 和 MTU 的限制，因此需要进行 <strong>TCP 分段</strong> 和 <strong>IP 分片</strong>。</p>
+<ol>
+<li>
+<p>计算 TCP 分段数量</p>
+</li>
+<li>
+<p>每个 TCP 数据段的最大有效载荷为 <strong>1460 字节</strong>。</p>
+</li>
+<li>
+<p>总数据量为 <strong>4000 字节</strong>，因此需要分成：4000 ÷ 1460  = 3 </p>
+</li>
+<li>
+<p>TCP 分段详细信息</p>
+</li>
+</ol>
+<table class="table-hover table-striped table">
+<thead>
+<tr>
+<th>分段编号</th>
+<th>序列号范围</th>
+<th>数据长度</th>
+<th>TCP 首部长度</th>
+<th>IP 首部长度</th>
+<th>总长度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 1 段</td>
+<td>1 ~ 1460</td>
+<td>1460</td>
+<td>20</td>
+<td>20</td>
+<td>1500</td>
+</tr>
+<tr>
+<td>第 2 段</td>
+<td>1461 ~ 2920</td>
+<td>1460</td>
+<td>20</td>
+<td>20</td>
+<td>1500</td>
+</tr>
+<tr>
+<td>第 3 段</td>
+<td>2921 ~ 4000</td>
+<td>1080</td>
+<td>20</td>
+<td>20</td>
+<td>1120</td>
+</tr>
+</tbody>
+</table>
+<p>IP 分片过程</p>
+<p>假设网络路径中某段链路的 MTU 仅为 <strong>1000 字节</strong>，而每个 TCP 分段的总长度（包括 TCP 和 IP 首部）都超过了该 MTU，因此需要对每个 TCP 分段进一步进行 <strong>IP 分片</strong>。</p>
+<ol>
+<li>
+<p>对第一段进行 IP 分片</p>
+</li>
+<li>
+<p>第一段的总长度为 <strong>1500 字节</strong>，需要分成两个 IP 分片：</p>
+</li>
+<li><strong>第一片</strong>: 包含前 <strong>980 字节</strong>的数据（1000 - 20(IP首部)），加上 IP 首部，总长度为 <strong>1000 字节</strong>。</li>
+<li>
+<p><strong>第二片</strong>: 包含剩余的 <strong>500 字节</strong>的数据（1500 - 1000），加上 IP 首部，总长度为 <strong>520 字节</strong>。</p>
+</li>
+<li>
+<p>对第二段进行 IP 分片</p>
+</li>
+<li>
+<p>第二段的总长度同样为 <strong>1500 字节</strong>，也需要分成两个 IP 分片：</p>
+</li>
+<li><strong>第一片</strong>: 包含前 <strong>980 字节</strong>的数据，总长度为 <strong>1000 字节</strong>。</li>
+<li>
+<p><strong>第二片</strong>: 包含剩余的 <strong>500 字节</strong>的数据，总长度为 <strong>520 字节</strong>。</p>
+</li>
+<li>
+<p>对第三段进行 IP 分片</p>
+</li>
+<li>
+<p>第三段的总长度为 <strong>1120 字节</strong>，也需要分成两个 IP 分片：</p>
+</li>
+<li><strong>第一片</strong>: 包含前 <strong>980 字节</strong>的数据，总长度为 <strong>1000 字节</strong>。</li>
+<li><strong>第二片</strong>: 包含剩余的 <strong>140 字节</strong>的数据，总长度为 <strong>160 字节</strong>。</li>
+</ol>
+<p>对比</p>
+<table class="table-hover table-striped table">
+<thead>
+<tr>
+<th><strong>阶段</strong></th>
+<th><strong>分段/分片编号</strong></th>
+<th><strong>数据范围</strong></th>
+<th><strong>数据长度</strong></th>
+<th><strong>总长度</strong></th>
+<th><strong>偏移量</strong></th>
+<th><strong>MF 标志位</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TCP 分段</strong></td>
+<td>第 1 段</td>
+<td>1 ~ 1460</td>
+<td>1460</td>
+<td>1500</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td></td>
+<td>第 2 段</td>
+<td>1461 ~ 2920</td>
+<td>1460</td>
+<td>1500</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td></td>
+<td>第 3 段</td>
+<td>2921 ~ 4000</td>
+<td>1080</td>
+<td>1120</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td><strong>IP 分片</strong></td>
+<td>第 1 段第 1 片</td>
+<td>1 ~ 980</td>
+<td>980</td>
+<td>1000</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td></td>
+<td>第 1 段第 2 片</td>
+<td>981 ~ 1460</td>
+<td>500</td>
+<td>520</td>
+<td>122</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td>第 2 段第 1 片</td>
+<td>1461 ~ 2440</td>
+<td>980</td>
+<td>1000</td>
+<td>185</td>
+<td>1</td>
+</tr>
+<tr>
+<td></td>
+<td>第 2 段第 2 片</td>
+<td>2441 ~ 2920</td>
+<td>500</td>
+<td>520</td>
+<td>307</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td>第 3 段第 1 片</td>
+<td>2921 ~ 3900</td>
+<td>980</td>
+<td>1000</td>
+<td>370</td>
+<td>1</td>
+</tr>
+<tr>
+<td></td>
+<td>第 3 段第 2 片</td>
+<td>3901 ~ 4000</td>
+<td>140</td>
+<td>160</td>
+<td>485</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>重组过程</p>
+<p>当主机 B 收到这些分片时：</p>
+<ol>
+<li>主机 B 根据 <strong>标识符</strong> 和 <strong>偏移量</strong> 将所有 IP 分片重组为完整的 TCP 分段。</li>
+<li>根据 <strong>TCP 序列号</strong> 将所有 TCP 分段按顺序拼接起来。</li>
+<li>最终得到完整的 <strong>4000 字节</strong> 数据，并交给应用层。</li>
+</ol>
+<p>通过这个例子可以清楚地看到：</p>
+<ul>
+<li><strong>TCP 分段</strong> 是基于 MSS 进行的，确保每个分段的总长度不超过 MTU。</li>
+<li><strong>IP 分片</strong> 是基于实际网络路径的 MTU 进行的，确保每个分片的总长度不超过路径 MTU。</li>
+<li>主机 B 通过 <strong>TCP 序列号</strong> 和 <strong>IP 偏移量</strong>，能够准确地将分片和分段重组为原始数据。</li>
+</ul>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
