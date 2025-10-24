@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>细说uWSGI的优雅重启 | nJcx's Blog
+</title>
+  <link rel="canonical" href="https://www.njcx.bid/posts/T7.html">
+
+
+  <link rel="apple-touch-icon" href="https://www.njcx.bid/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://www.njcx.bid/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="https://www.njcx.bid/manifest.json">
+  <meta name="theme-color" content="#333333">
+
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/pygments/emacs.min.css">
+  <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
+
+
+<meta name="description" content="细说uWSGI的优雅重启 ~">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?a34c7a96ae9745547c373575407c521f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <a href="https://www.njcx.bid">
+            <img class="img-fluid" src=https://www.njcx.bid/images/profile.png width=200 height=200 alt="nJcx's Blog">
+          </a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.njcx.bid">nJcx's Blog</a></h1>
+          <p class="text-muted">十年生死两茫茫，写程序，到天亮。相顾无言，惟有泪千行</p>
+          <ul class="list-inline">
+                    <li class="list-inline-item">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="https://www.zhihu.com/people/njcxs" target="_blank">知乎</a></li>
+                <li class="list-inline-item"><a href="https://www.anquanke.com/member/154147" target="_blank">安全客</a></li>
+                <li class="list-inline-item"><a href="https://www.freebuf.com/column/1481" target="_blank">Freebuf</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/njcx" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>细说uWSGI的优雅重启
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2025-09-29T20:20:00+03:00">
+        <i class="fa fa-clock-o"></i>
+        一 29 九月 2025
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://www.njcx.bid/category/an-quan.html">安全</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-user-o"></i>
+        <a href="https://www.njcx.bid/author/njcx.html">nJcx</a>      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://www.njcx.bid/tag/qi-ye-an-quan-jian-she.html">#企业安全建设</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <h4>介绍</h4>
+<p>uWSGI 是一个功能强大的应用服务器,主要用于部署 Python Web 应用。它充当 Web 服务器(如 Nginx、Apache)和 Python Web 应用之间的桥梁。它的名字来源于 WSGI 协议,但功能远不止于此。uWSGI 用 C 语言编写,性能优异,支持多进程、多线程和异步模式,能够处理大量并发请求。在生产环境中,通常的架构是:浏览器 → Nginx(反向代理) → uWSGI(应用服务器) → Django/Flask(Web框架)。Nginx 负责处理静态文件和反向代理,uWSGI 负责运行 Python 应用,两者通过 uwsgi 协议或 HTTP 协议通信。</p>
+<h4>核心工作流程</h4>
+<p>uWSGI 的核心是一个事件驱动的应用容器,主要包含以下几个关键组件:</p>
+<ol>
+<li>
+<p>主进程(Master Process)
+主进程负责:</p>
+<ul>
+<li>
+<p>管理工作进程的生命周期</p>
+</li>
+<li>
+<p>监控进程状态,自动重启崩溃的进程</p>
+</li>
+<li>
+<p>处理信号(如平滑重启)</p>
+</li>
+<li>
+<p>加载配置文件</p>
+</li>
+</ul>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="c1">#简化的主进程逻辑, 伪代码</span>
+<span class="k">while</span><span class="w"> </span><span class="n">True</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># 检查工作进程状态</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">worker</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">workers</span><span class="p">:</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">worker</span><span class="o">.</span><span class="n">is_dead</span><span class="p">():</span>
+<span class="w">            </span><span class="n">worker</span><span class="o">.</span><span class="n">respawn</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># 处理信号</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">received_reload_signal</span><span class="p">:</span>
+<span class="w">        </span><span class="n">graceful_reload</span><span class="p">()</span>
+</code></pre></div>
+<ol>
+<li>工作进程(Worker Process)
+每个工作进程独立处理请求:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="gh">#</span> Worker 的基本结构, 伪代码
+def worker_loop():
+    while True:
+        # 1. 接收请求(从 socket)
+        request = accept_connection()
+
+        # 2. 解析请求(uwsgi/http 协议)
+        env = parse_request(request)
+
+        # 3. 调用 WSGI 应用
+        response = wsgi_app(env, start_response)
+
+        # 4. 返回响应
+        send_response(response)
+</code></pre></div>
+<h4>uWSGI 是怎么调用Python的Web应用的？</h4>
+<p>uWSGI 使用 Python C API 来嵌入 Python 解释器并调用 Python 代码。下面以一个Python  Flask 应用为例。</p>
+<p>1， 初始化 Python 解释器</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#include &lt;Python.h&gt;</span>
+
+//<span class="w"> </span>uWSGI<span class="w"> </span>启动时初始化<span class="w"> </span>Python
+void<span class="w"> </span>init_python<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span>初始化<span class="w"> </span>Python<span class="w"> </span>解释器
+<span class="w">    </span>Py_Initialize<span class="o">()</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>设置<span class="w"> </span>Python<span class="w"> </span>路径
+<span class="w">    </span>PySys_SetPath<span class="o">(</span>L<span class="s2">"/usr/lib/python3.9:/path/to/your/app"</span><span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>2， 加载 Flask 应用</p>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>加载<span class="w"> </span>Python<span class="w"> </span>模块和应用对象
+PyObject<span class="w"> </span>*load_wsgi_application<span class="o">(</span>const<span class="w"> </span>char<span class="w"> </span>*module_name,<span class="w"> </span>const<span class="w"> </span>char<span class="w"> </span>*app_name<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>PyObject<span class="w"> </span>*pModule,<span class="w"> </span>*pApp<span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>导入模块<span class="w"> </span><span class="o">(</span>例如:<span class="w"> </span><span class="s2">"myapp"</span><span class="o">)</span>
+<span class="w">    </span>//<span class="w"> </span>相当于<span class="w"> </span>Python<span class="w"> </span>的:<span class="w"> </span>import<span class="w"> </span>myapp
+<span class="w">    </span><span class="nv">pModule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>PyImport_ImportModule<span class="o">(</span>module_name<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">pModule</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>NULL<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>PyErr_Print<span class="o">()</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>NULL<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>//<span class="w"> </span>获取应用对象<span class="w"> </span><span class="o">(</span>例如:<span class="w"> </span><span class="nv">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>myapp.application<span class="o">)</span>
+<span class="w">    </span>//<span class="w"> </span>相当于<span class="w"> </span>Python<span class="w"> </span>的:<span class="w"> </span><span class="nv">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>myapp.application
+<span class="w">    </span><span class="nv">pApp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>PyObject_GetAttrString<span class="o">(</span>pModule,<span class="w"> </span>app_name<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">pApp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>NULL<span class="w"> </span><span class="o">||</span><span class="w"> </span>!PyCallable_Check<span class="o">(</span>pApp<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>PyErr_Print<span class="o">()</span><span class="p">;</span>
+<span class="w">        </span>Py_DECREF<span class="o">(</span>pModule<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>NULL<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>pApp<span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>3， 构造 WSGI environ 字典</p>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>将<span class="w"> </span>HTTP<span class="w"> </span>请求转换为<span class="w"> </span>Python<span class="w"> </span>字典
+PyObject<span class="w"> </span>*build_environ<span class="o">(</span>struct<span class="w"> </span>http_request<span class="w"> </span>*req<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>PyObject<span class="w"> </span>*environ<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyDict_New<span class="o">()</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>添加请求方法
+<span class="w">    </span>//<span class="w"> </span>environ<span class="o">[</span><span class="s1">'REQUEST_METHOD'</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'GET'</span>
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"REQUEST_METHOD"</span>,<span class="w"> </span>
+<span class="w">                        </span>PyUnicode_FromString<span class="o">(</span>req-&gt;method<span class="o">))</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>添加路径
+<span class="w">    </span>//<span class="w"> </span>environ<span class="o">[</span><span class="s1">'PATH_INFO'</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'/hello'</span>
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"PATH_INFO"</span>,<span class="w"> </span>
+<span class="w">                        </span>PyUnicode_FromString<span class="o">(</span>req-&gt;path<span class="o">))</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>添加查询字符串
+<span class="w">    </span>//<span class="w"> </span>environ<span class="o">[</span><span class="s1">'QUERY_STRING'</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'id=123'</span>
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"QUERY_STRING"</span>,<span class="w"> </span>
+<span class="w">                        </span>PyUnicode_FromString<span class="o">(</span>req-&gt;query<span class="o">))</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>添加<span class="w"> </span>HTTP<span class="w"> </span>头
+<span class="w">    </span>//<span class="w"> </span>environ<span class="o">[</span><span class="s1">'HTTP_HOST'</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'example.com'</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="o">(</span>int<span class="w"> </span><span class="nv">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>i<span class="w"> </span>&lt;<span class="w"> </span>req-&gt;header_count<span class="p">;</span><span class="w"> </span>i++<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>char<span class="w"> </span>key<span class="o">[</span><span class="m">256</span><span class="o">]</span><span class="p">;</span>
+<span class="w">        </span>snprintf<span class="o">(</span>key,<span class="w"> </span>sizeof<span class="o">(</span>key<span class="o">)</span>,<span class="w"> </span><span class="s2">"HTTP_%s"</span>,<span class="w"> </span>req-&gt;headers<span class="o">[</span>i<span class="o">]</span>.name<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span>key,<span class="w"> </span>
+<span class="w">                            </span>PyUnicode_FromString<span class="o">(</span>req-&gt;headers<span class="o">[</span>i<span class="o">]</span>.value<span class="o">))</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>//<span class="w"> </span>添加<span class="w"> </span>WSGI<span class="w"> </span>必需的变量
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"wsgi.version"</span>,<span class="w"> </span>
+<span class="w">                        </span>Py_BuildValue<span class="o">(</span><span class="s2">"(ii)"</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">0</span><span class="o">))</span><span class="p">;</span>
+
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"wsgi.url_scheme"</span>,<span class="w"> </span>
+<span class="w">                        </span>PyUnicode_FromString<span class="o">(</span>req-&gt;is_https<span class="w"> </span>?<span class="w"> </span><span class="s2">"https"</span><span class="w"> </span>:<span class="w"> </span><span class="s2">"http"</span><span class="o">))</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>添加请求体输入流
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"wsgi.input"</span>,<span class="w"> </span>
+<span class="w">                        </span>create_input_stream<span class="o">(</span>req-&gt;body,<span class="w"> </span>req-&gt;body_len<span class="o">))</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>添加错误流
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"wsgi.errors"</span>,<span class="w"> </span>PySys_GetObject<span class="o">(</span><span class="s2">"stderr"</span><span class="o">))</span><span class="p">;</span>
+
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"wsgi.multithread"</span>,<span class="w"> </span>Py_True<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"wsgi.multiprocess"</span>,<span class="w"> </span>Py_True<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>PyDict_SetItemString<span class="o">(</span>environ,<span class="w"> </span><span class="s2">"wsgi.run_once"</span>,<span class="w"> </span>Py_False<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>environ<span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>4，创建 start_response 回调</p>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>用于存储响应状态和头部
+struct<span class="w"> </span>response_data<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>char<span class="w"> </span>*status<span class="p">;</span>
+<span class="w">    </span>PyObject<span class="w"> </span>*headers<span class="p">;</span>
+<span class="o">}</span><span class="p">;</span>
+
+//<span class="w"> </span>start_response<span class="w"> </span>的<span class="w"> </span>C<span class="w"> </span>实现
+static<span class="w"> </span>PyObject<span class="w"> </span>*start_response_callback<span class="o">(</span>PyObject<span class="w"> </span>*self,<span class="w"> </span>PyObject<span class="w"> </span>*args<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>struct<span class="w"> </span>response_data<span class="w"> </span>*resp<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>struct<span class="w"> </span>response_data<span class="w"> </span>*<span class="o">)</span>PyCapsule_GetPointer<span class="o">(</span>self,<span class="w"> </span>NULL<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>PyObject<span class="w"> </span>*status_obj,<span class="w"> </span>*headers_obj,<span class="w"> </span>*exc_info<span class="w"> </span><span class="o">=</span><span class="w"> </span>NULL<span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>解析参数:<span class="w"> </span>start_response<span class="o">(</span>status,<span class="w"> </span>response_headers,<span class="w"> </span><span class="nv">exc_info</span><span class="o">=</span>None<span class="o">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>!PyArg_ParseTuple<span class="o">(</span>args,<span class="w"> </span><span class="s2">"OO|O:start_response"</span>,<span class="w"> </span>
+<span class="w">                         </span><span class="p">&amp;</span>status_obj,<span class="w"> </span><span class="p">&amp;</span>headers_obj,<span class="w"> </span><span class="p">&amp;</span>exc_info<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>NULL<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>//<span class="w"> </span>保存状态码<span class="w"> </span><span class="s2">"200 OK"</span>
+<span class="w">    </span>const<span class="w"> </span>char<span class="w"> </span>*status<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyUnicode_AsUTF8<span class="o">(</span>status_obj<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>resp-&gt;status<span class="w"> </span><span class="o">=</span><span class="w"> </span>strdup<span class="o">(</span>status<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>保存响应头<span class="w"> </span><span class="o">[(</span><span class="s1">'Content-Type'</span>,<span class="w"> </span><span class="s1">'text/html'</span><span class="o">)</span>,<span class="w"> </span>...<span class="o">]</span>
+<span class="w">    </span>resp-&gt;headers<span class="w"> </span><span class="o">=</span><span class="w"> </span>headers_obj<span class="p">;</span>
+<span class="w">    </span>Py_INCREF<span class="o">(</span>headers_obj<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>返回一个写入函数<span class="o">(</span>通常不用<span class="o">)</span>
+<span class="w">    </span>Py_RETURN_NONE<span class="p">;</span>
+<span class="o">}</span>
+
+//<span class="w"> </span>创建<span class="w"> </span>start_response<span class="w"> </span>可调用对象
+PyObject<span class="w"> </span>*create_start_response<span class="o">(</span>struct<span class="w"> </span>response_data<span class="w"> </span>*resp<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span>将<span class="w"> </span>C<span class="w"> </span>指针封装到<span class="w"> </span>Python<span class="w"> </span>对象
+<span class="w">    </span>PyObject<span class="w"> </span>*capsule<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyCapsule_New<span class="o">(</span>resp,<span class="w"> </span>NULL,<span class="w"> </span>NULL<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span>创建方法对象
+<span class="w">    </span>static<span class="w"> </span>PyMethodDef<span class="w"> </span><span class="nv">method_def</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">"start_response"</span>,<span class="w"> </span>start_response_callback,<span class="w"> </span>METH_VARARGS,<span class="w"> </span>NULL
+<span class="w">    </span><span class="o">}</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>PyCFunction_New<span class="o">(</span><span class="p">&amp;</span>method_def,<span class="w"> </span>capsule<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>5, 调用 Flask 应用</p>
+<div class="highlight"><pre><span></span><code>//<span class="w"> </span>完整的请求处理流程
+void<span class="w"> </span>handle_wsgi_request<span class="o">(</span>PyObject<span class="w"> </span>*app,<span class="w"> </span>struct<span class="w"> </span>http_request<span class="w"> </span>*req,<span class="w"> </span>
+<span class="w">                        </span>struct<span class="w"> </span>http_response<span class="w"> </span>*resp<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span><span class="m">1</span>.<span class="w"> </span>构造<span class="w"> </span>environ<span class="w"> </span>字典
+<span class="w">    </span>PyObject<span class="w"> </span>*environ<span class="w"> </span><span class="o">=</span><span class="w"> </span>build_environ<span class="o">(</span>req<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span><span class="m">2</span>.<span class="w"> </span>创建<span class="w"> </span>start_response<span class="w"> </span>回调
+<span class="w">    </span>struct<span class="w"> </span>response_data<span class="w"> </span><span class="nv">response_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="m">0</span><span class="o">}</span><span class="p">;</span>
+<span class="w">    </span>PyObject<span class="w"> </span>*start_response<span class="w"> </span><span class="o">=</span><span class="w"> </span>create_start_response<span class="o">(</span><span class="p">&amp;</span>response_data<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span><span class="m">3</span>.<span class="w"> </span>调用<span class="w"> </span>WSGI<span class="w"> </span>应用
+<span class="w">    </span>//<span class="w"> </span>相当于:<span class="w"> </span><span class="nv">response_body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>app<span class="o">(</span>environ,<span class="w"> </span>start_response<span class="o">)</span>
+<span class="w">    </span>PyObject<span class="w"> </span>*args<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyTuple_Pack<span class="o">(</span><span class="m">2</span>,<span class="w"> </span>environ,<span class="w"> </span>start_response<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>PyObject<span class="w"> </span>*result<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyObject_CallObject<span class="o">(</span>app,<span class="w"> </span>args<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>NULL<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>PyErr_Print<span class="o">()</span><span class="p">;</span>
+<span class="w">        </span>goto<span class="w"> </span>cleanup<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>//<span class="w"> </span><span class="m">4</span>.<span class="w"> </span>处理响应状态和头部
+<span class="w">    </span>resp-&gt;status<span class="w"> </span><span class="o">=</span><span class="w"> </span>response_data.status<span class="p">;</span><span class="w">  </span>//<span class="w"> </span><span class="s2">"200 OK"</span>
+
+<span class="w">    </span>//<span class="w"> </span>解析响应头
+<span class="w">    </span>Py_ssize_t<span class="w"> </span><span class="nv">header_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>PyList_Size<span class="o">(</span>response_data.headers<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="o">(</span>Py_ssize_t<span class="w"> </span><span class="nv">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>i<span class="w"> </span>&lt;<span class="w"> </span>header_count<span class="p">;</span><span class="w"> </span>i++<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>PyObject<span class="w"> </span>*header_tuple<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyList_GetItem<span class="o">(</span>response_data.headers,<span class="w"> </span>i<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span>PyObject<span class="w"> </span>*name<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyTuple_GetItem<span class="o">(</span>header_tuple,<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span>PyObject<span class="w"> </span>*value<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyTuple_GetItem<span class="o">(</span>header_tuple,<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="p">;</span>
+
+<span class="w">        </span>const<span class="w"> </span>char<span class="w"> </span>*header_name<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyUnicode_AsUTF8<span class="o">(</span>name<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span>const<span class="w"> </span>char<span class="w"> </span>*header_value<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyUnicode_AsUTF8<span class="o">(</span>value<span class="o">)</span><span class="p">;</span>
+
+<span class="w">        </span>//<span class="w"> </span>添加到响应头
+<span class="w">        </span>add_response_header<span class="o">(</span>resp,<span class="w"> </span>header_name,<span class="w"> </span>header_value<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>//<span class="w"> </span><span class="m">5</span>.<span class="w"> </span>处理响应体<span class="o">(</span>迭代器<span class="o">)</span>
+<span class="w">    </span>//<span class="w"> </span>Flask<span class="w"> </span>返回的是一个可迭代对象
+<span class="w">    </span>PyObject<span class="w"> </span>*iterator<span class="w"> </span><span class="o">=</span><span class="w"> </span>PyObject_GetIter<span class="o">(</span>result<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">iterator</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>NULL<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>PyErr_Print<span class="o">()</span><span class="p">;</span>
+<span class="w">        </span>goto<span class="w"> </span>cleanup<span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>PyObject<span class="w"> </span>*item<span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="o">((</span><span class="nv">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>PyIter_Next<span class="o">(</span>iterator<span class="o">)))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>//<span class="w"> </span>获取字节数据
+<span class="w">        </span>Py_ssize_t<span class="w"> </span>size<span class="p">;</span>
+<span class="w">        </span>char<span class="w"> </span>*data<span class="p">;</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>PyBytes_Check<span class="o">(</span>item<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span>PyBytes_AsStringAndSize<span class="o">(</span>item,<span class="w"> </span><span class="p">&amp;</span>data,<span class="w"> </span><span class="p">&amp;</span>size<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>PyUnicode_Check<span class="o">(</span>item<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="nv">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>char<span class="w"> </span>*<span class="o">)</span>PyUnicode_AsUTF8AndSize<span class="o">(</span>item,<span class="w"> </span><span class="p">&amp;</span>size<span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">}</span>
+
+<span class="w">        </span>//<span class="w"> </span>发送响应体数据
+<span class="w">        </span>send_response_chunk<span class="o">(</span>resp,<span class="w"> </span>data,<span class="w"> </span>size<span class="o">)</span><span class="p">;</span>
+
+<span class="w">        </span>Py_DECREF<span class="o">(</span>item<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span>Py_DECREF<span class="o">(</span>iterator<span class="o">)</span><span class="p">;</span>
+
+cleanup:
+<span class="w">    </span>Py_DECREF<span class="o">(</span>environ<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>Py_DECREF<span class="o">(</span>start_response<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>Py_DECREF<span class="o">(</span>args<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>result<span class="o">)</span><span class="w"> </span>Py_DECREF<span class="o">(</span>result<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>假设有这样一个 Flask 应用:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># myapp.py</span>
+from<span class="w"> </span>flask<span class="w"> </span>import<span class="w"> </span>Flask
+
+<span class="nv">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Flask<span class="o">(</span>__name__<span class="o">)</span>
+
+@app.route<span class="o">(</span><span class="s1">'/hello'</span><span class="o">)</span>
+def<span class="w"> </span>hello<span class="o">()</span>:
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s1">'Hello World!'</span>
+
+<span class="c1"># WSGI 入口</span>
+<span class="nv">application</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>app
+</code></pre></div>
+<p>uWSGI 的 C 代码调用流程:</p>
+<div class="highlight"><pre><span></span><code>int<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span><span class="m">1</span>.<span class="w"> </span>初始化<span class="w"> </span>Python
+<span class="w">    </span>Py_Initialize<span class="o">()</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span><span class="m">2</span>.<span class="w"> </span>加载<span class="w"> </span>Flask<span class="w"> </span>应用
+<span class="w">    </span>//<span class="w"> </span>import<span class="w"> </span>myapp
+<span class="w">    </span>//<span class="w"> </span><span class="nv">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>myapp.application
+<span class="w">    </span>PyObject<span class="w"> </span>*flask_app<span class="w"> </span><span class="o">=</span><span class="w"> </span>load_wsgi_application<span class="o">(</span><span class="s2">"myapp"</span>,<span class="w"> </span><span class="s2">"application"</span><span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span><span class="m">3</span>.<span class="w"> </span>接收<span class="w"> </span>HTTP<span class="w"> </span>请求
+<span class="w">    </span>struct<span class="w"> </span>http_request<span class="w"> </span><span class="nv">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>.method<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"GET"</span>,
+<span class="w">        </span>.path<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"/hello"</span>,
+<span class="w">        </span>.query<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>,
+<span class="w">        </span>//<span class="w"> </span>...
+<span class="w">    </span><span class="o">}</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span><span class="m">4</span>.<span class="w"> </span>调用<span class="w"> </span>Flask<span class="w"> </span>处理请求
+<span class="w">    </span>struct<span class="w"> </span>http_response<span class="w"> </span><span class="nv">resp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="m">0</span><span class="o">}</span><span class="p">;</span>
+<span class="w">    </span>handle_wsgi_request<span class="o">(</span>flask_app,<span class="w"> </span><span class="p">&amp;</span>req,<span class="w"> </span><span class="p">&amp;</span>resp<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span><span class="m">5</span>.<span class="w"> </span>发送响应给客户端
+<span class="w">    </span>printf<span class="o">(</span><span class="s2">"HTTP/1.1 %s\r\n"</span>,<span class="w"> </span>resp.status<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="o">(</span>int<span class="w"> </span><span class="nv">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>i<span class="w"> </span>&lt;<span class="w"> </span>resp.header_count<span class="p">;</span><span class="w"> </span>i++<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span>printf<span class="o">(</span><span class="s2">"%s: %s\r\n"</span>,<span class="w"> </span>resp.headers<span class="o">[</span>i<span class="o">]</span>.name,<span class="w"> </span>resp.headers<span class="o">[</span>i<span class="o">]</span>.value<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">    </span>printf<span class="o">(</span><span class="s2">"\r\n%s"</span>,<span class="w"> </span>resp.body<span class="o">)</span><span class="p">;</span>
+
+<span class="w">    </span>//<span class="w"> </span><span class="m">6</span>.<span class="w"> </span>清理
+<span class="w">    </span>Py_DECREF<span class="o">(</span>flask_app<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>Py_Finalize<span class="o">()</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<h4>所以， uWSGI 是如何重启，而不丢请求的？</h4>
+  </div>
+</article>
+<div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cysYUIjwy'; 
+var conf = 'prod_71b5e53cad0d27b5ed44fa5219b069b5'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cysYUIjwy"></script>    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://www.njcx.bid/authors.html">Authors</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://www.njcx.bid/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          本站由 <a href="https://github.com/getpelican/pelican" target="_blank">Pelican 生成</a> 后续 by <a href="https://github.com/njcx" target="_blank">nJcx</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
