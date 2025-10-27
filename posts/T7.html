@@ -411,6 +411,504 @@ def<span class="w"> </span>hello<span class="o">()</span>:
 <span class="o">}</span>
 </code></pre></div>
 <h4>所以， uWSGI 是如何重启，而不丢请求的？</h4>
+<p>平滑重启的关键是：新旧进程共存期间的请求转移，确保：</p>
+<ul>
+<li>旧进程处理完手头的请求才退出</li>
+<li>新进程提前启动接管新请求</li>
+<li>
+<p>Socket 连接不中断</p>
+</li>
+<li>
+<p>初始状态</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code>    Master Process (PID: 1000)
+    ├── Worker 1 (PID: 1001) - 处理请求中
+    ├── Worker 2 (PID: 1002) - 空闲
+    ├── Worker 3 (PID: 1003) - 处理请求中
+    └── Worker 4 (PID: 1004) - 空闲
+
+    监听 Socket: /tmp/uwsgi.sock (由 Master 持有)
+</code></pre></div>
+<p>2, 接收重启信号</p>
+<div class="highlight"><pre><span></span><code><span class="o">//</span><span class="w"> </span><span class="n">Master</span><span class="w"> </span><span class="err">进程接收信号</span>
+<span class="nb nb-Type">void</span><span class="w"> </span><span class="n">signal_handler</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">signum</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">signum</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SIGHUP</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="o">//</span><span class="w"> </span><span class="n">kill</span><span class="w"> </span><span class="o">-</span><span class="n">HUP</span><span class="w"> </span><span class="o">&lt;</span><span class="n">master_pid</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="n">graceful_reload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">//</span><span class="w"> </span><span class="err">主循环</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">graceful_reload</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">do_graceful_reload</span><span class="p">();</span>
+<span class="w">        </span><span class="n">graceful_reload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="err">其他工作</span><span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>3, 创建新 Worker（关键步骤）</p>
+<div class="highlight"><pre><span></span><code><span class="n">void</span><span class="w"> </span><span class="n">do_graceful_reload</span><span class="p">()</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">步骤</span><span class="w"> </span><span class="mi">1</span><span class="err">:</span><span class="w"> </span><span class="n">标记旧进程</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">num_workers</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="n">workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">mark_as_old</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="o">//</span><span class="w"> </span><span class="n">标记为</span><span class="ss">"待退役"</span>
+<span class="w">        </span><span class="n">workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">accepting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">     </span><span class="o">//</span><span class="w"> </span><span class="n">停止接受新请求</span>
+<span class="w">    </span><span class="err">}</span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">步骤</span><span class="w"> </span><span class="mi">2</span><span class="err">:</span><span class="w"> </span><span class="n">重新加载代码</span><span class="err">（</span><span class="n">Master</span><span class="w"> </span><span class="n">进程中</span><span class="err">）</span>
+<span class="w">    </span><span class="n">reload_application_code</span><span class="p">();</span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">步骤</span><span class="w"> </span><span class="mi">3</span><span class="err">:</span><span class="w"> </span><span class="n">启动新</span><span class="w"> </span><span class="n">Worker</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">num_workers</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="n">pid_t</span><span class="w"> </span><span class="n">new_pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fork</span><span class="p">();</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">new_pid</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="n">子进程</span><span class="err">：</span><span class="n">新</span><span class="w"> </span><span class="n">Worker</span>
+<span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="n">重新加载</span><span class="w"> </span><span class="n">Python</span><span class="w"> </span><span class="n">应用</span>
+<span class="w">            </span><span class="n">load_python_application</span><span class="p">();</span>
+
+<span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="n">开始接受请求</span>
+<span class="w">            </span><span class="n">worker_loop</span><span class="p">();</span>
+<span class="w">            </span><span class="k">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">        </span><span class="err">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="err">{</span>
+<span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="n">Master</span><span class="w"> </span><span class="n">进程</span>
+<span class="w">            </span><span class="n">new_workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_pid</span><span class="p">;</span>
+<span class="w">            </span><span class="n">new_workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">accepting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="o">//</span><span class="w"> </span><span class="n">新进程立即接受请求</span>
+<span class="w">        </span><span class="err">}</span>
+<span class="w">    </span><span class="err">}</span>
+<span class="err">}</span>
+</code></pre></div>
+<p>此时状态：</p>
+<div class="highlight"><pre><span></span><code><span class="n">Master</span><span class="w"> </span><span class="n">Process</span><span class="w"> </span><span class="p">(</span><span class="nl">PID</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">旧</span><span class="w"> </span><span class="n">Workers</span><span class="w"> </span><span class="p">(</span><span class="n">正在停止</span><span class="p">)</span><span class="err">:</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">(</span><span class="nl">PID</span><span class="p">:</span><span class="w"> </span><span class="mi">1001</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">OLD</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">继续处理当前请求</span><span class="err">，</span><span class="n">不接受新请求</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">(</span><span class="nl">PID</span><span class="p">:</span><span class="w"> </span><span class="mi">1002</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">OLD</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">不接受新请求</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">(</span><span class="nl">PID</span><span class="p">:</span><span class="w"> </span><span class="mi">1003</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">OLD</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">继续处理当前请求</span><span class="err">，</span><span class="n">不接受新请求</span>
+<span class="err">└──</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">(</span><span class="nl">PID</span><span class="p">:</span><span class="w"> </span><span class="mi">1004</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">OLD</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">不接受新请求</span>
+
+<span class="n">新</span><span class="w"> </span><span class="n">Workers</span><span class="w"> </span><span class="p">(</span><span class="n">已启动</span><span class="p">)</span><span class="err">:</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">1</span><span class="s1">' (PID: 2001) [NEW] - 接受新请求 ✓</span>
+<span class="s1">├── Worker 2'</span><span class="w"> </span><span class="p">(</span><span class="nl">PID</span><span class="p">:</span><span class="w"> </span><span class="mi">2002</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">NEW</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">接受新请求</span><span class="w"> </span><span class="err">✓</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">3</span><span class="s1">' (PID: 2003) [NEW] - 接受新请求 ✓</span>
+<span class="s1">└── Worker 4'</span><span class="w"> </span><span class="p">(</span><span class="nl">PID</span><span class="p">:</span><span class="w"> </span><span class="mi">2004</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">NEW</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">接受新请求</span><span class="w"> </span><span class="err">✓</span>
+
+<span class="n">监听</span><span class="w"> </span><span class="nl">Socket</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">uwsgi</span><span class="p">.</span><span class="n">sock</span><span class="w"> </span><span class="p">(</span><span class="n">新旧进程都可以</span><span class="w"> </span><span class="n">accept</span><span class="p">)</span>
+</code></pre></div>
+<p>4， Socket 继承机制（核心技术）</p>
+<p>关键点：Socket 文件描述符通过 fork() 继承给子进程！</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Master 进程启动时创建 Socket</span>
+<span class="nb">int</span><span class="w"> </span><span class="n">listen_fd</span><span class="p">;</span>
+
+<span class="n">void</span><span class="w"> </span><span class="n">master_init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 创建监听 Socket</span>
+<span class="w">    </span><span class="n">listen_fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">socket</span><span class="p">(</span><span class="n">AF_UNIX</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_STREAM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">bind</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="s">"/tmp/uwsgi.sock"</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<span class="w">    </span><span class="n">listen</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w">  </span><span class="c1">// backlog = 100</span>
+
+<span class="w">    </span><span class="c1">// 设置为非阻塞</span>
+<span class="w">    </span><span class="n">fcntl</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="n">F_SETFL</span><span class="p">,</span><span class="w"> </span><span class="n">O_NONBLOCK</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Worker 进程的事件循环</span>
+<span class="n">void</span><span class="w"> </span><span class="n">worker_loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span>!<span class="n">accepting</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// 旧 Worker：不再调用 accept()</span>
+<span class="w">            </span><span class="nb">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">active_requests</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// 没有活跃请求了，退出</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// 新 Worker：正常接受连接</span>
+<span class="w">        </span><span class="c1">// 多个进程同时 accept 同一个 Socket（惊群效应由内核处理）</span>
+<span class="w">        </span><span class="nb">int</span><span class="w"> </span><span class="n">client_fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">client_fd</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">active_requests</span><span class="o">++</span><span class="p">;</span>
+<span class="w">            </span><span class="n">handle_request</span><span class="p">(</span><span class="n">client_fd</span><span class="p">);</span>
+<span class="w">            </span><span class="n">active_requests</span><span class="o">--</span><span class="p">;</span>
+<span class="w">            </span><span class="n">close</span><span class="p">(</span><span class="n">client_fd</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>5, 请求分配机制</p>
+<p>Linux 内核的 SO_REUSEPORT 或传统的 accept 锁机制：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// 方式 1: SO_REUSEPORT (现代 Linux)</span>
+<span class="n">void</span><span class="w"> </span><span class="n">master_init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">int</span><span class="w"> </span><span class="n">reuse</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">setsockopt</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="n">SOL_SOCKET</span><span class="p">,</span><span class="w"> </span><span class="n">SO_REUSEPORT</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">reuse</span><span class="p">,</span><span class="w"> </span><span class="n">sizeof</span><span class="p">(</span><span class="n">reuse</span><span class="p">));</span>
+<span class="w">    </span><span class="c1">// 每个 Worker 的 accept 会被内核负载均衡</span>
+<span class="p">}</span>
+
+<span class="c1">// 方式 2: accept 锁 (传统方式)</span>
+<span class="n">pthread_mutex_t</span><span class="w"> </span><span class="n">accept_mutex</span><span class="p">;</span>
+
+<span class="n">void</span><span class="w"> </span><span class="n">worker_loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 竞争锁</span>
+<span class="w">        </span><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">accept_mutex</span><span class="p">);</span>
+<span class="w">        </span><span class="nb">int</span><span class="w"> </span><span class="n">client_fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<span class="w">        </span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">accept_mutex</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">client_fd</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">handle_request</span><span class="p">(</span><span class="n">client_fd</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>6, 旧进程优雅退出</p>
+<div class="highlight"><pre><span></span><code><span class="o">//</span><span class="w"> </span><span class="n">旧</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="n">的退出逻辑</span>
+<span class="n">void</span><span class="w"> </span><span class="n">old_worker_shutdown</span><span class="p">()</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="n">停止接受新请求</span>
+<span class="w">    </span><span class="n">accepting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="n">设置超时时间</span><span class="err">（</span><span class="n">防止挂起的请求</span><span class="err">）</span>
+<span class="w">    </span><span class="n">alarm</span><span class="p">(</span><span class="mi">60</span><span class="p">);</span><span class="w">  </span><span class="o">//</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="n">秒后强制退出</span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="mf">3.</span><span class="w"> </span><span class="n">等待当前请求完成</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">active_requests</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">继续处理已接受的请求</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">current_request</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">            </span><span class="n">continue_processing</span><span class="p">(</span><span class="n">current_request</span><span class="p">);</span>
+<span class="w">        </span><span class="err">}</span>
+<span class="w">        </span><span class="n">usleep</span><span class="p">(</span><span class="mi">100000</span><span class="p">);</span><span class="w">  </span><span class="o">//</span><span class="w"> </span><span class="mi">100</span><span class="n">ms</span>
+<span class="w">    </span><span class="err">}</span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="mf">4.</span><span class="w"> </span><span class="n">清理资源</span>
+<span class="w">    </span><span class="n">cleanup_python_interpreter</span><span class="p">();</span>
+<span class="w">    </span><span class="n">close_database_connections</span><span class="p">();</span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="mf">5.</span><span class="w"> </span><span class="n">退出</span>
+<span class="w">    </span><span class="k">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="err">}</span>
+
+<span class="o">//</span><span class="w"> </span><span class="n">Master</span><span class="w"> </span><span class="n">监控旧进程</span>
+<span class="n">void</span><span class="w"> </span><span class="n">monitor_old_workers</span><span class="p">()</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">num_workers</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">mark_as_old</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">            </span><span class="n">time_t</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">(</span><span class="k">NULL</span><span class="p">);</span>
+
+<span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="n">超过</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="n">秒还没退出</span><span class="err">，</span><span class="n">强制杀死</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">shutdown_start</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">60</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">                </span><span class="k">kill</span><span class="p">(</span><span class="n">workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">SIGKILL</span><span class="p">);</span>
+<span class="w">                </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="ss">"Force killed worker %d\n"</span><span class="p">,</span><span class="w"> </span><span class="n">workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">pid</span><span class="p">);</span>
+<span class="w">            </span><span class="err">}</span>
+
+<span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="n">检查进程是否已退出</span>
+<span class="w">            </span><span class="nc">int</span><span class="w"> </span><span class="n">status</span><span class="p">;</span>
+<span class="w">            </span><span class="n">pid_t</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">waitpid</span><span class="p">(</span><span class="n">workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">WNOHANG</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">result</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">                </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="ss">"Old worker %d exited gracefully\n"</span><span class="p">,</span><span class="w"> </span><span class="n">workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">pid</span><span class="p">);</span>
+<span class="w">                </span><span class="n">workers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="n">mark_as_old</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">            </span><span class="err">}</span>
+<span class="w">        </span><span class="err">}</span>
+<span class="w">    </span><span class="err">}</span>
+<span class="err">}</span>
+</code></pre></div>
+<p>时间线演示</p>
+<div class="highlight"><pre><span></span><code>时间 | 事件
+-----|-----------------------------------------------------
+T0   | Master 收到 SIGHUP 信号
+     | 旧 Workers: [1001✓, 1002✓, 1003✓, 1004✓] 接受请求
+     |
+T1   | 创建新 Workers [2001, 2002, 2003, 2004]
+     | 旧 Workers: [1001(req1), 1002, 1003(req2), 1004] 停止接受新请求
+     | 新 Workers: [2001✓, 2002✓, 2003✓, 2004✓] 开始接受请求
+     |
+T2   | 新请求 → 由新 Workers 处理
+     | 旧 Workers: 
+     |   - 1001 还在处理 req1...
+     |   - 1002 空闲，退出 ✓
+     |   - 1003 还在处理 req2...
+     |   - 1004 空闲，退出 ✓
+     |
+T3   | req1 完成，Worker 1001 退出 ✓
+     | req2 完成，Worker 1003 退出 ✓
+     |
+T4   | 所有旧 Workers 已退出
+     | 只剩新 Workers: [2001✓, 2002✓, 2003✓, 2004✓]
+     | 重启完成！
+</code></pre></div>
+<p>总结</p>
+<p>平滑重启不丢请求的核心机制：</p>
+<ul>
+<li>Socket 继承：新旧进程共享同一个监听 Socket</li>
+<li>双进程并存：新进程启动后，旧进程才停止接受新请求</li>
+<li>优雅退出：旧进程等待活跃请求完成</li>
+<li>内核缓冲：Socket backlog 保证短暂的连接队列,listen(listen_fd, 100), backlog = 100, 即使所有 Worker 都忙，新连接也会在内核队列中等待, 不会被拒绝，直到队列满</li>
+<li>超时保护：防止挂起的请求阻塞重启</li>
+</ul>
+<p>这个设计让 uWSGI 可以在生产环境中实现零停机部署，非常优雅。</p>
+<h4>如何避免多个进程同时处理同一个请求（惊群问题）</h4>
+<p>问题场景</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// 多个 Worker 同时监听同一个 Socket</span>
+<span class="n">Master</span><span class="w"> </span><span class="n">Process</span><span class="w"> </span><span class="p">(</span><span class="n">listen_fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span>
+├──<span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="no">fd</span><span class="p">=</span><span class="mi">3</span><span class="p">)</span><span class="w">  </span>←<span class="w"> </span>都在等待
+├──<span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">2</span><span class="p">:</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="no">fd</span><span class="p">=</span><span class="mi">3</span><span class="p">)</span><span class="w">  </span>←<span class="w"> </span>都在等待
+├──<span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">3</span><span class="p">:</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="no">fd</span><span class="p">=</span><span class="mi">3</span><span class="p">)</span><span class="w">  </span>←<span class="w"> </span>都在等待
+└──<span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">4</span><span class="p">:</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="no">fd</span><span class="p">=</span><span class="mi">3</span><span class="p">)</span><span class="w">  </span>←<span class="w"> </span>都在等待
+
+<span class="c1">// 当一个新连接到来时，会发生什么？</span>
+</code></pre></div>
+<p>历史问题：惊群效应 (Thundering Herd)</p>
+<p>老版本 Linux (2.6 之前)</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// 所有进程在 accept() 上阻塞</span>
+<span class="n">Worker</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">)</span><span class="w"> </span>→<span class="w"> </span>阻塞中<span class="p">...</span>
+<span class="n">Worker</span><span class="w"> </span><span class="mi">2</span><span class="p">:</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">)</span><span class="w"> </span>→<span class="w"> </span>阻塞中<span class="p">...</span>
+<span class="n">Worker</span><span class="w"> </span><span class="mi">3</span><span class="p">:</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">)</span><span class="w"> </span>→<span class="w"> </span>阻塞中<span class="p">...</span>
+<span class="n">Worker</span><span class="w"> </span><span class="mi">4</span><span class="p">:</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">)</span><span class="w"> </span>→<span class="w"> </span>阻塞中<span class="p">...</span>
+
+<span class="c1">// 新连接到达</span>
+<span class="p">[</span>新连接来了！<span class="p">]</span>
+
+<span class="c1">// 内核唤醒所有进程！（惊群）</span>
+<span class="n">Worker</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="w"> </span>被唤醒，尝试<span class="w"> </span><span class="n">accept</span><span class="p">()</span><span class="w"> </span>→<span class="w"> </span>成功获得连接<span class="w"> </span>✓
+<span class="n">Worker</span><span class="w"> </span><span class="mi">2</span><span class="p">:</span><span class="w"> </span>被唤醒，尝试<span class="w"> </span><span class="n">accept</span><span class="p">()</span><span class="w"> </span>→<span class="w"> </span>返回<span class="w"> </span><span class="n">EAGAIN</span><span class="w"> </span>✗
+<span class="n">Worker</span><span class="w"> </span><span class="mi">3</span><span class="p">:</span><span class="w"> </span>被唤醒，尝试<span class="w"> </span><span class="n">accept</span><span class="p">()</span><span class="w"> </span>→<span class="w"> </span>返回<span class="w"> </span><span class="n">EAGAIN</span><span class="w"> </span>✗
+<span class="n">Worker</span><span class="w"> </span><span class="mi">4</span><span class="p">:</span><span class="w"> </span>被唤醒，尝试<span class="w"> </span><span class="n">accept</span><span class="p">()</span><span class="w"> </span>→<span class="w"> </span>返回<span class="w"> </span><span class="n">EAGAIN</span><span class="w"> </span>✗
+
+<span class="c1">// 问题：3 个进程被无谓唤醒，浪费 CPU</span>
+</code></pre></div>
+<p>现代解决方案</p>
+<p>方案 1: 内核级解决 (Linux 2.6+)</p>
+<p>Linux accept() 的原子性保证</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// 现代 Linux 内核已经解决了 accept 惊群</span>
+<span class="c1">// 只会唤醒一个进程</span>
+
+<span class="c1">// 内核实现伪代码</span>
+<span class="nb">int</span><span class="w"> </span><span class="n">sys_accept</span><span class="p">(</span><span class="nb">int</span><span class="w"> </span><span class="n">sockfd</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1. 获取 socket 的等待队列</span>
+<span class="w">    </span><span class="n">wait_queue_head_t</span><span class="w"> </span><span class="o">*</span><span class="n">wq</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sock</span><span class="o">-&gt;</span><span class="n">wq</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// 2. 只唤醒一个等待的进程 (exclusive wake)</span>
+<span class="w">    </span><span class="n">wake_up_exclusive</span><span class="p">(</span><span class="n">wq</span><span class="p">);</span><span class="w">  </span><span class="c1">// 关键：exclusive</span>
+
+<span class="w">    </span><span class="c1">// 3. 被唤醒的进程获取连接</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">new_connection</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Worker 进程的 accept 调用</span>
+<span class="n">void</span><span class="w"> </span><span class="n">worker_loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 多个进程可以同时调用，但只有一个会成功</span>
+<span class="w">        </span><span class="nb">int</span><span class="w"> </span><span class="n">client_fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="n">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">NULL</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">client_fd</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">handle_request</span><span class="p">(</span><span class="n">client_fd</span><span class="p">);</span>
+<span class="w">            </span><span class="n">close</span><span class="p">(</span><span class="n">client_fd</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>方案 2: SO_REUSEPORT (Linux 3.9+)</p>
+<p>更高级的负载均衡</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// 每个 Worker 创建自己的 Socket，但绑定到同一个端口</span>
+<span class="nx">void</span><span class="w"> </span><span class="nx">worker_process</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 每个 Worker 独立创建 Socket</span>
+<span class="w">    </span><span class="nx">int</span><span class="w"> </span><span class="nx">listen_fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">socket</span><span class="p">(</span><span class="nx">AF_INET</span><span class="p">,</span><span class="w"> </span><span class="nx">SOCK_STREAM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 关键：设置 SO_REUSEPORT</span>
+<span class="w">    </span><span class="nx">int</span><span class="w"> </span><span class="nx">reuse</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">setsockopt</span><span class="p">(</span><span class="nx">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="nx">SOL_SOCKET</span><span class="p">,</span><span class="w"> </span><span class="nx">SO_REUSEPORT</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">reuse</span><span class="p">,</span><span class="w"> </span><span class="nx">sizeof</span><span class="p">(</span><span class="nx">reuse</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">// 多个进程可以绑定到同一个端口</span>
+<span class="w">    </span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr_in</span><span class="w"> </span><span class="kd">addr</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">sin_family</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">AF_INET</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">sin_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">htons</span><span class="p">(</span><span class="mi">8080</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">sin_addr</span><span class="p">.</span><span class="nx">s_addr</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">INADDR_ANY</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="nx">bind</span><span class="p">(</span><span class="nx">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="kd">addr</span><span class="p">,</span><span class="w"> </span><span class="nx">sizeof</span><span class="p">(</span><span class="kd">addr</span><span class="p">));</span>
+<span class="w">    </span><span class="nx">listen</span><span class="p">(</span><span class="nx">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 各自 accept，内核自动负载均衡</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">int</span><span class="w"> </span><span class="nx">client</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">accept</span><span class="p">(</span><span class="nx">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="nx">NULL</span><span class="p">,</span><span class="w"> </span><span class="nx">NULL</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">handle_request</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">close</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Master 启动多个 Worker</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="nx">int</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">fork</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">worker_process</span><span class="p">();</span>
+<span class="w">            </span><span class="nx">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">wait</span><span class="p">(</span><span class="nx">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>内核如何分配连接？</p>
+<div class="highlight"><pre><span></span><code><span class="o">//</span><span class="w"> </span><span class="n">Linux</span><span class="w"> </span><span class="n">内核实现</span><span class="err">（</span><span class="n">简化</span><span class="err">）</span>
+<span class="o">//</span><span class="w"> </span><span class="n">net</span><span class="o">/</span><span class="n">ipv4</span><span class="o">/</span><span class="n">inet_hashtables</span><span class="p">.</span><span class="n">c</span>
+
+<span class="n">struct</span><span class="w"> </span><span class="n">sock</span><span class="w"> </span><span class="o">*</span><span class="n">inet_lookup_listener</span><span class="p">(</span><span class="n">struct</span><span class="w"> </span><span class="n">net</span><span class="w"> </span><span class="o">*</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="p">...)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">sock</span><span class="w"> </span><span class="o">*</span><span class="n">sk</span><span class="p">;</span>
+<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">hlist_head</span><span class="w"> </span><span class="o">*</span><span class="n">head</span><span class="p">;</span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="n">查找监听该端口的所有</span><span class="w"> </span><span class="n">Socket</span>
+<span class="w">    </span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">hashinfo</span><span class="o">-&gt;</span><span class="n">listening_hash</span><span class="o">[</span><span class="n">hash</span><span class="o">]</span><span class="p">;</span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="n">使用哈希算法选择一个</span><span class="w"> </span><span class="n">Socket</span><span class="w"> </span><span class="p">(</span><span class="n">负载均衡</span><span class="p">)</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">基于源</span><span class="w"> </span><span class="n">IP</span><span class="err">、</span><span class="n">源端口的哈希</span>
+<span class="w">    </span><span class="n">unsigned</span><span class="w"> </span><span class="nc">int</span><span class="w"> </span><span class="n">hash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jhash_3words</span><span class="p">(</span><span class="n">saddr</span><span class="p">,</span><span class="w"> </span><span class="n">sport</span><span class="p">,</span><span class="w"> </span><span class="n">daddr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">sk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">choose_socket_from_hash</span><span class="p">(</span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="n">hash</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sk</span><span class="p">;</span>
+<span class="err">}</span>
+
+<span class="o">//</span><span class="w"> </span><span class="n">结果</span><span class="err">：</span><span class="n">连接被均匀分配到不同</span><span class="w"> </span><span class="n">Worker</span>
+<span class="o">//</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">1</span><span class="err">:</span><span class="w"> </span><span class="n">处理连接</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mf">13.</span><span class="p">..</span>
+<span class="o">//</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">2</span><span class="err">:</span><span class="w"> </span><span class="n">处理连接</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mf">14.</span><span class="p">..</span>
+<span class="o">//</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">3</span><span class="err">:</span><span class="w"> </span><span class="n">处理连接</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mf">15.</span><span class="p">..</span>
+<span class="o">//</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="mi">4</span><span class="err">:</span><span class="w"> </span><span class="n">处理连接</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mf">16.</span><span class="p">..</span>
+</code></pre></div>
+<p>方案 3: Accept 互斥锁 (uWSGI 传统模式)</p>
+<p>用户态加锁控制</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// uWSGI 的锁实现</span>
+<span class="nb">struct</span><span class="w"> </span><span class="n">uwsgi_lock</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">pthread_mutex_t</span><span class="w"> </span><span class="n">lock</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// 或者用文件锁、信号量等</span>
+<span class="p">};</span>
+
+<span class="nb">struct</span><span class="w"> </span><span class="n">uwsgi_lock</span><span class="w"> </span><span class="n">accept_lock</span><span class="p">;</span>
+
+<span class="n">void</span><span class="w"> </span><span class="n">worker_init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 初始化共享锁（在 Master 进程中创建，fork 后共享）</span>
+<span class="w">    </span><span class="n">pthread_mutexattr_t</span><span class="w"> </span><span class="n">attr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">pthread_mutexattr_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">attr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">pthread_mutexattr_setpshared</span><span class="p">(</span><span class="o">&amp;</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">PTHREAD_PROCESS_SHARED</span><span class="p">);</span>
+<span class="w">    </span><span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">accept_lock</span><span class="p">.</span><span class="n">lock</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">attr</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">void</span><span class="w"> </span><span class="n">worker_loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 1. 竞争锁</span>
+<span class="w">        </span><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">accept_lock</span><span class="p">.</span><span class="n">lock</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// 2. 只有获得锁的进程可以 accept</span>
+<span class="w">        </span><span class="nb">int</span><span class="w"> </span><span class="n">client_fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="n">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">NULL</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// 3. 立即释放锁，让其他进程可以 accept</span>
+<span class="w">        </span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">accept_lock</span><span class="p">.</span><span class="n">lock</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// 4. 处理请求（不持有锁）</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">client_fd</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">handle_request</span><span class="p">(</span><span class="n">client_fd</span><span class="p">);</span>
+<span class="w">            </span><span class="n">close</span><span class="p">(</span><span class="n">client_fd</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>方案 4: epoll + EPOLLEXCLUSIVE (Linux 4.5+)</p>
+<p>事件驱动模式</p>
+<div class="highlight"><pre><span></span><code><span class="o">//</span><span class="w"> </span><span class="n">使用</span><span class="w"> </span><span class="n">epoll</span><span class="w"> </span><span class="n">监听同一个</span><span class="w"> </span><span class="n">listen_fd</span>
+<span class="n">void</span><span class="w"> </span><span class="n">worker_loop</span><span class="p">()</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="nc">int</span><span class="w"> </span><span class="n">epfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">epoll_create1</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">epoll_event</span><span class="w"> </span><span class="n">ev</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ev</span><span class="p">.</span><span class="n">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EPOLLIN</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">EPOLLEXCLUSIVE</span><span class="p">;</span><span class="w">  </span><span class="o">//</span><span class="w"> </span><span class="n">关键</span><span class="err">：</span><span class="n">EPOLLEXCLUSIVE</span>
+<span class="w">    </span><span class="n">ev</span><span class="p">.</span><span class="k">data</span><span class="p">.</span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listen_fd</span><span class="p">;</span>
+<span class="w">    </span><span class="n">epoll_ctl</span><span class="p">(</span><span class="n">epfd</span><span class="p">,</span><span class="w"> </span><span class="n">EPOLL_CTL_ADD</span><span class="p">,</span><span class="w"> </span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">epoll_event</span><span class="w"> </span><span class="n">events</span><span class="o">[</span><span class="n">10</span><span class="o">]</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">只有一个</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="n">会被唤醒</span>
+<span class="w">        </span><span class="nc">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">epoll_wait</span><span class="p">(</span><span class="n">epfd</span><span class="p">,</span><span class="w"> </span><span class="n">events</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">events</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="k">data</span><span class="p">.</span><span class="n">fd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">listen_fd</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="n">可以安全</span><span class="w"> </span><span class="n">accept</span>
+<span class="w">                </span><span class="nc">int</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="k">NULL</span><span class="p">);</span>
+<span class="w">                </span><span class="n">handle_request</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+<span class="w">                </span><span class="k">close</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+<span class="w">            </span><span class="err">}</span>
+<span class="w">        </span><span class="err">}</span>
+<span class="w">    </span><span class="err">}</span>
+<span class="err">}</span>
+</code></pre></div>
+<p>uWSGI 实际实现</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// uwsgi.c (简化)</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">uwsgi_accept_loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 检测内核特性</span>
+<span class="w">    </span><span class="cp">#ifdef SO_REUSEPORT</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uwsgi</span><span class="p">.</span><span class="n">reuse_port</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// 使用 SO_REUSEPORT 模式</span>
+<span class="w">            </span><span class="n">setup_reuseport_socket</span><span class="p">();</span>
+<span class="w">            </span><span class="n">simple_accept_loop</span><span class="p">();</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="cp">#endif</span>
+
+<span class="w">    </span><span class="cp">#ifdef EPOLLEXCLUSIVE</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">kernel_version</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">KERNEL_VERSION</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// 使用 epoll exclusive 模式</span>
+<span class="w">            </span><span class="n">epoll_exclusive_loop</span><span class="p">();</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="cp">#endif</span>
+
+<span class="w">    </span><span class="c1">// 降级到加锁模式</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uwsgi</span><span class="p">.</span><span class="n">lock_engine</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">locked_accept_loop</span><span class="p">();</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 最后：依赖内核的 accept 原子性</span>
+<span class="w">    </span><span class="n">simple_accept_loop</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// 简单 accept 模式（现代 Linux 默认）</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">simple_accept_loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 直接 accept，内核保证原子性</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">uwsgi</span><span class="p">.</span><span class="n">shared</span><span class="o">-&gt;</span><span class="n">worker_sockets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">client</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">handle_wsgi_request</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+<span class="w">        </span><span class="n">close</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 加锁模式（老系统或配置要求）</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">locked_accept_loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 获取共享锁</span>
+<span class="w">        </span><span class="n">uwsgi_lock</span><span class="p">(</span><span class="n">uwsgi</span><span class="p">.</span><span class="n">accept_lock</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// accept 连接</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">uwsgi</span><span class="p">.</span><span class="n">shared</span><span class="o">-&gt;</span><span class="n">worker_sockets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// 立即释放锁</span>
+<span class="w">        </span><span class="n">uwsgi_unlock</span><span class="p">(</span><span class="n">uwsgi</span><span class="p">.</span><span class="n">accept_lock</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">client</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// 处理请求（不持有锁）</span>
+<span class="w">        </span><span class="n">handle_wsgi_request</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+<span class="w">        </span><span class="n">close</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>总结</p>
+<p>保证请求不被重复处理的机制：</p>
+<ul>
+<li>
+<p>现代 Linux (2.6+)：内核的 accept() 已经是原子的，只唤醒一个进程</p>
+</li>
+<li>
+<p>SO_REUSEPORT：内核层面的连接分发，最优负载均衡</p>
+</li>
+<li>用户态锁：兼容老系统，通过互斥锁保证互斥</li>
+<li>EPOLLEXCLUSIVE：epoll 的独占唤醒模式</li>
+</ul>
+<p>uWSGI 默认依赖内核的 accept 原子性，在现代 Linux 上完全不需要担心重复处理问题！</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
