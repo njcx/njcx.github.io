@@ -643,7 +643,7 @@ T4<span class="w">   </span><span class="p">|</span><span class="w"> </span>所�
 <li>超时保护：防止挂起的请求阻塞重启</li>
 </ul>
 <p>这个设计让 uWSGI 可以在生产环境中实现零停机部署，非常优雅。</p>
-<h4>如何避免多个进程同时处理同一个请求（惊群问题）</h4>
+<h4>如何避免多个子进程(多个Worker)同时处理同一个请求（惊群问题）</h4>
 <p>问题场景</p>
 <div class="highlight"><pre><span></span><code>//<span class="w"> </span>多个<span class="w"> </span>Worker<span class="w"> </span>同时监听同一个<span class="w"> </span>Socket
 Master<span class="w"> </span>Process<span class="w"> </span><span class="o">(</span><span class="nv">listen_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="o">)</span>
