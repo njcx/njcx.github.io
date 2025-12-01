@@ -164,7 +164,7 @@ var _hmt = _hmt || [];
 </li>
 </ol>
 <h4>对比：BERT vs GPT</h4>
-<table class="table table-striped table-hover">
+<table class="table-striped table-hover table">
 <thead>
 <tr>
 <th style="text-align: left;">特性</th>
@@ -247,174 +247,174 @@ EPOCHS：训练轮数
 LEARNING_RATE：学习率（2e-5 是 BERT 的常用值）
 MAX_LENGTH：最大序列长度
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">def</span><span class="w"> </span><span class="n">train_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">dataloader</span><span class="p">,</span><span class="w"> </span><span class="n">optimizer</span><span class="p">,</span><span class="w"> </span><span class="n">scheduler</span><span class="p">,</span><span class="w"> </span><span class="n">device</span><span class="p">):</span>
-<span class="w">    </span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-<span class="w">    </span><span class="n">total_loss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
-<span class="w">    </span><span class="n">predictions</span><span class="p">,</span><span class="w"> </span><span class="n">true_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="p">[]</span>
+<div class="highlight"><pre><span></span><code>def<span class="w"> </span>train_epoch<span class="o">(</span>model,<span class="w"> </span>dataloader,<span class="w"> </span>optimizer,<span class="w"> </span>scheduler,<span class="w"> </span>device<span class="o">)</span>:
+<span class="w">    </span>model.train<span class="o">()</span>
+<span class="w">    </span><span class="nv">total_loss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>predictions,<span class="w"> </span><span class="nv">true_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span>,<span class="w"> </span><span class="o">[]</span>
 
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">batch</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">tqdm</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span><span class="w"> </span><span class="n">desc</span><span class="o">=</span><span class="s2">"Training"</span><span class="p">):</span>
-<span class="w">        </span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>batch<span class="w"> </span><span class="k">in</span><span class="w"> </span>tqdm<span class="o">(</span>dataloader,<span class="w"> </span><span class="nv">desc</span><span class="o">=</span><span class="s2">"Training"</span><span class="o">)</span>:
+<span class="w">        </span>optimizer.zero_grad<span class="o">()</span>
 
-<span class="w">        </span><span class="n">input_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">batch</span><span class="p">[</span><span class="s1">'input_ids'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="w">        </span><span class="n">attention_mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">batch</span><span class="p">[</span><span class="s1">'attention_mask'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="w">        </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">batch</span><span class="p">[</span><span class="s1">'labels'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="w">        </span><span class="nv">input_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>batch<span class="o">[</span><span class="s1">'input_ids'</span><span class="o">]</span>.to<span class="o">(</span>device<span class="o">)</span>
+<span class="w">        </span><span class="nv">attention_mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>batch<span class="o">[</span><span class="s1">'attention_mask'</span><span class="o">]</span>.to<span class="o">(</span>device<span class="o">)</span>
+<span class="w">        </span><span class="nv">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>batch<span class="o">[</span><span class="s1">'labels'</span><span class="o">]</span>.to<span class="o">(</span>device<span class="o">)</span>
 
-<span class="w">        </span><span class="n">outputs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">model</span><span class="p">(</span>
-<span class="w">            </span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span>
-<span class="w">            </span><span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span>
-<span class="w">            </span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span>
-<span class="w">        </span><span class="p">)</span>
+<span class="w">        </span><span class="nv">outputs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>model<span class="o">(</span>
+<span class="w">            </span><span class="nv">input_ids</span><span class="o">=</span>input_ids,
+<span class="w">            </span><span class="nv">attention_mask</span><span class="o">=</span>attention_mask,
+<span class="w">            </span><span class="nv">labels</span><span class="o">=</span>labels
+<span class="w">        </span><span class="o">)</span>
 
-<span class="w">        </span><span class="n">loss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">outputs</span><span class="o">.</span><span class="n">loss</span>
-<span class="w">        </span><span class="n">total_loss</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="w">        </span><span class="nv">loss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>outputs.loss
+<span class="w">        </span><span class="nv">total_loss</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span>loss.item<span class="o">()</span>
 
-<span class="w">        </span><span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-<span class="w">        </span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span>
-<span class="w">        </span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-<span class="w">        </span><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<span class="w">        </span>loss.backward<span class="o">()</span>
+<span class="w">        </span>torch.nn.utils.clip_grad_norm_<span class="o">(</span>model.parameters<span class="o">()</span>,<span class="w"> </span><span class="m">1</span>.0<span class="o">)</span>
+<span class="w">        </span>optimizer.step<span class="o">()</span>
+<span class="w">        </span>scheduler.step<span class="o">()</span>
 
-<span class="w">        </span><span class="n">preds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">outputs</span><span class="o">.</span><span class="n">logits</span><span class="p">,</span><span class="w"> </span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="w">        </span><span class="n">predictions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
-<span class="w">        </span><span class="n">true_labels</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+<span class="w">        </span><span class="nv">preds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>torch.argmax<span class="o">(</span>outputs.logits,<span class="w"> </span><span class="nv">dim</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
+<span class="w">        </span>predictions.extend<span class="o">(</span>preds.cpu<span class="o">()</span>.numpy<span class="o">())</span>
+<span class="w">        </span>true_labels.extend<span class="o">(</span>labels.cpu<span class="o">()</span>.numpy<span class="o">())</span>
 
-<span class="w">    </span><span class="n">avg_loss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_loss</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
-<span class="w">    </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predictions</span><span class="p">)</span>
+<span class="w">    </span><span class="nv">avg_loss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>total_loss<span class="w"> </span>/<span class="w"> </span>len<span class="o">(</span>dataloader<span class="o">)</span>
+<span class="w">    </span><span class="nv">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>accuracy_score<span class="o">(</span>true_labels,<span class="w"> </span>predictions<span class="o">)</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">avg_loss</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>avg_loss,<span class="w"> </span>accuracy
 </code></pre></div>
 <p>使用了 model.train() 正确设置训练模式。
 梯度清零、前向传播、反向传播、梯度裁剪、优化器和调度器更新都包含在内。
 收集预测和真实标签用于计算准确率。
 使用 tqdm 提供进度条，提升可读性。</p>
 <p>第三步，通过RESTful API提供服务(推理)</p>
-<div class="highlight"><pre><span></span><code><span class="n">def</span><span class="w"> </span><span class="n">predict_injection</span><span class="p">(</span><span class="nc">text</span><span class="p">,</span><span class="w"> </span><span class="n">threshold</span><span class="o">=</span><span class="n">CONFIDENCE_THRESHOLD</span><span class="p">)</span><span class="err">:</span>
-<span class="w">    </span><span class="ss">"""</span>
-<span class="ss">    预测文本是否为提示词注入</span>
+<div class="highlight"><pre><span></span><code>def<span class="w"> </span>predict_injection<span class="o">(</span>text,<span class="w"> </span><span class="nv">threshold</span><span class="o">=</span>CONFIDENCE_THRESHOLD<span class="o">)</span>:
+<span class="w">    </span><span class="s2">"""</span>
+<span class="s2">    预测文本是否为提示词注入</span>
 
-<span class="ss">    Args:</span>
-<span class="ss">        text: 输入文本</span>
-<span class="ss">        threshold: 判定阈值</span>
+<span class="s2">    Args:</span>
+<span class="s2">        text: 输入文本</span>
+<span class="s2">        threshold: 判定阈值</span>
 
-<span class="ss">    Returns:</span>
-<span class="ss">        dict: 预测结果</span>
-<span class="ss">    """</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">None</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">tokenizer</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">None</span><span class="err">:</span>
-<span class="w">        </span><span class="n">raise</span><span class="w"> </span><span class="n">RuntimeError</span><span class="p">(</span><span class="ss">"Model not loaded"</span><span class="p">)</span>
+<span class="s2">    Returns:</span>
+<span class="s2">        dict: 预测结果</span>
+<span class="s2">    """</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>model<span class="w"> </span>is<span class="w"> </span>None<span class="w"> </span>or<span class="w"> </span>tokenizer<span class="w"> </span>is<span class="w"> </span>None:
+<span class="w">        </span>raise<span class="w"> </span>RuntimeError<span class="o">(</span><span class="s2">"Model not loaded"</span><span class="o">)</span>
 
-<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">文本编码</span>
-<span class="w">    </span><span class="n">encoding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tokenizer</span><span class="p">(</span>
-<span class="w">        </span><span class="nc">text</span><span class="p">,</span>
-<span class="w">        </span><span class="n">add_special_tokens</span><span class="o">=</span><span class="k">True</span><span class="p">,</span>
-<span class="w">        </span><span class="n">max_length</span><span class="o">=</span><span class="n">MAX_LENGTH</span><span class="p">,</span>
-<span class="w">        </span><span class="n">padding</span><span class="o">=</span><span class="s1">'max_length'</span><span class="p">,</span>
-<span class="w">        </span><span class="n">truncation</span><span class="o">=</span><span class="k">True</span><span class="p">,</span>
-<span class="w">        </span><span class="n">return_attention_mask</span><span class="o">=</span><span class="k">True</span><span class="p">,</span>
-<span class="w">        </span><span class="n">return_tensors</span><span class="o">=</span><span class="s1">'pt'</span>
-<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># 文本编码</span>
+<span class="w">    </span><span class="nv">encoding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>tokenizer<span class="o">(</span>
+<span class="w">        </span>text,
+<span class="w">        </span><span class="nv">add_special_tokens</span><span class="o">=</span>True,
+<span class="w">        </span><span class="nv">max_length</span><span class="o">=</span>MAX_LENGTH,
+<span class="w">        </span><span class="nv">padding</span><span class="o">=</span><span class="s1">'max_length'</span>,
+<span class="w">        </span><span class="nv">truncation</span><span class="o">=</span>True,
+<span class="w">        </span><span class="nv">return_attention_mask</span><span class="o">=</span>True,
+<span class="w">        </span><span class="nv">return_tensors</span><span class="o">=</span><span class="s1">'pt'</span>
+<span class="w">    </span><span class="o">)</span>
 
-<span class="w">    </span><span class="n">input_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">encoding</span><span class="o">[</span><span class="n">'input_ids'</span><span class="o">]</span><span class="p">.</span><span class="k">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="w">    </span><span class="n">attention_mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">encoding</span><span class="o">[</span><span class="n">'attention_mask'</span><span class="o">]</span><span class="p">.</span><span class="k">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="w">    </span><span class="nv">input_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>encoding<span class="o">[</span><span class="s1">'input_ids'</span><span class="o">]</span>.to<span class="o">(</span>device<span class="o">)</span>
+<span class="w">    </span><span class="nv">attention_mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>encoding<span class="o">[</span><span class="s1">'attention_mask'</span><span class="o">]</span>.to<span class="o">(</span>device<span class="o">)</span>
 
-<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">模型推理</span>
-<span class="w">    </span><span class="k">with</span><span class="w"> </span><span class="n">torch</span><span class="p">.</span><span class="n">no_grad</span><span class="p">()</span><span class="err">:</span>
-<span class="w">        </span><span class="n">outputs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span><span class="w"> </span><span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">)</span>
-<span class="w">        </span><span class="n">probs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="p">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">outputs</span><span class="p">.</span><span class="n">logits</span><span class="p">,</span><span class="w"> </span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="w">        </span><span class="n">prediction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">torch</span><span class="p">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span><span class="w"> </span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">).</span><span class="n">item</span><span class="p">()</span>
-<span class="w">        </span><span class="n">confidence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">probs</span><span class="o">[</span><span class="n">0</span><span class="o">][</span><span class="n">prediction</span><span class="o">]</span><span class="p">.</span><span class="n">item</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># 模型推理</span>
+<span class="w">    </span>with<span class="w"> </span>torch.no_grad<span class="o">()</span>:
+<span class="w">        </span><span class="nv">outputs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>model<span class="o">(</span><span class="nv">input_ids</span><span class="o">=</span>input_ids,<span class="w"> </span><span class="nv">attention_mask</span><span class="o">=</span>attention_mask<span class="o">)</span>
+<span class="w">        </span><span class="nv">probs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>torch.softmax<span class="o">(</span>outputs.logits,<span class="w"> </span><span class="nv">dim</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
+<span class="w">        </span><span class="nv">prediction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>torch.argmax<span class="o">(</span>probs,<span class="w"> </span><span class="nv">dim</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>.item<span class="o">()</span>
+<span class="w">        </span><span class="nv">confidence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>probs<span class="o">[</span><span class="m">0</span><span class="o">][</span>prediction<span class="o">]</span>.item<span class="o">()</span>
 
-<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">构建结果</span>
-<span class="w">    </span><span class="n">is_injection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prediction</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">confidence</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">threshold</span>
+<span class="w">    </span><span class="c1"># 构建结果</span>
+<span class="w">    </span><span class="nv">is_injection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">prediction</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>and<span class="w"> </span>confidence<span class="w"> </span>&gt;<span class="o">=</span><span class="w"> </span>threshold
 
-<span class="w">    </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{</span>
-<span class="w">        </span><span class="s1">'text'</span><span class="err">:</span><span class="w"> </span><span class="nc">text</span><span class="p">,</span>
-<span class="w">        </span><span class="s1">'is_injection'</span><span class="err">:</span><span class="w"> </span><span class="n">is_injection</span><span class="p">,</span>
-<span class="w">        </span><span class="s1">'prediction'</span><span class="err">:</span><span class="w"> </span><span class="s1">'injection'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">prediction</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'normal'</span><span class="p">,</span>
-<span class="w">        </span><span class="s1">'confidence'</span><span class="err">:</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">confidence</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">),</span>
-<span class="w">        </span><span class="s1">'probabilities'</span><span class="err">:</span><span class="w"> </span><span class="err">{</span>
-<span class="w">            </span><span class="s1">'normal'</span><span class="err">:</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">probs</span><span class="o">[</span><span class="n">0</span><span class="o">][</span><span class="n">0</span><span class="o">]</span><span class="p">.</span><span class="n">item</span><span class="p">(),</span><span class="w"> </span><span class="mi">4</span><span class="p">),</span>
-<span class="w">            </span><span class="s1">'injection'</span><span class="err">:</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">probs</span><span class="o">[</span><span class="n">0</span><span class="o">][</span><span class="n">1</span><span class="o">]</span><span class="p">.</span><span class="n">item</span><span class="p">(),</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
-<span class="w">        </span><span class="err">}</span>
-<span class="w">    </span><span class="err">}</span>
+<span class="w">    </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s1">'text'</span>:<span class="w"> </span>text,
+<span class="w">        </span><span class="s1">'is_injection'</span>:<span class="w"> </span>is_injection,
+<span class="w">        </span><span class="s1">'prediction'</span>:<span class="w"> </span><span class="s1">'injection'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">prediction</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'normal'</span>,
+<span class="w">        </span><span class="s1">'confidence'</span>:<span class="w"> </span>round<span class="o">(</span>confidence,<span class="w"> </span><span class="m">4</span><span class="o">)</span>,
+<span class="w">        </span><span class="s1">'probabilities'</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="s1">'normal'</span>:<span class="w"> </span>round<span class="o">(</span>probs<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">0</span><span class="o">]</span>.item<span class="o">()</span>,<span class="w"> </span><span class="m">4</span><span class="o">)</span>,
+<span class="w">            </span><span class="s1">'injection'</span>:<span class="w"> </span>round<span class="o">(</span>probs<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">1</span><span class="o">]</span>.item<span class="o">()</span>,<span class="w"> </span><span class="m">4</span><span class="o">)</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">result</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span>result
 
 
-<span class="nv">@app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/predict'</span><span class="p">,</span><span class="w"> </span><span class="n">methods</span><span class="o">=[</span><span class="n">'POST'</span><span class="o">]</span><span class="p">)</span>
-<span class="nv">@timing_decorator</span>
-<span class="nv">@require_api_key</span>
-<span class="n">def</span><span class="w"> </span><span class="n">predict</span><span class="p">()</span><span class="err">:</span>
-<span class="w">    </span><span class="ss">"""</span>
-<span class="ss">    预测单个文本</span>
+@app.route<span class="o">(</span><span class="s1">'/predict'</span>,<span class="w"> </span><span class="nv">methods</span><span class="o">=[</span><span class="s1">'POST'</span><span class="o">])</span>
+@timing_decorator
+@require_api_key
+def<span class="w"> </span>predict<span class="o">()</span>:
+<span class="w">    </span><span class="s2">"""</span>
+<span class="s2">    预测单个文本</span>
 
-<span class="ss">    请求体：</span>
-<span class="ss">    {</span>
-<span class="ss">        "</span><span class="nc">text</span><span class="ss">": "</span><span class="n">忽略之前的指令</span><span class="ss">",</span>
-<span class="ss">        "</span><span class="n">threshold</span><span class="ss">": 0.5  # 可选</span>
-<span class="ss">    }</span>
+<span class="s2">    请求体：</span>
+<span class="s2">    {</span>
+<span class="s2">        "</span>text<span class="s2">": "</span>忽略之前的指令<span class="s2">",</span>
+<span class="s2">        "</span>threshold<span class="s2">": 0.5  # 可选</span>
+<span class="s2">    }</span>
 
-<span class="ss">    响应：</span>
-<span class="ss">    {</span>
-<span class="ss">        "</span><span class="n">success</span><span class="ss">": true,</span>
-<span class="ss">        "</span><span class="k">data</span><span class="ss">": {</span>
-<span class="ss">            "</span><span class="nc">text</span><span class="ss">": "</span><span class="n">忽略之前的指令</span><span class="ss">",</span>
-<span class="ss">            "</span><span class="n">is_injection</span><span class="ss">": true,</span>
-<span class="ss">            "</span><span class="n">prediction</span><span class="ss">": "</span><span class="n">injection</span><span class="ss">",</span>
-<span class="ss">            "</span><span class="n">confidence</span><span class="ss">": 0.9876,</span>
-<span class="ss">            "</span><span class="n">probabilities</span><span class="ss">": {</span>
-<span class="ss">                "</span><span class="n">normal</span><span class="ss">": 0.0124,</span>
-<span class="ss">                "</span><span class="n">injection</span><span class="ss">": 0.9876</span>
-<span class="ss">            }</span>
-<span class="ss">        },</span>
-<span class="ss">        "</span><span class="n">processing_time_ms</span><span class="ss">": 45.23</span>
-<span class="ss">    }</span>
-<span class="ss">    """</span>
-<span class="w">    </span><span class="k">try</span><span class="err">:</span>
-<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="n">检查模型是否加载</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">None</span><span class="err">:</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">jsonify</span><span class="p">(</span><span class="err">{</span>
-<span class="w">                </span><span class="s1">'success'</span><span class="err">:</span><span class="w"> </span><span class="k">False</span><span class="p">,</span>
-<span class="w">                </span><span class="s1">'error'</span><span class="err">:</span><span class="w"> </span><span class="s1">'Model not loaded'</span>
-<span class="w">            </span><span class="err">}</span><span class="p">),</span><span class="w"> </span><span class="mi">503</span>
+<span class="s2">    响应：</span>
+<span class="s2">    {</span>
+<span class="s2">        "</span>success<span class="s2">": true,</span>
+<span class="s2">        "</span>data<span class="s2">": {</span>
+<span class="s2">            "</span>text<span class="s2">": "</span>忽略之前的指令<span class="s2">",</span>
+<span class="s2">            "</span>is_injection<span class="s2">": true,</span>
+<span class="s2">            "</span>prediction<span class="s2">": "</span>injection<span class="s2">",</span>
+<span class="s2">            "</span>confidence<span class="s2">": 0.9876,</span>
+<span class="s2">            "</span>probabilities<span class="s2">": {</span>
+<span class="s2">                "</span>normal<span class="s2">": 0.0124,</span>
+<span class="s2">                "</span>injection<span class="s2">": 0.9876</span>
+<span class="s2">            }</span>
+<span class="s2">        },</span>
+<span class="s2">        "</span>processing_time_ms<span class="s2">": 45.23</span>
+<span class="s2">    }</span>
+<span class="s2">    """</span>
+<span class="w">    </span>try:
+<span class="w">        </span><span class="c1"># 检查模型是否加载</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>model<span class="w"> </span>is<span class="w"> </span>None:
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>jsonify<span class="o">({</span>
+<span class="w">                </span><span class="s1">'success'</span>:<span class="w"> </span>False,
+<span class="w">                </span><span class="s1">'error'</span>:<span class="w"> </span><span class="s1">'Model not loaded'</span>
+<span class="w">            </span><span class="o">})</span>,<span class="w"> </span><span class="m">503</span>
 
-<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="n">获取请求数据</span>
-<span class="w">        </span><span class="k">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">get_json</span><span class="p">()</span>
+<span class="w">        </span><span class="c1"># 获取请求数据</span>
+<span class="w">        </span><span class="nv">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>request.get_json<span class="o">()</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">'text'</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">data</span><span class="err">:</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">jsonify</span><span class="p">(</span><span class="err">{</span>
-<span class="w">                </span><span class="s1">'success'</span><span class="err">:</span><span class="w"> </span><span class="k">False</span><span class="p">,</span>
-<span class="w">                </span><span class="s1">'error'</span><span class="err">:</span><span class="w"> </span><span class="s1">'Missing required field: text'</span>
-<span class="w">            </span><span class="err">}</span><span class="p">),</span><span class="w"> </span><span class="mi">400</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>not<span class="w"> </span>data<span class="w"> </span>or<span class="w"> </span><span class="s1">'text'</span><span class="w"> </span>not<span class="w"> </span><span class="k">in</span><span class="w"> </span>data:
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>jsonify<span class="o">({</span>
+<span class="w">                </span><span class="s1">'success'</span>:<span class="w"> </span>False,
+<span class="w">                </span><span class="s1">'error'</span>:<span class="w"> </span><span class="s1">'Missing required field: text'</span>
+<span class="w">            </span><span class="o">})</span>,<span class="w"> </span><span class="m">400</span>
 
-<span class="w">        </span><span class="nc">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">data</span><span class="o">[</span><span class="n">'text'</span><span class="o">]</span>
-<span class="w">        </span><span class="n">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">data</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="s1">'threshold'</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIDENCE_THRESHOLD</span><span class="p">)</span>
+<span class="w">        </span><span class="nv">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>data<span class="o">[</span><span class="s1">'text'</span><span class="o">]</span>
+<span class="w">        </span><span class="nv">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>data.get<span class="o">(</span><span class="s1">'threshold'</span>,<span class="w"> </span>CONFIDENCE_THRESHOLD<span class="o">)</span>
 
-<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="n">验证输入</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">isinstance</span><span class="p">(</span><span class="nc">text</span><span class="p">,</span><span class="w"> </span><span class="nf">str</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="nc">text</span><span class="p">.</span><span class="n">strip</span><span class="p">())</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="err">:</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">jsonify</span><span class="p">(</span><span class="err">{</span>
-<span class="w">                </span><span class="s1">'success'</span><span class="err">:</span><span class="w"> </span><span class="k">False</span><span class="p">,</span>
-<span class="w">                </span><span class="s1">'error'</span><span class="err">:</span><span class="w"> </span><span class="s1">'Text must be a non-empty string'</span>
-<span class="w">            </span><span class="err">}</span><span class="p">),</span><span class="w"> </span><span class="mi">400</span>
+<span class="w">        </span><span class="c1"># 验证输入</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>not<span class="w"> </span>isinstance<span class="o">(</span>text,<span class="w"> </span>str<span class="o">)</span><span class="w"> </span>or<span class="w"> </span>len<span class="o">(</span>text.strip<span class="o">())</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span>:
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>jsonify<span class="o">({</span>
+<span class="w">                </span><span class="s1">'success'</span>:<span class="w"> </span>False,
+<span class="w">                </span><span class="s1">'error'</span>:<span class="w"> </span><span class="s1">'Text must be a non-empty string'</span>
+<span class="w">            </span><span class="o">})</span>,<span class="w"> </span><span class="m">400</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="nc">text</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10000</span><span class="err">:</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">jsonify</span><span class="p">(</span><span class="err">{</span>
-<span class="w">                </span><span class="s1">'success'</span><span class="err">:</span><span class="w"> </span><span class="k">False</span><span class="p">,</span>
-<span class="w">                </span><span class="s1">'error'</span><span class="err">:</span><span class="w"> </span><span class="s1">'Text too long (max 10000 characters)'</span>
-<span class="w">            </span><span class="err">}</span><span class="p">),</span><span class="w"> </span><span class="mi">400</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>text<span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span><span class="m">10000</span>:
+<span class="w">            </span><span class="k">return</span><span class="w"> </span>jsonify<span class="o">({</span>
+<span class="w">                </span><span class="s1">'success'</span>:<span class="w"> </span>False,
+<span class="w">                </span><span class="s1">'error'</span>:<span class="w"> </span><span class="s1">'Text too long (max 10000 characters)'</span>
+<span class="w">            </span><span class="o">})</span>,<span class="w"> </span><span class="m">400</span>
 
-<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="n">执行预测</span>
-<span class="w">        </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">predict_injection</span><span class="p">(</span><span class="nc">text</span><span class="p">,</span><span class="w"> </span><span class="n">threshold</span><span class="p">)</span>
+<span class="w">        </span><span class="c1"># 执行预测</span>
+<span class="w">        </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>predict_injection<span class="o">(</span>text,<span class="w"> </span>threshold<span class="o">)</span>
 
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">jsonify</span><span class="p">(</span><span class="err">{</span>
-<span class="w">            </span><span class="s1">'success'</span><span class="err">:</span><span class="w"> </span><span class="k">True</span><span class="p">,</span>
-<span class="w">            </span><span class="s1">'data'</span><span class="err">:</span><span class="w"> </span><span class="k">result</span>
-<span class="w">        </span><span class="err">}</span><span class="p">),</span><span class="w"> </span><span class="mi">200</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>jsonify<span class="o">({</span>
+<span class="w">            </span><span class="s1">'success'</span>:<span class="w"> </span>True,
+<span class="w">            </span><span class="s1">'data'</span>:<span class="w"> </span>result
+<span class="w">        </span><span class="o">})</span>,<span class="w"> </span><span class="m">200</span>
 
-<span class="w">    </span><span class="ow">except</span><span class="w"> </span><span class="k">Exception</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nl">e</span><span class="p">:</span>
-<span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="ss">"Prediction error: {e}"</span><span class="p">,</span><span class="w"> </span><span class="n">exc_info</span><span class="o">=</span><span class="k">True</span><span class="p">)</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">jsonify</span><span class="p">(</span><span class="err">{</span>
-<span class="w">            </span><span class="s1">'success'</span><span class="err">:</span><span class="w"> </span><span class="k">False</span><span class="p">,</span>
-<span class="w">            </span><span class="s1">'error'</span><span class="err">:</span><span class="w"> </span><span class="nf">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-<span class="w">        </span><span class="err">}</span><span class="p">),</span><span class="w"> </span><span class="mi">500</span>
+<span class="w">    </span>except<span class="w"> </span>Exception<span class="w"> </span>as<span class="w"> </span>e:
+<span class="w">        </span>logger.error<span class="o">(</span>f<span class="s2">"Prediction error: {e}"</span>,<span class="w"> </span><span class="nv">exc_info</span><span class="o">=</span>True<span class="o">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span>jsonify<span class="o">({</span>
+<span class="w">            </span><span class="s1">'success'</span>:<span class="w"> </span>False,
+<span class="w">            </span><span class="s1">'error'</span>:<span class="w"> </span>str<span class="o">(</span>e<span class="o">)</span>
+<span class="w">        </span><span class="o">})</span>,<span class="w"> </span><span class="m">500</span>
 </code></pre></div>
 <p>第四歩，测试：</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
