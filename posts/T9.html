@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <p>随着全球AI战略的深入推进，大语言模型（LLM）在提升生产力的同时，也引入了新的安全风险。根据OWASP发布的LLM应用十大安全威胁，提示词注入（Prompt Injection）和敏感信息泄露位列榜首，已成为企业级AI应用面临的最严峻挑战。大模型（LLM）本质上是概率生成系统，天然存在以下风险，LLM安全网关的核心目标是拦截有害输入、保障系统合规可控：</p>
-<table class="table-striped table-hover table">
+<table class="table table-hover table-striped">
 <thead>
 <tr>
 <th>问题类型</th>
@@ -127,8 +127,100 @@ var _hmt = _hmt || [];
 </table>
 <p>因为输入的提示词是自然语言，传统方案（关键词黑名单、正则表达式、决策树）在 LLM 时代面临结构性失效， 目前业界普遍使用NLP 模型去检测异常提示词，比如微调BERT模型，规则引擎没有消失，而是退化为最后一道硬性兜底（如法规关键词、证件号码正则），小模型承担高频、高速的语义分类，大模型偶尔介入高风险的复杂歧义场景。三者分工协作，才能在安全性、性能、成本之间取得平衡。</p>
 <p>目前提示词注入检测和 意图检测是使用BERT模型检测，这个已经在前文写过了，  个人身份信息检测用的Presidio + spaCy ， 这两者通常出现在 NLP 文本处理流水线中，代表两种不同的文本理解范式，在LLM安全网关、意图识别、NER（命名实体识别）等任务里经常被对比选型。BERT模型 基于 Transformer 双向编码器的深度语义理解模型，核心是上下文感知的稠密向量表示， 典型使用场景就是文本分类（有害/无害、情感、意图）。 spaCy 模型是基于规则 + 统计机器学习的工业级 NLP 流水线工具，核心是符号化、结构化的语言处理， 目的快速提取关键词、实体（人名、地名、机构名）。</p>
-<p>Presidio 是微软开源的一套 PII（个人隐私信息）检测与匿名化框架，专为企业级数据隐私保护设计。下面从架构到核心技术逐层展开。</p>
+<p>Presidio 是微软开源的一套 PII（个人隐私信息）检测与匿名化框架，专为企业级数据隐私保护设计。Presidio 由两个核心模块组成：Analyzer（检测 PII）和 Anonymizer（对检测结果执行匿名化操作）。二者解耦，可以独立使用。</p>
 <p><img alt="AnalyzerEngine" class="img-fluid" src="../images/AnalyzerEngine.png"/></p>
+<p>一， Analyzer Engine — PII 识别核心</p>
+<ul>
+<li>
+<ol>
+<li>NLP 引擎</li>
+</ol>
+</li>
+</ul>
+<p>Presidio 本身不做 NLP，而是通过适配层对接主流框架：</p>
+<ul>
+<li>spaCy（默认）：轻量、快，适合生产环境</li>
+<li>Stanza：斯坦福 NLP，精度更高</li>
+<li>Hugging Face Transformers：支持 BERT/RoBERTa 等预训练模型做 NER</li>
+</ul>
+<p>NLP 引擎负责分词、词性标注、命名实体识别（NER），为下游识别器提供语言学特征。</p>
+<ul>
+<li>
+<ol>
+<li>三类识别器</li>
+</ol>
+</li>
+</ul>
+<table class="table table-hover table-striped">
+<thead>
+<tr>
+<th>识别器类型</th>
+<th>原理</th>
+<th>典型用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pattern Recognizer</td>
+<td>正则 + Checksum 校验</td>
+<td>手机号、信用卡、身份证、邮箱</td>
+</tr>
+<tr>
+<td>NER Recognizer</td>
+<td>基于 NLP 模型的命名实体</td>
+<td>人名、组织、地址、日期</td>
+</tr>
+<tr>
+<td>ML/Custom Recognizer</td>
+<td>自定义规则或微调分类器</td>
+<td>行业特定 PII（病历号、合同编号）</td>
+</tr>
+</tbody>
+</table>
+<p>每个识别器返回一个 <code>RecognizerResult</code>，包含：</p>
+<ul>
+<li><code>entity_type</code>：PII 类型（如 <code>PHONE_NUMBER</code>、<code>EMAIL_ADDRESS</code>）</li>
+<li><code>score</code>：置信度 0~1</li>
+<li>
+<p><code>start / end</code>：在原文中的字符偏移量</p>
+</li>
+<li>
+<p>内置 PII 类型（50+）</p>
+</li>
+</ul>
+<p>常见的有：<code>PERSON</code>、<code>EMAIL_ADDRESS</code>、<code>PHONE_NUMBER</code>、<code>CREDIT_CARD</code>、<code>IBAN_CODE</code>、<code>IP_ADDRESS</code>、<code>LOCATION</code>、<code>DATE_TIME</code>、<code>NRP</code>（国籍/宗教/政治观点）等，并支持多国本地化（中、美、英、德、法等）。</p>
+<p>二、Anonymizer Engine — 脱敏操作</p>
+<p>检测到 PII 后，Anonymizer 支持五种操作符：</p>
+<table class="table table-hover table-striped">
+<thead>
+<tr>
+<th>操作符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Replace</td>
+<td>将 PII 替换为类型占位符，如 <code>&lt;PHONE_NUMBER&gt;</code></td>
+</tr>
+<tr>
+<td>Redact</td>
+<td>直接删除</td>
+</tr>
+<tr>
+<td>Hash</td>
+<td>MD5 / SHA256 / SHA512 单向哈希</td>
+</tr>
+<tr>
+<td>Encrypt / Decrypt</td>
+<td>AES 128 CBC 可逆加密（用于需要还原的场景）</td>
+</tr>
+<tr>
+<td>Custom</td>
+<td>传入自定义函数，灵活处理</td>
+</tr>
+</tbody>
+</table>
 <p><img alt="guard" class="img-fluid" src="../images/e0fd9ad6c548543c4107e8b70c671d06.png"/></p>
   </div>
 </article>
