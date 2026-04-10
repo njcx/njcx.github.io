@@ -8,7 +8,7 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>LLM安全围栏之个人信息PII检测 | nJcx's Blog
+  <title>LLM安全围栏之个人隐私信息PII检测 | nJcx's Blog
 </title>
   <link rel="canonical" href="https://www.njcx.bid/posts/T9.html">
 
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="LLM安全围栏之个人信息PII检测 ~">
+<meta name="description" content="LLM安全围栏之个人隐私信息PII检测 ~">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,7 +79,7 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>LLM安全围栏之个人信息PII检测
+      <h1>LLM安全围栏之个人隐私信息PII检测
 </h1>
       <hr>
 <article class="article">
@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <p>随着全球AI战略的深入推进，大语言模型（LLM）在提升生产力的同时，也引入了新的安全风险。根据OWASP发布的LLM应用十大安全威胁，提示词注入（Prompt Injection）和敏感信息泄露位列榜首，已成为企业级AI应用面临的最严峻挑战。大模型（LLM）本质上是概率生成系统，天然存在以下风险，LLM安全网关的核心目标是拦截有害输入、保障系统合规可控：</p>
-<table class="table-striped table table-hover">
+<table class="table-striped table-hover table">
 <thead>
 <tr>
 <th>问题类型</th>
@@ -129,8 +129,7 @@ var _hmt = _hmt || [];
 <p>目前提示词注入检测和 意图检测是使用BERT模型检测，这个已经在前文写过了，  个人身份信息检测用的Presidio + spaCy ， 这两者通常出现在 NLP 文本处理流水线中，代表两种不同的文本理解范式，在LLM安全网关、意图识别、NER（命名实体识别）等任务里经常被对比选型。BERT模型 基于 Transformer 双向编码器的深度语义理解模型，核心是上下文感知的稠密向量表示， 典型使用场景就是文本分类（有害/无害、情感、意图）。 spaCy 模型是基于规则 + 统计机器学习的工业级 NLP 流水线工具，核心是符号化、结构化的语言处理， 目的快速提取关键词、实体（人名、地名、机构名）。</p>
 <p>Presidio 是微软开源的一套 PII（个人隐私信息）检测与匿名化框架，专为企业级数据隐私保护设计。下面从架构到核心技术逐层展开。</p>
 <p><img alt="AnalyzerEngine" class="img-fluid" src="../images/AnalyzerEngine.png"/></p>
-<p><img alt="guard" class="img-fluid" src="../images/e0fd9ad6c548543c4107e8b70c671d06.png"/>
-e0fd9ad6c548543c4107e8b70c671d06.png</p>
+<p><img alt="guard" class="img-fluid" src="../images/e0fd9ad6c548543c4107e8b70c671d06.png"/></p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
