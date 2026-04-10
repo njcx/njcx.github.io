@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
   </header>
   <div class="content">
     <p>随着全球AI战略的深入推进，大语言模型（LLM）在提升生产力的同时，也引入了新的安全风险。根据OWASP发布的LLM应用十大安全威胁，提示词注入（Prompt Injection）和敏感信息泄露位列榜首，已成为企业级AI应用面临的最严峻挑战。大模型（LLM）本质上是概率生成系统，天然存在以下风险，LLM安全网关的核心目标是拦截有害输入、保障系统合规可控：</p>
-<table class="table-hover table table-striped">
+<table class="table table-striped table-hover">
 <thead>
 <tr>
 <th>问题类型</th>
@@ -152,7 +152,7 @@ var _hmt = _hmt || [];
 </ol>
 </li>
 </ul>
-<table class="table-hover table table-striped">
+<table class="table table-striped table-hover">
 <thead>
 <tr>
 <th>识别器类型</th>
@@ -192,7 +192,7 @@ var _hmt = _hmt || [];
 <p>常见的有：<code>PERSON</code>、<code>EMAIL_ADDRESS</code>、<code>PHONE_NUMBER</code>、<code>CREDIT_CARD</code>、<code>IBAN_CODE</code>、<code>IP_ADDRESS</code>、<code>LOCATION</code>、<code>DATE_TIME</code>、<code>NRP</code>（国籍/宗教/政治观点）等，并支持多国本地化（中、美、英、德、法等）。</p>
 <p>二、Anonymizer Engine — 脱敏操作</p>
 <p>检测到 PII 后，Anonymizer 支持五种操作符：</p>
-<table class="table-hover table table-striped">
+<table class="table table-striped table-hover">
 <thead>
 <tr>
 <th>操作符</th>
@@ -222,6 +222,641 @@ var _hmt = _hmt || [];
 </tr>
 </tbody>
 </table>
+<p>实操一下</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 安装python的依赖</span>
+
+<span class="nv">presidio_analyzer</span><span class="o">==</span><span class="m">2</span>.2.362
+<span class="nv">presidio_anonymizer</span><span class="o">==</span><span class="m">2</span>.2.362
+<span class="nv">spacy</span><span class="o">==</span><span class="m">3</span>.8.14
+spacy-legacy<span class="o">==</span><span class="m">3</span>.0.12
+spacy-loggers<span class="o">==</span><span class="m">1</span>.0.5
+<span class="nv">spacy_pkuseg</span><span class="o">==</span><span class="m">1</span>.0.1
+
+<span class="c1"># zh_core_web_lg==3.8.0    https://github.com/explosion/spacy-models/releases/download/zh_core_web_lg-3.8.0/zh_core_web_lg-3.8.0-py3-none-any.whl</span>
+<span class="c1"># zh_core_web_sm==3.8.0    https://github.com/explosion/spacy-models/releases/download/zh_core_web_sm-3.8.0/zh_core_web_sm-3.8.0-py3-none-any.whl</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""</span>
+<span class="sd">Presidio + spaCy 中文敏感信息识别与脱敏</span>
+<span class="sd">安装依赖:</span>
+<span class="sd">    pip install presidio-analyzer presidio-anonymizer spacy</span>
+<span class="sd">    python -m spacy download zh_core_web_lg</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">presidio_analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AnalyzerEngine</span><span class="p">,</span> <span class="n">RecognizerResult</span><span class="p">,</span> <span class="n">EntityRecognizer</span><span class="p">,</span>
+    <span class="n">PatternRecognizer</span><span class="p">,</span> <span class="n">Pattern</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">presidio_analyzer.nlp_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">NlpEngineProvider</span><span class="p">,</span> <span class="n">NlpArtifacts</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">presidio_anonymizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnonymizerEngine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">presidio_anonymizer.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">OperatorConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+
+<span class="c1"># ══════════════════════════════════════════════════════════════════</span>
+<span class="c1"># 核心修复：自定义识别器基类，直接在原始文本上执行正则</span>
+<span class="c1"># ══════════════════════════════════════════════════════════════════</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">RawTextRegexRecognizer</span><span class="p">(</span><span class="n">EntityRecognizer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    直接在原始文本字符串上执行正则匹配的识别器。</span>
+<span class="sd">    绕过 Presidio 的 token 机制，解决中文正则失效问题。</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">score</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">context_bonus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span> <span class="o">|</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">=</span> <span class="n">entity_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_score</span> <span class="o">=</span> <span class="n">score</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">context</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context_bonus</span> <span class="o">=</span> <span class="n">context_bonus</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">supported_entities</span><span class="o">=</span><span class="p">[</span><span class="n">entity_type</span><span class="p">],</span>
+            <span class="n">supported_language</span><span class="o">=</span><span class="s2">"zh"</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"RawTextRegex_</span><span class="si">{</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""EntityRecognizer 抽象方法，无需实现"""</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">nlp_artifacts</span><span class="p">:</span> <span class="n">NlpArtifacts</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RecognizerResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""直接在 text 原始字符串上跑正则"""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># 检查上下文（前后 30 字符内是否有关键词）</span>
+        <span class="n">text_lower</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">has_context</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">w</span> <span class="ow">in</span> <span class="n">text_lower</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_words</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_score</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_bonus</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> \
+            <span class="k">if</span> <span class="n">has_context</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_score</span>
+
+        <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RecognizerResult</span><span class="p">(</span>
+                <span class="n">entity_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span><span class="p">,</span>
+                <span class="n">start</span><span class="o">=</span><span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">(),</span>
+                <span class="n">end</span><span class="o">=</span><span class="n">match</span><span class="o">.</span><span class="n">end</span><span class="p">(),</span>
+                <span class="n">score</span><span class="o">=</span><span class="n">score</span>
+            <span class="p">))</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+
+<span class="c1"># ══════════════════════════════════════════════════════════════════</span>
+<span class="c1"># 主检测器</span>
+<span class="c1"># ══════════════════════════════════════════════════════════════════</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ChinesePIIDetector</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""中文敏感信息检测与脱敏处理器"""</span>
+
+    <span class="c1"># 实体白名单</span>
+    <span class="n">ALLOWED_ENTITIES</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">"PERSON"</span><span class="p">,</span> <span class="s2">"EMAIL_ADDRESS"</span><span class="p">,</span> <span class="s2">"LOCATION"</span><span class="p">,</span> <span class="s2">"ORGANIZATION"</span><span class="p">,</span>
+        <span class="s2">"CHINESE_MOBILE"</span><span class="p">,</span> <span class="s2">"CHINESE_IDCARD"</span><span class="p">,</span> <span class="s2">"CHINESE_BANKCARD"</span><span class="p">,</span>
+        <span class="s2">"CHINESE_PLATE"</span><span class="p">,</span> <span class="s2">"CHINESE_ADDRESS"</span><span class="p">,</span> <span class="s2">"USCC"</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="c1"># 自定义正则实体（优先级高于 spaCy NER）</span>
+    <span class="n">CUSTOM_ENTITIES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"CHINESE_MOBILE"</span><span class="p">,</span> <span class="s2">"CHINESE_IDCARD"</span><span class="p">,</span> <span class="s2">"CHINESE_BANKCARD"</span><span class="p">,</span>
+        <span class="s2">"CHINESE_PLATE"</span><span class="p">,</span> <span class="s2">"CHINESE_ADDRESS"</span><span class="p">,</span> <span class="s2">"USCC"</span><span class="p">,</span>
+        <span class="s2">"EMAIL_ADDRESS"</span><span class="p">,</span>   <span class="c1"># Presidio 内置邮箱识别器也走原始文本，保留</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"zh_core_web_lg"</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">=</span> <span class="n">model_name</span>
+
+        <span class="c1"># 初始化 NLP 引擎</span>
+        <span class="n">nlp_config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"nlp_engine_name"</span><span class="p">:</span> <span class="s2">"spacy"</span><span class="p">,</span>
+            <span class="s2">"models"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"lang_code"</span><span class="p">:</span> <span class="s2">"zh"</span><span class="p">,</span> <span class="s2">"model_name"</span><span class="p">:</span> <span class="n">model_name</span><span class="p">}]</span>
+        <span class="p">}</span>
+        <span class="n">provider</span> <span class="o">=</span> <span class="n">NlpEngineProvider</span><span class="p">(</span><span class="n">nlp_configuration</span><span class="o">=</span><span class="n">nlp_config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nlp_engine</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">create_engine</span><span class="p">()</span>
+
+        <span class="c1"># 初始化分析引擎</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">AnalyzerEngine</span><span class="p">(</span>
+            <span class="n">nlp_engine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nlp_engine</span><span class="p">,</span>
+            <span class="n">supported_languages</span><span class="o">=</span><span class="p">[</span><span class="s2">"zh"</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 初始化脱敏引擎</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anonymizer</span> <span class="o">=</span> <span class="n">AnonymizerEngine</span><span class="p">()</span>
+
+        <span class="c1"># 注册自定义识别器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_chinese_recognizers</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[初始化完成] 使用模型: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># ──────────────────────────────────────────────────────────────</span>
+    <span class="c1"># 识别器注册</span>
+    <span class="c1"># ──────────────────────────────────────────────────────────────</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_register_chinese_recognizers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""注册中文特有识别器（使用 RawTextRegexRecognizer）"""</span>
+
+        <span class="n">configs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># (实体类型, 正则, 置信度, 上下文关键词)</span>
+
+            <span class="c1"># 1. 手机号（11位，1[3-9]开头）</span>
+            <span class="p">(</span>
+                <span class="s2">"CHINESE_MOBILE"</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s1">'(?&lt;!\d)1[3-9]\d</span><span class="si">{9}</span><span class="s1">(?!\d)'</span><span class="p">,</span>
+                <span class="mf">0.85</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">"手机"</span><span class="p">,</span> <span class="s2">"电话"</span><span class="p">,</span> <span class="s2">"联系"</span><span class="p">,</span> <span class="s2">"手机号"</span><span class="p">,</span> <span class="s2">"电话号码"</span><span class="p">,</span> <span class="s2">"联系方式"</span><span class="p">]</span>
+            <span class="p">),</span>
+            <span class="c1"># 2. 身份证号（18位）</span>
+            <span class="p">(</span>
+                <span class="s2">"CHINESE_IDCARD"</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s1">'(?&lt;!\d)[1-9]\d</span><span class="si">{5}</span><span class="s1">(?:18|19|20)\d</span><span class="si">{2}</span><span class="s1">(?:0[1-9]|1[0-2])'</span>
+                <span class="sa">r</span><span class="s1">'(?:0[1-9]|[12]\d|3[01])\d</span><span class="si">{3}</span><span class="s1">[\dXx](?!\d)'</span><span class="p">,</span>
+                <span class="mf">0.85</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">"身份证"</span><span class="p">,</span> <span class="s2">"身份证号"</span><span class="p">,</span> <span class="s2">"证件号"</span><span class="p">]</span>
+            <span class="p">),</span>
+            <span class="c1"># 3. 银行卡号（16-19位）</span>
+            <span class="p">(</span>
+                <span class="s2">"CHINESE_BANKCARD"</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s1">'(?&lt;!\d)(?:4\d</span><span class="si">{3}</span><span class="s1">|5[1-5]\d</span><span class="si">{2}</span><span class="s1">|62\d</span><span class="si">{2}</span><span class="s1">|3[47]\d</span><span class="si">{2}</span><span class="s1">)\d{11,15}(?!\d)'</span><span class="p">,</span>
+                <span class="mf">0.80</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">"银行卡"</span><span class="p">,</span> <span class="s2">"卡号"</span><span class="p">,</span> <span class="s2">"储蓄卡"</span><span class="p">,</span> <span class="s2">"信用卡"</span><span class="p">,</span> <span class="s2">"借记卡"</span><span class="p">]</span>
+            <span class="p">),</span>
+            <span class="c1"># 4. 车牌号（含新能源）</span>
+            <span class="p">(</span>
+                <span class="s2">"CHINESE_PLATE"</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s1">'[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领]'</span>
+                <span class="sa">r</span><span class="s1">'[A-Z](?:[A-HJ-NP-Z0-9]</span><span class="si">{5}</span><span class="s1">|[DF][A-HJ-NP-Z0-9]</span><span class="si">{5}</span><span class="s1">|[A-HJ-NP-Z0-9]</span><span class="si">{4}</span><span class="s1">[A-HJ-NP-Z0-9])'</span><span class="p">,</span>
+                <span class="mf">0.90</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">"车牌"</span><span class="p">,</span> <span class="s2">"车牌号"</span><span class="p">,</span> <span class="s2">"车辆"</span><span class="p">,</span> <span class="s2">"牌照"</span><span class="p">,</span> <span class="s2">"号牌"</span><span class="p">]</span>
+            <span class="p">),</span>
+            <span class="c1"># 5. 统一社会信用代码（18位）</span>
+            <span class="p">(</span>
+                <span class="s2">"USCC"</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s1">'(?&lt;![0-9A-Z])[0-9A-HJ-NPQRTUWXY]</span><span class="si">{2}</span><span class="s1">\d</span><span class="si">{6}</span><span class="s1">'</span>
+                <span class="sa">r</span><span class="s1">'[0-9A-HJ-NPQRTUWXY]</span><span class="si">{10}</span><span class="s1">(?![0-9A-Z])'</span><span class="p">,</span>
+                <span class="mf">0.85</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">"统一社会信用代码"</span><span class="p">,</span> <span class="s2">"营业执照"</span><span class="p">,</span> <span class="s2">"信用代码"</span><span class="p">,</span> <span class="s2">"注册号"</span><span class="p">]</span>
+            <span class="p">),</span>
+            <span class="c1"># 6. 中文地址（省/直辖市开头）</span>
+            <span class="p">(</span>
+                <span class="s2">"CHINESE_ADDRESS"</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s1">'(?:北京市|天津市|上海市|重庆市|河北省|山西省|辽宁省|吉林省|'</span>
+                <span class="sa">r</span><span class="s1">'黑龙江省|江苏省|浙江省|安徽省|福建省|江西省|山东省|河南省|'</span>
+                <span class="sa">r</span><span class="s1">'湖北省|湖南省|广东省|海南省|四川省|贵州省|云南省|陕西省|'</span>
+                <span class="sa">r</span><span class="s1">'甘肃省|青海省|台湾省|内蒙古自治区|广西壮族自治区|西藏自治区|'</span>
+                <span class="sa">r</span><span class="s1">'宁夏回族自治区|新疆维吾尔自治区|香港特别行政区|澳门特别行政区|'</span>
+                <span class="sa">r</span><span class="s1">'内蒙古|广西|西藏|宁夏|新疆|香港|澳门)'</span>
+                <span class="sa">r</span><span class="s1">'[^\n,，。！？]{5,50}'</span>
+                <span class="sa">r</span><span class="s1">'(?:路|街道|街|巷|弄|号楼|号院|号|栋|单元|室|楼|层|'</span>
+                <span class="sa">r</span><span class="s1">'小区|花园|公寓|大厦|广场|中心|城|里|苑)'</span><span class="p">,</span>
+                <span class="mf">0.80</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">"地址"</span><span class="p">,</span> <span class="s2">"住址"</span><span class="p">,</span> <span class="s2">"居住"</span><span class="p">,</span> <span class="s2">"位于"</span><span class="p">,</span> <span class="s2">"收货"</span><span class="p">,</span> <span class="s2">"寄往"</span><span class="p">,</span> <span class="s2">"发货到"</span><span class="p">]</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">entity</span><span class="p">,</span> <span class="n">regex</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">context</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">:</span>
+            <span class="n">recognizer</span> <span class="o">=</span> <span class="n">RawTextRegexRecognizer</span><span class="p">(</span>
+                <span class="n">entity_type</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span>
+                <span class="n">regex</span><span class="o">=</span><span class="n">regex</span><span class="p">,</span>
+                <span class="n">score</span><span class="o">=</span><span class="n">score</span><span class="p">,</span>
+                <span class="n">context</span><span class="o">=</span><span class="n">context</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">analyzer</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">add_recognizer</span><span class="p">(</span><span class="n">recognizer</span><span class="p">)</span>
+
+    <span class="c1"># ──────────────────────────────────────────────────────────────</span>
+    <span class="c1"># 结果后处理</span>
+    <span class="c1"># ──────────────────────────────────────────────────────────────</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_results</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RecognizerResult</span><span class="p">],</span>
+        <span class="n">score_threshold</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RecognizerResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""过滤：置信度阈值 + 实体类型白名单"""</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">score</span> <span class="o">&gt;=</span> <span class="n">score_threshold</span>
+            <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">entity_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ALLOWED_ENTITIES</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_overlaps</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RecognizerResult</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RecognizerResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        去除重叠实体，优先级规则：</span>
+<span class="sd">        1. 置信度越高越优先</span>
+<span class="sd">        2. 同分时自定义正则实体优先（+0.05 bonus）</span>
+<span class="sd">        3. 同优先级时范围越大越优先</span>
+<span class="sd">        """</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">priority</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">RecognizerResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+            <span class="n">bonus</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">entity_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">CUSTOM_ENTITIES</span> <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">score</span> <span class="o">+</span> <span class="n">bonus</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">end</span> <span class="o">-</span> <span class="n">r</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+
+        <span class="n">sorted_results</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">priority</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">kept</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RecognizerResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">sorted_results</span><span class="p">:</span>
+            <span class="n">has_overlap</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="n">r</span><span class="o">.</span><span class="n">start</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">.</span><span class="n">end</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">end</span> <span class="o">&gt;</span> <span class="n">k</span><span class="o">.</span><span class="n">start</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kept</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">has_overlap</span><span class="p">:</span>
+                <span class="n">kept</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">kept</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+
+    <span class="c1"># ──────────────────────────────────────────────────────────────</span>
+    <span class="c1"># 核心接口</span>
+    <span class="c1"># ──────────────────────────────────────────────────────────────</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"zh"</span><span class="p">,</span>
+        <span class="n">score_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RecognizerResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        分析文本中的敏感信息</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text:            待分析文本</span>
+<span class="sd">            language:        语言代码</span>
+<span class="sd">            score_threshold: 置信度过滤阈值</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            去重过滤后的识别结果列表</span>
+<span class="sd">        """</span>
+        <span class="n">raw_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyzer</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span>
+            <span class="n">entities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ALLOWED_ENTITIES</span><span class="p">,</span>
+            <span class="n">return_decision_process</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_results</span><span class="p">(</span><span class="n">raw_results</span><span class="p">,</span> <span class="n">score_threshold</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_overlaps</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">anonymize</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">operators</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OperatorConfig</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"zh"</span><span class="p">,</span>
+        <span class="n">score_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        对文本进行脱敏处理</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text:            待脱敏文本</span>
+<span class="sd">            operators:       自定义脱敏规则（覆盖默认规则）</span>
+<span class="sd">            language:        语言代码</span>
+<span class="sd">            score_threshold: 置信度过滤阈值</span>
+<span class="sd">            verbose:         是否打印详细结果</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            {original, anonymized, entities, has_pii, entity_count}</span>
+<span class="sd">        """</span>
+        <span class="n">analyzer_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="n">score_threshold</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">analyzer_results</span><span class="p">:</span>
+            <span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"original"</span><span class="p">:</span>     <span class="n">text</span><span class="p">,</span>
+                <span class="s2">"anonymized"</span><span class="p">:</span>   <span class="n">text</span><span class="p">,</span>
+                <span class="s2">"entities"</span><span class="p">:</span>     <span class="p">[],</span>
+                <span class="s2">"has_pii"</span><span class="p">:</span>      <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">"entity_count"</span><span class="p">:</span> <span class="mi">0</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_print_result</span><span class="p">(</span><span class="n">result_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result_dict</span>
+
+        <span class="c1"># 默认脱敏规则</span>
+        <span class="n">default_operators</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OperatorConfig</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"PERSON"</span><span class="p">:</span>           <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"replace"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"new_value"</span><span class="p">:</span> <span class="s2">"&lt;姓名&gt;"</span><span class="p">}),</span>
+            <span class="s2">"EMAIL_ADDRESS"</span><span class="p">:</span>    <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"mask"</span><span class="p">,</span>    <span class="p">{</span><span class="s2">"masking_char"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span>
+                                                           <span class="s2">"chars_to_mask"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                                                           <span class="s2">"from_end"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}),</span>
+            <span class="s2">"LOCATION"</span><span class="p">:</span>         <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"replace"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"new_value"</span><span class="p">:</span> <span class="s2">"&lt;地点&gt;"</span><span class="p">}),</span>
+            <span class="s2">"ORGANIZATION"</span><span class="p">:</span>     <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"replace"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"new_value"</span><span class="p">:</span> <span class="s2">"&lt;机构&gt;"</span><span class="p">}),</span>
+            <span class="s2">"CHINESE_MOBILE"</span><span class="p">:</span>   <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"mask"</span><span class="p">,</span>    <span class="p">{</span><span class="s2">"masking_char"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span>
+                                                           <span class="s2">"chars_to_mask"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                                                           <span class="s2">"from_end"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+            <span class="s2">"CHINESE_IDCARD"</span><span class="p">:</span>   <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"mask"</span><span class="p">,</span>    <span class="p">{</span><span class="s2">"masking_char"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span>
+                                                           <span class="s2">"chars_to_mask"</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+                                                           <span class="s2">"from_end"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}),</span>
+            <span class="s2">"CHINESE_BANKCARD"</span><span class="p">:</span> <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"mask"</span><span class="p">,</span>    <span class="p">{</span><span class="s2">"masking_char"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span>
+                                                           <span class="s2">"chars_to_mask"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+                                                           <span class="s2">"from_end"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+            <span class="s2">"CHINESE_PLATE"</span><span class="p">:</span>    <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"replace"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"new_value"</span><span class="p">:</span> <span class="s2">"&lt;车牌&gt;"</span><span class="p">}),</span>
+            <span class="s2">"CHINESE_ADDRESS"</span><span class="p">:</span>  <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"mask"</span><span class="p">,</span>    <span class="p">{</span><span class="s2">"masking_char"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span>
+                                                           <span class="s2">"chars_to_mask"</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                                                           <span class="s2">"from_end"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}),</span>
+            <span class="s2">"USCC"</span><span class="p">:</span>             <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"mask"</span><span class="p">,</span>    <span class="p">{</span><span class="s2">"masking_char"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span>
+                                                           <span class="s2">"chars_to_mask"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                                                           <span class="s2">"from_end"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">operators</span><span class="p">:</span>
+            <span class="n">default_operators</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">operators</span><span class="p">)</span>
+
+        <span class="c1"># 只保留实际识别到的实体类型</span>
+        <span class="n">active_operators</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">et</span><span class="p">:</span> <span class="n">op</span> <span class="k">for</span> <span class="n">et</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">default_operators</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">==</span> <span class="n">et</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">analyzer_results</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">anonymized_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anonymizer</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">analyzer_results</span><span class="o">=</span><span class="n">analyzer_results</span><span class="p">,</span>
+            <span class="n">operators</span><span class="o">=</span><span class="n">active_operators</span>
+        <span class="p">)</span>
+
+        <span class="n">entities_info</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span>  <span class="n">r</span><span class="o">.</span><span class="n">entity_type</span><span class="p">,</span>
+                <span class="s2">"text"</span><span class="p">:</span>  <span class="n">text</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="n">r</span><span class="o">.</span><span class="n">end</span><span class="p">],</span>
+                <span class="s2">"start"</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+                <span class="s2">"end"</span><span class="p">:</span>   <span class="n">r</span><span class="o">.</span><span class="n">end</span><span class="p">,</span>
+                <span class="s2">"score"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">analyzer_results</span>
+        <span class="p">]</span>
+
+        <span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"original"</span><span class="p">:</span>     <span class="n">text</span><span class="p">,</span>
+            <span class="s2">"anonymized"</span><span class="p">:</span>   <span class="n">anonymized_result</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+            <span class="s2">"entities"</span><span class="p">:</span>     <span class="n">entities_info</span><span class="p">,</span>
+            <span class="s2">"has_pii"</span><span class="p">:</span>      <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">"entity_count"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">entities_info</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_result</span><span class="p">(</span><span class="n">result_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result_dict</span>
+
+    <span class="c1"># ──────────────────────────────────────────────────────────────</span>
+    <span class="c1"># 工具方法</span>
+    <span class="c1"># ──────────────────────────────────────────────────────────────</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_print_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""格式化打印脱敏结果"""</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"="</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"原始文本:"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'original'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">脱敏后文本 (</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'entity_count'</span><span class="p">]</span><span class="si">}</span><span class="s2"> 处敏感信息):"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'anonymized'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">"entities"</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">识别详情:"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">"entities"</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   • [</span><span class="si">{</span><span class="n">e</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span><span class="si">}</span><span class="s2">] </span><span class="se">\"</span><span class="si">{</span><span class="n">e</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span><span class="si">}</span><span class="se">\"</span><span class="s2"> "</span>
+                      <span class="sa">f</span><span class="s2">"(位置:</span><span class="si">{</span><span class="n">e</span><span class="p">[</span><span class="s1">'start'</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">e</span><span class="p">[</span><span class="s1">'end'</span><span class="p">]</span><span class="si">}</span><span class="s2">, 置信度:</span><span class="si">{</span><span class="n">e</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">batch_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""批量处理文本"""</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""获取支持的实体类型列表"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyzer</span><span class="o">.</span><span class="n">get_supported_entities</span><span class="p">()</span>
+
+
+<span class="c1"># ══════════════════════════════════════════════════════════════════</span>
+<span class="c1"># 演示入口</span>
+<span class="c1"># ══════════════════════════════════════════════════════════════════</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">demo</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"初始化中文 PII 检测器..."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"首次运行请先执行: python -m spacy download zh_core_web_lg</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">ChinesePIIDetector</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">"zh_core_web_lg"</span><span class="p">)</span>
+
+    <span class="n">supported</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">get_supported_entities</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">支持的实体类型 (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">supported</span><span class="p">)</span><span class="si">}</span><span class="s2"> 种):"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">supported</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   • </span><span class="si">{</span><span class="n">entity</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># ── 标准测试用例 ──────────────────────────────────────────────</span>
+    <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="c1"># 用例1：综合信息</span>
+        <span class="p">(</span>
+            <span class="s2">"联系人：张三，手机号：13800138000，身份证号：110101199001011234，"</span>
+            <span class="s2">"邮箱：zhangsan@example.com，地址：北京市海淀区中关村大街1号科技大厦1001室，"</span>
+            <span class="s2">"银行卡：6222021234567890123，车牌：京A88888，"</span>
+            <span class="s2">"统一社会信用代码：91110108MA00123456"</span>
+        <span class="p">),</span>
+        <span class="c1"># 用例2：电商场景</span>
+        <span class="p">(</span>
+            <span class="s2">"客服：您好，请问是李女士吗？您的订单已发货到"</span>
+            <span class="s2">"上海市浦东新区陆家嘴环路1000号恒生银行大厦，"</span>
+            <span class="s2">"收货人电话是13912345678，如有问题请联系客服。"</span>
+        <span class="p">),</span>
+        <span class="c1"># 用例3：社交场景</span>
+        <span class="p">(</span>
+            <span class="s2">"姓名：王五，电话：18666668888，"</span>
+            <span class="s2">"现居：广东省深圳市南山区科技园南区腾讯大厦，"</span>
+            <span class="s2">"身份证号：440304198505152345，邮箱：wangwu@163.com，曾在阿里巴巴工作"</span>
+        <span class="p">),</span>
+        <span class="c1"># 用例4：医疗场景</span>
+        <span class="p">(</span>
+            <span class="s2">"患者：赵六，男，1988年生，联系电话15011112222，"</span>
+            <span class="s2">"住址：浙江省杭州市西湖区文三路500号，"</span>
+            <span class="s2">"身份证号：330106198801011111，就诊于浙江大学医学院附属第一医院"</span>
+        <span class="p">),</span>
+        <span class="c1"># 用例5：企业信息</span>
+        <span class="p">(</span>
+            <span class="s2">"公司名称：北京科技有限公司，统一社会信用代码：91110105MA0054321E，"</span>
+            <span class="s2">"法定代表人：陈明，注册地址：北京市朝阳区建国路88号，联系电话：010-12345678"</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"="</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"开始测试中文敏感信息识别与脱敏"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_cases</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[测试用例 </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_cases</span><span class="p">)</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+        <span class="n">detector</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># ── 自定义脱敏规则演示 ────────────────────────────────────────</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">[自定义脱敏规则演示]"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+
+    <span class="n">custom_text</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"紧急联系人：陈经理，手机：13500001111，"</span>
+        <span class="s2">"身份证：500101199510105678，车牌：沪B66666"</span>
+    <span class="p">)</span>
+    <span class="n">custom_operators</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"CHINESE_MOBILE"</span><span class="p">:</span> <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"mask"</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s2">"masking_char"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"chars_to_mask"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">"from_end"</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="p">}),</span>
+        <span class="s2">"CHINESE_IDCARD"</span><span class="p">:</span> <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"replace"</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s2">"new_value"</span><span class="p">:</span> <span class="s2">"&lt;身份证已隐藏&gt;"</span>
+        <span class="p">}),</span>
+        <span class="s2">"PERSON"</span><span class="p">:</span> <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"replace"</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s2">"new_value"</span><span class="p">:</span> <span class="s2">"&lt;联系人&gt;"</span>
+        <span class="p">}),</span>
+        <span class="s2">"CHINESE_PLATE"</span><span class="p">:</span> <span class="n">OperatorConfig</span><span class="p">(</span><span class="s2">"mask"</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s2">"masking_char"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"chars_to_mask"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">"from_end"</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="p">}),</span>
+    <span class="p">}</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"原文: </span><span class="si">{</span><span class="n">custom_text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"规则: 手机号保留前3位 | 身份证完全替换 | 车牌保留前2位"</span><span class="p">)</span>
+    <span class="n">detector</span><span class="o">.</span><span class="n">anonymize</span><span class="p">(</span><span class="n">custom_text</span><span class="p">,</span> <span class="n">operators</span><span class="o">=</span><span class="n">custom_operators</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># ── 批量处理演示 ──────────────────────────────────────────────</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">[批量处理演示]"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+
+    <span class="n">batch_texts</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">"用户A，电话13900139000，住北京市海淀区中关村大街1号科技大厦"</span><span class="p">,</span>
+        <span class="s2">"用户B，电话13800138000，住上海市浦东新区陆家嘴环路1000号大厦"</span><span class="p">,</span>
+        <span class="s2">"用户C，电话13700137000，住广东省深圳市南山区科技园南区大厦"</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">batch_results</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">batch_process</span><span class="p">(</span><span class="n">batch_texts</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"共处理 </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_results</span><span class="p">)</span><span class="si">}</span><span class="s2"> 条记录："</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batch_results</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">. [发现</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">'entity_count'</span><span class="p">]</span><span class="si">}</span><span class="s2">处PII] </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">'anonymized'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[演示完成]"</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">demo</span><span class="p">()</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>测试用例<span class="w"> </span><span class="m">1</span>/5<span class="o">]</span>
+
+<span class="o">======================================================================</span>
+原始文本:
+<span class="w">   </span>联系人：张三，手机号：13800138000，身份证号：110101199001011234，邮箱：zhangsan@example.com，地址：北京市海淀区中关村大街1号科技大厦1001室，银行卡：6222021234567890123，车牌：京A88888，统一社会信用代码：91110108MA00123456
+
+脱敏后文本<span class="w"> </span><span class="o">(</span><span class="m">8</span><span class="w"> </span>处敏感信息<span class="o">)</span>:
+<span class="w">   </span>联系人：&lt;姓名&gt;，手机号：1380013****，身份证号：************011234，邮箱：****gsan@example.com，地址：***************大厦1001室，银行卡：62220212345********，车牌：&lt;车牌&gt;，统一社会信用代码：91110108**********
+
+识别详情:
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>PERSON<span class="o">]</span><span class="w"> </span><span class="s2">"张三"</span><span class="w"> </span><span class="o">(</span>位置:4-6,<span class="w"> </span>置信度:0.85<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_MOBILE<span class="o">]</span><span class="w"> </span><span class="s2">"13800138000"</span><span class="w"> </span><span class="o">(</span>位置:11-22,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_IDCARD<span class="o">]</span><span class="w"> </span><span class="s2">"110101199001011234"</span><span class="w"> </span><span class="o">(</span>位置:28-46,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>EMAIL_ADDRESS<span class="o">]</span><span class="w"> </span><span class="s2">"zhangsan@example.com"</span><span class="w"> </span><span class="o">(</span>位置:50-70,<span class="w"> </span>置信度:1.0<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_ADDRESS<span class="o">]</span><span class="w"> </span><span class="s2">"北京市海淀区中关村大街1号科技大厦1001室"</span><span class="w"> </span><span class="o">(</span>位置:74-96,<span class="w"> </span>置信度:0.9<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_BANKCARD<span class="o">]</span><span class="w"> </span><span class="s2">"6222021234567890123"</span><span class="w"> </span><span class="o">(</span>位置:101-120,<span class="w"> </span>置信度:0.9<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_PLATE<span class="o">]</span><span class="w"> </span><span class="s2">"京A88888"</span><span class="w"> </span><span class="o">(</span>位置:124-131,<span class="w"> </span>置信度:1.0<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>USCC<span class="o">]</span><span class="w"> </span><span class="s2">"91110108MA00123456"</span><span class="w"> </span><span class="o">(</span>位置:141-159,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="o">======================================================================</span>
+
+<span class="o">[</span>测试用例<span class="w"> </span><span class="m">2</span>/5<span class="o">]</span>
+
+<span class="o">======================================================================</span>
+原始文本:
+<span class="w">   </span>客服：您好，请问是李女士吗？您的订单已发货到上海市浦东新区陆家嘴环路1000号恒生银行大厦，收货人电话是13912345678，如有问题请联系客服。
+
+脱敏后文本<span class="w"> </span><span class="o">(</span><span class="m">3</span><span class="w"> </span>处敏感信息<span class="o">)</span>:
+<span class="w">   </span>客服：您好，请问是&lt;姓名&gt;吗？您的订单已发货到***************0号恒生银行大厦，收货人电话是1391234****，如有问题请联系客服。
+
+识别详情:
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>PERSON<span class="o">]</span><span class="w"> </span><span class="s2">"李女士"</span><span class="w"> </span><span class="o">(</span>位置:9-12,<span class="w"> </span>置信度:0.85<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_ADDRESS<span class="o">]</span><span class="w"> </span><span class="s2">"上海市浦东新区陆家嘴环路1000号恒生银行大厦"</span><span class="w"> </span><span class="o">(</span>位置:22-45,<span class="w"> </span>置信度:0.9<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_MOBILE<span class="o">]</span><span class="w"> </span><span class="s2">"13912345678"</span><span class="w"> </span><span class="o">(</span>位置:52-63,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="o">======================================================================</span>
+
+<span class="o">[</span>测试用例<span class="w"> </span><span class="m">3</span>/5<span class="o">]</span>
+
+<span class="o">======================================================================</span>
+原始文本:
+<span class="w">   </span>姓名：王五，电话：18666668888，现居：广东省深圳市南山区科技园南区腾讯大厦，身份证号：440304198505152345，邮箱：wangwu@163.com，曾在阿里巴巴工作
+
+脱敏后文本<span class="w"> </span><span class="o">(</span><span class="m">6</span><span class="w"> </span>处敏感信息<span class="o">)</span>:
+<span class="w">   </span>姓名：&lt;姓名&gt;，电话：1866666****，现居：***************讯大厦，身份证号：************152345，邮箱：****wu@163.com，曾在&lt;机构&gt;工作
+
+识别详情:
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>PERSON<span class="o">]</span><span class="w"> </span><span class="s2">"王五"</span><span class="w"> </span><span class="o">(</span>位置:3-5,<span class="w"> </span>置信度:0.85<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_MOBILE<span class="o">]</span><span class="w"> </span><span class="s2">"18666668888"</span><span class="w"> </span><span class="o">(</span>位置:9-20,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_ADDRESS<span class="o">]</span><span class="w"> </span><span class="s2">"广东省深圳市南山区科技园南区腾讯大厦"</span><span class="w"> </span><span class="o">(</span>位置:24-42,<span class="w"> </span>置信度:0.8<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_IDCARD<span class="o">]</span><span class="w"> </span><span class="s2">"440304198505152345"</span><span class="w"> </span><span class="o">(</span>位置:48-66,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>EMAIL_ADDRESS<span class="o">]</span><span class="w"> </span><span class="s2">"wangwu@163.com"</span><span class="w"> </span><span class="o">(</span>位置:70-84,<span class="w"> </span>置信度:1.0<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>ORGANIZATION<span class="o">]</span><span class="w"> </span><span class="s2">"阿里巴巴"</span><span class="w"> </span><span class="o">(</span>位置:87-91,<span class="w"> </span>置信度:0.85<span class="o">)</span>
+<span class="o">======================================================================</span>
+
+<span class="o">[</span>测试用例<span class="w"> </span><span class="m">4</span>/5<span class="o">]</span>
+
+<span class="o">======================================================================</span>
+原始文本:
+<span class="w">   </span>患者：赵六，男，1988年生，联系电话15011112222，住址：浙江省杭州市西湖区文三路500号，身份证号：330106198801011111，就诊于浙江大学医学院附属第一医院
+
+脱敏后文本<span class="w"> </span><span class="o">(</span><span class="m">5</span><span class="w"> </span>处敏感信息<span class="o">)</span>:
+<span class="w">   </span>患者：&lt;姓名&gt;，男，1988年生，联系电话1501111****，住址：***************号，身份证号：************011111，就诊于&lt;机构&gt;
+
+识别详情:
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>PERSON<span class="o">]</span><span class="w"> </span><span class="s2">"赵六"</span><span class="w"> </span><span class="o">(</span>位置:3-5,<span class="w"> </span>置信度:0.85<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_MOBILE<span class="o">]</span><span class="w"> </span><span class="s2">"15011112222"</span><span class="w"> </span><span class="o">(</span>位置:19-30,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_ADDRESS<span class="o">]</span><span class="w"> </span><span class="s2">"浙江省杭州市西湖区文三路500号"</span><span class="w"> </span><span class="o">(</span>位置:34-50,<span class="w"> </span>置信度:0.9<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_IDCARD<span class="o">]</span><span class="w"> </span><span class="s2">"330106198801011111"</span><span class="w"> </span><span class="o">(</span>位置:56-74,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>ORGANIZATION<span class="o">]</span><span class="w"> </span><span class="s2">"浙江大学医学院附属第一医院"</span><span class="w"> </span><span class="o">(</span>位置:78-91,<span class="w"> </span>置信度:0.85<span class="o">)</span>
+<span class="o">======================================================================</span>
+
+<span class="o">[</span>测试用例<span class="w"> </span><span class="m">5</span>/5<span class="o">]</span>
+
+<span class="o">======================================================================</span>
+原始文本:
+<span class="w">   </span>公司名称：北京科技有限公司，统一社会信用代码：91110105MA0054321E，法定代表人：陈明，注册地址：北京市朝阳区建国路88号，联系电话：010-12345678
+
+脱敏后文本<span class="w"> </span><span class="o">(</span><span class="m">4</span><span class="w"> </span>处敏感信息<span class="o">)</span>:
+<span class="w">   </span>公司名称：&lt;机构&gt;，统一社会信用代码：91110105**********，法定代表人：&lt;姓名&gt;，注册地址：************，联系电话：010-12345678
+
+识别详情:
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>ORGANIZATION<span class="o">]</span><span class="w"> </span><span class="s2">"北京科技有限公司"</span><span class="w"> </span><span class="o">(</span>位置:5-13,<span class="w"> </span>置信度:0.85<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>USCC<span class="o">]</span><span class="w"> </span><span class="s2">"91110105MA0054321E"</span><span class="w"> </span><span class="o">(</span>位置:23-41,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>PERSON<span class="o">]</span><span class="w"> </span><span class="s2">"陈明"</span><span class="w"> </span><span class="o">(</span>位置:48-50,<span class="w"> </span>置信度:0.85<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_ADDRESS<span class="o">]</span><span class="w"> </span><span class="s2">"北京市朝阳区建国路88号"</span><span class="w"> </span><span class="o">(</span>位置:56-68,<span class="w"> </span>置信度:0.9<span class="o">)</span>
+<span class="o">======================================================================</span>
+
+
+<span class="o">[</span>自定义脱敏规则演示<span class="o">]</span>
+----------------------------------------------------------------------
+原文:<span class="w"> </span>紧急联系人：陈经理，手机：13500001111，身份证：500101199510105678，车牌：沪B66666
+规则:<span class="w"> </span>手机号保留前3位<span class="w"> </span><span class="p">|</span><span class="w"> </span>身份证完全替换<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">车牌保留前2位</span>
+
+<span class="o">======================================================================</span>
+原始文本:
+<span class="w">   </span>紧急联系人：陈经理，手机：13500001111，身份证：500101199510105678，车牌：沪B66666
+
+脱敏后文本<span class="w"> </span><span class="o">(</span><span class="m">4</span><span class="w"> </span>处敏感信息<span class="o">)</span>:
+<span class="w">   </span>紧急联系人：&lt;联系人&gt;，手机：135********，身份证：&lt;身份证已隐藏&gt;，车牌：沪B6****
+
+识别详情:
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>PERSON<span class="o">]</span><span class="w"> </span><span class="s2">"陈经理"</span><span class="w"> </span><span class="o">(</span>位置:6-9,<span class="w"> </span>置信度:0.85<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_MOBILE<span class="o">]</span><span class="w"> </span><span class="s2">"13500001111"</span><span class="w"> </span><span class="o">(</span>位置:13-24,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_IDCARD<span class="o">]</span><span class="w"> </span><span class="s2">"500101199510105678"</span><span class="w"> </span><span class="o">(</span>位置:29-47,<span class="w"> </span>置信度:0.95<span class="o">)</span>
+<span class="w">   </span>•<span class="w"> </span><span class="o">[</span>CHINESE_PLATE<span class="o">]</span><span class="w"> </span><span class="s2">"沪B66666"</span><span class="w"> </span><span class="o">(</span>位置:51-58,<span class="w"> </span>置信度:1.0<span class="o">)</span>
+<span class="o">======================================================================</span>
+
+
+<span class="o">[</span>批量处理演示<span class="o">]</span>
+----------------------------------------------------------------------
+共处理<span class="w"> </span><span class="m">3</span><span class="w"> </span>条记录：
+<span class="w">   </span><span class="m">1</span>.<span class="w"> </span><span class="o">[</span>发现2处PII<span class="o">]</span><span class="w"> </span>用户A，电话1390013****，住***************大厦
+<span class="w">   </span><span class="m">2</span>.<span class="w"> </span><span class="o">[</span>发现2处PII<span class="o">]</span><span class="w"> </span>用户B，电话1380013****，住***************0号大厦
+<span class="w">   </span><span class="m">3</span>.<span class="w"> </span><span class="o">[</span>发现2处PII<span class="o">]</span><span class="w"> </span>用户C，电话1370013****，住***************厦
+</code></pre></div>
+<p>总结， Presidio + spaCy 基于 CNN（卷积神经网络）的架构， 对GPU 不敏感， 即使上了GPU ，占用一般低于5% ，我们线上部署采用CPU + 多进程模式部署， 效果良好， Presidio + spaCy  + Fastapi  单机压测 QPS 大概可以跑到 150多， 全文完。</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
