@@ -8,7 +8,7 @@
   <meta name="google-site-verification" content="GgupatpoZgdqsBlxEZoMqGAy3aXAFtXIrYged3SB6EA" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>白话大模型原理 | nJcx's Blog
+  <title>白话大模型原理与实践 | nJcx's Blog
 </title>
   <link rel="canonical" href="https://www.njcx.bid/posts/T10.html">
 
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://www.njcx.bid/theme/css/style.css">
 
 
-<meta name="description" content="白话大模型原理 ~">
+<meta name="description" content="白话大模型原理与实践 ~">
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -79,7 +79,7 @@ var _hmt = _hmt || [];
 
   <div class="main">
     <div class="container">
-      <h1>白话大模型原理
+      <h1>白话大模型原理与实践
 </h1>
       <hr>
 <article class="article">
@@ -116,11 +116,11 @@ var _hmt = _hmt || [];
 <p>光有编号不够，模型需要知道"猫"和"狗"关系近，"猫"和"汽车"关系远。于是每个 token 被映射成一个高维向量，叫嵌入向量。语义相近的词，向量距离更近。这些向量是模型在训练中自己学出来的，不是人工设计的。</p>
 <h5>4. Transformer：大模型的核心架构</h5>
 <p>几乎所有大语言模型底层都是 Transformer 架构。它最核心的思想是：处理一个词时，要关注整句话里所有词和它的关系。</p>
-<h5>自注意力机制</h5>
+<h6>自注意力机制</h6>
 <p>每个 token 会生成三个向量：Query（查询）、Key（键）、Value（值）。通过计算 Query 和所有 Key 的相关性，得到注意力分数，再用分数对 Value 加权求和。这样每个词都能根据上下文动态调整含义。比如"她"在"小明把苹果给了小红，她很开心"中，会更多地关注"小红"。</p>
-<h5>多头注意力</h5>
+<h6>多头注意力</h6>
 <p>一个注意力头只能捕捉一种关系，比如指代、动宾、修饰。Transformer 会并行使用多个头（比如 32 个），分别捕捉不同模式，最后拼接。</p>
-<h5>前馈网络与堆叠</h5>
+<h6>前馈网络与堆叠</h6>
 <p>注意力层之后接一个普通前馈网络，对每个 token 的向量做非线性变换。一层注意力 + 一层前馈网络构成一个 Transformer 块，大模型堆叠很多这样的块。层数越多，模型能学到的抽象程度越高。</p>
 <h5>5. 训练三阶段：从"续写"到"会聊天"</h5>
 <p><strong>阶段一：预训练（海量文本学续写）</strong></p>
@@ -150,7 +150,7 @@ var _hmt = _hmt || [];
 <p>如果你手里有一个网络安全法规相关的数据集（如《网络安全法》《数据安全法》《个人信息保护法》、等保条例、行业标准等），想训练一个"小的大模型"，最现实的路线是：选一个开源小模型作为基座 → 用你的数据做领域微调 → 评估 → 部署。</p>
 <h5>1. 明确任务</h5>
 <p>网络安全法规数据可以做很多任务，不同任务的数据准备和训练方式不一样：</p>
-<table class="table-hover table-striped table">
+<table class="table-striped table-hover table">
 <thead>
 <tr>
 <th>任务</th>
@@ -250,7 +250,7 @@ var _hmt = _hmt || [];
 <p><strong>数据量建议：</strong> 指令微调：至少几千条高质量数据，1 万～5 万条效果更好。如果纯法规文本很多（几百万字），可以先做继续预训练，但小模型优先做指令微调。</p>
 <h5>4. 选择微调方法</h5>
 <p>小模型推荐参数高效微调，不更新全部参数。</p>
-<table class="table-hover table-striped table">
+<table class="table-striped table-hover table">
 <thead>
 <tr>
 <th>方法</th>
@@ -342,7 +342,7 @@ var _hmt = _hmt || [];
 <h4>三、实践二：从零预训练一个网络安全法规领域小模型</h4>
 <p>从零预训练和微调完全不同，它需要让模型从海量文本中自己学会语言基本规律、知识和推理能力。</p>
 <h5>1. 先判断是否需要从零预训练</h5>
-<table class="table-hover table-striped table">
+<table class="table-striped table-hover table">
 <thead>
 <tr>
 <th>场景</th>
@@ -403,7 +403,7 @@ var _hmt = _hmt || [];
 </code></pre></div>
 <h5>5. 模型架构配置</h5>
 <p>主流为 GPT 类 decoder-only Transformer。小模型参考配置：</p>
-<table class="table-hover table-striped table">
+<table class="table-striped table-hover table">
 <thead>
 <tr>
 <th>参数规模</th>
@@ -486,7 +486,7 @@ var _hmt = _hmt || [];
 <li><strong>生成样本检查：</strong> 每几千步生成文本看是否通顺</li>
 </ul>
 <h5>9. 常见问题</h5>
-<table class="table-hover table-striped table">
+<table class="table-striped table-hover table">
 <thead>
 <tr>
 <th>问题</th>
