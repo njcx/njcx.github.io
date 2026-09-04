@@ -150,7 +150,7 @@ var _hmt = _hmt || [];
 <p>如果你手里有一个网络安全法规相关的数据集（如《网络安全法》《数据安全法》《个人信息保护法》、等保条例、行业标准等），想训练一个"小的大模型"，最现实的路线是：选一个开源小模型作为基座 → 用你的数据做领域微调 → 评估 → 部署。</p>
 <h5>1. 明确任务</h5>
 <p>网络安全法规数据可以做很多任务，不同任务的数据准备和训练方式不一样：</p>
-<table class="table-striped table table-hover">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>任务</th>
@@ -250,7 +250,7 @@ var _hmt = _hmt || [];
 <p><strong>数据量建议：</strong> 指令微调：至少几千条高质量数据，1 万～5 万条效果更好。如果纯法规文本很多（几百万字），可以先做继续预训练，但小模型优先做指令微调。</p>
 <h5>4. 选择微调方法</h5>
 <p>小模型推荐参数高效微调，不更新全部参数。</p>
-<table class="table-striped table table-hover">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>方法</th>
@@ -342,7 +342,7 @@ var _hmt = _hmt || [];
 <h4>三、实践二：从零预训练一个网络安全法规领域小模型</h4>
 <p>从零预训练和微调完全不同，它需要让模型从海量文本中自己学会语言基本规律、知识和推理能力。</p>
 <h5>1. 先判断是否需要从零预训练</h5>
-<table class="table-striped table table-hover">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>场景</th>
@@ -403,7 +403,7 @@ var _hmt = _hmt || [];
 </code></pre></div>
 <h5>5. 模型架构配置</h5>
 <p>主流为 GPT 类 decoder-only Transformer。小模型参考配置：</p>
-<table class="table-striped table table-hover">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>参数规模</th>
@@ -486,7 +486,7 @@ var _hmt = _hmt || [];
 <li><strong>生成样本检查：</strong> 每几千步生成文本看是否通顺</li>
 </ul>
 <h5>9. 常见问题</h5>
-<table class="table-striped table table-hover">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>问题</th>
