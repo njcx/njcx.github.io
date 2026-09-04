@@ -108,13 +108,13 @@ var _hmt = _hmt || [];
 <p>假设你有一个大模型网关，后面接入了多个模型：</p>
 <p>Kimi-k3：能力强，但贵、慢</p>
 <p>DeepSeek-v4-flash：便宜、快，但复杂任务可能不够好</p>
-<p>Claude 4.5 Sonnet：代码能力强，价格中等</p>
+<p>Qwen3.7-MAX ：能力可以，价格中等</p>
 <p>本地小模型（如 Qwen 3.5 9B）：几乎免费、极快，但只能处理简单任务</p>
 <p>用户的请求是多样的：有的只是问“今天天气怎么样”，有的是“帮我重构这段 500 行的 Python 代码”。如果所有请求都发给最贵的模型，成本会爆炸；如果都发给小模型，复杂任务质量很差。</p>
 <p>智能路由的目标就是动态决策：把每个请求送到“性价比”最高的模型上，同时满足用户对质量和延迟的期望。</p>
 <h5>二、智能路由的常见策略</h5>
 <p>智能路由可以从简单到复杂，大致分为以下几类：</p>
-<table class="table-striped table-hover table">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>算法类型</th>
@@ -308,7 +308,7 @@ def<span class="w"> </span>route<span class="o">(</span>self,<span class="w"> </
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s2">"simple"</span>
 </code></pre></div>
 <p>关键参数调优指南</p>
-<table class="table-striped table-hover table">
+<table class="table-hover table-striped table">
 <thead>
 <tr>
 <th>参数</th>
@@ -349,6 +349,7 @@ def<span class="w"> </span>route<span class="o">(</span>self,<span class="w"> </
 阈值不是万能的：边界模糊的请求（如"代码审查"既涉及编码也涉及安全）容易在类别间摇摆，建议设置信度阈值，低于阈值的走默认安全模型
 </code></pre></div>
 <h5>基于BERT模型 的分类器实践</h5>
+<p>在 LLM 路由场景中，基于 BERT 的分类器属于“基于 ML 分类器的路由”路线，其核心思路是：用 BERT 作为编码器提取语义特征，加一个分类头，直接输出路由决策。BERT（Bidirectional Encoder Representations from Transformers）是 Google 于 2018 年发布的预训练语言模型，其核心突破在于“双向理解”——能同时参考上下文来理解一个词的含义，彻底改变了此前语言模型只能“单向阅读”的局限。</p>
 <h5>六、总结</h5>
 <p>智能路由的本质是在多个模型之间做权衡决策，它结合了传统软件工程中的负载均衡、成本优化和机器学习中的预测与在线学习。从简单的规则到复杂的强化学习，你可以根据实际需求选择合适的复杂度。对于学习而言，建议从规则和启发式评分入手，理解基本框架后，再尝试引入 ML 或 MAB 来提升自适应性。IDE 中的 “Auto” 选项正是智能路由的一个轻量级应用，它的背后通常也是基于任务类型和成本/延迟的简单判断，但深入下去就是一套完整的系统工程。</p>
   </div>
