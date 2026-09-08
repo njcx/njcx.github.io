@@ -107,7 +107,29 @@ var _hmt = _hmt || [];
 <p>从代码规模来看，OpenClaw 是一个相当庞大的工程：拥有 2600+ TypeScript 文件、50+ 功能模块，估计代码行数超过 200,000 行。尽管如此庞大的规模，OpenClaw 并没有采用复杂的微服务架构，而是采用了 “插件化单体” 的架构风格——所有核心能力通过 pnpm-workspace.yaml 组织，在单一代码库中完成模块化。</p>
 <p>在架构范式上，OpenClaw 采用以单个网关为中心的星型（hub-and-spoke）架构。Gateway 是一个常驻后台的 Node.js 进程，作为整个系统的单一控制平面（Single Control Plane），负责协调 LLM（“大脑”）、本地执行能力（“双手”）、持久化记忆以及外部消息渠道之间的通信。</p>
 <p><img alt="openclaw" class="img-fluid" src="../images/20260908_4e1654.png"/></p>
+<h4>架构</h4>
+<p>一条消息的完整旅程如下：</p>
+<div class="highlight"><pre><span></span><code>消息入口<span class="w"> </span><span class="ss">(</span><span class="nv">Ingress</span><span class="ss">)</span>：用户通过任一渠道发送消息，该渠道的适配器将其标准化后传给网关。
+
+路由与分发<span class="w"> </span><span class="ss">(</span><span class="nv">Routing</span><span class="ss">)</span>：网关的路由器根据消息元数据，决定由哪个智能体处理。
+
+上下文组装<span class="w"> </span><span class="ss">(</span><span class="nv">Context</span><span class="w"> </span><span class="nv">Assembly</span><span class="ss">)</span>：编排器为此次请求组装上下文，包括系统指令、会话历史、相关记忆和可用工具列表等。
+
+<span class="nv">LLM</span><span class="w"> </span>推理<span class="w"> </span><span class="ss">(</span><span class="nv">Brain</span><span class="w"> </span><span class="nv">Inference</span><span class="ss">)</span>：将组装好的上下文发送给<span class="w"> </span>“大脑”<span class="w"> </span><span class="ss">(</span><span class="nv">LLM</span><span class="ss">)</span><span class="w"> </span>进行推理。<span class="nv">LLM</span><span class="w"> </span>可能直接生成回复，也可能要求调用工具。
+
+工具执行<span class="w"> </span><span class="ss">(</span><span class="nv">Hands</span><span class="w"> </span><span class="nv">Execution</span><span class="ss">)</span>：如需调用工具，“双手”<span class="w"> </span>会执行相应操作：
+
+执行环境默认为<span class="w"> </span><span class="nv">Docker</span><span class="w"> </span>沙箱。
+
+高风险操作可能需要用户审批。
+
+结果返回与迭代<span class="w"> </span><span class="ss">(</span><span class="nb">Result</span><span class="w"> </span><span class="k">Loop</span><span class="ss">)</span>：工具执行结果返回给编排器，再次送入<span class="w"> </span>“大脑”<span class="w"> </span>进行下一轮思考。此过程会循环，直到任务完成。
+
+消息出口<span class="w"> </span><span class="ss">(</span><span class="nv">Egress</span><span class="ss">)</span>：最终生成的回复由编排器通过路由器，经由原渠道返回给用户。
+</code></pre></div>
 <p><img alt="openclaw" class="img-fluid" src="../images/20260908_683881.png"/></p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/openclaw/openclaw.git
+</code></pre></div>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
