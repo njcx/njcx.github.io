@@ -121,41 +121,13 @@ var _hmt = _hmt || [];
 </ul>
 <p>生命周期启动流程：</p>
 <ul>
-<li>
-<ol>
 <li>加载配置：解析 <code>openclaw.json</code> 并进行 Zod 校验。</li>
-</ol>
-</li>
-<li>
-<ol>
 <li>初始化认证：检查 API Key 或本地信任机制。</li>
-</ol>
-</li>
-<li>
-<ol>
 <li>启动 HTTP/WS 服务：绑定端口，升级 WebSocket 协议。</li>
-</ol>
-</li>
-<li>
-<ol>
 <li>连接渠道：并发初始化所有启用的渠道适配器（如登录 Telegram、连接 Discord）。</li>
-</ol>
-</li>
-<li>
-<ol>
 <li>启动 Cron 调度器：注册定时任务。</li>
-</ol>
-</li>
-<li>
-<ol>
 <li>注册工具与技能：扫描 <code>tools/</code> 和 <code>skills/</code> 目录，构建可执行能力清单。</li>
-</ol>
-</li>
-<li>
-<ol>
 <li>启动记忆服务：初始化向量数据库（本地）和记忆检索器。</li>
-</ol>
-</li>
 </ul>
 <h6>通道适配器（Channel Adapters）—— 异构消息的“万能翻译官”</h6>
 <p>通道适配器是 OpenClaw 实现“40+ 渠道接入”的基石。每个适配器都是一个独立的协议转换模块。</p>
