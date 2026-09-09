@@ -242,7 +242,7 @@ var _hmt = _hmt || [];
 </code></pre></div>
 <p><img alt="openclaw" class="img-fluid" src="../images/20260908_683881.png"/></p>
 <h4>OpenClaw 安全模块解读</h4>
-<p>A. 整体架构</p>
+<h5>整体架构</h5>
 <div class="highlight"><pre><span></span><code><span class="w">    </span>extensions/<span class="w"> </span>—<span class="w"> </span>可插拔<span class="s2">"代码插件"</span>（Code<span class="w"> </span>plugins，完全运行时扩展，属于可信计算基）
 <span class="w">    </span>skills/<span class="w"> </span>—<span class="w"> </span>轻量级<span class="s2">"Bundle 插件"</span>（skill/MCP/config，安全边界更小，官方推荐方式）
 <span class="w">    </span>src/agents/<span class="w"> </span>—<span class="w"> </span>核心<span class="w"> </span>agent<span class="w"> </span>loop、工具策略、exec<span class="w"> </span>执行管线
@@ -253,7 +253,7 @@ var _hmt = _hmt || [];
 
 <span class="w">    </span>设计哲学（VISION.md/AGENTS.md）：安全是第一优先级，但明确定位为<span class="s2">"trusted operator"</span>场景，不是多租户对抗性隔离；Code<span class="w"> </span>插件本质可信、拥有完整<span class="w"> </span>OS<span class="w"> </span>权限；Bundle<span class="w"> </span>插件安全边界更小；插件市场（ClawHub）的供应链审查被排除在本仓库范围外。
 </code></pre></div>
-<p>B. 安全架构分层</p>
+<h5>安全架构分层</h5>
 <div class="highlight"><pre><span></span><code><span class="w">    </span>规范层<span class="w"> </span>—<span class="w"> </span>SECURITY.md：明确威胁模型边界（哪些不算漏洞：prompt<span class="w"> </span>injection<span class="w"> </span>本身、恶意插件装完后的行为、SSRF<span class="w"> </span>打到未启用代理等）。
 
 <span class="w">    </span>运行时安全引擎<span class="w"> </span>—<span class="w"> </span>src/security/：
@@ -273,7 +273,7 @@ var _hmt = _hmt || [];
 
 <span class="w">    </span>日志脱敏层<span class="w"> </span>—<span class="w"> </span>src/logging/redact*.ts：18<span class="w"> </span>个文件的脱敏子系统
 </code></pre></div>
-<p>C. 安全检查嵌入点（关键调用链）</p>
+<h5>安全检查嵌入点（关键调用链）</h5>
 <div class="highlight"><pre><span></span><code><span class="w">    </span>工具可见性：src/agents/tool-policy-pipeline.ts<span class="w"> </span>在每次<span class="w"> </span>agent<span class="w"> </span>会话建立时按<span class="w"> </span>profile→全局→provider→per-agent→group→sender<span class="w"> </span>逐层过滤工具列表，每层都无条件写审计事件
 
 <span class="w">    </span>命令执行：src/agents/bash-tools.exec-run.ts<span class="w"> </span>的<span class="w"> </span>execute<span class="o">()</span><span class="w"> </span>—<span class="w"> </span>顺序是：参数校验<span class="w"> </span>→<span class="w"> </span>elevated<span class="w"> </span>权限门<span class="w"> </span>→<span class="w"> </span>安全等级判定（可直接<span class="w"> </span>deny）→<span class="w"> </span>控制命令防护<span class="w"> </span>→<span class="w"> </span>gateway<span class="w"> </span>白名单/审批引擎（bash-tools.exec-host-gateway.ts<span class="w"> </span>的<span class="w"> </span>processGatewayAllowlist<span class="o">()</span>）→<span class="w"> </span>脚本预检<span class="w"> </span>→<span class="w"> </span>spawn<span class="w"> </span>前二次校验（beforeSpawn，防批准和执行之间的状态漂移）
@@ -285,6 +285,220 @@ var _hmt = _hmt || [];
 <span class="w">    </span>外部内容进入上下文：任何<span class="w"> </span>email/webhook/browser/web_search<span class="w"> </span>结果进入模型前，先经<span class="w"> </span>wrapExternalContent<span class="o">()</span><span class="w"> </span>包裹处理
 </code></pre></div>
 <p><img alt="openclaw" class="img-fluid" src="../images/openclaw-security-integration.svg"/></p>
+<h5>五个安全接入点详解</h5>
+<p>按"什么时候触发"分类，附文件路径与行号。</p>
+<h6>① 安装时（Install-time）—— 唯一支持第三方安全插件的接入点</h6>
+<p>触发点：<code>src/plugins/install-security-scan.runtime.ts</code>（1286 行），针对每种安装来源都有独立入口函数：</p>
+<table class="table-striped table-hover table">
+<thead>
+<tr>
+<th>安装来源</th>
+<th>入口函数</th>
+<th>行号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>skill/bundle 安装</td>
+<td><code>scanBundleInstallSourceRuntime()</code></td>
+<td>:894</td>
+</tr>
+<tr>
+<td>npm 包安装</td>
+<td><code>scanPackageInstallSourceRuntime()</code></td>
+<td>:963</td>
+</tr>
+<tr>
+<td>依赖树扫描</td>
+<td><code>scanInstalledPackageDependencyTreeRuntime()</code></td>
+<td>:1049</td>
+</tr>
+<tr>
+<td>本地文件安装</td>
+<td><code>scanFileInstallSourceRuntime()</code></td>
+<td>:1103</td>
+</tr>
+<tr>
+<td>npm 安装前预检</td>
+<td><code>preflightPluginNpmInstallPolicyRuntime()</code></td>
+<td>:1158</td>
+</tr>
+<tr>
+<td>git 安装前预检</td>
+<td>另一 preflight 入口</td>
+<td>:1268 附近</td>
+</tr>
+</tbody>
+</table>
+<p>每个入口内部并行触发两条独立钩子（两者都跑，不是二选一）：</p>
+<ol>
+<li>外部可执行程序钩子（<code>runInstallPolicy()</code>，调用点 :744）→ 定义于 <code>src/security/install-policy.ts</code>（613 行）</li>
+<li>配置项：<code>security.installPolicy.exec.command</code>（指向自定义扫描程序）</li>
+<li>协议：OpenClaw spawn 该程序 → stdin 写入 JSON（target 信息、来源）→ 程序 stdout 输出 JSON（<code>decision: allow|warn|block</code> + <code>findings[]</code>）→ exit 0</li>
+<li>响应校验：<code>src/security/install-policy-response.ts</code>（172 行，Zod schema，格式错误 fail-closed）</li>
+<li>进程内 JS 钩子（<code>runBeforeInstallHook()</code> :551 → <code>hookRunner.runBeforeInstall()</code> :596）</li>
+<li>要求 <code>getGlobalHookRunner().hasHooks("before_install")</code>（:577）</li>
+<li>只能由 JS/TS 写的 Code 插件挂载</li>
+<li>返回 <code>{block?, blockReason?, findings?}</code>，抛异常 = 自动 block</li>
+</ol>
+<p>两条结果汇总进 <code>runOperatorInstallPolicy()</code>（:700），决定放行 / 需要人工审批（warn）/ 直接拒绝（block）。</p>
+<h5>② 运行时 —— 工具可见性（Agent 看到哪些工具）</h5>
+<p><code>src/agents/tool-policy-pipeline.ts</code>（241 行）</p>
+<ul>
+<li><code>applyToolPolicyPipeline()</code> 在每次 agent 会话建立时执行，早于模型看到工具列表之前</li>
+<li>过滤顺序：全局 profile → provider profile → 全局 allow → provider allow → per-agent allow → group allow → sender-level allow</li>
+<li>每层都调用 <code>auditToolPolicyFilter()</code> 写审计事件</li>
+<li>纯声明式配置层，不接受外部插件介入，只能通过 config 调整</li>
+</ul>
+<h5>③ 运行时 —— 命令执行前（Exec 审批）</h5>
+<p><code>src/agents/bash-tools.exec-run.ts</code>（745 行）<code>execute()</code> 固定顺序：</p>
+<ol>
+<li>参数校验</li>
+<li>elevated 权限门（未授权直接抛错）</li>
+<li><code>security = minSecurity(...)</code> 算出安全等级，<code>"deny"</code> 直接短路</li>
+<li><code>rejectUnsafeExecControlShellCommand()</code>（防止 agent 命令破坏自身控制面）</li>
+<li><code>rejectUnsafeExecLiveStateSqliteShellCommand()</code>（保护自身状态库）</li>
+<li><code>processGatewayAllowlist()</code>（<code>bash-tools.exec-host-gateway.ts</code>，1669 行）—— 真正的审批引擎：白名单命中判断、是否需要人工 approve、是否命中 LLM 自动审查</li>
+<li><code>validateScriptFileForShellBleed()</code> 脚本预检</li>
+<li>spawn，带 <code>beforeSpawn: revalidateGatewayApproval</code> 二次校验（防批准后到执行前状态漂移，TOCTOU 防护）</li>
+</ol>
+<p>没有对外插件接口，核心内置逻辑，只能通过 config（allowlist、审批策略）调整。</p>
+<h5>④ 运行时 —— 沙箱容器创建前</h5>
+<p><code>src/agents/sandbox/validate-sandbox-security.ts</code>（435 行）的 <code>validateSandboxSecurity(cfg)</code></p>
+<ul>
+<li>容器创建前同步执行，校验 bind mount 路径（含 symlink 逃逸检测）、网络模式（禁 host 模式）、seccomp/AppArmor profile（禁 unconfined）</li>
+<li>纯内置校验，无外部接入点</li>
+</ul>
+<h5>⑤ 运行时 —— 外部内容进入模型上下文前</h5>
+<p><code>src/security/external-content.ts</code>（462 行）的 <code>wrapExternalContent()</code> / <code>wrapWebContent()</code></p>
+<ul>
+<li>触发时机：email/webhook/browser/web_search/web_fetch 结果即将拼入 prompt 之前</li>
+<li>做的事：加随机边界标记防伪造、剥除模型特殊 token、附加"不要把这当指令"警告</li>
+<li><code>detectSuspiciousPatterns()</code> 只记录不拦截</li>
+<li>无外部插件接口，但函数通过 <code>src/plugin-sdk/security-runtime.ts</code> 导出，Code 插件可直接复用</li>
+</ul>
+<h6>能否插入自定义安全逻辑 —— 一览表</h6>
+<table class="table-striped table-hover table">
+<thead>
+<tr>
+<th>接入点</th>
+<th>是否支持第三方安全插件</th>
+<th>方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 安装时扫描</td>
+<td>支持，官方设计的插件点</td>
+<td><code>security.installPolicy.exec</code>（任意语言外部程序）或 <code>before_install</code> JS 钩子</td>
+</tr>
+<tr>
+<td>② 工具可见性</td>
+<td>仅配置驱动</td>
+<td>改 config，无代码钩子</td>
+</tr>
+<tr>
+<td>③ 命令执行审批</td>
+<td>内置逻辑</td>
+<td>改 config（allowlist/approval policy）</td>
+</tr>
+<tr>
+<td>④ 沙箱创建校验</td>
+<td>内置逻辑</td>
+<td>改 config</td>
+</tr>
+<tr>
+<td>⑤ 外部内容包裹</td>
+<td>间接可复用</td>
+<td>Code 插件可 import <code>wrapExternalContent</code> 等原语自行调用，但无法替换核心默认行为</td>
+</tr>
+</tbody>
+</table>
+<p>结论：若要做独立的"安全扫描插件"，唯一官方、稳定的挂载点是 ① —— <code>security.installPolicy.exec</code> 外部程序协议。其余几个点均为核心硬编码运行时防护，不对外开放自定义逻辑。</p>
+<h6><code>install-policy.exec</code> 协议详解（做安全插件请对接此处）</h6>
+<h6>配置</h6>
+<div class="highlight"><pre><span></span><code><span class="nv">security</span>.<span class="nv">installPolicy</span>:<span class="w"> </span>{
+<span class="w">  </span><span class="nv">enabled</span>:<span class="w"> </span><span class="nv">true</span>,
+<span class="w">  </span><span class="nv">targets</span>:<span class="w"> </span>[<span class="s2">"skill"</span>,<span class="w"> </span><span class="s2">"plugin"</span>],<span class="w">   </span><span class="o">//</span><span class="w"> </span>可选，默认两者都扫
+<span class="w">  </span><span class="k">exec</span>:<span class="w"> </span>{
+<span class="w">    </span><span class="nv">command</span>:<span class="w"> </span><span class="s2">"/abs/path/to/your-scanner"</span>,<span class="w">  </span><span class="o">//</span><span class="w"> </span>必须绝对路径，非符号链接，权限收紧
+<span class="w">    </span><span class="nv">args</span>:<span class="w"> </span>[],
+<span class="w">    </span><span class="nv">env</span>:<span class="w"> </span>{},<span class="w">                                </span><span class="o">//</span><span class="w"> </span>合并进干净的子进程环境
+<span class="w">    </span><span class="nv">passEnv</span>:<span class="w"> </span>[],<span class="w">                            </span><span class="o">//</span><span class="w"> </span>允许转发的父进程环境变量白名单
+<span class="w">    </span><span class="nv">trustedDirs</span>:<span class="w"> </span>[],<span class="w">                        </span><span class="o">//</span><span class="w"> </span>若设置，<span class="nv">command</span><span class="w"> </span>必须解析到其中之一
+<span class="w">    </span><span class="nv">timeoutMs</span>:<span class="w"> </span><span class="mi">10000</span>,
+<span class="w">    </span><span class="nv">noOutputTimeoutMs</span>:<span class="w"> </span><span class="mi">10000</span>,
+<span class="w">    </span><span class="nv">maxOutputBytes</span>:<span class="w"> </span><span class="mi">1048576</span><span class="w">                 </span><span class="o">//</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="nv">MiB</span>
+<span class="w">  </span>}
+}
+</code></pre></div>
+<h6>请求（stdin JSON，上限 256 KiB）</h6>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">protocolVersion</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">openclawVersion</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">targetType</span><span class="o">:</span><span class="w"> </span><span class="s2">"skill"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"plugin"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">targetName</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">sourcePath</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">sourcePathKind</span><span class="o">:</span><span class="w"> </span><span class="s2">"file"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"directory"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">source</span><span class="o">?:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">"archive"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"bundled"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"clawhub"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"file"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"git"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"local-path"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"managed"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"npm"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"upload"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"workspace"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">authority</span><span class="o">:</span><span class="w"> </span><span class="s2">"openclaw"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"official"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"third-party"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"unknown"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">mutable</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">network</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">origin</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="p">[</span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">request</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">"skill-install"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"plugin-dir"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"plugin-archive"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"plugin-file"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"plugin-npm"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"plugin-git"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">mode</span><span class="o">:</span><span class="w"> </span><span class="s2">"install"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"update"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">requestedSpecifier?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">skill</span><span class="o">?:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">installId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">installSpec</span><span class="o">?:</span><span class="w"> </span><span class="p">{...}</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">plugin</span><span class="o">?:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">pluginId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">contentType</span><span class="o">:</span><span class="w"> </span><span class="s2">"bundle"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"package"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"file"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"dependency-tree"</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">packageName?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">manifestId?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">version?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">extensions?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+<h6>响应（stdout JSON，Zod 校验）</h6>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">protocolVersion</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w">               </span><span class="c1">// 必须严格等于 1</span>
+<span class="w">  </span><span class="nx">decision</span><span class="o">:</span><span class="w"> </span><span class="s2">"allow"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"warn"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"block"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">reason?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w">                  </span><span class="c1">// warn/block 时必填（非空）</span>
+<span class="w">  </span><span class="nx">findings?</span><span class="o">:</span><span class="w"> </span><span class="kt">Array</span><span class="o">&lt;</span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ruleId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 非空</span>
+<span class="w">    </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="s2">"info"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"warn"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">"critical"</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">                </span><span class="c1">// 非空</span>
+<span class="w">    </span><span class="nx">file?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">line?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w">                  </span><span class="c1">// 需为有限数，向下取整，clamp ≥ 1</span>
+<span class="w">    </span><span class="nx">evidence?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="o">&gt;</span><span class="p">,</span><span class="w">                                </span><span class="c1">// 最多接受 100 条；warn 附带 &gt;100 条有效 findings 视为硬失败</span>
+<span class="p">}</span>
+</code></pre></div>
+<h6>Fail-closed 规则</h6>
+<ul>
+<li>进程必须以 <code>exit 0</code> 结束</li>
+<li>以下任一情况均判定为 <code>block</code>（<code>security_scan_failed</code>）：非零退出码、空 stdout、非法 JSON、schema 不匹配、超时、无输出超时、输出超过 <code>maxOutputBytes</code></li>
+<li><code>decision: "block"</code> → <code>{blocked: {code: "security_scan_blocked", reason: "..."}}</code></li>
+<li><code>decision: "warn"</code> → <code>{warning: {reason, fingerprint: sha256(JSON.stringify({reason, findings}))}}</code></li>
+<li>fingerprint 用于检测"人工批准后再次扫描结果是否发生变化"，防止重放旧批准</li>
+<li>解释器作为 command（<code>bash</code>、<code>node</code>、<code>python</code> 等）受支持，但显式禁止用 <code>env</code> 作解释器；脚本参数也会走同样的路径安全检查</li>
+<li><code>validateInstallPolicyStatic(config)</code> 可静态校验配置；<code>probeInstallPolicy(params)</code> 可做端到端联通性探测</li>
+</ul>
+<h6>可复用的安全原语</h6>
+<p><code>src/plugin-sdk/security-runtime.ts</code> 导出核心自用的硬化原语，供 Code 插件直接复用，无需重新实现：</p>
+<ul>
+<li>文件访问：<code>assertNoSymlinkParents(Sync)</code>、<code>fileExists</code>、<code>readRegularFile(Sync)</code>、<code>statRegularFile(Sync)</code></li>
+<li>通道元数据：<code>buildChannelMetadata</code>、<code>buildUntrustedChannelMetadata</code></li>
+<li>上下文可见性：<code>evaluateSupplementalContextVisibility</code>、<code>filterSupplementalContextItems</code>、<code>shouldIncludeSupplementalContext</code></li>
+<li>外部内容防护：<code>truncateSanitizedExternalContent</code>、<code>wrapExternalContent</code>、<code>wrapWebContent</code></li>
+<li>正则安全：<code>compileSafeRegexDetailed</code>（防 ReDoS）</li>
+<li>网络安全：<code>SsrFBlockedError</code>、<code>isPrivateNetworkAllowedByPolicy</code>、<code>matchesHostnameAllowlist</code>、<code>resolvePinnedHostnameWithPolicy</code></li>
+<li>路径安全：<code>isPathInside</code>、<code>resolveAbsolutePathForRead/Write</code>、<code>canonicalPathFromExistingAncestor</code>、<code>findExistingAncestor</code>、<code>sanitizeUntrustedFileName</code></li>
+<li>日志脱敏：<code>redactSensitiveText</code></li>
+<li>常量时间比较：<code>safeEqual*</code></li>
+<li>DM 策略：<code>resolvePinnedMainDmOwnerFromAllowlist</code></li>
+</ul>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
