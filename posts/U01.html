@@ -289,7 +289,7 @@ var _hmt = _hmt || [];
 <p>按"什么时候触发"分类，附文件路径与行号。</p>
 <h6>① 安装时（Install-time）—— 唯一支持第三方安全插件的接入点</h6>
 <p>触发点：<code>src/plugins/install-security-scan.runtime.ts</code>（1286 行），针对每种安装来源都有独立入口函数：</p>
-<table class="table-striped table-hover table">
+<table class="table-hover table table-striped">
 <thead>
 <tr>
 <th>安装来源</th>
@@ -378,7 +378,7 @@ var _hmt = _hmt || [];
 <li>无外部插件接口，但函数通过 <code>src/plugin-sdk/security-runtime.ts</code> 导出，Code 插件可直接复用</li>
 </ul>
 <h6>能否插入自定义安全逻辑 —— 一览表</h6>
-<table class="table-striped table-hover table">
+<table class="table-hover table table-striped">
 <thead>
 <tr>
 <th>接入点</th>
@@ -499,6 +499,7 @@ var _hmt = _hmt || [];
 <li>常量时间比较：<code>safeEqual*</code></li>
 <li>DM 策略：<code>resolvePinnedMainDmOwnerFromAllowlist</code></li>
 </ul>
+<p>基于以上梳理：OpenClaw 的安全设计核心思路是"信任边界前置、失败即拒绝"——把最大的风险点（三方 skill/plugin 安装）收口成一个标准化的 exec 协议，其余运行时防护（工具过滤、命令审批、沙箱、外部内容包裹）都是硬编码在核心里、不开放给外部插件的纵深防御层。</p>
   </div>
 </article>
 <div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;"></div>
