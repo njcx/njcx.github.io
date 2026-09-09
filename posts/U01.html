@@ -271,23 +271,19 @@ var _hmt = _hmt || [];
 <p><img alt="openclaw" class="img-fluid" src="../images/20260908_683881.png"/></p>
 <h4>OpenClaw 安全模块解读</h4>
 <p>A. 整体架构</p>
-<div class="highlight"><pre><span></span><code><span class="w">    </span>pnpm<span class="w"> </span>monorepo，workspace<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="s2">"."</span>,<span class="w"> </span><span class="s2">"ui"</span>,<span class="w"> </span><span class="s2">"packages/*"</span>,<span class="w"> </span><span class="s2">"extensions/*"</span>,<span class="w"> </span><span class="s2">"examples/*"</span><span class="o">]</span>。
-
-<span class="w">    </span>apps/<span class="w"> </span>—<span class="w"> </span>桌面/CLI<span class="w"> </span>前端
-<span class="w">    </span>packages/<span class="w"> </span>—<span class="w"> </span>共享库（如<span class="w"> </span>packages/net-policy<span class="w"> </span>处理<span class="w"> </span>SSRF/URL<span class="w"> </span>相关工具）
-<span class="w">    </span>extensions/<span class="w"> </span>—<span class="w"> </span>可插拔<span class="s2">"代码插件"</span>（Code<span class="w"> </span>plugins，完全运行时扩展，属于可信计算基）
+<div class="highlight"><pre><span></span><code><span class="w">    </span>extensions/<span class="w"> </span>—<span class="w"> </span>可插拔<span class="s2">"代码插件"</span>（Code<span class="w"> </span>plugins，完全运行时扩展，属于可信计算基）
 <span class="w">    </span>skills/<span class="w"> </span>—<span class="w"> </span>轻量级<span class="s2">"Bundle 插件"</span>（skill/MCP/config，安全边界更小，官方推荐方式）
 <span class="w">    </span>src/agents/<span class="w"> </span>—<span class="w"> </span>核心<span class="w"> </span>agent<span class="w"> </span>loop、工具策略、exec<span class="w"> </span>执行管线
 <span class="w">    </span>src/gateway/<span class="w"> </span>—<span class="w"> </span>gateway<span class="w"> </span>服务、鉴权、审批
 <span class="w">    </span>src/security/<span class="w"> </span>—<span class="w"> </span>真正的运行时安全引擎
 <span class="w">    </span>src/plugin-sdk/<span class="w"> </span>—<span class="w"> </span>插件对外公开的<span class="w"> </span>API（含<span class="w"> </span>security-runtime.ts）
 <span class="w">    </span>src/infra/<span class="w"> </span>—<span class="w"> </span>底层安全原语（exec<span class="w"> </span>安全、路径守卫、SSRF、fs-safe）
-<span class="w">    </span>security/（顶层目录）—<span class="w"> </span>只是<span class="w"> </span>OpenGrep<span class="w"> </span>静态扫描规则包，不是运行时安全引擎
+
 <span class="w">    </span>设计哲学（VISION.md/AGENTS.md）：安全是第一优先级，但明确定位为<span class="s2">"trusted operator"</span>场景，不是多租户对抗性隔离；Code<span class="w"> </span>插件本质可信、拥有完整<span class="w"> </span>OS<span class="w"> </span>权限；Bundle<span class="w"> </span>插件安全边界更小；插件市场（ClawHub）的供应链审查被排除在本仓库范围外。
 </code></pre></div>
 <p>B. 安全架构分层</p>
 <div class="highlight"><pre><span></span><code><span class="w">    </span>规范层<span class="w"> </span>—<span class="w"> </span>SECURITY.md：明确威胁模型边界（哪些不算漏洞：prompt<span class="w"> </span>injection<span class="w"> </span>本身、恶意插件装完后的行为、SSRF<span class="w"> </span>打到未启用代理等）。
-<span class="w">    </span>静态扫描层<span class="w"> </span>—<span class="w"> </span>security/opengrep/：Semgrep<span class="w"> </span>兼容规则包，CI<span class="w"> </span>里跑<span class="w"> </span>diff<span class="w"> </span>扫描和全量扫描。另有<span class="w"> </span>.github/codeql/<span class="w"> </span>大量按边界细分的<span class="w"> </span>CodeQL<span class="w"> </span>查询包（进程执行边界、SSRF<span class="w"> </span>边界、插件信任边界、MCP<span class="w"> </span>工具边界等）。
+
 <span class="w">    </span>运行时安全引擎<span class="w"> </span>—<span class="w"> </span>src/security/：
 <span class="w">    </span>external-content.ts<span class="w"> </span>—<span class="w"> </span>prompt<span class="w"> </span>injection<span class="w"> </span>缓解：外部内容加随机边界标记、剥除伪造标记/CJK<span class="w"> </span>同形字符、剥除模型特殊<span class="w"> </span>token，只做<span class="s2">"包裹+警告"</span>不做拦截
 <span class="w">    </span>install-policy.ts<span class="w"> </span>—<span class="w"> </span>插件/skill<span class="w"> </span>安装时调用外部可执行程序做安全扫描（重点，见下）
